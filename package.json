@@ -1,0 +1,45 @@
+{
+  "name": "spinal-browser-ticket",
+  "version": "1.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf wwww && NODE_ENV=production node bin/parcel.config.js",
+    "dev": "NODE_ENV=development node bin/parcel.config.js",
+    "reset": "rm -fr www"
+  },
+  "bin": {
+    "create_maintainer_env": "bin/parcel.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "element-ui": "^2.13.0",
+    "jquery": "^3.4.1",
+    "lodash.throttle": "^4.1.1",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.2.1",
+    "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
+    "spinal-core-system": "git+https://github.com/spinalcom/spinal-core-system.git",
+    "spinal-env-viewer-context-geographic-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-geographic-service.git",
+    "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-forge-viewer": "git+https://github.com/spinalcom/spinal-forge-viewer.git",
+    "spinal-forge-viewer-vue": "git+https://github.com/spinalcom/spinal-forge-viewer-vue.git",
+    "spinal-model-graph": "git+https://github.com/spinalcom/spinal-model-graph.git",
+    "spinal-service-ticket": "git+https://github.com/spinalcom/spinal-service-ticket.git",
+    "vue": "^2.6.10",
+    "vue-i18n": "^8.15.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@vue/component-compiler-utils": "^3.0.1"
+  },
+  "browserslist": [
+    "last 1 chrome versions"
+  ],
+  "staticFiles": {
+    "staticPath": "src/public"
+  }
+}
