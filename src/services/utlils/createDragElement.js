@@ -25,13 +25,17 @@ function getElemtCenter(elem) {
 export default function createDragElement(elmnt, headerElem) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0,
     offsetTop, offsetLeft;
-
   if (headerElem) {
     // if present, the header is where you move the DIV from:
     headerElem.onmousedown = dragMouseDown;
+    headerElem.addEventListener("touchstart", toucheDown, true);
+    headerElem.addEventListener("touchmove", touchElementDrag, false);
+
   } else {
     // otherwise, move the DIV from anywhere inside the DIV:
     elmnt.onmousedown = dragMouseDown;
+    elmnt.addEventListener("touchstart", toucheDown, true);
+    elmnt.addEventListener("touchmove", touchElementDrag, false);
   }
 
   function dragMouseDown(e) {
@@ -45,6 +49,21 @@ export default function createDragElement(elmnt, headerElem) {
     document.onmouseup = closeDragElement;
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
+
+  }
+  function toucheDown(e) {
+    var touch = e.targetTouches[0];
+    pos3 = touch.pageX;
+    pos4 = touch.pageY;
+    offsetTop = elmnt.offsetTop;
+    offsetLeft = elmnt.offsetLeft;
+  }
+
+  function touchElementDrag(e) {
+    var touch = e.targetTouches[0];
+    pos1 = pos3 - touch.pageX;
+    pos2 = pos4 - touch.pageY;
+    drag();
   }
 
   function elementDrag(e) {
@@ -53,6 +72,9 @@ export default function createDragElement(elmnt, headerElem) {
     // calculate the new cursor position:
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
+    drag();
+  }
+  function drag() {
     // set the element's new position:
     let centerElem = getElemtCenter(elmnt);
     if ((elmnt.parentElement.clientWidth / 2) < centerElem.x) {
@@ -91,6 +113,7 @@ export default function createDragElement(elmnt, headerElem) {
           perCent(elmnt.parentElement.clientHeight - elmnt.clientHeight - 8, elmnt.parentElement.clientHeight)
         ) + "%";
     }
+
   }
 
   function closeDragElement() {

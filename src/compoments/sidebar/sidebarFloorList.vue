@@ -61,7 +61,7 @@ export default {
       uniqueOpened: true,
       floorIdSelected: "",
       roomIdSelected: "",
-      collapse: true
+      collapse: false
     };
   },
   computed: {
@@ -88,7 +88,6 @@ export default {
       EventBus.$emit("sidebar-selected-floor", this.getFloorById(floorId));
     },
     sideBarChange(data, building) {
-      console.log("sideBarChange", data, building);
       this.loading = false;
       this.data = data;
       this.building = building;

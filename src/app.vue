@@ -4,6 +4,7 @@
     <el-header class="main-header">
       <spinal-header></spinal-header>
     </el-header>
+    <spinalNavbar class="main-navbar"></spinalNavbar>
     <div class="body-main-container">
       <el-aside width="201px"
                 class="side-bar-container">
@@ -19,6 +20,7 @@ import Vue from "vue";
 import spinalHeader from "./compoments/header/header";
 import spinalSideBar from "./compoments/sidebar/sidebar";
 import spinalBackEnd from "./services/spinalBackend";
+import spinalNavbar from "./compoments/navbar/spinalNavbar";
 import mainContent from "./compoments/mainContent/index";
 export default Vue.extend({
   data() {
@@ -29,7 +31,8 @@ export default Vue.extend({
   components: {
     "spinal-header": spinalHeader,
     "spinal-side-bar": spinalSideBar,
-    mainContent
+    mainContent,
+    spinalNavbar
   },
   mounted() {
     spinalBackEnd.getGraph().then(() => {
@@ -69,5 +72,17 @@ export default Vue.extend({
   width: 100%;
   padding: 0 0 0 0;
   margin-bottom: 2px;
+}
+.main-navbar {
+  display: none;
+}
+
+@media screen and (max-width: 992px) {
+  .side-bar-container {
+    display: none;
+  }
+  .main-navbar {
+    display: flex;
+  }
 }
 </style>

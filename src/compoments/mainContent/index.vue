@@ -11,20 +11,27 @@
       </div>
       <el-button icon="el-icon-files"
                  size="mini"
-                 class="btn-abs-viewer"
-                 @click="onMini"></el-button>
+                 class="btn-abs-viewer-popio"
+                 @click="onPopClick"></el-button>
     </div>
     <div class="spinal-other-container">other</div>
     <transition name="fade">
       <div v-show="absviewer"
            ref="viewerContainerMini"
-           class="viewer-container-mini">
+           class="viewer-container-mini"
+           :class="{hideViewer}">
         <div ref="headerViewer"
              class="spinal-viewer-header-container">
-          <el-button icon="el-icon-files"
-                     size="mini"
-                     class="btn-abs-viewer"
-                     @click="onMini"></el-button>
+          <el-button-group class="btn-abs-viewer-popio">
+            <el-button icon="el-icon-minus"
+                       size="mini"
+                       class=""
+                       @click="onMiniClick"></el-button>
+            <el-button icon="el-icon-files"
+                       size="mini"
+                       class=""
+                       @click="onPopClick"></el-button>
+          </el-button-group>
 
         </div>
       </div>
@@ -39,7 +46,8 @@ export default {
   name: "main-content",
   data() {
     return {
-      absviewer: false
+      absviewer: false,
+      hideViewer: false
     };
   },
   components: { appViewer },
@@ -47,13 +55,18 @@ export default {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
   },
   methods: {
-    onMini() {
+    onPopClick(event) {
+      event.stopPropagation();
       this.absviewer = !this.absviewer;
       if (this.absviewer) {
         this.$refs.viewerContainerMini.append(this.$refs.viewerContent);
       } else {
         this.$refs.viewerContainer.append(this.$refs.viewerContent);
       }
+    },
+    onMiniClick(event) {
+      event.stopPropagation();
+      this.hideViewer = !this.hideViewer;
     }
   }
 };
@@ -111,7 +124,7 @@ export default {
   width: 100%;
   /* z-index: 0; */
 }
-.btn-abs-viewer {
+.btn-abs-viewer-popio {
   position: absolute;
   z-index: 1000;
   top: 0;
@@ -119,6 +132,15 @@ export default {
   border-top-right-radius: 3px !important;
   border-bottom-right-radius: 0 !important;
 }
+.btn-abs-viewer-mini {
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  border-top-right-radius: 3px !important;
+  border-bottom-right-radius: 0 !important;
+}
+
 .spinal-viewer-header-container {
   height: 28px;
   border: 1px solid;
@@ -129,15 +151,9 @@ export default {
   background-color: rgb(48, 49, 51);
 }
 
-/* .spinal-viewer-container.abs-viewer {
-  opacity: 0;
-  visibility: hidden;
-  transition: all ease-out 0.2s;
-} */
-
 .viewer-content {
   position: relative;
-  height: 100%;
+  height: calc(100% - 30px);
   width: 100%;
 }
 .viewer-container-mini {
@@ -155,5 +171,17 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   left: calc(100% - var(--minimized-viewer-width) - 8px);
   top: calc(100% - var(--minimized-viewer-height) - 8px);
+}
+
+.viewer-container-mini.hideViewer .viewer-content {
+  display: none;
+}
+.viewer-container-mini.hideViewer {
+  --minimized-viewer-width: 120px;
+  --minimized-viewer-height: 30px;
+  left: calc(100% - var(--minimized-viewer-width) - 8px);
+  top: calc(100% - var(--minimized-viewer-height) - 8px);
+  width: var(--minimized-viewer-width);
+  height: var(--minimized-viewer-height);
 }
 </style>

@@ -25,50 +25,67 @@ export default {
   watch: {
     isMinimized() {
       console.log(this.isMinimized);
-      if (this.isMinimized && this.viewer) {
-        this.viewer.toolbar.setDisplay("none");
-        this.viewer.viewCubeUi.setVisible(false);
-      } else {
-        this.viewer.toolbar.setDisplay("");
-        this.viewer.viewCubeUi.setVisible(true);
+      if (this.viewer && this.viewer.toolbar && this.viewer.viewCubeUi) {
+        if (this.isMinimized) {
+          this.viewer.toolbar.setDisplay("none");
+          this.viewer.viewCubeUi.setVisible(false);
+        } else {
+          this.viewer.toolbar.setDisplay("");
+          this.viewer.viewCubeUi.setVisible(true);
+        }
+        setTimeout(this.viewer.resize.bind(this.viewer), 400);
       }
-      setTimeout(this.viewer.resize.bind(this.viewer), 400);
     }
   },
-  async mounted() {
-    const container = document.getElementById("autodesk_forge_viewer");
-    this.forgeViewer = new ForgeViewer(container, false);
-    // forgeExtentionManager.viewer = this.forgeViewer.viewer;
-    await this.forgeViewer.start(
-      "/models/Resource/3D View/{3D} 341878/{3D}.svf",
-      true
-    );
-
-    // await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
-    // let scenes = await GraphService.getScene();
-    // await window.spinal.SpinalForgeViewer.loadModelFromNode(
-    //   scenes[0].info.id.get()
+  mounted() {
+    return this.createViewer();
+    // const container = document.getElementById("autodesk_forge_viewer");
+    // this.forgeViewer = new ForgeViewer(container, false);
+    // // forgeExtentionManager.viewer = this.forgeViewer.viewer;
+    // await this.forgeViewer.start(
+    //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
+    //   true
     // );
-    this.viewer = this.forgeViewer.viewer;
 
-    await spinalBackEnd.waitInit();
-    const scenes = await spinalBackEnd.viewerBack.getScenes();
-    await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
-    this.viewer.fitToView();
-    // // viewerUtils.initViewer(this.forgeViewer.viewer);
-    // // this.createSetColor();
-    // // this.createRestoreColor();
-    // // this.getEvents();
-    // const exten = forgeExtentionManager.getExtentions();
+    // // await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
+    // // let scenes = await GraphService.getScene();
+    // // await window.spinal.SpinalForgeViewer.loadModelFromNode(
+    // //   scenes[0].info.id.get()
+    // // );
+    // this.viewer = this.forgeViewer.viewer;
 
-    // exten.forEach(ext => {
-    //   this.forgeViewer.loadExtension(ext);
-    // });
+    // await spinalBackEnd.waitInit();
+    // const scenes = await spinalBackEnd.viewerBack.getScenes();
+    // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
+    // this.viewer.fitToView();
+    // // // viewerUtils.initViewer(this.forgeViewer.viewer);
+    // // // this.createSetColor();
+    // // // this.createRestoreColor();
+    // // // this.getEvents();
+    // // const exten = forgeExtentionManager.getExtentions();
 
-    // viewerUtils.fitToView();
-    // eventViewerManager.init(this.viewer, forgeExtentionManager);
+    // // exten.forEach(ext => {
+    // //   this.forgeViewer.loadExtension(ext);
+    // // });
+
+    // // viewerUtils.fitToView();
+    // // eventViewerManager.init(this.viewer, forgeExtentionManager);
   },
-  methods: {}
+  methods: {
+    async createViewer() {
+      const container = document.getElementById("autodesk_forge_viewer");
+      // this.forgeViewer = new ForgeViewer(container, false);
+      // await this.forgeViewer.start(
+      //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
+      //   true
+      // );
+      // this.viewer = this.forgeViewer.viewer;
+      // await spinalBackEnd.waitInit();
+      // const scenes = await spinalBackEnd.viewerBack.getScenes();
+      // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
+      // this.viewer.fitToView();
+    }
+  }
 };
 </script>
 
