@@ -16,7 +16,7 @@ console.log(OuputDir);
 // Bundler options
 const options = {
   outDir: OuputDir, // The out directory to put the build files in, defaults to dist
-  publicUrl: '/html/ticket/', // The url to serve on, defaults to '/'
+  publicUrl: '/html/spinaltwin/', // The url to serve on, defaults to '/'
   watch: false, // Whether to watch the files and rebuild them on change, defaults to process.env.NODE_ENV !== 'production'
   cache: false, // Enabled or disables caching, defaults to true
   contentHash: false, // Disable content hash from being included on the filename
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'development') {
   console.log("development mode ON");
   options.watch = true;
   options.cache = true;
-  options.cacheDir = Path.join(OuputDir, '.cache'), // The directory cache gets put in, defaults to .cache
+  options.cacheDir = Path.join(OuputDir, '.cache'); // The directory cache gets put in, defaults to .cache
   options.hmr = true;
 }
 
