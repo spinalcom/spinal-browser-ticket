@@ -1,16 +1,20 @@
 <template>
   <div class="navbar-item">
-    <i class="el-icon-arrow-right"></i>
+    <!-- <i class="el-icon-arrow-right"></i> -->
+    <i class="arrow-left-icon"
+       data-eva="arrow-ios-forward-outline"
+       data-eva-fill="#EDEDED"></i>
     <div>
-      <el-button v-if="icon"
+      <el-button class="button-icon-left-focus"
+                 v-if="icon"
                  type="info"
                  :icon="icon"
                  size="small"
                  circle></el-button>
-
       <!-- <h4 v-if="!items">{{selectCompu}}</h4> -->
       <el-select v-model="selectCompu"
                  :placeholder="label"
+                 @mouseover="onMouseOver"
                  clearable>
         <el-option v-for="item in items"
                    :key="item.server_id"
@@ -24,6 +28,8 @@
 </template>
 
 <script>
+import * as eva from "eva-icons";
+
 export default {
   name: "navItem",
   props: ["label", "items", "select", "icon"],
@@ -43,21 +49,30 @@ export default {
         this.$emit("select", value);
       }
     }
+  },
+  methods: {
+    onMouseOver(e) {
+      console.log("onMouseOver", e);
+    }
+  },
+  mounted() {
+    eva.replace();
   }
 };
 </script>
 
-<style>
+<style scoped>
 .navbar-item {
   flex-grow: 1;
   display: flex;
   align-self: center;
+  padding: 1px 0;
 }
 .navbar-item > * {
   display: flex;
   align-self: center;
 }
-.navbar-item > i {
+.navbar-item > .arrow-left-icon {
   flex-grow: 0;
 }
 
@@ -66,6 +81,12 @@ export default {
 }
 .navbar-item > div > * {
   align-self: center;
+}
+.navbar-item .button-icon-left-focus {
+  background: white;
+  color: #1d4b5e;
+  padding: 5px !important;
+  font-size: 20px;
 }
 
 .navbar-item > div > .el-button {
@@ -78,13 +99,22 @@ export default {
   margin-right: 10px;
 }
 
-.navbar-item:first-child > i {
+.navbar-item:first-child > .arrow-left-icon {
   display: none;
 }
 
 @media screen and (max-width: 567px) {
-  .navbar-item > i {
+  .navbar-item > .arrow-left-icon {
     display: none;
   }
+}
+</style>
+
+<style>
+.navbar-item .el-input__inner {
+  /* background-color: #114b5f; */
+  /* border-color: #114b5f; */
+  /* color: #ededed; */
+  color: #1d4b5e;
 }
 </style>

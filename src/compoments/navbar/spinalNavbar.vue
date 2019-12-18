@@ -1,40 +1,70 @@
 <template>
   <div class="spinal-navbar-main-container">
-    <el-button type="info"
-               class="bread-btn"
+    <el-collapse-transition>
+      <el-button v-if="!openMenu"
+                 class="bread-btn"
+                 :class="{'bread-btn-opened' : openMenu}"
+                 icon="el-icon-arrow-left"
+                 @click="openMenu = !openMenu">
+        <div class="bread">
+          <p v-if="building">{{building.name}}</p>
+          <p v-if="selectedLevel">/</p>
+          <p v-if="selectedLevel">{{selectedLevel.name}}</p>
+          <p v-if="selectedRoom">/</p>
+          <p v-if="selectedRoom">{{selectedRoom.name}}</p>
+        </div>
+      </el-button>
+      <el-button v-else
+                 class="bread-btn bread-btn-opened"
+                 icon="el-icon-arrow-right"
+                 @click="openMenu = !openMenu">
+      </el-button>
+    </el-collapse-transition>
+
+    <!-- <el-button
+     class="bread-btn"
                :class="{'bread-btn-opened' : openMenu}"
-               :icon="openMenu ? 'el-icon-arrow-right' : 'el-icon-arrow-down'"
+               :icon="openMenu ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
                @click="openMenu = !openMenu">
-      <div class="bread"
-           v-if="!openMenu">
-        <p v-if="building">{{building.name}}</p>
-        <p v-if="selectedLevel">/</p>
-        <p v-if="selectedLevel">{{selectedLevel.name}}</p>
-        <p v-if="selectedRoom">/</p>
-        <p v-if="selectedRoom">{{selectedRoom.name}}</p>
+        <div class="bread"
+             v-if="!openMenu">
+          <p v-if="building">{{building.name}}</p>
+          <p v-if="selectedLevel">/</p>
+          <p v-if="selectedLevel">{{selectedLevel.name}}</p>
+          <p v-if="selectedRoom">/</p>
+          <p v-if="selectedRoom">{{selectedRoom.name}}</p>
+        </div>
+    </el-button> -->
+
+    <el-collapse-transition>
+      <div v-if="openMenu"
+           class="nav-list-selector-container">
+        <el-collapse-transition>
+
+          <navItem icon='el-icon-office-building'
+                   label="Building"
+                   :select='building'></navItem>
+
+        </el-collapse-transition>
+        <el-collapse-transition>
+          <navItem v-if="building"
+                   icon="el-icon-receiving"
+                   label="Etage"
+                   :items='levels'
+                   :select='selectedLevel'
+                   @select="onLevelChange"></navItem>
+        </el-collapse-transition>
+        <el-collapse-transition>
+
+          <navItem v-if="selectedLevel"
+                   icon="el-icon-receiving"
+                   label="Local"
+                   :items='selectedLevelRooms'
+                   :select='selectedRoom'
+                   @select="onRoomChange"></navItem>
+        </el-collapse-transition>
       </div>
-
-    </el-button>
-    <div v-if="openMenu"
-         class="nav-list-selector-container">
-      <navItem icon='el-icon-office-building'
-               label="Building"
-               :select='building'></navItem>
-
-      <navItem v-if="building"
-               icon="el-icon-receiving"
-               label="Etage"
-               :items='levels'
-               :select='selectedLevel'
-               @select="onLevelChange"></navItem>
-
-      <navItem v-if="selectedLevel"
-               icon="el-icon-receiving"
-               label="Local"
-               :items='selectedLevelRooms'
-               :select='selectedRoom'
-               @select="onRoomChange"></navItem>
-    </div>
+    </el-collapse-transition>
 
   </div>
 </template>
@@ -53,7 +83,7 @@ export default {
       building: null,
       selectedLevel: null,
       selectedRoom: null,
-      openMenu: false
+      openMenu: true
     };
   },
   mounted() {
@@ -74,6 +104,7 @@ export default {
       console.log("onLevelChange", level);
       this.selectedLevel = level;
       this.selectedLevelRooms = level.children;
+      this.selectedRoom = null;
     },
     onRoomChange(room) {
       this.selectedRoom = room;
@@ -97,7 +128,7 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-wrap: nowrap;
-  background: #ccc;
+  background: #1d3461;
 }
 .bread {
   display: flex;
@@ -113,15 +144,23 @@ export default {
 .nav-list-selector-container {
   display: flex;
   flex-wrap: nowrap;
+  width: 100%;
+  padding: 5px 0;
 }
 .bread-btn {
   display: flex !important;
   flex-wrap: nowrap;
   width: 100%;
   padding: 0 !important;
+  color: #fff !important;
+  background-color: #1d3461 !important;
+  border-color: #1d3461 !important;
 }
 .bread-btn-opened {
   width: unset;
+  border-color: #1e3461 !important;
+  background-color: white !important;
+  color: #1e3461 !important;
 }
 
 .bread-btn > * {

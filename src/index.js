@@ -25,23 +25,20 @@
 import "babel-polyfill";
 import Vue from "vue";
 import App from "./app.vue";
-
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-
-Vue.use(ElementUI);
-
-
-
 import VTooltip from 'v-tooltip';
-Vue.use(VTooltip);
-import './app.css';
-
 import { i18n } from "./services/i18n";
-
 import spinalBackend from './services/spinalBackend';
+import './app.css';
+import { router } from './router/router';
+Vue.use(ElementUI);
+Vue.use(VTooltip);
+
 spinalBackend.init();
 
-new Vue({ i18n, render: h => h(App) }).$mount('#app');
-
-
+new Vue({
+  i18n,
+  router,
+  render: h => h(App)
+}).$mount('#app');

@@ -49,15 +49,16 @@ export default Vue.extend({
   width: 100%;
 }
 .body-main-container {
-  height: 100%;
+  height: calc(100% - 62px);
   display: flex;
   position: relative;
 }
 .side-bar-container {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   width: 201px;
+  overflow: hidden;
   height: 100%;
-  overflow: auto;
+  position: relative;
 }
 .side-bar-container * {
   white-space: nowrap;

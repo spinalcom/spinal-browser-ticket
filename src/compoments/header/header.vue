@@ -3,28 +3,33 @@
     <img class="spinal-header-logo"
          src="../../assets/imgs/spinalcom-logo.png"
          alt="spinalcom-logo">
-    <div>
-      <h4>title</h4>
+    <div class="menu-icon-header-container"
+         @click="drawer = true">
+      <i data-eva="keypad-outline"
+         data-eva-animation="zoom"
+         data-eva-height="24"
+         data-eva-width="24"></i>
     </div>
-    <el-button-group class="lang-selector-grp">
-      <el-button v-for="lang in langs"
-                 :key="lang"
-                 type="primary"
-                 :disabled="currentLang === lang"
-                 @click="setLang(lang)">{{lang}}</el-button>
-    </el-button-group>
+    <el-drawer title="I am the title"
+               :visible.sync="drawer"
+               :with-header="false">
+      <drawer @close="drawer = false"></drawer>
+    </el-drawer>
+
   </div>
 </template>
 
 
 <script>
 import { getDefaultLanguage, loadLanguageAsync } from "./../../services/i18n";
+import * as eva from "eva-icons";
+import drawer from "../drawer/drawer.vue";
 export default {
   name: "spinal-header",
+  components: { drawer },
   data() {
     return {
-      currentLang: "",
-      langs: ["en", "fr"]
+      drawer: false
     };
   },
   created() {
@@ -32,9 +37,15 @@ export default {
       this.currentLang = lang;
     });
   },
+  mounted() {
+    eva.replace();
+  },
   methods: {
+    toLocaleLowerCase(str) {
+      return str.toLocaleLowerCase();
+    },
     setLang(lang) {
-      loadLanguageAsync(lang);
+      loadLanguageAsync(lang.toLocaleLowerCase());
       this.currentLang = lang;
     }
   }
@@ -54,11 +65,17 @@ export default {
   height: 55px;
 }
 
+.menu-icon-header-container > i {
+  line-height: 0px;
+}
+.menu-icon-header-container {
+  height: 24px;
+  cursor: pointer;
+  padding-right: 8px;
+}
+
 .spinal-header-container > * {
   display: flex;
   align-self: center;
-}
-.lang-selector-grp {
-  padding-right: 8px;
 }
 </style>

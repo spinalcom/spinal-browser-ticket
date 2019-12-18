@@ -9,30 +9,51 @@
         <appViewer :isMinimized="absviewer">
         </appViewer>
       </div>
-      <el-button icon="el-icon-files"
-                 size="mini"
+      <el-button size="mini"
                  class="btn-abs-viewer-popio"
-                 @click="onPopClick"></el-button>
+                 @click="onPopClick">
+        <i data-eva="minus-outline"
+           data-eva-animation="zoom"
+           height="30px"
+           data-eva-height="24"
+           data-eva-width="24"></i>
+      </el-button>
     </div>
-    <div class="spinal-other-container">other</div>
-    <transition name="fade">
+    <div class="spinal-other-container">
+      <router-view></router-view>
+    </div>
+    <transition name="el-fade-in-linear">
       <div v-show="absviewer"
            ref="viewerContainerMini"
            class="viewer-container-mini"
            :class="{hideViewer}">
         <div ref="headerViewer"
              class="spinal-viewer-header-container">
+          <i class="spinal-viewer-header-move-icon"
+             data-eva="move-outline"
+             data-eva-fill="#fff"
+             height="30px"
+             data-eva-height="24"
+             data-eva-width="24"></i>
           <el-button-group class="btn-abs-viewer-popio">
-            <el-button icon="el-icon-minus"
-                       size="mini"
+            <el-button size="mini"
                        class=""
-                       @click="onMiniClick"></el-button>
-            <el-button icon="el-icon-files"
-                       size="mini"
+                       @click="onMiniClick">
+              <i data-eva="minus-outline"
+                 data-eva-animation="zoom"
+                 height="30px"
+                 data-eva-height="24"
+                 data-eva-width="24"></i>
+            </el-button>
+            <el-button size="mini"
                        class=""
-                       @click="onPopClick"></el-button>
+                       @click="onPopClick">
+              <i data-eva="collapse-outline"
+                 data-eva-animation="zoom"
+                 data-eva-height="24"
+                 data-eva-width="24"></i>
+            </el-button>
           </el-button-group>
-
         </div>
       </div>
     </transition>
@@ -42,6 +63,8 @@
 <script>
 import createDragElement from "../../services/utlils/createDragElement";
 import appViewer from "./viewer/viewer.vue";
+import * as eva from "eva-icons";
+
 export default {
   name: "main-content",
   data() {
@@ -53,6 +76,7 @@ export default {
   components: { appViewer },
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
+    eva.replace();
   },
   methods: {
     onPopClick(event) {
@@ -85,6 +109,9 @@ export default {
   position: relative;
   display: flex;
 }
+.spinal-viewer-header-move-icon {
+  align-self: center;
+}
 .spinal-viewer-container {
   height: 100%;
   width: 50%;
@@ -97,14 +124,6 @@ export default {
   background-color: green;
   position: relative;
 }
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {
     height: 50%;
@@ -131,6 +150,10 @@ export default {
   right: 0;
   border-top-right-radius: 3px !important;
   border-bottom-right-radius: 0 !important;
+  padding: 0 !important;
+}
+.btn-abs-viewer-popio > .el-button {
+  padding: 0 !important;
 }
 .btn-abs-viewer-mini {
   position: absolute;
@@ -149,6 +172,7 @@ export default {
   cursor: move;
   position: relative;
   background-color: rgb(48, 49, 51);
+  display: flex;
 }
 
 .viewer-content {
