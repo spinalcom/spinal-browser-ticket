@@ -22,7 +22,7 @@
 <script>
 import langSelector from "./langSelector/langSelector.vue";
 import appList from "./appList/appList.vue";
-import * as eva from "eva-icons";
+// import * as eva from "eva-icons";
 
 export default {
   data() {

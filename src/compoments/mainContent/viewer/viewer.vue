@@ -74,16 +74,16 @@ export default {
   methods: {
     async createViewer() {
       const container = document.getElementById("autodesk_forge_viewer");
-      // this.forgeViewer = new ForgeViewer(container, false);
-      // await this.forgeViewer.start(
-      //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
-      //   true
-      // );
-      // this.viewer = this.forgeViewer.viewer;
-      // await spinalBackEnd.waitInit();
-      // const scenes = await spinalBackEnd.viewerBack.getScenes();
-      // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
-      // this.viewer.fitToView();
+      this.forgeViewer = new ForgeViewer(container, false);
+      await this.forgeViewer.start(
+        "/models/Resource/3D View/{3D} 341878/{3D}.svf",
+        true
+      );
+      this.viewer = this.forgeViewer.viewer;
+      await spinalBackEnd.waitInit();
+      const scenes = await spinalBackEnd.viewerBack.getScenes();
+      await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
+      this.viewer.fitToView();
     }
   }
 };

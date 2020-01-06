@@ -10,8 +10,7 @@
          data-eva-height="24"
          data-eva-width="24"></i>
     </div>
-    <el-drawer title="I am the title"
-               :visible.sync="drawer"
+    <el-drawer :visible.sync="drawer"
                :with-header="false">
       <drawer @close="drawer = false"></drawer>
     </el-drawer>
@@ -22,7 +21,7 @@
 
 <script>
 import { getDefaultLanguage, loadLanguageAsync } from "./../../services/i18n";
-import * as eva from "eva-icons";
+// import * as eva from "eva-icons";
 import drawer from "../drawer/drawer.vue";
 export default {
   name: "spinal-header",
@@ -37,9 +36,7 @@ export default {
       this.currentLang = lang;
     });
   },
-  mounted() {
-    eva.replace();
-  },
+  mounted() {},
   methods: {
     toLocaleLowerCase(str) {
       return str.toLocaleLowerCase();

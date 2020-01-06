@@ -2,11 +2,12 @@
   <div class="side-bar-compomenet-container"
        v-loading="loading">
     <div class="side-bar-header-container">
-      <el-button type="info"
+      <el-button class="button-icon-building-focus"
+                 type="info"
                  icon="el-icon-s-home"
-                 size="small"
-                 circle></el-button>
-      <h4>{{buildingName}}</h4>
+                 size="small">
+        {{buildingName}}
+      </el-button>
     </div>
     <el-menu class="spinal-side-bar-menu spinal-scrollbar"
              background-color="#303133"
@@ -129,25 +130,46 @@ export default {
   display: flex;
   align-self: auto;
   height: 56px;
-  line-height: 56px;
-  background-color: #409eff;
-  color: white;
+  /* line-height: 56px; */
+  background-color: #1d3461;
+  /* color: white; */
+  justify-content: center;
 }
-.side-bar-header-container > * {
+/* .side-bar-header-container > * {
   display: flex;
   align-self: center;
   margin-left: 5px;
 }
 .side-bar-header-container > h4 {
   margin-left: 8px;
-}
-</style>
-
-<style>
+} */
 .spinal-side-bar-menu {
   height: calc(100% - 56px);
   border-right: none !important;
   overflow: auto;
+}
+
+.side-bar-header-container .button-icon-building-focus {
+  background: white;
+  color: #1d4b5e;
+  padding: 5px !important;
+  align-self: center;
+  display: flex;
+  margin: 0 4px;
+  max-width: calc(100% - 8px);
+}
+</style>
+
+<style>
+.side-bar-header-container .button-icon-building-focus span {
+  align-self: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.side-bar-header-container .button-icon-building-focus i {
+  align-self: center;
+  font-size: 20px;
 }
 .spinal-side-bar-menu li.el-submenu.is-opened > .el-submenu__title {
   background-color: #8cc5ff !important;

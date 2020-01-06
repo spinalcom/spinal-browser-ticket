@@ -38,9 +38,13 @@ class SpinalBackEnd {
   }
 
   async init() {
-    const graph = await this.getGraph();
-    await Promise.all([this.spatialBack.init(graph), this.viewerBack.init(graph)]);
-    this.initDefer.resolve();
+    try {
+      const graph = await this.getGraph();
+      await Promise.all([this.spatialBack.init(graph), this.viewerBack.init(graph)]);
+      this.initDefer.resolve();
+    } catch (error) {
+      this.initDefer.reject(error);
+    }
   }
 
   async getGraph() {

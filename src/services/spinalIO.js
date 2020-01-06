@@ -110,8 +110,8 @@ class SpinalIO {
       const path = this.getModelPath();
       return this.load(path);
     } catch (e) {
-      // return this.load('/__users__/public/digital_twin/default');
-      return this.load('/__users__/admin/Digital twin'); // TEST
+      return this.load('/__users__/public/digital_twin/default');
+      // return this.load('/__users__/admin/Digital twin'); // TEST
     }
   }
 
@@ -128,9 +128,8 @@ class SpinalIO {
             resolve(model);
           },
           () => {
-            throw new Error(`Load Error path: '${path}'`);
+            reject(new Error(`Load Error path: '${path}'`));
           });
-
       } catch (e) {
         reject(e);
       }

@@ -12,6 +12,7 @@
       </el-aside>
       <mainContent></mainContent>
     </div>
+
   </el-container>
 </template>
 
@@ -22,6 +23,8 @@ import spinalSideBar from "./compoments/sidebar/sidebar";
 import spinalBackEnd from "./services/spinalBackend";
 import spinalNavbar from "./compoments/navbar/spinalNavbar";
 import mainContent from "./compoments/mainContent/index";
+import { errorDialog } from "./services/utlils/errorDialog";
+
 export default Vue.extend({
   data() {
     return {
@@ -34,10 +37,23 @@ export default Vue.extend({
     mainContent,
     spinalNavbar
   },
-  mounted() {
-    spinalBackEnd.getGraph().then(() => {
+  async mounted() {
+    try {
+      await spinalBackEnd.getGraph();
       this.loading = false;
-    });
+    } catch (e) {
+      console.error(e);
+      console.log(this.$t("error.returntodrive.confirmbtntext"));
+      const title = this.$t("error.returntodrive.title");
+      const comfimText = this.$t("error.returntodrive.confirmbtntext");
+      const msg = this.$t("error.returntodrive.text");
+      errorDialog.call(this, title, comfimText, msg, e);
+      // this.$alert(`${e}`, 'Error', {
+      //           confirmButtonText: 'Retrun to drive',
+      //           callback: action => {
+      //           }
+      //         });
+    }
   },
   methods: {}
 });
@@ -47,6 +63,7 @@ export default Vue.extend({
 .body-container {
   height: 100%;
   width: 100%;
+  display: flex;
 }
 .body-main-container {
   height: calc(100% - 62px);

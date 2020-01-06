@@ -20,22 +20,6 @@
                  @click="openMenu = !openMenu">
       </el-button>
     </el-collapse-transition>
-
-    <!-- <el-button
-     class="bread-btn"
-               :class="{'bread-btn-opened' : openMenu}"
-               :icon="openMenu ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
-               @click="openMenu = !openMenu">
-        <div class="bread"
-             v-if="!openMenu">
-          <p v-if="building">{{building.name}}</p>
-          <p v-if="selectedLevel">/</p>
-          <p v-if="selectedLevel">{{selectedLevel.name}}</p>
-          <p v-if="selectedRoom">/</p>
-          <p v-if="selectedRoom">{{selectedRoom.name}}</p>
-        </div>
-    </el-button> -->
-
     <el-collapse-transition>
       <div v-if="openMenu"
            class="nav-list-selector-container">
@@ -98,10 +82,8 @@ export default {
     sideBarChange(data, building) {
       this.levels = data;
       this.building = building;
-      console.log("sideBarChange", data, building);
     },
     onLevelChange(level) {
-      console.log("onLevelChange", level);
       this.selectedLevel = level;
       this.selectedLevelRooms = level.children;
       this.selectedRoom = null;
@@ -110,15 +92,6 @@ export default {
       this.selectedRoom = room;
     }
   }
-  // computed: {
-  //   buildingName() {
-  //     if (this.building) {
-  //       return this.building.name;
-  //     } else {
-  //       return "Batiment";
-  //     }
-  //   }
-  // }
 };
 </script>
 

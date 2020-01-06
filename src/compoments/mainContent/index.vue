@@ -119,10 +119,10 @@ export default {
   position: relative;
 }
 .spinal-other-container {
-  height: 100%;
   width: 50%;
-  background-color: green;
   position: relative;
+  display: flex;
+  overflow: auto;
 }
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {
@@ -177,7 +177,7 @@ export default {
 
 .viewer-content {
   position: relative;
-  height: calc(100% - 30px);
+  height: 100%;
   width: 100%;
 }
 .viewer-container-mini {
