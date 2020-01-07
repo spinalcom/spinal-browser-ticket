@@ -28,7 +28,7 @@ export default {
   components: { drawer },
   data() {
     return {
-      drawer: true
+      drawer: false
     };
   },
   created() {
