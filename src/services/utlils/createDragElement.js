@@ -52,6 +52,7 @@ export default function createDragElement(elmnt, headerElem) {
 
   }
   function toucheDown(e) {
+    e.preventDefault();
     var touch = e.targetTouches[0];
     pos3 = touch.pageX;
     pos4 = touch.pageY;
@@ -60,6 +61,7 @@ export default function createDragElement(elmnt, headerElem) {
   }
 
   function touchElementDrag(e) {
+    e.preventDefault();
     var touch = e.targetTouches[0];
     pos1 = pos3 - touch.pageX;
     pos2 = pos4 - touch.pageY;

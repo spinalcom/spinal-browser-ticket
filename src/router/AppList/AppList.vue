@@ -29,8 +29,8 @@ export default {
   name: "AppList",
   computed: {
     routes() {
-      // return routes.filter(e => !e.redirect && this.$route.name !== e.name);
-      return routes;
+      return routes.filter(e => !e.redirect && this.$route.name !== e.name);
+      // return routes;
     }
   },
   methods: {
@@ -49,6 +49,7 @@ export default {
 .applist-main-container {
   background-color: white;
   padding: 16px;
+  width: 100%;
 }
 .router-link-btn {
   text-decoration-color: unset;
@@ -94,7 +95,7 @@ export default {
   }
 }
 .app-item-image-container {
-  height: 15vh;
+  height: 20vmin;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -102,7 +103,8 @@ export default {
 .app-item-image {
   align-self: center;
   width: 100%;
-  height: 15vh;
+  height: 20vmin;
   background-color: #3646b1;
+  background-image: radial-gradient(circle at bottom, #3646b1, #1d3461);
 }
 </style>

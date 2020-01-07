@@ -12,7 +12,7 @@
       <el-button size="mini"
                  class="btn-abs-viewer-popio"
                  @click="onPopClick">
-        <i data-eva="minus-outline"
+        <i data-eva="collapse-outline"
            data-eva-animation="zoom"
            height="30px"
            data-eva-height="24"
@@ -27,14 +27,16 @@
            ref="viewerContainerMini"
            class="viewer-container-mini"
            :class="{hideViewer}">
-        <div ref="headerViewer"
-             class="spinal-viewer-header-container">
-          <i class="spinal-viewer-header-move-icon"
-             data-eva="move-outline"
-             data-eva-fill="#fff"
-             height="30px"
-             data-eva-height="24"
-             data-eva-width="24"></i>
+        <div class="spinal-viewer-header-container">
+          <div ref="headerViewer"
+               class="spinal-viewer-header-drag-elm">
+            <i class="spinal-viewer-header-move-icon"
+               data-eva="move-outline"
+               data-eva-fill="#fff"
+               height="30px"
+               data-eva-height="24"
+               data-eva-width="24"></i>
+          </div>
           <el-button-group class="btn-abs-viewer-popio">
             <el-button size="mini"
                        class=""
@@ -48,7 +50,7 @@
             <el-button size="mini"
                        class=""
                        @click="onPopClick">
-              <i data-eva="collapse-outline"
+              <i data-eva="expand-outline"
                  data-eva-animation="zoom"
                  data-eva-height="24"
                  data-eva-width="24"></i>
@@ -103,6 +105,9 @@ export default {
   transition: 200ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
+.spinal-viewer-header-drag-elm {
+  flex: 1;
+}
 .spinal-main-container {
   height: 100%;
   width: 100%;
@@ -117,6 +122,7 @@ export default {
   width: 50%;
   background-color: #ededed;
   position: relative;
+  display: flex;
 }
 .spinal-other-container {
   width: 50%;
@@ -177,10 +183,13 @@ export default {
 
 .viewer-content {
   position: relative;
-  height: 100%;
+  /* height: 100%; */
+  flex: 1;
   width: 100%;
 }
 .viewer-container-mini {
+  display: flex;
+  flex-direction: column;
   background-color: blueviolet;
   --minimized-viewer-width: 300px;
   --minimized-viewer-height: 200px;

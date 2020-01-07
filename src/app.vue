@@ -12,7 +12,6 @@
       </el-aside>
       <mainContent></mainContent>
     </div>
-
   </el-container>
 </template>
 
@@ -24,6 +23,8 @@ import spinalBackEnd from "./services/spinalBackend";
 import spinalNavbar from "./compoments/navbar/spinalNavbar";
 import mainContent from "./compoments/mainContent/index";
 import { errorDialog } from "./services/utlils/errorDialog";
+import DocumentReady from "./services/utlils/DocumentReady";
+import { getDefaultLanguage } from "./services/i18n";
 
 export default Vue.extend({
   data() {
@@ -42,17 +43,15 @@ export default Vue.extend({
       await spinalBackEnd.getGraph();
       this.loading = false;
     } catch (e) {
-      console.error(e);
-      console.log(this.$t("error.returntodrive.confirmbtntext"));
-      const title = this.$t("error.returntodrive.title");
-      const comfimText = this.$t("error.returntodrive.confirmbtntext");
-      const msg = this.$t("error.returntodrive.text");
-      errorDialog.call(this, title, comfimText, msg, e);
-      // this.$alert(`${e}`, 'Error', {
-      //           confirmButtonText: 'Retrun to drive',
-      //           callback: action => {
-      //           }
-      //         });
+      DocumentReady(async () => {
+        await getDefaultLanguage();
+        console.error(e);
+        console.log(this.$t("error.returntodrive.confirmbtntext"));
+        const title = this.$t("error.returntodrive.title");
+        const comfimText = this.$t("error.returntodrive.confirmbtntext");
+        const msg = this.$t("error.returntodrive.text");
+        errorDialog.call(this, title, comfimText, msg, e);
+      });
     }
   },
   methods: {}
@@ -66,7 +65,8 @@ export default Vue.extend({
   display: flex;
 }
 .body-main-container {
-  height: calc(100% - 62px);
+  min-height: 0;
+  flex-grow: 1;
   display: flex;
   position: relative;
 }

@@ -102,10 +102,14 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   background: #1d3461;
+  background-image: radial-gradient(circle at top left, #04092d, #1d3461);
 }
 .bread {
   display: flex;
   align-self: center;
+}
+.bread-btn.bread-btn-opened i {
+  padding: 8px;
 }
 .bread > * {
   align-self: center;
@@ -128,11 +132,17 @@ export default {
   color: #fff !important;
   background-color: #1d3461 !important;
   border-color: #1d3461 !important;
+  background-image: radial-gradient(
+    circle at top left,
+    #04092d,
+    #1d3461
+  ) !important;
 }
 .bread-btn-opened {
   width: unset;
   border-color: #1e3461 !important;
   background-color: white !important;
+  background-image: unset !important;
   color: #1e3461 !important;
 }
 

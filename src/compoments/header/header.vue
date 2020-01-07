@@ -21,14 +21,14 @@
 
 <script>
 import { getDefaultLanguage, loadLanguageAsync } from "./../../services/i18n";
-// import * as eva from "eva-icons";
 import drawer from "../drawer/drawer.vue";
+
 export default {
   name: "spinal-header",
   components: { drawer },
   data() {
     return {
-      drawer: false
+      drawer: true
     };
   },
   created() {

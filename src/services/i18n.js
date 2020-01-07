@@ -1,19 +1,24 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import axios from 'axios'
-import messages from '../public/en'
 Vue.use(VueI18n)
 import ElementLocale from 'element-ui/lib/locale'
-import enLocale from 'element-ui/lib/locale/lang/en'
-import frLocale from 'element-ui/lib/locale/lang/fr'
-export const i18n = new VueI18n({
-  messages
-})
+export const i18n = new VueI18n({})
 
 const loadedLanguages = [] // our default language that is preloaded
 const elementLang = {
-  'en': enLocale,
-  'fr': frLocale
+  'en': () => {
+    return Promise.all([
+      import('element-ui/lib/locale/lang/en'),
+      import('../local/en')
+    ])
+  },
+  'fr': () => {
+    return Promise.all([
+      import('element-ui/lib/locale/lang/fr'),
+      import('../local/fr')
+    ])
+  },
 }
 
 function setI18nLanguage(lang) {
@@ -33,30 +38,18 @@ export function loadLanguageAsync(lang) {
   if (loadedLanguages.includes(lang)) {
     return Promise.resolve(setI18nLanguage(lang))
   }
-  return import(`./${lang}.js`).then(
-    messages => {
-      setLang(lang);
-      const msg = {
-        ...messages.default,
-        ...elementLang[lang]
-      }
-      i18n.setLocaleMessage(lang, msg)
-      loadedLanguages.push(lang)
-      return setI18nLanguage(lang)
+  return elementLang[lang]().then((langs) => {
+    setLang(lang);
+    const msg = {
+      ...langs[0].default,
+      ...langs[1].default
     }
-  )
-
-
-  // If the language hasn't been loaded yet
-  // return import(`./${lang}.js`).then(
-  //   messages => {
-  //     setLang(lang);
-  //     i18n.setLocaleMessage(lang, messages.default)
-  //     loadedLanguages.push(lang)
-  //     return setI18nLanguage(lang)
-  //   }
-  // )
+    i18n.setLocaleMessage(lang, msg)
+    loadedLanguages.push(lang)
+    return setI18nLanguage(lang)
+  })
 }
+
 function getFirstBrowserLanguage() {
   var nav = window.navigator, i, language,
     browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
@@ -90,7 +83,6 @@ function getLang() {
         return language;
       }
     }
-    // default - en
     return 'en';
   }
   return lang;

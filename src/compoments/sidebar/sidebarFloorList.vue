@@ -132,6 +132,7 @@ export default {
   height: 56px;
   /* line-height: 56px; */
   background-color: #1d3461;
+  background-image: radial-gradient(circle at bottom, #3646b1, #1d3461);
   /* color: white; */
   justify-content: center;
 }
