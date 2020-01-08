@@ -1,4 +1,28 @@
 "use strict";
+/*
+ * Copyright 2020 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+
 // The public function name defaults to window.docReady
 // but you can modify the last line of this function to pass in a different object or method name
 // if you want to put them in a different namespace and those will be used instead of
@@ -40,7 +64,7 @@ function DocumentReady(callback, context) {
   // if ready has already fired, then just schedule the callback
   // to fire asynchronously, but right away
   if (readyFired) {
-    setTimeout(function() {
+    setTimeout(function () {
       callback(context);
     }, 1);
     return;

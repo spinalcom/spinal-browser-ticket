@@ -1,3 +1,27 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="viewerContainer"
        id="autodesk_forge_viewer">
@@ -72,17 +96,17 @@ export default {
   },
   methods: {
     async createViewer() {
-      // const container = document.getElementById("autodesk_forge_viewer");
-      // this.forgeViewer = new ForgeViewer(container, false);
-      // await this.forgeViewer.start(
-      //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
-      //   true
-      // );
-      // this.viewer = this.forgeViewer.viewer;
-      // await spinalBackEnd.waitInit();
-      // const scenes = await spinalBackEnd.viewerBack.getScenes();
-      // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
-      // this.viewer.fitToView();
+      const container = document.getElementById("autodesk_forge_viewer");
+      this.forgeViewer = new ForgeViewer(container, false);
+      await this.forgeViewer.start(
+        "/models/Resource/3D View/{3D} 341878/{3D}.svf",
+        true
+      );
+      this.viewer = this.forgeViewer.viewer;
+      await spinalBackEnd.waitInit();
+      const scenes = await spinalBackEnd.viewerBack.getScenes();
+      await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
+      this.viewer.fitToView();
     }
   }
 };
