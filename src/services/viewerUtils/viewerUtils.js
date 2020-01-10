@@ -23,20 +23,29 @@
  */
 
 import rotateTo from './rotateTo'
+import q from "q";
 
 export class ViewerUtils {
   constructor() {
     this.restoreColorMaterialBinded = this._restoreColorMaterial.bind(this);
     this.materials = {};
     this.modelMap = new Map(); // Map<Model, Map<colorString, Set<dbIdString > > >
+    this.initialized = q.defer();
   }
   initViewer(viewer) {
     this.viewer = viewer;
+    this.initialized.resolve();
   }
 
   /**
-   *
-   *
+   * @returns Promise<void>
+   * @memberof ViewerUtils
+   */
+  waitInitialized() {
+    return this.initialized.promise;
+  }
+
+  /**
    * @param {string} face - "top", 'front', "right", "left", "back", 'bottom',
   "top,front", "top right", "top,left", "top,back",
   "bottom,front", "bottom,right", "bottom,left", "bottom,back",
@@ -54,8 +63,9 @@ export class ViewerUtils {
   /**
    * @param {number[] | { model, selection: number[] }[] } [selections]
    * @memberof ViewerUtils
+   * @returns Promise<void>
    */
-  fitToView(selections) {
+  async fitToView(selections) {
     this.viewer.fitToView(selections);
   }
   /**
@@ -71,7 +81,7 @@ export class ViewerUtils {
    * @param {number[]} lstByModel[].selection - array of dbid.
    * @memberof ViewerUtils
    */
-  selectObjects(lstByModel) {
+  async selectObjects(lstByModel) {
     this.clearSelection();
     for (const { model, selection } of lstByModel) {
       model.selector.setSelection(selection, model, "selectOnly");
@@ -102,12 +112,27 @@ export class ViewerUtils {
   showAll() {
     this.viewer.showAll();
   }
+
   /**
-   * @param {string} h string color. e.g "#ff00ff"
-   * @returns
+   * color in a overlay then remove automatically color after an user "click"
+   * @param {{model, color: string, dbid: number}[]} items
    * @memberof ViewerUtils
    */
-  cutHex(h) {
+  colorItems(items) {
+    for (const item of items) {
+      this._addTobDIdColor(item.model, item.dbId, item.color);
+    }
+    this._setColorMaterial();
+    window.addEventListener("click", this.restoreColorMaterialBinded, true);
+  }
+
+
+  /**
+   * @param {string} h string color. e.g "#ff00ff"
+   * @returns {string}
+   * @memberof ViewerUtils
+   */
+  _cutHex(h) {
     return h.charAt(0) == "#" ? h.substring(1, 7) : h;
   }
   /**
@@ -116,7 +141,7 @@ export class ViewerUtils {
    * @returns
    * @memberof ViewerUtils
    */
-  addMaterial(color, id) {
+  _addMaterial(color, id) {
     this.materials[id] = new THREE.MeshPhongMaterial({ color });
 
     this.viewer.impl.createOverlayScene(id, this.materials[id], this.materials[id]);
@@ -148,6 +173,7 @@ export class ViewerUtils {
     }
     this.modelMap.clear();
   }
+
   /**
    * @private
    * @memberof ViewerUtils
@@ -158,10 +184,10 @@ export class ViewerUtils {
         for (const dbId of setDbId) {
           const id = `${model.id}-${dbId}`;
           if (this.materials[id]) {
-            this.materials[id].color.setHex(parseInt(this.cutHex(color), 16));
+            this.materials[id].color.setHex(parseInt(this._cutHex(color), 16));
             this.viewer.impl.invalidate(false, false, true);
           } else {
-            var material = this.addMaterial(color, id);
+            var material = this._addMaterial(color, id);
             let it = model.getData().instanceTree;
             it.enumNodeFragments(dbId, (fragId) => {
               var renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
@@ -185,7 +211,7 @@ export class ViewerUtils {
    * @param {string} color
    * @memberof ViewerUtils
    */
-  addTobDIdColor(model, dbId, color) {
+  _addTobDIdColor(model, dbId, color) {
     let mapColor, setDbId;
     if (!this.modelMap.has(model)) {
       mapColor = new Map();
@@ -202,18 +228,6 @@ export class ViewerUtils {
     setDbId.add(dbId);
   }
 
-  /**
-   * color in a overlay then remove automatically color after an user "click"
-   * @param {{model, color: string, dbid: number}[]} items
-   * @memberof ViewerUtils
-   */
-  colorItems(items) {
-    for (const item of items) {
-      this.addTobDIdColor(item.model, item.dbId, item.color);
-    }
-    this._setColorMaterial();
-    window.addEventListener("click", this.restoreColorMaterialBinded, true);
-  }
 
 }
 export const viewerUtils = new ViewerUtils();

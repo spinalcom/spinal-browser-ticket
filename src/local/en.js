@@ -23,6 +23,7 @@
  */
 
 export default {
+  "sidebar.topButton.buildingNameDefault": "Building",
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
   "error.returntodrive.title": "Error"

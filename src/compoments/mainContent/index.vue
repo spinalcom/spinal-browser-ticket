@@ -89,7 +89,6 @@ with this file. If not, see
 <script>
 import createDragElement from "../../services/utlils/createDragElement";
 import appViewer from "./viewer/viewer.vue";
-import * as eva from "eva-icons";
 
 export default {
   name: "main-content",

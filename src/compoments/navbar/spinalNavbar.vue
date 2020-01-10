@@ -48,17 +48,18 @@ with this file. If not, see
       <div v-if="openMenu"
            class="nav-list-selector-container">
         <el-collapse-transition>
-
           <navItem icon='el-icon-office-building'
                    label="Building"
+                   :items='[building]'
+                   @focusItem="focusItem"
                    :select='building'></navItem>
-
         </el-collapse-transition>
         <el-collapse-transition>
           <navItem v-if="building"
                    icon="el-icon-receiving"
                    label="Etage"
                    :items='levels'
+                   @focusItem="focusItem"
                    :select='selectedLevel'
                    @select="onLevelChange"></navItem>
         </el-collapse-transition>
@@ -68,6 +69,7 @@ with this file. If not, see
                    icon="el-icon-receiving"
                    label="Local"
                    :items='selectedLevelRooms'
+                   @focusItem="focusItem"
                    :select='selectedRoom'
                    @select="onRoomChange"></navItem>
         </el-collapse-transition>
@@ -111,9 +113,17 @@ export default {
       this.selectedLevel = level;
       this.selectedLevelRooms = level.children;
       this.selectedRoom = null;
+      if (level) this.focusItem(level);
+      else this.focusItem();
     },
     onRoomChange(room) {
       this.selectedRoom = room;
+      if (room) this.focusItem(room);
+      else this.focusItem(this.selectedLevel);
+    },
+    focusItem(item) {
+      if (this.building === item) EventBus.$emit("sidebar-homeSelect");
+      else EventBus.$emit("sidebar-homeSelect", item);
     }
   }
 };

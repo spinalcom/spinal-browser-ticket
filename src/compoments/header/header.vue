@@ -27,7 +27,8 @@ with this file. If not, see
     <img class="spinal-header-logo"
          src="../../assets/imgs/spinalcom-logo.png"
          alt="spinalcom-logo">
-    <div class="menu-icon-header-container"
+    <div v-ripple
+         class="menu-icon-header-container"
          @click="drawer = true">
       <i data-eva="keypad-outline"
          data-eva-animation="zoom"

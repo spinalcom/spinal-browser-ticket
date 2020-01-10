@@ -41,3 +41,8 @@ export const routes = [
 export const router = new VueRouter({
   routes
 });
+
+router.beforeResolve(function (to, from, next) {
+  document.title = `Spinal Twin - ${to.name}`
+  next()
+})

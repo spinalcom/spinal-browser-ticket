@@ -29,6 +29,7 @@ with this file. If not, see
                  :key="lang"
                  type="primary"
                  :disabled="currentLang === lang"
+                 v-ripple
                  @click="setLang(lang)">{{toLocaleUpperCase(lang)}}
       </el-button>
     </el-button-group>

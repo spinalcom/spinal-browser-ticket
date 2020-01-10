@@ -30,8 +30,10 @@
     "spinal-forge-viewer-vue": "git+https://github.com/spinalcom/spinal-forge-viewer-vue.git",
     "spinal-model-graph": "git+https://github.com/spinalcom/spinal-model-graph.git",
     "spinal-service-ticket": "git+https://github.com/spinalcom/spinal-service-ticket.git",
+    "velocity-animate": "^1.5.2",
     "vue": "^2.6.10",
-    "vue-i18n": "^8.15.0"
+    "vue-i18n": "^8.15.0",
+    "vue-ripple-directive": "^2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

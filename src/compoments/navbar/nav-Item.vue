@@ -33,12 +33,14 @@ with this file. If not, see
                  type="info"
                  :icon="icon"
                  size="small"
+                 :disabled="!select"
+                 @click="$emit('focusItem', select)"
                  circle></el-button>
       <el-select v-model="selectCompu"
                  :placeholder="label"
                  @mouseover="onMouseOver"
                  clearable>
-        <el-option v-for="item in items"
+        <el-option v-for="item in itemsComputed"
                    :key="item.server_id"
                    :label="item.name"
                    :value="item">
@@ -68,6 +70,13 @@ export default {
       set(value) {
         this.$emit("select", value);
       }
+    },
+    itemsComputed() {
+      const res = [];
+      this.items.forEach(e => {
+        if (e) res.push(e);
+      });
+      return res;
     }
   },
   methods: {
@@ -136,5 +145,14 @@ export default {
   /* border-color: #114b5f; */
   /* color: #ededed; */
   color: #1d4b5e;
+}
+
+.button-icon-left-focus.is-disabled,
+.button-icon-left-focus.is-disabled:active,
+.button-icon-left-focus.is-disabled:focus,
+.button-icon-left-focus.is-disabled:hover {
+  color: #fff !important;
+  background-color: #c8c9cc !important;
+  border-color: #c8c9cc !important;
 }
 </style>

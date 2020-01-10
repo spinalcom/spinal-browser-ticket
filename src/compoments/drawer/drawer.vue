@@ -25,7 +25,8 @@ with this file. If not, see
 <template>
   <div class="drawer-content">
     <div class="drawer-main-header">
-      <div class="menu-icon-header-container"
+      <div v-ripple
+           class="menu-icon-header-container"
            @click="$emit('close')">
         <i data-eva="arrow-ios-back-outline"
            data-eva-animation="zoom"

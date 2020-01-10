@@ -32,7 +32,8 @@ with this file. If not, see
                     :index="route.name"
                     :key="route.path"
                     :route="route.path"
-                    class="drawer-list-item">
+                    class="drawer-list-item"
+                    v-ripple>
         <i class="el-icon-document drawer-list-item-icon"></i>
         <span>{{route.name}}</span>
       </el-menu-item>

@@ -29,6 +29,7 @@ with this file. If not, see
                    :index="route.name"
                    :key="route.path"
                    :to="route.path"
+                   v-ripple
                    class="router-link-btn">
         <el-card :body-style="{ padding: '0px' }"
                  shadow="always">

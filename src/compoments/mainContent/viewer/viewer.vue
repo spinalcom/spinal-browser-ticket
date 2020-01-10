@@ -33,8 +33,9 @@ import { ForgeViewer } from "spinal-forge-viewer";
 // import GraphService from "../../config/GraphService";
 // import { forgeExtentionManager } from "./ForgeExtentionManager";
 // import { eventViewerManager } from "./EventViewerManager";
-// import { viewerUtils } from "./viewerUtils";
 import { spinalBackEnd } from "../../../services/spinalBackend";
+import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
+import "spinal-env-viewer-plugin-forge";
 export default {
   name: "appViewer",
   props: ["isMinimized"],
@@ -103,10 +104,16 @@ export default {
         true
       );
       this.viewer = this.forgeViewer.viewer;
-      await spinalBackEnd.waitInit();
+      await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
       const scenes = await spinalBackEnd.viewerBack.getScenes();
-      await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
+      await window.spinal.SpinalForgeViewer.loadModelFromNode(
+        scenes[0].info.id.get()
+      );
+      await spinalBackEnd.waitInit();
+      // const scenes = await spinalBackEnd.viewerBack.getScenes();
+      // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
       this.viewer.fitToView();
+      viewerUtils.initViewer(this.viewer);
     }
   }
 };

@@ -27,16 +27,23 @@ import VueI18n from 'vue-i18n'
 import axios from 'axios'
 Vue.use(VueI18n)
 import ElementLocale from 'element-ui/lib/locale'
-export const i18n = new VueI18n({})
+const enLocalElement = require('element-ui/lib/locale/lang/en');
+const enLocal = require('../local/en');
+const messages = {
+  en: {
+    ...enLocalElement.default,
+    ...enLocal.default
+  },
+}
+export const i18n = new VueI18n({
+  locale: 'en',
+  messages,
+})
+
 
 const loadedLanguages = [] // our default language that is preloaded
 const elementLang = {
-  'en': () => {
-    return Promise.all([
-      import('element-ui/lib/locale/lang/en'),
-      import('../local/en')
-    ])
-  },
+  'en': () => Promise.resolve([enLocalElement, enLocal]),
   'fr': () => {
     return Promise.all([
       import('element-ui/lib/locale/lang/fr'),
@@ -64,9 +71,9 @@ export function loadLanguageAsync(lang) {
   }
   return elementLang[lang]().then((langs) => {
     setLang(lang);
-    const msg = {
-      ...langs[0].default,
-      ...langs[1].default
+    const msg = {}
+    for (const local of langs) {
+      Object.assign(msg, local.default)
     }
     i18n.setLocaleMessage(lang, msg)
     loadedLanguages.push(lang)
@@ -100,7 +107,6 @@ function getLang() {
   const lang = window.localStorage.getItem('spinal-lang');
   if (!lang) {
     const lang = getFirstBrowserLanguage();
-    console.log('getFirstBrowserLanguage', lang);
     const languages = ['en', 'fr']
     for (const language of languages) {
       if (lang.toLocaleLowerCase().startsWith(language)) {
