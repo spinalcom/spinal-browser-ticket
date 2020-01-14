@@ -24,9 +24,14 @@ with this file. If not, see
 
 <template>
   <div class="spinal-header-container">
-    <img class="spinal-header-logo"
-         src="../../assets/imgs/spinalcom-logo.png"
-         alt="spinalcom-logo">
+    <div>
+      <img v-for="logo in logos"
+           class="spinal-header-logo"
+           :src="logo.src"
+           :key="logo.name"
+           :alt="logo.name">
+
+    </div>
     <div v-ripple
          class="menu-icon-header-container"
          @click="drawer = true">
@@ -35,7 +40,8 @@ with this file. If not, see
          data-eva-height="24"
          data-eva-width="24"></i>
     </div>
-    <el-drawer :visible.sync="drawer"
+    <el-drawer class="spinal-drawer"
+               :visible.sync="drawer"
                :with-header="false">
       <drawer @close="drawer = false"></drawer>
     </el-drawer>
@@ -47,16 +53,18 @@ with this file. If not, see
 <script>
 import { getDefaultLanguage, loadLanguageAsync } from "./../../services/i18n";
 import drawer from "../drawer/drawer.vue";
-
+import spinalimg from "../../assets/imgs/spinalcom-logo.png";
 export default {
   name: "spinal-header",
   components: { drawer },
   data() {
     return {
-      drawer: false
+      drawer: false,
+      logos: []
     };
   },
   created() {
+    this.logos.push({ src: spinalimg, name: "spinalcom" });
     getDefaultLanguage().then(lang => {
       this.currentLang = lang;
     });

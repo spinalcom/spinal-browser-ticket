@@ -34,12 +34,17 @@ with this file. If not, see
            data-eva-height="24"
            data-eva-width="24"></i>
       </div>
+      <langSelector></langSelector>
     </div>
-    <div class="drawer-main-content">
+    <div class="drawer-main-content spinal-scrollbar">
       <appList></appList>
     </div>
     <div class="drawer-main-footer">
-      <langSelector></langSelector>
+      <a href="http://spinalcom.com/"
+         target="_blank">
+        <img class="spinalcore-poweredby-image"
+             src="../../assets/imgs/spinalcore-poweredby-yellow.png" />
+      </a>
     </div>
 
   </div>
@@ -61,6 +66,13 @@ export default {
 };
 </script>
 
+<style scoped>
+.spinalcore-poweredby-image {
+  padding: 0;
+  height: 56px;
+}
+</style>
+
 <style>
 .drawer-content {
   height: 100%;
@@ -70,42 +82,44 @@ export default {
 }
 .drawer-main-header {
   background-color: #1f487e;
-  background-image: radial-gradient(circle at top right, #04092d, #1d3461);
+  background-image: radial-gradient(circle at top left, #444, #222);
   height: 56px;
   width: 100%;
   position: relative;
   display: flex;
   color: #fff;
+  justify-content: space-between;
 }
 .drawer-main-header > * {
   align-self: center;
+  padding: 8px;
 }
 .drawer-content .drawer-main-content {
   height: calc(100% - 112px);
   width: 100%;
   position: relative;
   overflow: auto;
-  background-color: #829cbc;
-  background-image: radial-gradient(
+  background-color: #fafafa;
+  /* background-image: radial-gradient(
     circle at top right,
     #6290c8,
     #829cbc,
     #829cbc
-  );
+  ); */
 }
 .drawer-main-footer {
   height: 56px;
   width: 100%;
   position: relative;
-  background-color: #1f487e;
-  background-image: radial-gradient(circle, #1d3461, #04092d);
+  background-color: #222;
+  background-image: radial-gradient(circle, #444, #222);
   display: flex;
   justify-content: center;
 }
-.drawer-main-footer > * {
+/* .drawer-main-footer > * {
   align-self: flex-end;
   padding-bottom: 8px;
-}
+} */
 .menu-icon-header-container {
   cursor: pointer;
 }

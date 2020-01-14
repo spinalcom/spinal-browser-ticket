@@ -135,8 +135,16 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-wrap: nowrap;
-  background: #1d3461;
-  background-image: radial-gradient(circle at top left, #04092d, #1d3461);
+  background: #222222f0;
+  /* background-image: radial-gradient(circle at top left, #04092d, #1d3461); */
+  /* background-image: radial-gradient(circle at top left, #494949, #58595b); */
+  /* background-image: radial-gradient(
+    circle at top left,
+    #356bab,
+    #2d3d93,
+    #2d3d93,
+    #2d3d93
+  ); */
 }
 .bread {
   display: flex;

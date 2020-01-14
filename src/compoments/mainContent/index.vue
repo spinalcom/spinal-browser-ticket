@@ -213,7 +213,7 @@ export default {
 .viewer-container-mini {
   display: flex;
   flex-direction: column;
-  background-color: blueviolet;
+  background-color: #fafafa;
   --minimized-viewer-width: 300px;
   --minimized-viewer-height: 200px;
   border-radius: 10px;

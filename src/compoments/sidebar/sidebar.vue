@@ -23,15 +23,23 @@ with this file. If not, see
 -->
 
 <template>
-  <sidebarMenu ref="sidebarmenu"
-               v-loading="loading"
-               :title="title"
-               :canGoBack="!!selected"
-               :items="dataComputed"
-               @goBack="goBack"
-               @homeSelect="homeSelect"
-               @selected="onSelect"
-               @onMouseOver="onMouseOver"></sidebarMenu>
+  <div class="spinal-sidebar-container">
+    <sidebarMenu ref="sidebarmenu"
+                 v-loading="loading"
+                 :title="title"
+                 :canGoBack="!!selected"
+                 :items="dataComputed"
+                 @goBack="goBack"
+                 @homeSelect="homeSelect"
+                 @selected="onSelect"
+                 @onMouseOver="onMouseOver"></sidebarMenu>
+    <hr>
+    <a href="http://spinalcom.com/"
+       target="_blank">
+      <img src="../../assets/imgs/spinalcore-poweredby-yellow.png"
+           alt="spinalcore-poweredby">
+    </a>
+  </div>
 </template>
 
 <script>
@@ -139,3 +147,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.spinal-sidebar-container {
+  height: 100%;
+  background-color: #222;
+  background-image: radial-gradient(at top left, #222, #222, #252525);
+}
+.spinal-sidebar-container hr {
+  color: whitesmoke;
+  margin: 0;
+}
+.spinal-sidebar-container img {
+  width: 100%;
+}
+</style>

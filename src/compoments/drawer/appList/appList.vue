@@ -24,7 +24,7 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-menu class="el-menu-vertical-demo"
+    <el-menu class="drawer-app-list"
              @select="menuSelect"
              background-color="transparent"
              :default-active="$route.name">
@@ -68,6 +68,9 @@ export default {
 </script>
 
 <style scoped>
+.drawer-app-list {
+  border-right: none;
+}
 .drawer-list-item,
 .drawer-list-item-icon {
   color: #1d3461;
@@ -83,7 +86,7 @@ export default {
 .drawer-list-item.is-active span,
 .drawer-list-item.is-active .drawer-list-item-icon {
   text-decoration: underline;
-  color: #fff1e2;
+  /* color: #fff1e2; */
 }
 .drawer-list-item.is-active:hover span,
 .drawer-list-item.is-active:hover .drawer-list-item-icon {

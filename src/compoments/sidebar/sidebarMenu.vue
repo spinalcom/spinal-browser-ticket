@@ -118,7 +118,7 @@ export default {
 
 <style scoped>
 .side-bar-compomenet-container {
-  height: 100%;
+  height: calc(100% - 62px);
 }
 .side-bar-header-container {
   display: flex;
@@ -135,11 +135,9 @@ export default {
   transition: all 1s;
 }
 .spinal-side-bar-menu {
-  height: calc(100% - 56px);
+  height: calc(100% - 106px);
   border-right: none !important;
   overflow: auto;
-  background-color: #222;
-  background-image: radial-gradient(at top left, #222, #222, #252525);
 }
 
 .side-bar-header-container .button-icon-building-focus {
