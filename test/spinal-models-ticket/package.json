@@ -1,0 +1,61 @@
+{
+  "_args": [
+    [
+      "git+https://github.com/spinalcom/spinal-models-ticket.git",
+      "/home/spinalcom/project/spinal-browser-spinaltwin"
+    ]
+  ],
+  "_from": "git+https://github.com/spinalcom/spinal-models-ticket.git",
+  "_id": "spinal-models-ticket@git+https://github.com/spinalcom/spinal-models-ticket.git#02b6a74631e51de26d4e8a144c7bbe3c23ffecf7",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/spinal-models-ticket",
+  "_phantomChildren": {
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#c1b17a8d36ccd989f6b89c9f33e9cbdb4e28f173"
+  },
+  "_requested": {
+    "type": "git",
+    "raw": "git+https://github.com/spinalcom/spinal-models-ticket.git",
+    "rawSpec": "git+https://github.com/spinalcom/spinal-models-ticket.git",
+    "saveSpec": "git+https://github.com/spinalcom/spinal-models-ticket.git",
+    "fetchSpec": "https://github.com/spinalcom/spinal-models-ticket.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "/spinal-service-ticket"
+  ],
+  "_resolved": "git+https://github.com/spinalcom/spinal-models-ticket.git#02b6a74631e51de26d4e8a144c7bbe3c23ffecf7",
+  "_spec": "git+https://github.com/spinalcom/spinal-models-ticket.git",
+  "_where": "/home/spinalcom/project/spinal-browser-spinaltwin",
+  "author": {
+    "name": "spinalcom"
+  },
+  "bugs": {
+    "url": "https://github.com/spinalcom/spinal-models-ticket/issues"
+  },
+  "dependencies": {
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git",
+    "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git"
+  },
+  "description": "spinal ticket model",
+  "devDependencies": {
+    "@types/node": "^10.12.12",
+    "jsdoc-to-markdown": "^4.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.2.2"
+  },
+  "homepage": "https://github.com/spinalcom/spinal-models-ticket#readme",
+  "keywords": [],
+  "license": "spinalcom",
+  "main": "dist/SpinalTicket.js",
+  "name": "spinal-models-ticket",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spinalcom/spinal-models-ticket.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.1"
+}
