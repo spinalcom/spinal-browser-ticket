@@ -1,12 +1,37 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="side-bar-compomenet-container"
        v-loading="loading">
     <div class="side-bar-header-container">
-      <el-button type="info"
+      <el-button class="button-icon-building-focus"
+                 type="info"
                  icon="el-icon-s-home"
-                 size="small"
-                 circle></el-button>
-      <h4>{{buildingName}}</h4>
+                 size="small">
+        {{buildingName}}
+      </el-button>
     </div>
     <el-menu class="spinal-side-bar-menu spinal-scrollbar"
              background-color="#303133"
@@ -129,25 +154,47 @@ export default {
   display: flex;
   align-self: auto;
   height: 56px;
-  line-height: 56px;
-  background-color: #409eff;
-  color: white;
+  /* line-height: 56px; */
+  background-color: #1d3461;
+  background-image: radial-gradient(circle at bottom, #3646b1, #1d3461);
+  /* color: white; */
+  justify-content: center;
 }
-.side-bar-header-container > * {
+/* .side-bar-header-container > * {
   display: flex;
   align-self: center;
   margin-left: 5px;
 }
 .side-bar-header-container > h4 {
   margin-left: 8px;
-}
-</style>
-
-<style>
+} */
 .spinal-side-bar-menu {
   height: calc(100% - 56px);
   border-right: none !important;
   overflow: auto;
+}
+
+.side-bar-header-container .button-icon-building-focus {
+  background: white;
+  color: #1d4b5e;
+  padding: 5px !important;
+  align-self: center;
+  display: flex;
+  margin: 0 4px;
+  max-width: calc(100% - 8px);
+}
+</style>
+
+<style>
+.side-bar-header-container .button-icon-building-focus span {
+  align-self: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.side-bar-header-container .button-icon-building-focus i {
+  align-self: center;
+  font-size: 20px;
 }
 .spinal-side-bar-menu li.el-submenu.is-opened > .el-submenu__title {
   background-color: #8cc5ff !important;

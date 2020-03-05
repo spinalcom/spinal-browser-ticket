@@ -1,3 +1,27 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="viewerContainer"
        id="autodesk_forge_viewer">
@@ -9,8 +33,10 @@ import { ForgeViewer } from "spinal-forge-viewer";
 // import GraphService from "../../config/GraphService";
 // import { forgeExtentionManager } from "./ForgeExtentionManager";
 // import { eventViewerManager } from "./EventViewerManager";
-// import { viewerUtils } from "./viewerUtils";
 import { spinalBackEnd } from "../../../services/spinalBackend";
+import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
+import { EventBus } from "../../../services/event";
+import "spinal-env-viewer-plugin-forge";
 export default {
   name: "appViewer",
   props: ["isMinimized"],
@@ -24,7 +50,6 @@ export default {
   },
   watch: {
     isMinimized() {
-      console.log(this.isMinimized);
       if (this.viewer && this.viewer.toolbar && this.viewer.viewCubeUi) {
         if (this.isMinimized) {
           this.viewer.toolbar.setDisplay("none");
@@ -38,6 +63,21 @@ export default {
     }
   },
   mounted() {
+    EventBus.$on("see", data => {
+      this.isoLate(data.ids);
+      this.colorsRooms(data.ids, data.color);
+    });
+
+    EventBus.$on("seeAll", data => {
+      let ids = [];
+      data.forEach(element => {
+        ids.push(...element.ids);
+        this.colorsRooms(element.ids, element.color);
+      });
+
+      this.isoLate(ids);
+    });
+
     return this.createViewer();
     // const container = document.getElementById("autodesk_forge_viewer");
     // this.forgeViewer = new ForgeViewer(container, false);
@@ -74,16 +114,64 @@ export default {
   methods: {
     async createViewer() {
       const container = document.getElementById("autodesk_forge_viewer");
-      // this.forgeViewer = new ForgeViewer(container, false);
-      // await this.forgeViewer.start(
-      //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
-      //   true
-      // );
-      // this.viewer = this.forgeViewer.viewer;
-      // await spinalBackEnd.waitInit();
+      this.forgeViewer = new ForgeViewer(container, false);
+      await this.forgeViewer.start(
+        "/models/Resource/3D View/{3D} 341878/{3D}.svf",
+        true
+      );
+      this.viewer = this.forgeViewer.viewer;
+      await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
+      const scenes = await spinalBackEnd.viewerBack.getScenes();
+      await window.spinal.SpinalForgeViewer.loadModelFromNode(
+        scenes[0].info.id.get()
+      );
+      await spinalBackEnd.waitInit();
       // const scenes = await spinalBackEnd.viewerBack.getScenes();
       // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
-      // this.viewer.fitToView();
+      this.viewer.fitToView();
+      viewerUtils.initViewer(this.viewer);
+    },
+
+    colorsRooms(roomsList, argColor) {
+      const color = this.convertHewToRGB(argColor);
+
+      roomsList.forEach(child => {
+        let model = window.spinal.BimObjectService.getModelByBimfile(
+          child.bimFileId
+        );
+
+        model.setThemingColor(
+          child.dbid,
+          new THREE.Vector4(
+            color.r / 255,
+            color.g / 255,
+            color.b / 255,
+            0.7,
+            true
+          )
+        );
+      });
+    },
+
+    isoLate(roomsList) {
+      let dbIds = roomsList.map(el => el.dbid);
+
+      let model = window.spinal.BimObjectService.getModelByBimfile(
+        roomsList[0].bimFileId
+      );
+
+      this.viewer.isolate(dbIds, model);
+    },
+
+    convertHewToRGB(hex) {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+          }
+        : null;
     }
   }
 };

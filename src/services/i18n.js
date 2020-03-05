@@ -1,19 +1,55 @@
+/*
+ * Copyright 2020 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import axios from 'axios'
-import messages from '../public/en'
 Vue.use(VueI18n)
 import ElementLocale from 'element-ui/lib/locale'
-import enLocale from 'element-ui/lib/locale/lang/en'
-import frLocale from 'element-ui/lib/locale/lang/fr'
+const enLocalElement = require('element-ui/lib/locale/lang/en');
+const enLocal = require('../local/en');
+const messages = {
+  en: {
+    ...enLocalElement.default,
+    ...enLocal.default
+  },
+}
 export const i18n = new VueI18n({
-  messages
+  locale: 'en',
+  messages,
 })
+
 
 const loadedLanguages = [] // our default language that is preloaded
 const elementLang = {
-  'en': enLocale,
-  'fr': frLocale
+  'en': () => Promise.resolve([enLocalElement, enLocal]),
+  'fr': () => {
+    return Promise.all([
+      import('element-ui/lib/locale/lang/fr'),
+      import('../local/fr')
+    ])
+  },
 }
 
 function setI18nLanguage(lang) {
@@ -33,30 +69,18 @@ export function loadLanguageAsync(lang) {
   if (loadedLanguages.includes(lang)) {
     return Promise.resolve(setI18nLanguage(lang))
   }
-  return import(`./${lang}.js`).then(
-    messages => {
-      setLang(lang);
-      const msg = {
-        ...messages.default,
-        ...elementLang[lang]
-      }
-      i18n.setLocaleMessage(lang, msg)
-      loadedLanguages.push(lang)
-      return setI18nLanguage(lang)
+  return elementLang[lang]().then((langs) => {
+    setLang(lang);
+    const msg = {}
+    for (const local of langs) {
+      Object.assign(msg, local.default)
     }
-  )
-
-
-  // If the language hasn't been loaded yet
-  // return import(`./${lang}.js`).then(
-  //   messages => {
-  //     setLang(lang);
-  //     i18n.setLocaleMessage(lang, messages.default)
-  //     loadedLanguages.push(lang)
-  //     return setI18nLanguage(lang)
-  //   }
-  // )
+    i18n.setLocaleMessage(lang, msg)
+    loadedLanguages.push(lang)
+    return setI18nLanguage(lang)
+  })
 }
+
 function getFirstBrowserLanguage() {
   var nav = window.navigator, i, language,
     browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
@@ -83,14 +107,12 @@ function getLang() {
   const lang = window.localStorage.getItem('spinal-lang');
   if (!lang) {
     const lang = getFirstBrowserLanguage();
-    console.log('getFirstBrowserLanguage', lang);
     const languages = ['en', 'fr']
     for (const language of languages) {
       if (lang.toLocaleLowerCase().startsWith(language)) {
         return language;
       }
     }
-    // default - en
     return 'en';
   }
   return lang;

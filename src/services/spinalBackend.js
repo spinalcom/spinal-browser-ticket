@@ -1,6 +1,5 @@
-
 /*
- * Copyright 2018 SpinalCom - www.spinalcom.com
+ * Copyright 2020 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -41,10 +40,14 @@ class SpinalBackEnd {
   }
 
   async init() {
-    const graph = await this.getGraph();
-    await Promise.all([this.spatialBack.init(graph), this.viewerBack.init(graph)]);
-    await this.spaceBack.init(graph);
-    this.initDefer.resolve();
+
+    try {
+      const graph = await this.getGraph();
+      await Promise.all([this.spatialBack.init(graph), this.viewerBack.init(graph), this.spaceBack.init(graph)]);
+      this.initDefer.resolve();
+    } catch (error) {
+      this.initDefer.reject(error);
+    }
   }
 
   async getGraph() {

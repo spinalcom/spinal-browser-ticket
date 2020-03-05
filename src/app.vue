@@ -1,3 +1,27 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <el-container class="body-container"
                 v-loading="loading">
@@ -22,6 +46,10 @@ import spinalSideBar from "./compoments/sidebar/sidebar";
 import spinalBackEnd from "./services/spinalBackend";
 import spinalNavbar from "./compoments/navbar/spinalNavbar";
 import mainContent from "./compoments/mainContent/index";
+import { errorDialog } from "./services/utlils/errorDialog";
+import DocumentReady from "./services/utlils/DocumentReady";
+import { getDefaultLanguage } from "./services/i18n";
+
 export default Vue.extend({
   data() {
     return {
@@ -34,10 +62,21 @@ export default Vue.extend({
     mainContent,
     spinalNavbar
   },
-  mounted() {
-    spinalBackEnd.getGraph().then(() => {
+  async mounted() {
+    try {
+      await spinalBackEnd.getGraph();
       this.loading = false;
-    });
+    } catch (e) {
+      DocumentReady(async () => {
+        await getDefaultLanguage();
+        console.error(e);
+        console.log(this.$t("error.returntodrive.confirmbtntext"));
+        const title = this.$t("error.returntodrive.title");
+        const comfimText = this.$t("error.returntodrive.confirmbtntext");
+        const msg = this.$t("error.returntodrive.text");
+        errorDialog.call(this, title, comfimText, msg, e);
+      });
+    }
   },
   methods: {}
 });
@@ -47,9 +86,11 @@ export default Vue.extend({
 .body-container {
   height: 100%;
   width: 100%;
+  display: flex;
 }
 .body-main-container {
-  height: calc(100% - 62px);
+  min-height: 0;
+  flex-grow: 1;
   display: flex;
   position: relative;
 }

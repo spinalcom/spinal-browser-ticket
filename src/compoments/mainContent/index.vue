@@ -1,3 +1,27 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="spinal-main-container">
     <div v-show="!absviewer"
@@ -12,7 +36,7 @@
       <el-button size="mini"
                  class="btn-abs-viewer-popio"
                  @click="onPopClick">
-        <i data-eva="minus-outline"
+        <i data-eva="collapse-outline"
            data-eva-animation="zoom"
            height="30px"
            data-eva-height="24"
@@ -27,14 +51,16 @@
            ref="viewerContainerMini"
            class="viewer-container-mini"
            :class="{hideViewer}">
-        <div ref="headerViewer"
-             class="spinal-viewer-header-container">
-          <i class="spinal-viewer-header-move-icon"
-             data-eva="move-outline"
-             data-eva-fill="#fff"
-             height="30px"
-             data-eva-height="24"
-             data-eva-width="24"></i>
+        <div class="spinal-viewer-header-container">
+          <div ref="headerViewer"
+               class="spinal-viewer-header-drag-elm">
+            <i class="spinal-viewer-header-move-icon"
+               data-eva="move-outline"
+               data-eva-fill="#fff"
+               height="30px"
+               data-eva-height="24"
+               data-eva-width="24"></i>
+          </div>
           <el-button-group class="btn-abs-viewer-popio">
             <el-button size="mini"
                        class=""
@@ -48,7 +74,7 @@
             <el-button size="mini"
                        class=""
                        @click="onPopClick">
-              <i data-eva="collapse-outline"
+              <i data-eva="expand-outline"
                  data-eva-animation="zoom"
                  data-eva-height="24"
                  data-eva-width="24"></i>
@@ -63,7 +89,6 @@
 <script>
 import createDragElement from "../../services/utlils/createDragElement";
 import appViewer from "./viewer/viewer.vue";
-import * as eva from "eva-icons";
 
 export default {
   name: "main-content",
@@ -102,7 +127,12 @@ export default {
 .spinal-main-container > .spinal-other-container {
   transition: 200ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-
+.spinal-other-container > div {
+  width: 100%;
+}
+.spinal-viewer-header-drag-elm {
+  flex: 1;
+}
 .spinal-main-container {
   height: 100%;
   width: 100%;
@@ -117,12 +147,13 @@ export default {
   width: 50%;
   background-color: #ededed;
   position: relative;
+  display: flex;
 }
 .spinal-other-container {
-  height: 100%;
   width: 50%;
-  background-color: green;
   position: relative;
+  display: flex;
+  overflow: auto;
 }
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {
@@ -177,10 +208,13 @@ export default {
 
 .viewer-content {
   position: relative;
-  height: calc(100% - 30px);
+  /* height: 100%; */
+  flex: 1;
   width: 100%;
 }
 .viewer-container-mini {
+  display: flex;
+  flex-direction: column;
   background-color: blueviolet;
   --minimized-viewer-width: 300px;
   --minimized-viewer-height: 200px;

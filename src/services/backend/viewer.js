@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 SpinalCom - www.spinalcom.com
+ * Copyright 2020 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -26,9 +26,9 @@ import q from "q";
 import {
   SCENE_RELATION_CONTEXT_TYPE,
   SCENE_RELATION_NAME,
-  PART_RELATION_NAME
+  // PART_RELATION_NAME
 } from "../../constants";
-import { spinalIO } from '../spinalIO';
+// import { spinalIO } from '../spinalIO';
 export default class BackEndViewer {
   constructor() {
     this.initDefer = q.defer();
@@ -50,67 +50,67 @@ export default class BackEndViewer {
     const scenes = await this.initDefer.promise;
     return scenes;
   }
-  getParts(sceneModel) {
-    return sceneModel.getChildren([PART_RELATION_NAME]);
-  }
-  getSVF(element, nodeId, name) {
-    return element.load()
-      .then(elem => {
-        return spinalIO.loadPtr(elem.currentVersion);
-      })
-      .then(elem => {
-        if (elem.hasOwnProperty('items')) {
-          for (let i = 0; i < elem.items.length; i++) {
-            if (elem.items[i].path.get().indexOf('svf') !== -1) {
-              return {
-                version: elem.versionId,
-                path: elem.items[i].path.get(),
-                id: nodeId,
-                name,
-                thumbnail: elem.items[i].thumbnail ? elem.items[i].thumbnail.get() : elem.items[i].path.get() + '.png'
-              };
-            }
-          }
-        }
-        return undefined;
-      }
-      );
-  }
+  // getParts(sceneModel) {
+  //   return sceneModel.getChildren([PART_RELATION_NAME]);
+  // }
+  // getSVF(element, nodeId, name) {
+  //   return element.load()
+  //     .then(elem => {
+  //       return spinalIO.loadPtr(elem.currentVersion);
+  //     })
+  //     .then(elem => {
+  //       if (elem.hasOwnProperty('items')) {
+  //         for (let i = 0; i < elem.items.length; i++) {
+  //           if (elem.items[i].path.get().indexOf('svf') !== -1) {
+  //             return {
+  //               version: elem.versionId,
+  //               path: elem.items[i].path.get(),
+  //               id: nodeId,
+  //               name,
+  //               thumbnail: elem.items[i].thumbnail ? elem.items[i].thumbnail.get() : elem.items[i].path.get() + '.png'
+  //             };
+  //           }
+  //         }
+  //       }
+  //       return undefined;
+  //     }
+  //     );
+  // }
 
-  loadBimFile(viewerManager, bimfIle, scene, options = []) {
-    return new Promise(resolve => {
-      this.getSVF(bimfIle.element, bimfIle.info.id, bimfIle.info.name)
-        .then((svfVersionFile) => {
-          let option;
-          for (let i = 0; i < options.length; i++) {
-            if (options[i].urn.get().includes(svfVersionFile.path) !== -1) {
-              option = options[i].get();
-              break;
-            }
-          }
-          if (typeof option === "undefined") { option = {}; }
-          else if (option.hasOwnProperty('dbIds') && option.dbIds.length > 0) { option = { ids: option.dbIds }; }
-          const path = window.location.origin + svfVersionFile.path;
-          if (option.hasOwnProperty('loadOption') && option.loadOption.hasOwnProperty('globalOffset')) {
-            option['globalOffset'] = option.loadOption.globalOffset;
-          }
-          viewerManager.loadModel(path, option)
-            .then(model => {
-              // this.bimObjectService
-              //   .addModel(bimfIle.id, model, svfVersionFile.version, scene, bimfIle.name);
-              resolve({ bimFileId: bimfIle.id, model });
-            });
-        });
-    });
-  }
+  // loadBimFile(viewerManager, bimfIle, scene, options = []) {
+  //   return new Promise(resolve => {
+  //     this.getSVF(bimfIle.element, bimfIle.info.id, bimfIle.info.name)
+  //       .then((svfVersionFile) => {
+  //         let option;
+  //         for (let i = 0; i < options.length; i++) {
+  //           if (options[i].urn.get().includes(svfVersionFile.path) !== -1) {
+  //             option = options[i].get();
+  //             break;
+  //           }
+  //         }
+  //         if (typeof option === "undefined") { option = {}; }
+  //         else if (option.hasOwnProperty('dbIds') && option.dbIds.length > 0) { option = { ids: option.dbIds }; }
+  //         const path = window.location.origin + svfVersionFile.path;
+  //         if (option.hasOwnProperty('loadOption') && option.loadOption.hasOwnProperty('globalOffset')) {
+  //           option['globalOffset'] = option.loadOption.globalOffset;
+  //         }
+  //         viewerManager.loadModel(path, option)
+  //           .then(model => {
+  //             // this.bimObjectService
+  //             //   .addModel(bimfIle.id, model, svfVersionFile.version, scene, bimfIle.name);
+  //             resolve({ bimFileId: bimfIle.id, model });
+  //           });
+  //       });
+  //   });
+  // }
 
-  async loadScene(sceneModel, viewerManager) {
-    const option = typeof sceneModel.info.options !== "undefined" ? sceneModel.info.options : [];
-    const parts = await this.getParts(sceneModel);
-    const prom = parts.map((part) => {
-      return this.loadBimFile(viewerManager, part, sceneModel, option);
-    });
-    return Promise.all(prom);
-  }
+  // async loadScene(sceneModel, viewerManager) {
+  //   const option = typeof sceneModel.info.options !== "undefined" ? sceneModel.info.options : [];
+  //   const parts = await this.getParts(sceneModel);
+  //   const prom = parts.map((part) => {
+  //     return this.loadBimFile(viewerManager, part, sceneModel, option);
+  //   });
+  //   return Promise.all(prom);
+  // }
 
 }

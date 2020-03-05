@@ -1,17 +1,41 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="spinal-header-container">
     <img class="spinal-header-logo"
          src="../../assets/imgs/spinalcom-logo.png"
          alt="spinalcom-logo">
-    <div class="menu-icon-header-container"
+    <div v-ripple
+         class="menu-icon-header-container"
          @click="drawer = true">
       <i data-eva="keypad-outline"
          data-eva-animation="zoom"
          data-eva-height="24"
          data-eva-width="24"></i>
     </div>
-    <el-drawer title="I am the title"
-               :visible.sync="drawer"
+    <el-drawer :visible.sync="drawer"
                :with-header="false">
       <drawer @close="drawer = false"></drawer>
     </el-drawer>
@@ -22,8 +46,8 @@
 
 <script>
 import { getDefaultLanguage, loadLanguageAsync } from "./../../services/i18n";
-import * as eva from "eva-icons";
 import drawer from "../drawer/drawer.vue";
+
 export default {
   name: "spinal-header",
   components: { drawer },
@@ -37,9 +61,7 @@ export default {
       this.currentLang = lang;
     });
   },
-  mounted() {
-    eva.replace();
-  },
+  mounted() {},
   methods: {
     toLocaleLowerCase(str) {
       return str.toLocaleLowerCase();

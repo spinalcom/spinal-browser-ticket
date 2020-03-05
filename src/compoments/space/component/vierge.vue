@@ -24,14 +24,25 @@ with this file. If not, see
 
 <template>
   <div>
-    MaintenanceBook
+    dss
   </div>
 </template>
+
 <script>
+import SpinalBackend from "../../services/spinalBackend";
+
 export default {
-  name: "MaintenanceBook",
   data() {
-    return {};
-  }
+    return {
+      contextLst: []
+    };
+  },
+  components: {},
+  props: [],
+  methods: {},
+  async mounted() {},
+  watch: {},
+  beforeDestroy() {}
 };
 </script>
+

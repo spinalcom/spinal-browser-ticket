@@ -1,3 +1,27 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="spinal-navbar-main-container">
     <el-collapse-transition>
@@ -20,37 +44,22 @@
                  @click="openMenu = !openMenu">
       </el-button>
     </el-collapse-transition>
-
-    <!-- <el-button
-     class="bread-btn"
-               :class="{'bread-btn-opened' : openMenu}"
-               :icon="openMenu ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"
-               @click="openMenu = !openMenu">
-        <div class="bread"
-             v-if="!openMenu">
-          <p v-if="building">{{building.name}}</p>
-          <p v-if="selectedLevel">/</p>
-          <p v-if="selectedLevel">{{selectedLevel.name}}</p>
-          <p v-if="selectedRoom">/</p>
-          <p v-if="selectedRoom">{{selectedRoom.name}}</p>
-        </div>
-    </el-button> -->
-
     <el-collapse-transition>
       <div v-if="openMenu"
            class="nav-list-selector-container">
         <el-collapse-transition>
-
           <navItem icon='el-icon-office-building'
                    label="Building"
+                   :items='[building]'
+                   @focusItem="focusItem"
                    :select='building'></navItem>
-
         </el-collapse-transition>
         <el-collapse-transition>
           <navItem v-if="building"
                    icon="el-icon-receiving"
                    label="Etage"
                    :items='levels'
+                   @focusItem="focusItem"
                    :select='selectedLevel'
                    @select="onLevelChange"></navItem>
         </el-collapse-transition>
@@ -60,6 +69,7 @@
                    icon="el-icon-receiving"
                    label="Local"
                    :items='selectedLevelRooms'
+                   @focusItem="focusItem"
                    :select='selectedRoom'
                    @select="onRoomChange"></navItem>
         </el-collapse-transition>
@@ -98,27 +108,24 @@ export default {
     sideBarChange(data, building) {
       this.levels = data;
       this.building = building;
-      console.log("sideBarChange", data, building);
     },
     onLevelChange(level) {
-      console.log("onLevelChange", level);
       this.selectedLevel = level;
       this.selectedLevelRooms = level.children;
       this.selectedRoom = null;
+      if (level) this.focusItem(level);
+      else this.focusItem();
     },
     onRoomChange(room) {
       this.selectedRoom = room;
+      if (room) this.focusItem(room);
+      else this.focusItem(this.selectedLevel);
+    },
+    focusItem(item) {
+      if (this.building === item) EventBus.$emit("sidebar-homeSelect");
+      else EventBus.$emit("sidebar-homeSelect", item);
     }
   }
-  // computed: {
-  //   buildingName() {
-  //     if (this.building) {
-  //       return this.building.name;
-  //     } else {
-  //       return "Batiment";
-  //     }
-  //   }
-  // }
 };
 </script>
 
@@ -129,10 +136,14 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   background: #1d3461;
+  background-image: radial-gradient(circle at top left, #04092d, #1d3461);
 }
 .bread {
   display: flex;
   align-self: center;
+}
+.bread-btn.bread-btn-opened i {
+  padding: 8px;
 }
 .bread > * {
   align-self: center;
@@ -155,11 +166,17 @@ export default {
   color: #fff !important;
   background-color: #1d3461 !important;
   border-color: #1d3461 !important;
+  background-image: radial-gradient(
+    circle at top left,
+    #04092d,
+    #1d3461
+  ) !important;
 }
 .bread-btn-opened {
   width: unset;
   border-color: #1e3461 !important;
   background-color: white !important;
+  background-image: unset !important;
   color: #1e3461 !important;
 }
 

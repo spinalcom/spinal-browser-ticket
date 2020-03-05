@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 SpinalCom - www.spinalcom.com
+ * Copyright 2020 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -29,7 +29,9 @@ import {
   FLOOR_RELATION,
   ZONE_RELATION,
   ROOM_RELATION,
-  ROOM_TYPE
+  ROOM_TYPE,
+  GEO_RELATIONS,
+  EQUIPMENT_TYPE
 } from '../../constants';
 import { EventBus } from '../event';
 import { FileSystem } from 'spinal-core-connectorjs_type';
@@ -150,4 +152,50 @@ export default class BackEndSpatial {
       return item;
     }
   }
+
+  /**
+   * @param { {server_id: number} } item
+   * @memberof BackEndSpatial
+   * @returns { Promise<{model, selection: number[] }[]>}
+   */
+  async getLstByModel(item) {
+    const node = getNodeFromItem(item);
+    const listNode = await node.find(GEO_RELATIONS, (n) => {
+      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject")
+    });
+    return sortBIMObjectByModel(listNode);
+  }
+}
+
+/**
+ * @param { {server_id: number} } item
+ * @returns
+ */
+function getNodeFromItem(item) {
+  return FileSystem._objects[item.server_id];
+}
+
+function sortBIMObjectByModel(arrayOfBIMObject) {
+  let arrayModel = [];
+  for (const nodeBIMObject of arrayOfBIMObject) {
+    const bimFileId = nodeBIMObject.info.bimFileId.get();
+    const dbId = nodeBIMObject.info.dbid.get();
+    const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
+    const obj = getOrAddModelIfMissing(arrayModel, model);
+    obj.selection.push(dbId);
+  }
+  return arrayModel;
+}
+function getOrAddModelIfMissing(array, model) {
+  for (const obj of array) {
+    if (obj.model === model) {
+      return obj;
+    }
+  }
+  const obj = {
+    selection: [],
+    model
+  };
+  array.push(obj);
+  return obj;
 }

@@ -1,6 +1,29 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
 <template>
   <div class="navbar-item">
-    <!-- <i class="el-icon-arrow-right"></i> -->
     <i class="arrow-left-icon"
        data-eva="arrow-ios-forward-outline"
        data-eva-fill="#EDEDED"></i>
@@ -10,13 +33,14 @@
                  type="info"
                  :icon="icon"
                  size="small"
+                 :disabled="!select"
+                 @click="$emit('focusItem', select)"
                  circle></el-button>
-      <!-- <h4 v-if="!items">{{selectCompu}}</h4> -->
       <el-select v-model="selectCompu"
                  :placeholder="label"
                  @mouseover="onMouseOver"
                  clearable>
-        <el-option v-for="item in items"
+        <el-option v-for="item in itemsComputed"
                    :key="item.server_id"
                    :label="item.name"
                    :value="item">
@@ -28,8 +52,6 @@
 </template>
 
 <script>
-import * as eva from "eva-icons";
-
 export default {
   name: "navItem",
   props: ["label", "items", "select", "icon"],
@@ -48,6 +70,13 @@ export default {
       set(value) {
         this.$emit("select", value);
       }
+    },
+    itemsComputed() {
+      const res = [];
+      this.items.forEach(e => {
+        if (e) res.push(e);
+      });
+      return res;
     }
   },
   methods: {
@@ -116,5 +145,14 @@ export default {
   /* border-color: #114b5f; */
   /* color: #ededed; */
   color: #1d4b5e;
+}
+
+.button-icon-left-focus.is-disabled,
+.button-icon-left-focus.is-disabled:active,
+.button-icon-left-focus.is-disabled:focus,
+.button-icon-left-focus.is-disabled:hover {
+  color: #fff !important;
+  background-color: #c8c9cc !important;
+  border-color: #c8c9cc !important;
 }
 </style>
