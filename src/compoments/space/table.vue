@@ -24,6 +24,18 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
+
+    <el-breadcrumb class="breadcrumb-style"
+                   separator="/">
+      <el-breadcrumb-item><a @click="onclick(null)">Gestion de salle</a>
+      </el-breadcrumb-item>
+      <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
+                          :key="index"><a
+           @click="breadcrumb.click">{{breadcrumb.name}}</a>
+      </el-breadcrumb-item>
+
+    </el-breadcrumb>
+
     <div class="root"
          v-if="selectCategorie == null">
 
@@ -45,9 +57,15 @@ with this file. If not, see
       </el-card>
     </div>
     <div v-else>
-      <el-button @click="onclick(null)">BACK
-      </el-button>
-      <categoryLstVue :selectCategorie="selectCategorie"></categoryLstVue>
+      <!-- <el-button class="back-icon"
+                 @click="onclick(null)"
+                 icon="el-icon-back"></el-button> -->
+      <!-- <el-button @click="onclick(null)">BACK
+      </el-button> -->
+
+      <categoryLstVue :selectCategorie="selectCategorie"
+                      @addbreadcrumb="addbreadcrumb"
+                      ref="categoryListe"></categoryLstVue>
     </div>
 
   </div>
@@ -62,13 +80,33 @@ export default {
   props: [],
   methods: {
     onclick(categorie) {
+      console.log("titititi", categorie);
+
       this.selectCategorie = categorie;
+      this.breadcrumbs = [];
+      if (categorie) {
+        this.breadcrumbs = [
+          ...this.breadcrumbs,
+          {
+            name: categorie.name,
+            click: () => {
+              console.log("reeeeeeeeeeeeeeeeeeeefs", this.$refs);
+              this.onclick(categorie);
+              this.$refs.categoryListe.resetRoomSelected();
+            }
+          }
+        ];
+      }
+    },
+    addbreadcrumb(resultat) {
+      this.breadcrumbs = [...this.breadcrumbs, resultat];
     }
   },
   data() {
     return {
       contextLst: [],
-      selectCategorie: null
+      selectCategorie: null,
+      breadcrumbs: []
     };
   },
   async mounted() {
@@ -91,5 +129,9 @@ export default {
 }
 .clearfix {
   text-align: center;
+}
+.breadcrumb-style {
+  font-size: 20px;
+  margin: 10px 0 10px 10px;
 }
 </style>

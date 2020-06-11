@@ -41,6 +41,7 @@ export default {
   name: "appViewer",
   props: ["isMinimized"],
   data() {
+    this.elementColored = new Map();
     return {
       viewer: null,
       ticketToZoom: [],
@@ -65,15 +66,26 @@ export default {
   mounted() {
     EventBus.$on("see", data => {
       this.isoLate(data.ids);
-      this.colorsRooms(data.ids, data.color);
+      if (this.elementIsColored(data.id)) {
+        this.restorColor(data.ids, data.id);
+      } else {
+        this.colorsRooms(data.ids, data.color, data.id);
+      }
     });
 
     EventBus.$on("seeAll", data => {
       let ids = [];
-      data.forEach(element => {
-        ids.push(...element.ids);
-        this.colorsRooms(element.ids, element.color);
-      });
+      if (this.allElementAreColored(data)) {
+        data.forEach(element => {
+          ids.push(...element.ids);
+          this.restorColor(element.ids, element.id);
+        });
+      } else {
+        data.forEach(element => {
+          ids.push(...element.ids);
+          this.colorsRooms(element.ids, element.color, element.id);
+        });
+      }
 
       this.isoLate(ids);
     });
@@ -132,7 +144,8 @@ export default {
       viewerUtils.initViewer(this.viewer);
     },
 
-    colorsRooms(roomsList, argColor) {
+    colorsRooms(roomsList, argColor, id) {
+      this.elementColored.set(id, roomsList);
       const color = this.convertHewToRGB(argColor);
 
       roomsList.forEach(child => {
@@ -142,14 +155,20 @@ export default {
 
         model.setThemingColor(
           child.dbid,
-          new THREE.Vector4(
-            color.r / 255,
-            color.g / 255,
-            color.b / 255,
-            0.7,
-            true
-          )
+          new THREE.Vector4(color.r / 255, color.g / 255, color.b / 255, 0.7),
+          true
         );
+      });
+    },
+
+    restorColor(roomsList, id) {
+      this.elementColored.set(id, undefined);
+      roomsList.forEach(child => {
+        let model = window.spinal.BimObjectService.getModelByBimfile(
+          child.bimFileId
+        );
+
+        model.setThemingColor(child.dbid, new THREE.Vector4(0, 0, 0, 0), true);
       });
     },
 
@@ -172,6 +191,20 @@ export default {
             b: parseInt(result[3], 16)
           }
         : null;
+    },
+
+    elementIsColored(elementCol) {
+      console.log("yuuuuuu", this.elementColored);
+      return this.elementColored.get(elementCol) != undefined;
+    },
+
+    allElementAreColored(allElement) {
+      for (const element of allElement) {
+        if (!this.elementIsColored(element.id)) {
+          return false;
+        }
+      }
+      return true;
     }
   }
 };

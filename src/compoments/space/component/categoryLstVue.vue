@@ -24,62 +24,104 @@ with this file. If not, see
 
 <template>
   <el-row>
+    <el-tabs type="border-card">
 
-    <el-table :data="data"
-              class="tab">
-      <el-table-column prop=name
-                       label="Nom">
-      </el-table-column>
-      <el-table-column prop="rooms.length"
-                       label="Nombre de pièces">
-      </el-table-column>
-
-      <el-table-column prop="surface"
-                       label="Surface">
-        <template slot-scope="scope">
-
-          {{scope.row.surface}} m²
-        </template>
-      </el-table-column>
-      <el-table-column prop=color
-                       label="Couleur">
-        <template slot-scope="scope">
-
-          <div :style="{'background-color': scope.row.color}"
-               class="couleur"
-               style="width: 30%; height: 30px">
-
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column>
-
-        <template slot="header"
-                  slot-scope="scope">
+      <el-tab-pane label="Tableau">
+        <el-row class="barre">
+          <el-button @click="exportData"
+                     icon="el-icon-download"></el-button>
           <el-button @click="SeeAll"
                      icon="el-icon-view"></el-button>
-        </template>
 
-        <template slot-scope="scope">
-          <el-button icon="
-                  el-icon-view"
-                     @click="SeeEvent(scope.row)"></el-button>
-        </template>
+        </el-row>
 
-      </el-table-column>
+        <el-table v-if="!roomSelected"
+                  :data="data"
+                  class="tab"
+                  border
+                  style="width: 100%"
+                  header-cell-style="background-color: #f0f2f5;"
+                  @row-click="SeeEvent">
 
-    </el-table>
-    <ChartsPiece :entreprise="data"></ChartsPiece>
-    <ChartsEsp :entreprise="data"></ChartsEsp>
+          <el-table-column prop=name
+                           label="Nom">
+          </el-table-column>
+          <el-table-column prop="rooms.length"
+                           label="Nombre de pièces"
+                           align="center">
+          </el-table-column>
+          true
+          <el-table-column prop="surface"
+                           label="Surface"
+                           align="center">
+            <template slot-scope="scope">
+
+              {{scope.row.surface}} m²
+            </template>
+          </el-table-column>
+          <el-table-column prop=color
+                           label="Couleur"
+                           align="center">
+            <template slot-scope="scope">
+
+              <div :style="{'background-color': scope.row.color}"
+                   class="couleur"
+                   style="width: 30%; height: 30px; margin: auto;">
+
+              </div>
+            </template>
+          </el-table-column>
+
+          <!-- <el-table-column>
+
+            <template slot="header"
+                      slot-scope="scope">
+              <el-button @click="SeeAll"
+                         icon="el-icon-view"></el-button>
+            </template>
+
+          </el-table-column> -->
+          <el-table-column label="Liste de pièces"
+                           align="center">
+            <template slot-scope="scope">
+              <el-button @click="seeRoomTable(scope.row)"
+                         icon="el-icon-top-right"></el-button>
+            </template>
+          </el-table-column>
+
+        </el-table>
+        <div v-else>
+          <roomLstVue :rooms="roomSelected"> </roomLstVue>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="Dashboard">
+        <el-row class="barre">
+
+          <el-button @click="SeeAll"
+                     icon="el-icon-view"></el-button>
+
+        </el-row>
+        <ChartsPiece :entreprise="data"></ChartsPiece>
+        <ChartsEsp :entreprise="data"></ChartsEsp>
+      </el-tab-pane>
+    </el-tabs>
+
+    <!-- <el-row>
+
+      <el-button @click="exportData">Export</el-button>
+    </el-row> -->
+
   </el-row>
 </template>
 
 <script>
+import roomLstVue from "./roomLstVue";
 import SpinalBackend from "../../../services/spinalBackend";
 import ChartsPiece from "./ChartsPiece";
 import ChartsEsp from "./ChartsEsp";
 import { EventBus } from "../../../services/event";
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
 
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 
@@ -88,15 +130,21 @@ export default {
     return {
       categoryLst: [],
       fields: [],
-      items: []
+      items: [],
+      roomSelected: null
     };
   },
-  components: { ChartsPiece, ChartsEsp },
+  components: { ChartsPiece, ChartsEsp, roomLstVue },
   props: ["selectCategorie"],
   methods: {
     async SeeEvent(data) {
+      console.log("SEEEEEEE");
       const allBimObjects = await this.getAllBimObjects(data.id);
-      EventBus.$emit("see", { ids: allBimObjects, color: data.color });
+      EventBus.$emit("see", {
+        id: data.id,
+        ids: allBimObjects,
+        color: data.color
+      });
     },
 
     async getAllBimObjects(id) {
@@ -106,12 +154,71 @@ export default {
     },
     async SeeAll() {
       let promises = this.data.map(async el => {
-        return { ids: await this.getAllBimObjects(el.id), color: el.color };
+        return {
+          id: el.id,
+          ids: await this.getAllBimObjects(el.id),
+          color: el.color
+        };
       });
 
       let allBimObjects = await Promise.all(promises);
 
       EventBus.$emit("seeAll", allBimObjects);
+    },
+    exportData() {
+      //let excelRows = Object.assign({}, this.data);
+      //excelRows.rooms = this.data.rooms.length;
+      let headers = [
+        {
+          key: "name",
+          header: "name",
+          width: 10
+        },
+        {
+          key: "rooms",
+          header: "Nombre de pièces",
+          width: 10
+        },
+        {
+          key: "surface",
+          header: "Surface",
+          width: 10
+        }
+      ];
+      let excelData = [
+        {
+          name: "Tableau",
+          author: "",
+          data: [
+            {
+              name: "Tableau",
+              header: headers,
+              rows: this.data.map(gitu => {
+                let excelRows = Object.assign({}, gitu);
+                excelRows.rooms = gitu.rooms.length;
+                return excelRows;
+              })
+            }
+          ]
+        }
+      ];
+      excelManager.export(excelData).then(reponse => {
+        fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
+      });
+      console.log("expoooooooooooort", this.data);
+    },
+
+    seeRoomTable(roomData) {
+      this.roomSelected = roomData.rooms;
+      this.$emit("addbreadcrumb", {
+        name: roomData.name,
+        click: () => {
+          this.seeRoomTable(roomData);
+        }
+      });
+    },
+    resetRoomSelected() {
+      this.roomSelected = null;
     }
   },
   computed: {
@@ -129,7 +236,10 @@ export default {
   },
   watch: {},
   beforeDestroy() {},
-  async mounted() {}
+  async mounted() {
+    console.log("tttttttttt", this.data);
+    this.roomSelected = null;
+  }
 };
 </script>
 
@@ -139,7 +249,15 @@ export default {
   padding-top: 100px;
 }
 .tab {
-  padding-top: 20px;
+}
+.barre {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  background-color: #f5f7fa;
+}
+.el-icon-download {
+  width: 15px;
 }
 </style>
 

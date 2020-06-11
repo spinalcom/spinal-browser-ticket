@@ -1,0 +1,57 @@
+{
+  "_args": [
+    [
+      "git+https://github.com/spinalcom/spinal-service-user.git",
+      "/home/spinalcom/project/spinal-browser-spinaltwin"
+    ]
+  ],
+  "_from": "git+https://github.com/spinalcom/spinal-service-user.git",
+  "_id": "spinal-service-user@git+https://github.com/spinalcom/spinal-service-user.git#ae0d9c1b7a8bc9041c25c47bdad98662d1ab525c",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/spinal-service-user",
+  "_phantomChildren": {
+    "q": "1.5.1",
+    "qrcode-generator": "1.4.4",
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#c1b17a8d36ccd989f6b89c9f33e9cbdb4e28f173"
+  },
+  "_requested": {
+    "type": "git",
+    "raw": "git+https://github.com/spinalcom/spinal-service-user.git",
+    "rawSpec": "git+https://github.com/spinalcom/spinal-service-user.git",
+    "saveSpec": "git+https://github.com/spinalcom/spinal-service-user.git",
+    "fetchSpec": "https://github.com/spinalcom/spinal-service-user.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "/spinal-service-ticket"
+  ],
+  "_resolved": "git+https://github.com/spinalcom/spinal-service-user.git#ae0d9c1b7a8bc9041c25c47bdad98662d1ab525c",
+  "_spec": "git+https://github.com/spinalcom/spinal-service-user.git",
+  "_where": "/home/spinalcom/project/spinal-browser-spinaltwin",
+  "author": {
+    "name": "SPINALCOM"
+  },
+  "dependencies": {
+    "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
+    "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-models-user": "git+https://github.com/spinalcom/spinal-models-user.git"
+  },
+  "description": "SpinalCOM service user. This service allow the management of users inside a spinal environment.",
+  "devDependencies": {
+    "@types/node": "^10.12.12",
+    "chai": "^4.2.0",
+    "jsdoc-to-markdown": "^4.0.1",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.2.2"
+  },
+  "keywords": [],
+  "license": "SPINALCOM",
+  "main": "dist/index.js",
+  "name": "spinal-service-user",
+  "scripts": {},
+  "version": "1.0.2"
+}
