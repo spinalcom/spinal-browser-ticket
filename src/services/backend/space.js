@@ -23,9 +23,16 @@
  */
 
 
-import { groupService } from "spinal-env-viewer-room-manager/services/service.js";
+// import { groupService } from "spinal-env-viewer-room-manager/services/service.js";
+
+import { groupManagerService } from "spinal-env-viewer-plugin-group-manager-service";
+
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+
+import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
+
+
 import q from "q";
 
 export default class Space {
@@ -39,27 +46,31 @@ export default class Space {
 
     async init(graph) {
 
-        let contexts = await graph.getChildren("hasContext");
+        // let contexts = await graph.getChildren("hasContext");
 
 
-        // a partir de tous les contexte, on récupère les contexte de type groupe 
-        let roomsGroupContext = contexts.filter(context => {
-            return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
-        })
+        // // a partir de tous les contexte, on récupère les contexte de type groupe 
+        // let roomsGroupContext = contexts.filter(context => {
+        //     return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+        // })
 
 
-        let Icontexts = roomsGroupContext.map(async (context) => {
-            //console.log(context);
-            return this.Icontext(context);
-        })
+        // let Icontexts = roomsGroupContext.map(async (context) => {
+        //     //console.log(context);
+        //     return this.Icontext(context);
+        // })
 
-        let res = await Promise.all(Icontexts);
+        // let res = await Promise.all(Icontexts);
 
+        const contexts = await groupManagerService.getGroupContexts(ROOM_TYPE).then(el => SpinalGraphService.getRealNode(el.id.get()));
+
+        const Icontexts = contexts.map(el => this.Icontext(el));
+
+        const res = await Promise.all(Icontexts)
 
         this.initDefer.resolve(res);
-        console.log("eeeeeee_____________", res);
 
-
+        console.log("resss", res);
 
 
 
@@ -115,7 +126,6 @@ export default class Space {
         for (let cat of catLst) {
             arr.push(this.Icategorie(cat))
         }
-
 
         return {
             name: context.info.name.get(),
