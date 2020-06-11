@@ -36,6 +36,7 @@ import {
 import { EventBus } from '../event';
 import { FileSystem } from 'spinal-core-connectorjs_type';
 import ProcessOnChange from '../utlils/ProcessOnChange';
+import throttle from 'lodash.throttle';
 
 export default class BackEndSpatial {
   constructor() {
@@ -85,16 +86,25 @@ export default class BackEndSpatial {
   async handleFloors() {
     const floors = await this.floorsContext.getChildren([FLOOR_RELATION]);
     this.floors = [];
+    const updatefloor = throttle(()=> { EventBus.$emit("side-bar-change", this.floors, this.building);}, 1000)
+    const roomsProm = []
     for (const floor of floors) {
       this.floorsProcess.add(floor, false);
       // eslint-disable-next-line no-await-in-loop
-      const children = await this.handleFloorRooms(floor);
+      // const children = await this.handleFloorRooms(floor);
+      roomsProm.push(this.handleFloorRooms(floor))
       this.floors.push({
         name: floor.info.name.get(),
         id: floor.info.id.get(),
         server_id: floor._server_id,
-        children
+        children: []
       });
+      updatefloor()
+    }
+
+    const floorsChildren = await Promise.all(roomsProm);
+    for (let idx = 0; idx < floorsChildren.length; idx++) {
+      this.floors[idx].children.push(...floorsChildren[idx])
     }
     // console.log('this.building', this.building);
     // if (!this.building)
