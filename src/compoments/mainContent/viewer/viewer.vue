@@ -36,6 +36,8 @@ import { ForgeViewer } from "spinal-forge-viewer";
 import { spinalBackEnd } from "../../../services/spinalBackend";
 import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
 import { EventBus } from "../../../services/event";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+
 import "spinal-env-viewer-plugin-forge";
 export default {
   name: "appViewer",
@@ -134,6 +136,7 @@ export default {
       this.viewer = this.forgeViewer.viewer;
       await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
       const scenes = await spinalBackEnd.viewerBack.getScenes();
+      SpinalGraphService._addNode(scenes[0]);
       await window.spinal.SpinalForgeViewer.loadModelFromNode(
         scenes[0].info.id.get()
       );
