@@ -26,6 +26,8 @@ import { spinalIO } from './spinalIO';
 import { SpinalGraph } from 'spinal-model-graph';
 import BackEndSpatial from './backend/spatial';
 import BackEndViewer from './backend/viewer';
+import BackEndSpace from "./backend/space";
+
 import q from "q";
 
 class SpinalBackEnd {
@@ -33,13 +35,15 @@ class SpinalBackEnd {
     this.graph = null;
     this.spatialBack = new BackEndSpatial();
     this.viewerBack = new BackEndViewer();
+    this.spaceBack = new BackEndSpace();
     this.initDefer = q.defer();
   }
 
   async init() {
+
     try {
       const graph = await this.getGraph();
-      await Promise.all([this.spatialBack.init(graph), this.viewerBack.init(graph)]);
+      await Promise.all([this.spatialBack.init(graph), this.viewerBack.init(graph), this.spaceBack.init(graph)]);
       this.initDefer.resolve();
     } catch (error) {
       this.initDefer.reject(error);
@@ -53,7 +57,7 @@ class SpinalBackEnd {
     return this.graph;
   }
   waitInit() {
-    return this.initDefer.promised;
+    return this.initDefer.promise;
   }
 
 }

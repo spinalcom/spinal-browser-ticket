@@ -127,7 +127,9 @@ export default {
 .spinal-main-container > .spinal-other-container {
   transition: 200ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-
+.spinal-other-container > div {
+  width: 100%;
+}
 .spinal-viewer-header-drag-elm {
   flex: 1;
 }

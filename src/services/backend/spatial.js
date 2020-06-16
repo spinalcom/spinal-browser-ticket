@@ -23,23 +23,30 @@
  */
 
 import {
-  BUILDING_REFERENCE_CONTEXT,
+  SPATIAL_CONTEXT_TYPE,
+  // BUILDING_REFERENCE_CONTEXT,
+  // FLOOR_REFERENCE_CONTEXT,
+  SITE_RELATION,
   BUILDING_RELATION,
-  FLOOR_REFERENCE_CONTEXT,
   FLOOR_RELATION,
   ZONE_RELATION,
   ROOM_RELATION,
+
+  BUILDING_TYPE,
+  FLOOR_TYPE,
   ROOM_TYPE,
+  EQUIPMENT_TYPE,
   GEO_RELATIONS,
-  EQUIPMENT_TYPE
 } from '../../constants';
 import { EventBus } from '../event';
 import { FileSystem } from 'spinal-core-connectorjs_type';
 import ProcessOnChange from '../utlils/ProcessOnChange';
+import throttle from 'lodash.throttle';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 export default class BackEndSpatial {
   constructor() {
-    this.floorsContext = null;
+    this.buildingNode = null;
     this.handleFloorsBinded = this.handleFloors.bind(this);
     this.handleFloorRoomsBinded = this.handleFloorRooms.bind(this);
     this.floorsProcess = new ProcessOnChange(this.handleFloorsBinded, { type: 'throttle', timeout: 2000 });
@@ -48,15 +55,39 @@ export default class BackEndSpatial {
     this.floors = [];
   }
 
-  async init(graph) {
-    const [floorsContext, building] = await Promise.all([
-      graph.getContext(FLOOR_REFERENCE_CONTEXT),
-      this.getBuilding(graph)
-    ]);
+  async getContextSpatial(graph) {
+    const children = await graph.getChildren();
+    for (const context of children) {
+      if (context.info.type.get() === SPATIAL_CONTEXT_TYPE) {
+        SpinalGraphService._addNode(context);
+        return this.context = context;
+      }
+    }
+  }
 
-    this.floorsContext = floorsContext;
-    this.building = building;
-    this.floorsProcess.add(this.floorsContext, true);
+  async getBuilding(contextgeo) {
+    const buildings = await contextgeo.find([SITE_RELATION, BUILDING_RELATION],
+      (obj) => {
+        return obj.info.type.get() === BUILDING_TYPE
+      });
+    return buildings[0]
+  }
+
+  async getFloors(buildingNode) {
+    const floors = await buildingNode.find([ZONE_RELATION, FLOOR_RELATION],
+      (obj) => {
+        this.floorsProcess.add(obj, false);
+        return obj.info.type.get() === FLOOR_TYPE
+      });
+    return floors
+  }
+
+
+  async init(graph) {
+    const contextgeo = await this.getContextSpatial(graph);
+    this.buildingNode = await this.getBuilding(contextgeo);
+    this.building = this.getBuildingJSON(this.buildingNode);
+    this.floorsProcess.add(this.buildingNode, true);
     EventBus.$on("get-side-bar-floors-data", () => {
       if (this.floors.length === 0) this.floorsProcess.fctOnChange();
       else EventBus.$emit("side-bar-change", this.floors, this.building);
@@ -67,40 +98,39 @@ export default class BackEndSpatial {
     });
   }
 
-  async getBuilding(graph) {
-    const buildingContext = await graph.getContext(BUILDING_REFERENCE_CONTEXT);
-    const [buildingNode] = await buildingContext.getChildren([BUILDING_RELATION]);
-    try {
-
-      return {
-        name: buildingNode.info.name.get(),
-        id: buildingNode.info.id.get(),
-        server_id: buildingNode._server_id
-      };
-    } catch (e) {
-      return undefined;
-    }
+  getBuildingJSON(buildingNode) {
+    return {
+      name: buildingNode.info.name.get(),
+      id: buildingNode.info.id.get(),
+      server_id: buildingNode._server_id
+    };
   }
 
   async handleFloors() {
-    const floors = await this.floorsContext.getChildren([FLOOR_RELATION]);
-    this.floors = [];
+    const floors = await this.getFloors(this.buildingNode);
+    const res = []
+    const updatefloor = throttle((floor, building) => {
+      EventBus.$emit("side-bar-change", floor, building);
+    }, 1000)
+    const roomsProm = []
     for (const floor of floors) {
+      SpinalGraphService._addNode(floor);
       this.floorsProcess.add(floor, false);
-      // eslint-disable-next-line no-await-in-loop
-      const children = await this.handleFloorRooms(floor);
-      this.floors.push({
+      roomsProm.push(this.handleFloorRooms(floor))
+      res.push({
         name: floor.info.name.get(),
         id: floor.info.id.get(),
         server_id: floor._server_id,
-        children
+        children: []
       });
+      updatefloor(res, this.building);
     }
-    // console.log('this.building', this.building);
-    // if (!this.building)
-    // this.building = await this.getBuilding(graph);
-
-    EventBus.$emit("side-bar-change", this.floors, this.building);
+    const floorsChildren = await Promise.all(roomsProm);
+    for (let idx = 0; idx < floorsChildren.length; idx++) {
+      res[idx].children.push(...(floorsChildren[idx]))
+    }
+    this.floors = res;
+    updatefloor(res, this.building);
   }
 
   async handleFloorRooms(floorModel) {
@@ -110,6 +140,7 @@ export default class BackEndSpatial {
 
     roomsProcess.process.add(floorModel, false);
     for (const room of roomsModels) {
+      SpinalGraphService._addNode(room);
       roomsProcess.process.add(room, false);
       this.existInSet(roomsProcess.items, 'id', {
         name: room.info.name.get(),
@@ -117,8 +148,6 @@ export default class BackEndSpatial {
         server_id: room._server_id
       });
     }
-    // if (this.floorSelected && this.floorSelected.id === floorModel.info.id.get()) {
-    // }
     EventBus.$emit("side-bar-room-change", roomsProcess.items, floorModel.info.id.get());
     return roomsProcess.items;
   }
