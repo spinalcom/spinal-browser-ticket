@@ -32,269 +32,301 @@ import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-ser
 
 import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 
-
 import q from "q";
+
+// // a partir de tous les contexte, on récupère les contexte de type groupe 
+// let roomsGroupContext = contexts.filter(context => {
+//     return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+// })
+
+// let Icontexts = roomsGroupContext.map(async (context) => {
+//     //console.log(context);
+//     return this.Icontext(context);
+// })
+// let res = await Promise.all(Icontexts);
+// await SpinalGraphService.waitForInitialization()
+// let contextNodes = await graph.getChildren("hasContext");
+// const cons = await groupManagerService.getGroupContexts(ROOM_TYPE)
+// const contexts = contextNodes.filter(context => {
+//   for (const con of cons) {
+//     let id = typeof con.id === "string" ? con.id : con.id.get()
+//     if (context.info.id.get() === id) return true
+//   }
+//   return false
+//   // return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+// })
+
+// // .then(el => {
+// //   return SpinalGraphService.getRealNode(el.id)
+// // });
+// console.log("contexts ", contexts);
+// const Icontexts = contexts.map(el => this.Icontext(el));
+// const res = await Promise.all(Icontexts)
+// this.initDefer.resolve(res);
+// console.log("resss", res);
+
+
 
 export default class Space {
 
-    constructor() {
-        this.allContext;
+  constructor() {
+    this.allContext;
 
-        this.initDefer = q.defer();
+    this.initDefer = q.defer();
 
-    }
+  }
 
-    async init(graph) {
+  async init(graph) {
 
-        // // a partir de tous les contexte, on récupère les contexte de type groupe 
-        // let roomsGroupContext = contexts.filter(context => {
-        //     return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
-        // })
+    // // a partir de tous les contexte, on récupère les contexte de type groupe
+    // let roomsGroupContext = contexts.filter(context => {
+    //     return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+    // })
 
-        // let Icontexts = roomsGroupContext.map(async (context) => {
-        //     //console.log(context);
-        //     return this.Icontext(context);
-        // })
-        // let res = await Promise.all(Icontexts);
-        await SpinalGraphService.waitForInitialization()
-        let contextNodes = await graph.getChildren("hasContext");
-        const cons = await groupManagerService.getGroupContexts(ROOM_TYPE)
-        const contexts = contextNodes.filter(context => {
-            for (const con of cons) {
-                let id = typeof con.id === "string" ? con.id : con.id.get()
-                if (context.info.id.get() === id) return true
-            }
-            return false
-            // return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
-        })
+    // let Icontexts = roomsGroupContext.map(async (context) => {
+    //     //console.log(context);
+    //     return this.Icontext(context);
+    // })
+    // let res = await Promise.all(Icontexts);
+    await SpinalGraphService.waitForInitialization()
+    let contextNodes = await graph.getChildren("hasContext");
+    const cons = await groupManagerService.getGroupContexts(ROOM_TYPE)
+    const contexts = contextNodes.filter(context => {
+      for (const con of cons) {
+        let id = typeof con.id === "string" ? con.id : con.id.get()
+        if (context.info.id.get() === id) return true
+      }
+      return false
+      // return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+    })
 
-        // .then(el => {
-        //   return SpinalGraphService.getRealNode(el.id)
-        // });
-        console.log("contexts ", contexts);
-        const Icontexts = contexts.map(el => this.Icontext(el));
-        const res = await Promise.all(Icontexts)
-        this.initDefer.resolve(res);
-        console.log("resss", res);
+    // .then(el => {
+    //   return SpinalGraphService.getRealNode(el.id)
+    // });
+    console.log("contexts ", contexts);
+    const Icontexts = contexts.map(el => this.Icontext(el));
+    const res = await Promise.all(Icontexts)
+    this.initDefer.resolve(res);
+    console.log("resss", res);
 
-        // let categories = roomsGroupContext.map(async (context) => {
-        //     //console.log(context);
-        //     return { context: context, categorie: await groupService.getCategorie(context.info) }
-        // })
-
-
-        // //console.log("eeeeeeeeeeeeeeeeeeeeeeeeeppppppppp", categories[1])
-
-        // //console.log("tttttttttttttttttttttt", categories)
-
-        // this.allContext = await Promise.all(categories);
-
-        // console.log("ggggggggggggggggggg", this.allContext)
+    // let categories = roomsGroupContext.map(async (context) => {
+    //     //console.log(context);
+    //     return { context: context, categorie: await groupService.getCategorie(context.info) }
+    // })
 
 
+    // //console.log("eeeeeeeeeeeeeeeeeeeeeeeeeppppppppp", categories[1])
 
-        // // parmis les contexte de groupe, on cherche l'ensemble des group 
-        // let allGroups = roomsGroupContext.map(async group => {
+    // //console.log("tttttttttttttttttttttt", categories)
 
-        //     return {
-        //         groups: await groupService.getGroups(group.info)
-        //     }
-        // })
+    // this.allContext = await Promise.all(categories);
+
+    // console.log("ggggggggggggggggggg", this.allContext)
 
 
 
-        // this.allGroups = await Promise.all(allGroups);
+    // // parmis les contexte de groupe, on cherche l'ensemble des group 
+    // let allGroups = roomsGroupContext.map(async group => {
 
-
-
-
-
-
-        // // let allAttributes = serviceDocumentation.getAllAttributes
-
-
-    }
-
-
-    getData() {
-        return this.initDefer.promise;
-    }
-
-
-
-    async Icontext(context) {
-        let catLst = await groupManagerService.getCategories(context.info.id.get())
-        let arr = [];
-        for (let cat of catLst) {
-            arr.push(this.Icategorie(cat))
-        }
-
-        return {
-            name: context.info.name.get(),
-            id: context.info.id.get(),
-            categories: await Promise.all(arr)
-        }
-    }
-
-
-    async Icategorie(categorie) {
-        let grpLst = await groupManagerService.getGroups(categorie.id.get());
-        let arr2 = [];
-        for (let grp of grpLst) {
-            arr2.push(this.Igroup(grp))
-        }
-        return {
-            name: categorie.name.get(),
-            id: categorie.id.get(),
-            groups: await Promise.all(arr2)
-        }
-    }
-
-    async Igroup(group) {
-        let roomLst = await groupManagerService.getElementsLinkedToGroup(group.id.get());
-        let arr3 = [];
-        for (let room of roomLst) {
-            arr3.push(this.Iroom(room))
-        }
-
-        if (typeof group.color === "undefined") {
-            const color = this.getRandomColor();
-            group.add_attr("color", color);
-        }
-
-        return {
-            name: group.name.get(),
-            id: group.id.get(),
-            color: group.color.get(),
-            rooms: await Promise.all(arr3)
-        }
-
-    }
-
-    getsurface(arr) {
-        for (let attribute of arr) {
-            if (attribute.label.get() === "surface" || attribute.label.get() === "area") {
-                return parseFloat(attribute.value.get());
-            }
-        }
-        return 0;
-
-    }
-
-    async Iroom(room) {
-        let realnode = SpinalGraphService.getRealNode(room.id.get());
-        let attributesLst = await serviceDocumentation.getAllAttributes(realnode);
-        let espace = this.getsurface(attributesLst);
-        return {
-            name: room.name.get(),
-            id: room.id.get(),
-            surface: espace,
-
-        }
-    }
-
-
-
-
-
-
-
-    getRandomColor() {
-        var letters = "0123456789ABCDEF";
-        var color = "#";
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
-
-    //     async getAllContext(graph) {
-    //         await this.initDefer.promise
-    //         return this.allContext;
+    //     return {
+    //         groups: await groupService.getGroups(group.info)
     //     }
-
-    //     async getAllGroups(graph) {
-    //         await this.initDefer.promise
-    //         return this.allGroups;
-    //     }
-
-    //     async getGroupsByCategory(categorie) {
-    //         // retur les groupe, spinalcom/edf de la catégory
-    //         return groupService.getGroups(categorie)
-
-    //     }
-
-
-    //     async getRoomCount(groupId) {
-    //         let rooms = await SpinalGraphService.getChildren(groupId, [groupService.constants.GROUP_TO_ROOMS_RELATION]);
-    //         return rooms.length;
-    //     }
+    // })
 
 
 
-    ///////////////////////////////////////////////////////////
-    //                surface  utilities                     //
-    ///////////////////////////////////////////////////////////
+    // this.allGroups = await Promise.all(allGroups);
 
 
-    getContextSurface(contextObject) {
-        let surface = 0;
-        for (const category of contextObject.categories) {
-            surface += this.getCategoriesSurface(category);
-        }
 
-        return surface;
+
+
+
+    // // let allAttributes = serviceDocumentation.getAllAttributes
+
+
+  }
+
+
+  getData() {
+    return this.initDefer.promise;
+  }
+
+
+
+  async Icontext(context) {
+    let catLst = await groupManagerService.getCategories(context.info.id.get())
+    let arr = [];
+    for (let cat of catLst) {
+      arr.push(this.Icategorie(cat))
     }
 
-    getCategoriesSurface(categoryObject) {
-        let surface = 0;
+    return {
+      name: context.info.name.get(),
+      id: context.info.id.get(),
+      categories: await Promise.all(arr)
+    }
+  }
 
-        for (const group of categoryObject.groups) {
-            surface += this.getGroupSurface(group);
-        }
 
-        return surface;
+  async Icategorie(categorie) {
+    let grpLst = await groupManagerService.getGroups(categorie.id.get());
+    let arr2 = [];
+    for (let grp of grpLst) {
+      arr2.push(this.Igroup(grp))
+    }
+    return {
+      name: categorie.name.get(),
+      id: categorie.id.get(),
+      groups: await Promise.all(arr2)
+    }
+  }
+
+  async Igroup(group) {
+    let roomLst = await groupManagerService.getElementsLinkedToGroup(group.id.get());
+    let arr3 = [];
+    for (let room of roomLst) {
+      arr3.push(this.Iroom(room))
     }
 
-    getGroupSurface(groupObject) {
-        let surface = 0;
-        for (const room of groupObject.rooms) {
-            surface += this.getRoomSurface(room);
-        }
-        return surface;
+    if (typeof group.color === "undefined") {
+      const color = this.getRandomColor();
+      group.add_attr("color", color);
     }
 
-    getRoomSurface(roomObject) {
-        return roomObject.surface ? roomObject.surface : 0;
+    return {
+      name: group.name.get(),
+      id: group.id.get(),
+      color: group.color.get(),
+      rooms: await Promise.all(arr3)
+    }
+  }
+
+  getsurface(arr) {
+    for (let attribute of arr) {
+      if (attribute.label.get() === "surface" || attribute.label.get() === "area") {
+        return parseFloat(attribute.value.get());
+      }
+    }
+    return 0;
+
+
+  }
+
+  async Iroom(room) {
+    let realnode = SpinalGraphService.getRealNode(room.id.get());
+    let attributesLst = await serviceDocumentation.getAllAttributes(realnode);
+    let espace = this.getsurface(attributesLst);
+    return {
+      name: room.name.get(),
+      id: room.id.get(),
+      surface: espace,
+
+    }
+  }
+
+
+
+
+
+
+
+  getRandomColor() {
+    var letters = "0123456789ABCDEF";
+    var color = "#";
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+
+  //     async getAllContext(graph) {
+  //         await this.initDefer.promise
+  //         return this.allContext;
+  //     }
+
+  //     async getAllGroups(graph) {
+  //         await this.initDefer.promise
+  //         return this.allGroups;
+  //     }
+
+  //     async getGroupsByCategory(categorie) {
+  //         // retur les groupe, spinalcom/edf de la catégory
+  //         return groupService.getGroups(categorie)
+
+  //     }
+
+
+  //     async getRoomCount(groupId) {
+  //         let rooms = await SpinalGraphService.getChildren(groupId, [groupService.constants.GROUP_TO_ROOMS_RELATION]);
+  //         return rooms.length;
+  //     }
+
+
+
+  ///////////////////////////////////////////////////////////
+  //                surface  utilities                     //
+  ///////////////////////////////////////////////////////////
+
+
+  getContextSurface(contextObject) {
+    let surface = 0;
+    for (const category of contextObject.categories) {
+      surface += this.getCategoriesSurface(category);
     }
 
+    return surface;
+  }
 
-    ///////////////////////////////////////////////////////////
-    //                Rooms Count  utilities                 //
-    ///////////////////////////////////////////////////////////
+  getCategoriesSurface(categoryObject) {
+    let surface = 0;
 
-    getContextRoomCount(contextObject) {
-        let roomCount = 0;
-        for (const category of contextObject.categories) {
-            roomCount += this.getCategoriesRoomCount(category);
-        }
-
-        return roomCount;
+    for (const group of categoryObject.groups) {
+      surface += this.getGroupSurface(group);
     }
 
-    getCategoriesRoomCount(categoryObject) {
-        let roomCount = 0;
+    return surface;
+  }
 
-        for (const group of categoryObject.groups) {
-            roomCount += this.getGroupRoomCount(group);
-        }
+  getGroupSurface(groupObject) {
+    let surface = 0;
+    for (const room of groupObject.rooms) {
+      surface += this.getRoomSurface(room);
+    }
+    return surface;
+  }
 
-        return roomCount;
+  getRoomSurface(roomObject) {
+    return roomObject.surface ? roomObject.surface : 0;
+  }
+
+
+  ///////////////////////////////////////////////////////////
+  //                Rooms Count  utilities                 //
+  ///////////////////////////////////////////////////////////
+
+  getContextRoomCount(contextObject) {
+    let roomCount = 0;
+    for (const category of contextObject.categories) {
+      roomCount += this.getCategoriesRoomCount(category);
     }
 
-    getGroupRoomCount(groupObject) {
-        return groupObject.rooms.length;
+    return roomCount;
+  }
+
+  getCategoriesRoomCount(categoryObject) {
+    let roomCount = 0;
+
+    for (const group of categoryObject.groups) {
+      roomCount += this.getGroupRoomCount(group);
     }
+
+    return roomCount;
+  }
+
+  getGroupRoomCount(groupObject) {
+    return groupObject.rooms.length;
+  }
 
 }
