@@ -30,7 +30,7 @@ with this file. If not, see
               class="tab"
               border
               style="width: 100%"
-              header-cell-style="background-color: #f0f2f5;"
+              :header-cell-style='{"background-color": "#f0f2f5"}'
               @row-click="SeeEvent">
 
       <el-table-column prop=name
@@ -60,10 +60,10 @@ export default {
     };
   },
   components: {},
-  props: ["rooms"],
+  props: ["rooms", "color"],
   methods: {
-    SeeEvent() {
-      this.$emit("seeEvent");
+    SeeEvent(data) {
+      this.$emit("seeEvent", { ...data, color: this.color });
     }
   },
   async mounted() {},

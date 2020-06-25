@@ -1,0 +1,60 @@
+{
+  "_args": [
+    [
+      "git+https://github.com/spinalcom/spinal-service-ticket.git",
+      "/home/spinalcom/project/spinal-browser-spinaltwin"
+    ]
+  ],
+  "_from": "git+https://github.com/spinalcom/spinal-service-ticket.git",
+  "_id": "spinal-service-ticket@git+https://github.com/spinalcom/spinal-service-ticket.git#41a9c53abe1eacfd348cf7f578e21fdbb829f198",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/spinal-service-ticket",
+  "_phantomChildren": {
+    "q": "1.5.1",
+    "qrcode-generator": "1.4.4",
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#c1b17a8d36ccd989f6b89c9f33e9cbdb4e28f173"
+  },
+  "_requested": {
+    "type": "git",
+    "raw": "git+https://github.com/spinalcom/spinal-service-ticket.git",
+    "rawSpec": "git+https://github.com/spinalcom/spinal-service-ticket.git",
+    "saveSpec": "git+https://github.com/spinalcom/spinal-service-ticket.git",
+    "fetchSpec": "https://github.com/spinalcom/spinal-service-ticket.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git+https://github.com/spinalcom/spinal-service-ticket.git#41a9c53abe1eacfd348cf7f578e21fdbb829f198",
+  "_spec": "git+https://github.com/spinalcom/spinal-service-ticket.git",
+  "_where": "/home/spinalcom/project/spinal-browser-spinaltwin",
+  "author": {
+    "name": "SPINALCOM"
+  },
+  "dependencies": {
+    "spinal-core-connectorjs_type": "git+https://github.com/spinalcom/spinal-core-connectorjs_type.git",
+    "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
+    "spinal-models-ticket": "git+https://github.com/spinalcom/spinal-models-ticket.git",
+    "spinal-service-user": "git+https://github.com/spinalcom/spinal-service-user.git"
+  },
+  "description": "SpinalCOM service ticket. This service allow the handling of ticket inside a spinalcom environment.",
+  "devDependencies": {
+    "@types/node": "^10.12.12",
+    "chai": "^4.2.0",
+    "jsdoc-to-markdown": "^4.0.1",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.2.2"
+  },
+  "license": "SpinalCOM",
+  "main": "dist/index.js",
+  "name": "spinal-service-ticket",
+  "scripts": {
+    "test": " nyc  mocha $NODE_DEBUG_OPTION --recursive tests"
+  },
+  "types": "declarations/index.d.ts",
+  "version": "0.0.4"
+}

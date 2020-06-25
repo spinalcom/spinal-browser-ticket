@@ -1,0 +1,38 @@
+{
+  "_args": [
+    [
+      "git+https://github.com/spinalcom/spinal-models-cde.git",
+      "/home/spinalcom/project/spinal-browser-spinaltwin"
+    ]
+  ],
+  "_from": "git+https://github.com/spinalcom/spinal-models-cde.git",
+  "_id": "spinal-models-documentation@git+https://github.com/spinalcom/spinal-models-cde.git#145ec84d980887ab41fd1cc65d609f1737a60af6",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/spinal-models-documentation",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "git+https://github.com/spinalcom/spinal-models-cde.git",
+    "rawSpec": "git+https://github.com/spinalcom/spinal-models-cde.git",
+    "saveSpec": "git+https://github.com/spinalcom/spinal-models-cde.git",
+    "fetchSpec": "https://github.com/spinalcom/spinal-models-cde.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "/spinal-env-viewer-plugin-documentation-service"
+  ],
+  "_resolved": "git+https://github.com/spinalcom/spinal-models-cde.git#145ec84d980887ab41fd1cc65d609f1737a60af6",
+  "_spec": "git+https://github.com/spinalcom/spinal-models-cde.git",
+  "_where": "/home/spinalcom/project/spinal-browser-spinaltwin",
+  "author": "",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "cde.js",
+  "name": "spinal-models-documentation",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.2"
+}

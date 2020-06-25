@@ -1,0 +1,47 @@
+{
+  "_args": [
+    [
+      "git+https://github.com/spinalcom/spinal-core-system.git",
+      "/home/spinalcom/project/spinal-browser-spinaltwin"
+    ]
+  ],
+  "_from": "git+https://github.com/spinalcom/spinal-core-system.git",
+  "_id": "spinal-core-system@git+https://github.com/spinalcom/spinal-core-system.git#ec311c2fd9dda770e2e8319cb78496f113bc6f72",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/spinal-core-system",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "git+https://github.com/spinalcom/spinal-core-system.git",
+    "rawSpec": "git+https://github.com/spinalcom/spinal-core-system.git",
+    "saveSpec": "git+https://github.com/spinalcom/spinal-core-system.git",
+    "fetchSpec": "https://github.com/spinalcom/spinal-core-system.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git+https://github.com/spinalcom/spinal-core-system.git#ec311c2fd9dda770e2e8319cb78496f113bc6f72",
+  "_spec": "git+https://github.com/spinalcom/spinal-core-system.git",
+  "_where": "/home/spinalcom/project/spinal-browser-spinaltwin",
+  "author": "",
+  "bin": {
+    "spinal-register": "spinal-register.js"
+  },
+  "dependencies": {
+    "commander": "^2.15.1",
+    "fs-extra": "^5.0.0",
+    "q": "^1.5.1"
+  },
+  "description": "script to initialize a spinal core environnement.",
+  "license": "MIT",
+  "main": "main.js",
+  "name": "spinal-core-system",
+  "scripts": {
+    "postinstall": "npm run spinal-register",
+    "spinal-register": "spinal-register --launch-system",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.2"
+}
