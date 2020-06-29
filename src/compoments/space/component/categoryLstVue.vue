@@ -40,7 +40,7 @@ with this file. If not, see
                   class="tab"
                   border
                   style="width: 100%"
-                  header-cell-style="background-color: #f0f2f5;"
+                  :header-cell-style='{"background-color": "#f0f2f5"}'
                   @row-click="SeeEvent">
 
           <el-table-column prop=name
@@ -91,7 +91,9 @@ with this file. If not, see
 
         </el-table>
         <div v-else>
-          <roomLstVue :rooms="roomSelected"> </roomLstVue>
+          <roomLstVue :rooms="roomSelected.rooms"
+                      :color="roomSelected.color"
+                      @seeEvent="SeeEvent"> </roomLstVue>
         </div>
       </el-tab-pane>
       <el-tab-pane label="Dashboard">
@@ -168,23 +170,7 @@ export default {
     exportData() {
       //let excelRows = Object.assign({}, this.data);
       //excelRows.rooms = this.data.rooms.length;
-      let headers = [
-        {
-          key: "name",
-          header: "name",
-          width: 10
-        },
-        {
-          key: "rooms",
-          header: "Nombre de pièces",
-          width: 10
-        },
-        {
-          key: "surface",
-          header: "Surface",
-          width: 10
-        }
-      ];
+      let headers = this.getHeader();
       let excelData = [
         {
           name: "Tableau",
@@ -193,11 +179,7 @@ export default {
             {
               name: "Tableau",
               header: headers,
-              rows: this.data.map(gitu => {
-                let excelRows = Object.assign({}, gitu);
-                excelRows.rooms = gitu.rooms.length;
-                return excelRows;
-              })
+              rows: this.getRow()
             }
           ]
         }
@@ -209,16 +191,61 @@ export default {
     },
 
     seeRoomTable(roomData) {
-      this.roomSelected = roomData.rooms;
+      this.roomSelected = { rooms: roomData.rooms, color: roomData.color };
       this.$emit("addbreadcrumb", {
         name: roomData.name,
         click: () => {
-          this.seeRoomTable(roomData);
+          // this.seeRoomTable(roomData);
         }
       });
     },
     resetRoomSelected() {
       this.roomSelected = null;
+    },
+    getHeader() {
+      if (this.roomSelected) {
+        return [
+          {
+            key: "name",
+            header: "name",
+            width: 10
+          },
+          {
+            key: "surface",
+            header: "Surface",
+            width: 10
+          }
+        ];
+      } else {
+        return [
+          {
+            key: "name",
+            header: "name",
+            width: 10
+          },
+          {
+            key: "rooms",
+            header: "Nombre de pièces",
+            width: 10
+          },
+          {
+            key: "surface",
+            header: "Surface",
+            width: 10
+          }
+        ];
+      }
+    },
+    getRow() {
+      if (this.roomSelected) {
+        return this.roomSelected.rooms;
+      } else {
+        return this.data.map(gitu => {
+          let excelRows = Object.assign({}, gitu);
+          excelRows.rooms = gitu.rooms.length;
+          return excelRows;
+        });
+      }
     }
   },
   computed: {

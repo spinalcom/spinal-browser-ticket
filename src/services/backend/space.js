@@ -32,8 +32,40 @@ import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-ser
 
 import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 
-
 import q from "q";
+
+// // a partir de tous les contexte, on récupère les contexte de type groupe 
+// let roomsGroupContext = contexts.filter(context => {
+//     return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+// })
+
+// let Icontexts = roomsGroupContext.map(async (context) => {
+//     //console.log(context);
+//     return this.Icontext(context);
+// })
+// let res = await Promise.all(Icontexts);
+// await SpinalGraphService.waitForInitialization()
+// let contextNodes = await graph.getChildren("hasContext");
+// const cons = await groupManagerService.getGroupContexts(ROOM_TYPE)
+// const contexts = contextNodes.filter(context => {
+//   for (const con of cons) {
+//     let id = typeof con.id === "string" ? con.id : con.id.get()
+//     if (context.info.id.get() === id) return true
+//   }
+//   return false
+//   // return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+// })
+
+// // .then(el => {
+// //   return SpinalGraphService.getRealNode(el.id)
+// // });
+// console.log("contexts ", contexts);
+// const Icontexts = contexts.map(el => this.Icontext(el));
+// const res = await Promise.all(Icontexts)
+// this.initDefer.resolve(res);
+// console.log("resss", res);
+
+
 
 export default class Space {
 
@@ -46,7 +78,7 @@ export default class Space {
 
   async init(graph) {
 
-    // // a partir de tous les contexte, on récupère les contexte de type groupe 
+    // // a partir de tous les contexte, on récupère les contexte de type groupe
     // let roomsGroupContext = contexts.filter(context => {
     //     return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
     // })
@@ -168,16 +200,16 @@ export default class Space {
       color: group.color.get(),
       rooms: await Promise.all(arr3)
     }
-
   }
 
   getsurface(arr) {
     for (let attribute of arr) {
-      if (attribute.label.get() === "surface") {
+      if (attribute.label.get() === "surface" || attribute.label.get() === "area") {
         return parseFloat(attribute.value.get());
       }
     }
     return 0;
+
 
   }
 
@@ -232,5 +264,69 @@ export default class Space {
   //     }
 
 
+
+  ///////////////////////////////////////////////////////////
+  //                surface  utilities                     //
+  ///////////////////////////////////////////////////////////
+
+
+  getContextSurface(contextObject) {
+    let surface = 0;
+    for (const category of contextObject.categories) {
+      surface += this.getCategoriesSurface(category);
+    }
+
+    return surface;
+  }
+
+  getCategoriesSurface(categoryObject) {
+    let surface = 0;
+
+    for (const group of categoryObject.groups) {
+      surface += this.getGroupSurface(group);
+    }
+
+    return surface;
+  }
+
+  getGroupSurface(groupObject) {
+    let surface = 0;
+    for (const room of groupObject.rooms) {
+      surface += this.getRoomSurface(room);
+    }
+    return surface;
+  }
+
+  getRoomSurface(roomObject) {
+    return roomObject.surface ? roomObject.surface : 0;
+  }
+
+
+  ///////////////////////////////////////////////////////////
+  //                Rooms Count  utilities                 //
+  ///////////////////////////////////////////////////////////
+
+  getContextRoomCount(contextObject) {
+    let roomCount = 0;
+    for (const category of contextObject.categories) {
+      roomCount += this.getCategoriesRoomCount(category);
+    }
+
+    return roomCount;
+  }
+
+  getCategoriesRoomCount(categoryObject) {
+    let roomCount = 0;
+
+    for (const group of categoryObject.groups) {
+      roomCount += this.getGroupRoomCount(group);
+    }
+
+    return roomCount;
+  }
+
+  getGroupRoomCount(groupObject) {
+    return groupObject.rooms.length;
+  }
 
 }

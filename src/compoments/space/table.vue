@@ -27,7 +27,7 @@ with this file. If not, see
 
     <el-breadcrumb class="breadcrumb-style"
                    separator="/">
-      <el-breadcrumb-item><a @click="onclick(null)">Gestion de salle</a>
+      <el-breadcrumb-item><a @click="onclick(null)">Space Management</a>
       </el-breadcrumb-item>
       <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
                           :key="index"><a
@@ -39,7 +39,7 @@ with this file. If not, see
     <div class="root"
          v-if="selectCategorie == null">
 
-      <el-card class="box-card"
+      <!-- <el-card class="box-card"
                v-for="context in contextLst"
                :key=context.id>
 
@@ -54,8 +54,19 @@ with this file. If not, see
             {{contextCat.name}}
           </el-button>
         </div>
-      </el-card>
+      </el-card> -->
+
+      <tableau-context v-if="contextSelected === null"
+                       :contextLst="contextLst"
+                       @select="SelectContext">
+      </tableau-context>
+
+      <tableau-category v-else
+                        :contextSelected="contextSelected"
+                        @seeGroups="onclick"></tableau-category>
+
     </div>
+
     <div v-else>
       <!-- <el-button class="back-icon"
                  @click="onclick(null)"
@@ -74,39 +85,63 @@ with this file. If not, see
 <script>
 import SpinalBackend, { spinalBackEnd } from "../../services/spinalBackend";
 import categoryLstVue from "./component/categoryLstVue";
+import tableauContext from "./tableaucontext";
+import tableauCategory from "./tableaucategory";
 
 export default {
-  components: { categoryLstVue },
+  components: { categoryLstVue, tableauContext, tableauCategory },
   props: [],
   methods: {
     onclick(categorie) {
-      console.log("titititi", categorie);
-
       this.selectCategorie = categorie;
-      this.breadcrumbs = [];
+      // this.breadcrumbs = [];
       if (categorie) {
+        const categorieIndex = 1;
+        this.breadcrumbs.splice(categorieIndex);
+
         this.breadcrumbs = [
           ...this.breadcrumbs,
           {
             name: categorie.name,
             click: () => {
-              console.log("reeeeeeeeeeeeeeeeeeeefs", this.$refs);
               this.onclick(categorie);
               this.$refs.categoryListe.resetRoomSelected();
             }
           }
         ];
+      } else {
+        this.contextSelected = null;
+        this.breadcrumbs = [];
       }
     },
+
     addbreadcrumb(resultat) {
+      console.log("appelle de add breadcrubm");
       this.breadcrumbs = [...this.breadcrumbs, resultat];
+    },
+
+    SelectContext(context) {
+      this.breadcrumbs = [];
+      this.selectCategorie = null;
+      this.contextSelected = context;
+
+      const obj = {
+        name: context.name,
+        click: () => {
+          this.SelectContext(context);
+        }
+      };
+
+      this.breadcrumbs = [...this.breadcrumbs, obj];
+      this.contextSelected = context;
     }
   },
   data() {
     return {
       contextLst: [],
       selectCategorie: null,
-      breadcrumbs: []
+      breadcrumbs: [],
+      contextSelected: null
     };
   },
   async mounted() {
@@ -118,6 +153,7 @@ export default {
 <style scoped>
 .spacecon {
   width: 100%;
+  padding: 0 10px;
 }
 .card-content {
   display: flex;
@@ -132,6 +168,6 @@ export default {
 }
 .breadcrumb-style {
   font-size: 20px;
-  margin: 10px 0 10px 10px;
+  margin: 15px 0 20px 2px;
 }
 </style>
