@@ -20,20 +20,16 @@
  * You should have received a copy of the license along
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
- * 
- * taken from https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
  */
 
-export function isTouchDevice() {
-  var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
-  var mq = function (query) {
-    return window.matchMedia(query).matches;
-  }
-  if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-    return true;
-  }
-  // include the 'heartz' as a way to have a non matching MQ to help terminate the join
-  // https://git.io/vznFH
-  var query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join('');
-  return mq(query);
+var aesjs = require('aes-js');
+
+export function decriAes(k: number[], encryptedHex: string) {
+  const encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
+  const aesCtr = new aesjs.ModeOfOperation.ctr(k, new aesjs.Counter(5));
+  const decryptedBytes = aesCtr.decrypt(encryptedBytes);
+  return aesjs.utils.utf8.fromBytes(decryptedBytes);
+}
+export function decriB64(encryptedHex: string) {
+  return atob(encryptedHex);
 }

@@ -36,19 +36,38 @@ import {
   FLOOR_TYPE,
   ROOM_TYPE,
   EQUIPMENT_TYPE,
-  GEO_RELATIONS,
+  GEO_RELATIONS
 } from '../../constants';
 import { EventBus } from '../event';
 import { FileSystem } from 'spinal-core-connectorjs_type';
 import ProcessOnChange from '../utlils/ProcessOnChange';
 import throttle from 'lodash.throttle';
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { SpinalGraphService, SpinalNode } from 'spinal-env-viewer-graph-service';
+const anyWin: any = window;
+type nodeRef = {
+  name: string,
+  id: string,
+  server_id: number
+}
+type roomObject = {
+  items: Set<nodeRef>;
+  process: ProcessOnChange;
+}
+
 
 export default class BackEndSpatial {
+  buildingNode: SpinalNode<any>;
+  handleFloorsBinded: () => void;
+  floorsProcess: ProcessOnChange;
+  roomsProcess: Map<string, roomObject>
+  floorSelected: nodeRef
+  floors: nodeRef[];
+  building: nodeRef
+  handleFloorProm: Promise<void> = null;
+
   constructor() {
     this.buildingNode = null;
     this.handleFloorsBinded = this.handleFloors.bind(this);
-    this.handleFloorRoomsBinded = this.handleFloorRooms.bind(this);
     this.floorsProcess = new ProcessOnChange(this.handleFloorsBinded, { type: 'throttle', timeout: 2000 });
     this.roomsProcess = new Map();
     this.floorSelected = null;
@@ -59,8 +78,9 @@ export default class BackEndSpatial {
     const children = await graph.getChildren();
     for (const context of children) {
       if (context.info.type.get() === SPATIAL_CONTEXT_TYPE) {
+        // @ts-ignore
         SpinalGraphService._addNode(context);
-        return this.context = context;
+        return context;
       }
     }
   }
@@ -68,18 +88,18 @@ export default class BackEndSpatial {
   async getBuilding(contextgeo) {
     const buildings = await contextgeo.find([SITE_RELATION, BUILDING_RELATION],
       (obj) => {
-        return obj.info.type.get() === BUILDING_TYPE
+        return obj.info.type.get() === BUILDING_TYPE;
       });
-    return buildings[0]
+    return buildings[0];
   }
 
   async getFloors(buildingNode) {
     const floors = await buildingNode.find([ZONE_RELATION, FLOOR_RELATION],
       (obj) => {
         this.floorsProcess.add(obj, false);
-        return obj.info.type.get() === FLOOR_TYPE
+        return obj.info.type.get() === FLOOR_TYPE;
       });
-    return floors
+    return floors;
   }
 
 
@@ -107,16 +127,25 @@ export default class BackEndSpatial {
   }
 
   async handleFloors() {
+    if (this.handleFloorProm) {
+      return this.handleFloorProm
+    }
+    this.handleFloorProm = this._handleFloors();
+    return this.handleFloorProm;
+  }
+
+  private async _handleFloors() {
     const floors = await this.getFloors(this.buildingNode);
-    const res = []
+    const res = [];
     const updatefloor = throttle((floor, building) => {
       EventBus.$emit("side-bar-change", floor, building);
-    }, 1000)
-    const roomsProm = []
+    }, 1000);
+    const roomsProm: Promise<Set<nodeRef>>[] = [];
     for (const floor of floors) {
+      // @ts-ignore
       SpinalGraphService._addNode(floor);
       this.floorsProcess.add(floor, false);
-      roomsProm.push(this.handleFloorRooms(floor))
+      roomsProm.push(this.handleFloorRooms(floor));
       res.push({
         name: floor.info.name.get(),
         id: floor.info.id.get(),
@@ -125,13 +154,20 @@ export default class BackEndSpatial {
       });
       updatefloor(res, this.building);
     }
+
     const floorsChildren = await Promise.all(roomsProm);
     for (let idx = 0; idx < floorsChildren.length; idx++) {
-      res[idx].children.push(...(floorsChildren[idx]))
+      const floorsChild = floorsChildren[idx];
+      const floor = res[idx];
+      for (const child of floorsChild) {
+        floor.children.push(child)
+      }
     }
     this.floors = res;
     updatefloor(res, this.building);
   }
+
+
 
   async handleFloorRooms(floorModel) {
     let roomsProcess = this.getRoomProcess(floorModel);
@@ -140,6 +176,7 @@ export default class BackEndSpatial {
 
     roomsProcess.process.add(floorModel, false);
     for (const room of roomsModels) {
+      // @ts-ignore
       SpinalGraphService._addNode(room);
       roomsProcess.process.add(room, false);
       this.existInSet(roomsProcess.items, 'id', {
@@ -151,7 +188,7 @@ export default class BackEndSpatial {
     EventBus.$emit("side-bar-room-change", roomsProcess.items, floorModel.info.id.get());
     return roomsProcess.items;
   }
-  existInSet(setObj, key, objToAdd) {
+  existInSet<T>(setObj: Set<T>, key, objToAdd: T): T {
     for (const obj of setObj) {
       if (obj[key] === objToAdd[key]) {
         for (const key1 in objToAdd) {
@@ -171,7 +208,7 @@ export default class BackEndSpatial {
     if (this.roomsProcess.has(floorId)) {
       return this.roomsProcess.get(floorId);
     } else {
-      const item = {
+      const item: roomObject = {
         items: new Set(),
         process: new ProcessOnChange(() => {
           return this.handleFloorRooms(floorModel);
@@ -187,10 +224,11 @@ export default class BackEndSpatial {
    * @memberof BackEndSpatial
    * @returns { Promise<{model, selection: number[] }[]>}
    */
-  async getLstByModel(item) {
+  async getLstByModel(item, addRoomRef = false) {
     const node = getNodeFromItem(item);
-    const listNode = await node.find(GEO_RELATIONS, (n) => {
-      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject")
+    const relations = [...GEO_RELATIONS, "hasReferenceObject.ROOM"]
+    const listNode = await node.find(relations, (n) => {
+      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
     });
     return sortBIMObjectByModel(listNode);
   }
@@ -204,18 +242,18 @@ function getNodeFromItem(item) {
   return FileSystem._objects[item.server_id];
 }
 
-function sortBIMObjectByModel(arrayOfBIMObject) {
+function sortBIMObjectByModel(arrayOfBIMObject): { selection: number[], model }[] {
   let arrayModel = [];
   for (const nodeBIMObject of arrayOfBIMObject) {
     const bimFileId = nodeBIMObject.info.bimFileId.get();
     const dbId = nodeBIMObject.info.dbid.get();
-    const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
+    const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
     const obj = getOrAddModelIfMissing(arrayModel, model);
     obj.selection.push(dbId);
   }
   return arrayModel;
 }
-function getOrAddModelIfMissing(array, model) {
+function getOrAddModelIfMissing(array, model): { selection: number[], model } {
   for (const obj of array) {
     if (obj.model === model) {
       return obj;

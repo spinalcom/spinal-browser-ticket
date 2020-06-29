@@ -23,24 +23,24 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="side-bar-compomenet-container"
-       v-loading="loading">
+  <div v-loading="loading"
+       class="side-bar-compomenet-container">
     <div class="side-bar-header-container">
       <el-button class="button-icon-building-focus"
                  type="info"
                  icon="el-icon-s-home"
                  size="small">
-        {{buildingName}}
+        {{ buildingName }}
       </el-button>
     </div>
-    <el-menu class="spinal-side-bar-menu spinal-scrollbar"
+    <el-menu ref="sideBarMenu"
+             class="spinal-side-bar-menu spinal-scrollbar"
              background-color="#303133"
-             :collapse=collapse
+             :collapse="collapse"
              text-color="#fff"
              active-text-color="#ffd04b"
-             ref="sideBarMenu"
-             @select="onSelect"
              :unique-opened="uniqueOpened"
+             @select="onSelect"
              @open="onOpen"
              @close="onClose">
       <el-popover v-for="floor in data"
@@ -51,7 +51,7 @@ with this file. If not, see
         <el-submenu slot="reference"
                     :index="floor.id">
           <template slot="title">
-            <span>{{floor.name}}</span>
+            <span>{{ floor.name }}</span>
           </template>
           <el-popover v-for="room in floor.children"
                       :key="room.id"
@@ -62,7 +62,7 @@ with this file. If not, see
                           :class="{'side-bar-selected-room-item' : room.id === roomIdSelected}"
                           :index="room.id">
               <template slot="title">
-                <span>{{room.name}}</span>
+                <span>{{ room.name }}</span>
               </template>
             </el-menu-item>
           </el-popover>
@@ -72,11 +72,11 @@ with this file. If not, see
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { EventBus } from "../../services/event";
 
 export default {
-  name: "sidebarFloorList",
+  name: "SidebarFloorList",
   data() {
     return {
       loading: true,
@@ -97,6 +97,14 @@ export default {
         return "Batiment";
       }
     }
+  },
+  mounted() {
+    this.sideBarChangeBinded = this.sideBarChange.bind(this);
+    EventBus.$on("side-bar-change", this.sideBarChangeBinded);
+    EventBus.$emit("get-side-bar-floors-data");
+  },
+  beforeDestroy() {
+    EventBus.$off("side-bar-change", this.sideBarChangeBinded);
   },
   methods: {
     onSelect(a, [floorId, roomId]) {
@@ -134,14 +142,6 @@ export default {
         if (room.id === roomId) return room;
       }
     }
-  },
-  mounted() {
-    this.sideBarChangeBinded = this.sideBarChange.bind(this);
-    EventBus.$on("side-bar-change", this.sideBarChangeBinded);
-    EventBus.$emit("get-side-bar-floors-data");
-  },
-  beforeDestroy() {
-    EventBus.$off("side-bar-change", this.sideBarChangeBinded);
   }
 };
 </script>

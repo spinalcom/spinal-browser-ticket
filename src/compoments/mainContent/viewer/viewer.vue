@@ -23,8 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="viewerContainer"
-       id="autodesk_forge_viewer">
+  <div id="autodesk_forge_viewer"
+       class="viewerContainer">
   </div>
 </template>
 
@@ -36,11 +36,12 @@ import { ForgeViewer } from "spinal-forge-viewer";
 import { spinalBackEnd } from "../../../services/spinalBackend";
 import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
 import { EventBus } from "../../../services/event";
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { DISABLE_VIEWER } from "../../../constants";
 
 import "spinal-env-viewer-plugin-forge";
 export default {
-  name: "appViewer",
+  name: "AppViewer",
   props: ["isMinimized"],
   data() {
     this.elementColored = new Map();
@@ -68,28 +69,30 @@ export default {
   mounted() {
     EventBus.$on("see", data => {
       this.isoLate(data.ids);
-      if (this.elementIsColored(data.id)) {
-        this.restorColor(data.ids, data.id);
-      } else {
-        this.colorsRooms(data.ids, data.color, data.id);
-      }
+      this.restoreAllColor();
+      // if (this.elementIsColored(data.id)) {
+      //   this.restorColor(data.ids, data.id);
+      // } else {
+      this.colorsRooms(data.ids, data.color, data.id);
+      // }
     });
 
     EventBus.$on("seeAll", data => {
-      let ids = [];
       if (this.allElementAreColored(data)) {
-        data.forEach(element => {
-          ids.push(...element.ids);
-          this.restorColor(element.ids, element.id);
-        });
+        this.restoreAllColor();
+        //   data.forEach(element => {
+        //     ids.push(...element.ids);
+        //     this.restorColor(element.ids, element.id);
+        //   });
       } else {
+        let ids = [];
+        this.restoreAllColor();
         data.forEach(element => {
           ids.push(...element.ids);
           this.colorsRooms(element.ids, element.color, element.id);
         });
+        this.isoLate(ids);
       }
-
-      this.isoLate(ids);
     });
 
     return this.createViewer();
@@ -137,9 +140,11 @@ export default {
       await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
       const scenes = await spinalBackEnd.viewerBack.getScenes();
       SpinalGraphService._addNode(scenes[0]);
-      await window.spinal.SpinalForgeViewer.loadModelFromNode(
-        scenes[0].info.id.get()
-      );
+      if (!DISABLE_VIEWER) {
+        await window.spinal.SpinalForgeViewer.loadModelFromNode(
+          scenes[0].info.id.get()
+        );
+      }
       await spinalBackEnd.waitInit();
       // const scenes = await spinalBackEnd.viewerBack.getScenes();
       // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
@@ -165,7 +170,7 @@ export default {
     },
 
     restorColor(roomsList, id) {
-      this.elementColored.set(id, undefined);
+      this.elementColored.delete(id);
       roomsList.forEach(child => {
         let model = window.spinal.BimObjectService.getModelByBimfile(
           child.bimFileId
@@ -174,25 +179,45 @@ export default {
         model.setThemingColor(child.dbid, new THREE.Vector4(0, 0, 0, 0), true);
       });
     },
+    restoreAllColor() {
+      for (const [, lst] of this.elementColored) {
+        for (const child of lst) {
+          let model = window.spinal.BimObjectService.getModelByBimfile(
+            child.bimFileId
+          );
+
+          model.setThemingColor(
+            child.dbid,
+            new THREE.Vector4(0, 0, 0, 0),
+            true
+          );
+        }
+      }
+      this.elementColored.clear();
+      this.viewer.impl.invalidate(true, true, true);
+    },
 
     isoLate(roomsList) {
       let dbIds = roomsList.map(el => el.dbid);
+      if (roomsList.length === 0) {
+        this.viewer.isolate(dbIds, this.viewer.model);
+      } else {
+        let model = window.spinal.BimObjectService.getModelByBimfile(
+          roomsList[0].bimFileId
+        );
 
-      let model = window.spinal.BimObjectService.getModelByBimfile(
-        roomsList[0].bimFileId
-      );
-
-      this.viewer.isolate(dbIds, model);
+        this.viewer.isolate(dbIds, model);
+      }
     },
 
     convertHewToRGB(hex) {
       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result
         ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-          }
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        }
         : null;
     },
 

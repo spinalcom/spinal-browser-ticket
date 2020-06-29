@@ -20,23 +20,21 @@
  * You should have received a copy of the license along
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
+ * 
+ * taken from https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript/4819886#4819886
  */
 
-export default {
-  "sidebar.topButton.buildingNameDefault": "Building",
-  "error.returntodrive.confirmbtntext": "Retrun to drive",
-  "error.returntodrive.text": "Imposible to load the digital twin.",
-  "error.returntodrive.title": "Error",
-
-
-
-  "geographicContext": "Context",
-  "geographicBuilding": "Building",
-  "geographicFloor": "Floor",
-  "geographicRoom": "Room",
-  "BIMObject": "Object",
-  "Area": "Area",
-  "Name": "Name"
-
-};
-
+export function isTouchDevice() {
+  var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
+  var mq = function (query) {
+    return window.matchMedia(query).matches;
+  }
+  // @ts-ignore
+  if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+    return true;
+  }
+  // include the 'heartz' as a way to have a non matching MQ to help terminate the join
+  // https://git.io/vznFH
+  var query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join('');
+  return mq(query);
+}

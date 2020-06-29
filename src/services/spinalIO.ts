@@ -35,8 +35,7 @@ import {
 let $ = require("jquery");
 import axios from "axios";
 
-function getParameterByName(name, url) {
-  if (!url) url = window.location.href;
+function getParameterByName(name: string, url: string = window.location.href) {
   name = name.replace(/[[\]]/g, '\\$&');
   var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
     results = regex.exec(url);
@@ -46,13 +45,18 @@ function getParameterByName(name, url) {
 }
 
 class SpinalIO {
+  loadPromise: Map<string, Promise<spinal.Model>>;
+  loadedPtr: Map<number, Promise<spinal.Model>>;
+  connectPromise: Promise<void>;
+  user: { username: string, password: string }
+  conn: spinal.FileSystem;
+
   constructor() {
-    this.loadPromise = {};
-    this.loadedPtr = {};
+    this.loadPromise = new Map();
+    this.loadedPtr = new Map();
     this.connectPromise = null;
     this.user = null;
     this.conn = null;
-    this.serverHost = null;
   }
   decriJson(encryptedHex) {
     try {
@@ -96,7 +100,7 @@ class SpinalIO {
           }).then(response => {
             let id = parseInt(response.data);
             const host = serverHost.replace(/https?:\/\//, "");
-            this.conn = window.spinalCore.connect(
+            this.conn = spinalCore.connect(
               `http://${id}:${user.password}@${host}/`
             );
             resolve();
@@ -113,7 +117,7 @@ class SpinalIO {
     });
     return this.connectPromise;
   }
-  getModelPath() {
+  getModelPath(): string {
     const cryptedPath = getParameterByName('path');
     if (!cryptedPath) throw new Error('No "path" attribute found in the url');
     const k = [10, 95, 124, 68, 55, 24, 90, 57, 34, 65, 81, 22, 75, 7, 110,
@@ -129,23 +133,23 @@ class SpinalIO {
     }
   }
 
-  getModel() {
+  getModel(): Promise<spinal.Model> {
     try {
       const path = this.getModelPath();
       return this.load(path);
     } catch (e) {
       return this.load('/__users__/public/digital_twin/default');
-      // return this.load('/__users__/admin/Digital twin'); // TEST
     }
   }
 
-  load(path) {
-    if (typeof this.loadPromise[path] !== 'undefined') {
-      return this.loadPromise[path];
+  async load(path: string): Promise<spinal.Model> {
+    await this.connect();
+    if (this.loadPromise.has(path)) {
+      return this.loadPromise.get(path);
     }
-    const promisefunc = async (resolve, reject) => {
+
+    const prom: Promise<spinal.Model> = new Promise((resolve, reject) => {
       try {
-        await this.connect();
         spinalCore.load(
           this.conn, path,
           (model) => {
@@ -157,38 +161,37 @@ class SpinalIO {
       } catch (e) {
         reject(e);
       }
-    };
-    this.loadPromise[path] = new Promise(promisefunc);
-    return this.loadPromise[path];
+    });
+    this.loadPromise.set(path, prom)
+    return prom;
   }
 
-  loadPtr(ptr) {
-    if (ptr instanceof File) return this.loadedPtr(ptr._ptr);
-    const server_id = ptr.data.value;
-
-    if (typeof this.loadedPtr[server_id] !== 'undefined') {
-      return this.loadedPtr[server_id];
+  async loadPtr(ptr: spinal.Ptr<any> | spinal.Pbr<any>): Promise<spinal.Model> {
+    if (ptr instanceof File) return this.loadPtr(ptr._ptr);
+    await this.connect();
+    const server_id: number = ptr.data.value;
+    if (this.loadedPtr.has(server_id)) {
+      return this.loadedPtr.get(server_id)
     }
-    const promFunc = async (resolve, reject) => {
+    const prom: Promise<spinal.Model> = new Promise((resolve, reject) => {
       try {
-        await this.connect();
         this.conn.load_ptr(
           server_id,
           (model) => {
-            resolve(model);
-          },
-          () => {
-            reject(new Error(`LoadedPtr Error server_id: '${server_id}'`));
+            if (!model)
+              reject(new Error(`LoadedPtr Error server_id: '${server_id}'`));
+            else resolve(model);
           });
 
       } catch (e) {
         reject(e);
       }
-    };
-    this.loadedPtr[server_id] = new Promise(promFunc);
-    return this.loadedPtr[server_id];
+    });
+    this.loadedPtr.set(server_id, prom)
+    return prom;
   }
 }
 export const spinalIO = new SpinalIO();
-if (!window.spinal) { window.spinal = {}; }
-if (!window.spinal.spinalSystem) { window.spinal.spinalSystem = spinalIO; }
+var anyWin: any = window;
+if (!anyWin.spinal) { anyWin.spinal = {}; }
+if (!anyWin.spinal.spinalSystem) { anyWin.spinal.spinalSystem = spinalIO; }

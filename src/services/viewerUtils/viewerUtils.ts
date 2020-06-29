@@ -24,13 +24,26 @@
 
 import rotateTo from './rotateTo'
 import q from "q";
+type RotateToFace = "top" | 'front' | "right" | "left" | "back" | 'bottom' |
+  "top,front" | "top right" | "top,left" | "top,back" |
+  "bottom,front" | "bottom,right" | "bottom,left" | "bottom,back" |
+  "left,front" | "front,right" | "right,back" | "back,left" |
+  "front,top,right" | "back,top,right" | "front,top,left" |
+  "back,top,left" | "front,bottom,right" | "back,bottom,right" |
+  "front,bottom,left" | "back,bottom,left"
 
 export class ViewerUtils {
+  elementColored: Set<{model, dbIds: number[]}> = new Set();
+  restoreColorMaterialBinded: () => void;
+  materials = {};
+  // Map<Model, Map<colorString, Set<dbIdString > > >
+  modelMap: Map<any, Map<string, Set<number>>> = new Map()
+  initialized = q.defer();
+  viewer
+
+
   constructor() {
     this.restoreColorMaterialBinded = this._restoreColorMaterial.bind(this);
-    this.materials = {};
-    this.modelMap = new Map(); // Map<Model, Map<colorString, Set<dbIdString > > >
-    this.initialized = q.defer();
   }
   initViewer(viewer) {
     this.viewer = viewer;
@@ -46,7 +59,7 @@ export class ViewerUtils {
   }
 
   /**
-   * @param {string} face - "top", 'front', "right", "left", "back", 'bottom',
+   * @param {RotateToFace} face - "top", 'front', "right", "left", "back", 'bottom',
   "top,front", "top right", "top,left", "top,back",
   "bottom,front", "bottom,right", "bottom,left", "bottom,back",
   "left,front", "front,right", "right,back", "back,left",
@@ -56,7 +69,8 @@ export class ViewerUtils {
    * @returns Promise<void>
    * @memberof ViewerUtils
    */
-  rotateTo(face) {
+  rotateTo(face: RotateToFace) {
+    if (!this.viewer) return;
     return rotateTo.call(this.viewer.viewCubeUi.cube, this.viewer, face);
   }
 
@@ -65,13 +79,15 @@ export class ViewerUtils {
    * @memberof ViewerUtils
    * @returns Promise<void>
    */
-  async fitToView(selections) {
+  async fitToView(selections?: number[] | { model, selection: number[] }[]) {
+    if (!this.viewer) return;
     this.viewer.fitToView(selections);
   }
   /**
    * @memberof ViewerUtils
    */
   clearSelection() {
+    if (!this.viewer) return;
     this.viewer.clearSelection();
   }
   /**
@@ -82,6 +98,7 @@ export class ViewerUtils {
    * @memberof ViewerUtils
    */
   async selectObjects(lstByModel) {
+    if (!this.viewer) return;
     this.clearSelection();
     for (const { model, selection } of lstByModel) {
       model.selector.setSelection(selection, model, "selectOnly");
@@ -94,6 +111,7 @@ export class ViewerUtils {
    * @memberof ViewerUtils
    */
   isolateObjects(lstByModel) {
+    if (!this.viewer) return;
     for (const { model, selection } of lstByModel) {
       if (selection.length > 0) {
         this.viewer.isolate(selection, model);
@@ -110,15 +128,56 @@ export class ViewerUtils {
    * @memberof ViewerUtils
    */
   showAll() {
+    if (!this.viewer) return;
     this.viewer.showAll();
   }
 
+  convertHewToRGB(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      }
+      : null;
+  }
+
+  colorThemingItems(model, color: string, dbIds: number[]) {
+    this.elementColored.add({model, dbIds});
+    const _color = this.convertHewToRGB(color);
+
+    dbIds.forEach(dbId => {
+      model.setThemingColor(
+        dbId,
+        new window.THREE.Vector4(_color.r / 255, _color.g / 255, _color.b / 255, 0.7),
+        true
+      );
+    });
+
+  }
+  restoreColorThemingItems() {
+    for (const {model, dbIds} of this.elementColored) {
+      for (const dbid of dbIds) {
+        model.setThemingColor(
+          dbid,
+          new window.THREE.Vector4(0, 0, 0, 0),
+          true
+        );
+      }
+    }
+    this.elementColored.clear();
+    this.viewer.impl.invalidate(true, true, true);
+  }
+
+
   /**
    * color in a overlay then remove automatically color after an user "click"
-   * @param {{model, color: string, dbid: number}[]} items
+   * @param {{model, color: string, dbId: number}[]} items
    * @memberof ViewerUtils
    */
-  colorItems(items) {
+  colorItems(items: { model, color: string, dbId: number }[]) {
+    if (!this.viewer) return;
     for (const item of items) {
       this._addTobDIdColor(item.model, item.dbId, item.color);
     }
@@ -132,7 +191,7 @@ export class ViewerUtils {
    * @returns {string}
    * @memberof ViewerUtils
    */
-  _cutHex(h) {
+  _cutHex(h: string) {
     return h.charAt(0) == "#" ? h.substring(1, 7) : h;
   }
   /**
@@ -141,8 +200,8 @@ export class ViewerUtils {
    * @returns
    * @memberof ViewerUtils
    */
-  _addMaterial(color, id) {
-    this.materials[id] = new THREE.MeshPhongMaterial({ color });
+  _addMaterial(color: string, id: string): THREE.MeshPhongMaterial {
+    this.materials[id] = new window.THREE.MeshPhongMaterial({ color });
 
     this.viewer.impl.createOverlayScene(id, this.materials[id], this.materials[id]);
     return this.materials[id];
@@ -191,7 +250,7 @@ export class ViewerUtils {
             let it = model.getData().instanceTree;
             it.enumNodeFragments(dbId, (fragId) => {
               var renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
-              renderProxy[id] = new THREE.Mesh(renderProxy.geometry, material);
+              renderProxy[id] = new window.THREE.Mesh(renderProxy.geometry, material);
               renderProxy[id].matrix.copy(renderProxy.matrixWorld);
               renderProxy[id].matrixWorldNeedsUpdate = true;
               renderProxy[id].matrixAutoUpdate = false;

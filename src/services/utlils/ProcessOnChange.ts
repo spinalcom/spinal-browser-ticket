@@ -35,6 +35,8 @@ const debounce = require('lodash.debounce');
  * @extends {Process}
  */
 export default class ProcessOnChange extends Process {
+  _models: spinal.Model[]
+  fctOnChange: () => void
   /**
    *Creates an instance of ProcessOnChange.
    * @param {fctOnChange} fctOnChange
@@ -45,7 +47,7 @@ export default class ProcessOnChange extends Process {
    *   })} [option]
    * @memberof ProcessOnChange
    */
-  constructor(fctOnChange, option) {
+   constructor(fctOnChange, option) {
     super(new Model, false);
     this._models = [];
     if (typeof option !== 'undefined') {
