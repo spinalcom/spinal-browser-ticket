@@ -1,19 +1,19 @@
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -23,6 +23,7 @@
  */
 
 function clamp(number, lower, upper) {
+  // @ts-ignore
   if (Math.clamp) { return Math.clamp(number, lower, upper); }
   if (number === number) {
     if (upper !== undefined) {
@@ -110,7 +111,7 @@ export default function createDragElement(elmnt, headerElem) {
         clamp(
           perCent(right, elmnt.parentElement.clientWidth),
           perCent(8, elmnt.parentElement.clientWidth),
-          perCent(elmnt.parentElement.clientWidth - elmnt.clientWidth - 8, elmnt.parentElement.clientWidth),
+          perCent(elmnt.parentElement.clientWidth - elmnt.clientWidth - 8, elmnt.parentElement.clientWidth)
         ) + "%";
     } else {
       elmnt.style.right = "auto";
@@ -128,7 +129,7 @@ export default function createDragElement(elmnt, headerElem) {
         clamp(
           perCent(right, elmnt.parentElement.clientHeight),
           perCent(8, elmnt.parentElement.clientHeight),
-          perCent(elmnt.parentElement.clientHeight - elmnt.clientHeight - 8, elmnt.parentElement.clientHeight),
+          perCent(elmnt.parentElement.clientHeight - elmnt.clientHeight - 8, elmnt.parentElement.clientHeight)
         ) + "%";
     } else {
       elmnt.style.bottom = "auto";

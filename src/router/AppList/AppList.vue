@@ -26,10 +26,10 @@ with this file. If not, see
   <div class="applist-main-container">
     <div class="applist-container">
       <router-link v-for="route in routes"
-                   :index="route.name"
                    :key="route.path"
-                   :to="route.path"
                    v-ripple
+                   :index="route.name"
+                   :to="route.path"
                    class="router-link-btn">
         <el-card :body-style="{ padding: '0px' }"
                  shadow="always">
@@ -37,7 +37,7 @@ with this file. If not, see
             <svg class="app-item-image"></svg>
           </div>
           <div class="app-item-text">
-            <span>{{route.name}}</span>
+            <span>{{ route.name }}</span>
           </div>
         </el-card>
       </router-link>
@@ -45,13 +45,13 @@ with this file. If not, see
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { routes } from "../router";
 export default {
+  name: "AppList",
   data() {
     return {};
   },
-  name: "AppList",
   computed: {
     routes() {
       return routes.filter(e => !e.redirect && this.$route.name !== e.name);

@@ -24,20 +24,22 @@
 
 import { EventBus } from "../../services/event";
 import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
-import { spinalBackEnd } from '../../services/spinalBackend'
+import { spinalBackEnd } from '../../services/spinalBackend';
 EventBus.$on('sidebar-selected-item', async (item) => {
   if (item) {
-    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item)
+    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
     await viewerUtils.rotateTo('top');
     viewerUtils.fitToView(lstByModel);
   }
-})
+});
 EventBus.$on('sidebar-mouseover-item', async (item) => {
-  const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item)
+  const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
   viewerUtils.selectObjects(lstByModel);
-})
+});
 EventBus.$on('sidebar-homeSelect', async (item) => {
+  console.log('sidebar-homeSelect', item);
+  
   if (!item) {
     const face = 'front,top,right';
     await viewerUtils.waitInitialized();
@@ -45,9 +47,9 @@ EventBus.$on('sidebar-homeSelect', async (item) => {
     await viewerUtils.rotateTo(face);
     return viewerUtils.fitToView();
   } else {
-    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item)
+    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
     await viewerUtils.rotateTo('top');
     viewerUtils.fitToView(lstByModel);
   }
-})
+});

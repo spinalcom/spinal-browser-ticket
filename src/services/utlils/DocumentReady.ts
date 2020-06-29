@@ -1,20 +1,19 @@
-"use strict";
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -57,7 +56,7 @@ function readyStateChange() {
   }
 }
 
-function DocumentReady(callback, context) {
+function DocumentReady(callback, context?) {
   if (typeof callback !== "function") {
     throw new TypeError("callback for docReady(fn) must be a function");
   }
@@ -79,7 +78,8 @@ function DocumentReady(callback, context) {
   // IE only safe when readyState is "complete", others safe when readyState is "interactive"
   if (
     document.readyState === "complete" ||
-    (!document.attachEvent && document.readyState === "interactive")
+      // @ts-ignore
+      (!document.attachEvent && document.readyState === "interactive")
   ) {
     setTimeout(ready, 1);
   } else if (!readyEventHandlersInstalled) {
@@ -91,7 +91,9 @@ function DocumentReady(callback, context) {
       window.addEventListener("load", ready, false);
     } else {
       // must be IE
+      // @ts-ignore
       document.attachEvent("onreadystatechange", readyStateChange);
+      // @ts-ignore
       window.attachEvent("onload", ready);
     }
     readyEventHandlersInstalled = true;

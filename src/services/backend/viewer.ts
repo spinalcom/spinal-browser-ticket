@@ -25,13 +25,15 @@
 import q from "q";
 import {
   SCENE_RELATION_CONTEXT_TYPE,
-  SCENE_RELATION_NAME,
+  SCENE_RELATION_NAME
   // PART_RELATION_NAME
 } from "../../constants";
 // import { spinalIO } from '../spinalIO';
 export default class BackEndViewer {
+  initDefer = q.defer();
+  context
+  
   constructor() {
-    this.initDefer = q.defer();
   }
   async getContext(graph) {
     const children = await graph.getChildren();

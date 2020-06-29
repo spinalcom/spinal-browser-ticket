@@ -24,7 +24,8 @@
 
 import "babel-polyfill";
 import Vue from "vue";
-import App from "./app.vue";
+  // @ts-ignore
+  import App from "./app.vue";
 import ElementUI from 'element-ui';
 import VTooltip from 'v-tooltip';
 import { i18n } from "./services/i18n";
@@ -53,7 +54,9 @@ Vue.use(BootstrapVue)
 spinalBackend.init();
 
 new Vue({
+  // @ts-ignore
   i18n,
+  // @ts-ignore
   router,
   render: h => h(App)
 }).$mount('#app');

@@ -27,23 +27,29 @@ import { SpinalGraph } from 'spinal-model-graph';
 import BackEndSpatial from './backend/spatial';
 import BackEndViewer from './backend/viewer';
 import BackEndSpace from "./backend/space";
-
+import BackEndInventory from './backend/Inventory';
 import q from "q";
 
 class SpinalBackEnd {
+  graph: SpinalGraph<any> = null;
+  spatialBack = new BackEndSpatial();
+  viewerBack = new BackEndViewer();
+  spaceBack = new BackEndSpace();
+  InventoryBack = new BackEndInventory();
+  initDefer = q.defer();
+
   constructor() {
-    this.graph = null;
-    this.spatialBack = new BackEndSpatial();
-    this.viewerBack = new BackEndViewer();
-    this.spaceBack = new BackEndSpace();
-    this.initDefer = q.defer();
   }
 
   async init() {
-
     try {
       const graph = await this.getGraph();
-      await Promise.all([this.spatialBack.init(graph), this.viewerBack.init(graph), this.spaceBack.init(graph)]);
+      await Promise.all([
+        this.spatialBack.init(graph),
+        this.viewerBack.init(graph),
+        this.InventoryBack.init(graph),
+        this.spaceBack.init(graph)
+      ]);
       this.initDefer.resolve();
     } catch (error) {
       this.initDefer.reject(error);

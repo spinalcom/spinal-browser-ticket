@@ -23,8 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container class="body-container"
-                v-loading="loading">
+  <el-container v-loading="loading"
+                class="body-container">
     <el-header class="main-header">
       <spinal-header></spinal-header>
     </el-header>
@@ -39,28 +39,28 @@ with this file. If not, see
   </el-container>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from "vue";
-import spinalHeader from "./compoments/header/header";
-import spinalSideBar from "./compoments/sidebar/sidebar";
+import spinalHeader from "./compoments/header/header.vue";
+import spinalSideBar from "./compoments/sidebar/sidebar.vue";
 import spinalBackEnd from "./services/spinalBackend";
-import spinalNavbar from "./compoments/navbar/spinalNavbar";
-import mainContent from "./compoments/mainContent/index";
+import spinalNavbar from "./compoments/navbar/spinalNavbar.vue";
+import mainContent from "./compoments/mainContent/index.vue";
 import { errorDialog } from "./services/utlils/errorDialog";
 import DocumentReady from "./services/utlils/DocumentReady";
 import { getDefaultLanguage } from "./services/i18n";
 
 export default Vue.extend({
-  data() {
-    return {
-      loading: true
-    };
-  },
   components: {
     "spinal-header": spinalHeader,
     "spinal-side-bar": spinalSideBar,
     mainContent,
     spinalNavbar
+  },
+  data() {
+    return {
+      loading: true
+    };
   },
   async mounted() {
     try {
