@@ -105,6 +105,23 @@ export default {
         .getDataFilterItem(item)
         .then(result => {
           this.contextLst = result;
+
+          if (this.contextSelected) {
+            for (const context of this.contextLst) {
+              if (this.contextSelected.id === context.id) {
+                const selectCategorie = this.selectCategorie;
+                this.SelectContext(context);
+                if (selectCategorie) {
+                  for (const cat of this.contextSelected.categories) {
+                    if (selectCategorie.id === cat.id) {
+                      this.onclick(cat);
+                    }
+                  }
+                }
+                break;
+              }
+            }
+          }
         })
         .catch(err => {
           console.error(err);

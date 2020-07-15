@@ -162,10 +162,7 @@ export default class Space {
     }
 
     const idsAGarder = item.children.map(obj => obj.id);
-
     console.log("getDataFilterItem Item node", itemNode);
-
-
     console.log("getDataFilterItem data", data);
     const tmp = [];
     for (const d of data) {
@@ -180,7 +177,7 @@ export default class Space {
           groups.push({
             rooms,
             id: grp.id,
-            naùe: grp.naùe
+            name: grp.name
           });
         }
         cats.push({
