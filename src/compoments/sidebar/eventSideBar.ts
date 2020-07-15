@@ -26,6 +26,7 @@ import { EventBus } from "../../services/event";
 import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
 import { spinalBackEnd } from '../../services/spinalBackend';
 EventBus.$on('sidebar-selected-item', async (item) => {
+
   if (item) {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
@@ -38,8 +39,7 @@ EventBus.$on('sidebar-mouseover-item', async (item) => {
   viewerUtils.selectObjects(lstByModel);
 });
 EventBus.$on('sidebar-homeSelect', async (item) => {
-  console.log('sidebar-homeSelect', item);
-  
+
   if (!item) {
     const face = 'front,top,right';
     await viewerUtils.waitInitialized();

@@ -1,19 +1,19 @@
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -29,12 +29,12 @@ import { groupManagerService } from "spinal-env-viewer-plugin-group-manager-serv
 
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-
+import { FileSystem } from 'spinal-core-connectorjs_type';
 import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 
 import q from "q";
 
-// // a partir de tous les contexte, on récupère les contexte de type groupe 
+// // a partir de tous les contexte, on récupère les contexte de type groupe
 // let roomsGroupContext = contexts.filter(context => {
 //     return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
 // })
@@ -88,24 +88,24 @@ export default class Space {
     //     return this.Icontext(context);
     // })
     // let res = await Promise.all(Icontexts);
-    await SpinalGraphService.waitForInitialization()
+    await SpinalGraphService.waitForInitialization();
     let contextNodes = await graph.getChildren("hasContext");
-    const cons = await groupManagerService.getGroupContexts(ROOM_TYPE)
+    const cons = await groupManagerService.getGroupContexts(ROOM_TYPE);
     const contexts = contextNodes.filter(context => {
       for (const con of cons) {
-        let id = typeof con.id === "string" ? con.id : con.id.get()
-        if (context.info.id.get() === id) return true
+        let id = typeof con.id === "string" ? con.id : con.id.get();
+        if (context.info.id.get() === id) return true;
       }
-      return false
+      return false;
       // return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
-    })
+    });
 
     // .then(el => {
     //   return SpinalGraphService.getRealNode(el.id)
     // });
     console.log("contexts ", contexts);
     const Icontexts = contexts.map(el => this.Icontext(el));
-    const res = await Promise.all(Icontexts)
+    const res = await Promise.all(Icontexts);
     this.initDefer.resolve(res);
     console.log("resss", res);
 
@@ -125,7 +125,7 @@ export default class Space {
 
 
 
-    // // parmis les contexte de groupe, on cherche l'ensemble des group 
+    // // parmis les contexte de groupe, on cherche l'ensemble des group
     // let allGroups = roomsGroupContext.map(async group => {
 
     //     return {
@@ -152,20 +152,66 @@ export default class Space {
     return this.initDefer.promise;
   }
 
+  async getDataFilterItem(item) {
+    const data = await this.initDefer.promise;
+    console.log("getDataFilterItem Item", item);
+    if (!item) return data;
+    const itemNode = FileSystem._objects[item.server_id];
+    if (itemNode.getType().get() !== "geographicFloor") {
+      return data;
+    }
+
+    const idsAGarder = item.children.map(obj => obj.id);
+
+    console.log("getDataFilterItem Item node", itemNode);
+
+
+    console.log("getDataFilterItem data", data);
+    const tmp = [];
+    for (const d of data) {
+      const cats = [];
+      for (const cat of d.categories) {
+        const groups = [];
+        for (const grp of cat.groups) {
+          const rooms = [];
+          for (const r of grp.rooms) {
+            if (idsAGarder.includes(r.id)) rooms.push(r);
+          }
+          groups.push({
+            rooms,
+            id: grp.id,
+            naùe: grp.naùe
+          });
+        }
+        cats.push({
+          groups,
+          id: cat.id,
+          name: cat.name
+        });
+      }
+      tmp.push({
+        categories: cats,
+        id: d.id,
+        name: d.name
+      });
+    }
+
+    return tmp;
+  }
 
 
   async Icontext(context) {
-    let catLst = await groupManagerService.getCategories(context.info.id.get())
+    let catLst = await groupManagerService.getCategories(context.info.id.get());
     let arr = [];
     for (let cat of catLst) {
-      arr.push(this.Icategorie(cat))
+      arr.push(this.Icategorie(cat));
     }
 
     return {
       name: context.info.name.get(),
       id: context.info.id.get(),
       categories: await Promise.all(arr)
-    }
+    };
   }
 
 
@@ -173,20 +219,20 @@ export default class Space {
     let grpLst = await groupManagerService.getGroups(categorie.id.get());
     let arr2 = [];
     for (let grp of grpLst) {
-      arr2.push(this.Igroup(grp))
+      arr2.push(this.Igroup(grp));
     }
     return {
       name: categorie.name.get(),
       id: categorie.id.get(),
       groups: await Promise.all(arr2)
-    }
+    };
   }
 
   async Igroup(group) {
     let roomLst = await groupManagerService.getElementsLinkedToGroup(group.id.get());
     let arr3 = [];
     for (let room of roomLst) {
-      arr3.push(this.Iroom(room))
+      arr3.push(this.Iroom(room));
     }
 
     if (typeof group.color === "undefined") {
@@ -199,7 +245,7 @@ export default class Space {
       id: group.id.get(),
       color: group.color.get(),
       rooms: await Promise.all(arr3)
-    }
+    };
   }
 
   getsurface(arr) {
@@ -220,9 +266,9 @@ export default class Space {
     return {
       name: room.name.get(),
       id: room.id.get(),
-      surface: espace,
+      surface: espace
 
-    }
+    };
   }
 
 

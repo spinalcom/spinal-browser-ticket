@@ -24,21 +24,19 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-
     <el-breadcrumb class="breadcrumb-style"
                    separator="/">
-      <el-breadcrumb-item><a @click="onclick(null)">Space Management</a>
+      <el-breadcrumb-item>
+        <a @click="onclick(null)">Space Management</a>
       </el-breadcrumb-item>
       <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
-                          :key="index"><a
-           @click="breadcrumb.click">{{breadcrumb.name}}</a>
+                          :key="index">
+        <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
       </el-breadcrumb-item>
-
     </el-breadcrumb>
 
-    <div class="root"
-         v-if="selectCategorie == null">
-
+    <div v-if="selectCategorie == null"
+         class="root">
       <!-- <el-card class="box-card"
                v-for="context in contextLst"
                :key=context.id>
@@ -57,14 +55,13 @@ with this file. If not, see
       </el-card> -->
 
       <tableau-context v-if="contextSelected === null"
-                       :contextLst="contextLst"
+                       :context-lst="contextLst"
                        @select="SelectContext">
       </tableau-context>
 
       <tableau-category v-else
-                        :contextSelected="contextSelected"
+                        :context-selected="contextSelected"
                         @seeGroups="onclick"></tableau-category>
-
     </div>
 
     <div v-else>
@@ -74,11 +71,10 @@ with this file. If not, see
       <!-- <el-button @click="onclick(null)">BACK
       </el-button> -->
 
-      <categoryLstVue :selectCategorie="selectCategorie"
-                      @addbreadcrumb="addbreadcrumb"
-                      ref="categoryListe"></categoryLstVue>
+      <categoryLstVue ref="categoryListe"
+                      :select-categorie="selectCategorie"
+                      @addbreadcrumb="addbreadcrumb"></categoryLstVue>
     </div>
-
   </div>
 </template>
 
@@ -88,9 +84,37 @@ import categoryLstVue from "./component/categoryLstVue";
 import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
 
+import { EventBus } from "../../services/event";
+
 export default {
   components: { categoryLstVue, tableauContext, tableauCategory },
   props: [],
+  data() {
+    return {
+      contextLst: [],
+      selectCategorie: null,
+      breadcrumbs: [],
+      contextSelected: null
+    };
+  },
+  async mounted() {
+    this.contextLst = await spinalBackEnd.spaceBack.getData();
+
+    EventBus.$on("sidebar-selected-item", item => {
+      spinalBackEnd.spaceBack
+        .getDataFilterItem(item)
+        .then(result => {
+          this.contextLst = result;
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+
+    EventBus.$on("sidebar-homeSelect", item => {
+      console.log("sidebar-homeSelect", item);
+    });
+  },
   methods: {
     onclick(categorie) {
       this.selectCategorie = categorie;
@@ -135,17 +159,6 @@ export default {
       this.breadcrumbs = [...this.breadcrumbs, obj];
       this.contextSelected = context;
     }
-  },
-  data() {
-    return {
-      contextLst: [],
-      selectCategorie: null,
-      breadcrumbs: [],
-      contextSelected: null
-    };
-  },
-  async mounted() {
-    this.contextLst = await spinalBackEnd.spaceBack.getData();
   }
 };
 </script>
