@@ -47,37 +47,62 @@ with this file. If not, see
 -->
 
 <template>
-  <el-table :data="categories"
-            border
-            style="width: 100%"
-            :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
-            :header-cell-style='{"background-color": "#f0f2f5"}'
-            @row-click="seeGroups">
+  <el-row>
+    <el-tabs type="border-card">
 
-    <el-table-column prop="name"
-                     label="Nom"
-                     width="180">
-    </el-table-column>
+      <el-tab-pane label="Tableau">
+        <el-row class="barre">
+          <el-button class="boutton-barre"
+                     icon="el-icon-download"
+                     circle
+                     @click="exportData"></el-button>
+          <el-button class="boutton-barre"
+                     icon="el-icon-view"
+                     circle
+                     @click="SeeAll"></el-button>
 
-    <el-table-column prop="groups.length"
-                     label="Nombre de total de groupe"
-                     align="center">
-    </el-table-column>
+        </el-row>
 
-    <el-table-column label="Nombre de pièces"
-                     align="center">
-      <template slot-scope="scope">
-        {{getRoomsCount(scope.row)}}
-      </template>
-    </el-table-column>
+        <el-table :data="categories"
+                  border
+                  style="width: 100%"
+                  :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
+                  :header-cell-style='{"background-color": "#f0f2f5"}'>
 
-    <el-table-column label="Surface Totale"
-                     align="center">
-      <template slot-scope="scope">
-        {{getSurfaceTotale(scope.row)}} m²
-      </template>
-    </el-table-column>
-  </el-table>
+          <el-table-column prop="name"
+                           label="Nom"
+                           width="180">
+          </el-table-column>
+
+          <el-table-column prop="groups.length"
+                           label="Nombre total de groupe"
+                           align="center">
+          </el-table-column>
+
+          <el-table-column label="Nombre de pièces"
+                           align="center">
+            <template slot-scope="scope">
+              {{getRoomsCount(scope.row)}}
+            </template>
+          </el-table-column>
+
+          <el-table-column label="Surface Totale"
+                           align="center">
+            <template slot-scope="scope">
+              {{getSurfaceTotale(scope.row)}} m²
+            </template>
+          </el-table-column>
+          <el-table-column label=""
+                           width="65"
+                           align="center">
+            <template slot-scope="scope">
+              <el-button v
+                         icon="el-icon-arrow-right"
+                         circle
+                         @click="seeGroups(scope.row)"></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
 </template>
 
 <script>
@@ -119,3 +144,16 @@ export default {
 };
 </script>
 
+<style scoped>
+.boutton-barre {
+  padding: 14px !important;
+}
+.barre {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.el-icon-download {
+  width: 30px;
+}
+</style>

@@ -47,65 +47,73 @@ with this file. If not, see
 -->
 
 <template>
+  <el-row>
+    <el-tabs type="border-card">
 
-  <el-table :data="contextLst"
-            class="tab"
-            border
-            style="width: 100%;"
-            :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
-            :header-cell-style='{"background-color": "#f0f2f5"}'
-            @row-click="SelectContext">
+      <el-tab-pane label="Tableau">
+        <el-row class="barre">
+          <el-button class="boutton-barre"
+                     icon="el-icon-download"
+                     circle
+                     @click="exportData"></el-button>
+          <el-button class="boutton-barre"
+                     icon="el-icon-view"
+                     circle
+                     @click="SeeAll"></el-button>
 
-    <el-table-column prop="name"
-                     label="Nom"
-                     width="180">
-    </el-table-column>
+        </el-row>
 
-    <el-table-column prop="categories.length"
-                     label="Categories"
-                     align="center">
-    </el-table-column>
+        <el-table :data="contextLst"
+                  border
+                  style="width: 100%"
+                  :header-cell-style="{'background-color': '#f0f2f5'}">
+          <el-table-column label="Name">
+            <template slot-scope="scope">
+              <div>
+                <div v-if="scope.row.color"
+                     class="spinal-table-cell-color"
+                     :style="getColor(scope.row.color)"></div>
+                <div> {{ scope.row.name }} </div>
+              </div>
+            </template>
+          </el-table-column>
 
-    <el-table-column label=" Groupe"
-                     align="center">
-      <template slot-scope="scope">
-        {{getContextGroup(scope.row)}}
-      </template>
-    </el-table-column>
+          <el-table-column prop="categories.length"
+                           label="Categories"
+                           align="center">
+          </el-table-column>
 
-    <el-table-column label="Nombre de pièces"
-                     align="center">
-      <template slot-scope="scope">
-        {{getRoomsCount(scope.row)}}
-      </template>
-    </el-table-column>
+          <el-table-column label=" Groupe"
+                           align="center">
+            <template slot-scope="scope">
+              {{getContextGroup(scope.row)}}
+            </template>
+          </el-table-column>
 
-    <el-table-column label="Surface Totale"
-                     align="center">
-      <template slot-scope="scope">
-        {{getSurfaceTotale(scope.row)}} m²
-      </template>
-    </el-table-column>
-  </el-table>
+          <el-table-column label="Nombre de pièces"
+                           align="center">
+            <template slot-scope="scope">
+              {{getRoomsCount(scope.row)}}
+            </template>
+          </el-table-column>
 
-  <!-- <div>
-    <el-card class="box-card"
-             v-for="context in contextLst"
-             :key=context.id>
+          <el-table-column label="Surface Totale"
+                           align="center">
+            <template slot-scope="scope">
+              {{getSurfaceTotale(scope.row)}} m²
+            </template>
+          </el-table-column>
 
-      <div slot="header"
-           class="clearfix">
-        <span>{{context.name}}</span>
-      </div>
-      <div class="card-content">
-        <el-button v-for="contextCat in context.categories"
-                   :key=contextCat.id
-                   @click="onclick(contextCat)">
-          {{contextCat.name}}
-        </el-button>
-      </div>
-    </el-card>
-  </div> -->
+          <el-table-column label=""
+                           width="65"
+                           align="center">
+            <template slot-scope="scope">
+              <el-button icon="el-icon-arrow-right"
+                         circle
+                         @click="SelectContext(scope.row)"></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
 
 </template>
 
@@ -119,6 +127,9 @@ export default {
   components: {},
   props: ["contextLst"],
   methods: {
+    getColor(color) {
+      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+    },
     getRoomsCount(context) {
       return SpinalBackend.spaceBack.getContextRoomCount(context);
     },
@@ -137,6 +148,41 @@ export default {
 
     SelectContext(context) {
       this.$emit("select", context);
+    },
+    async SeeAll() {
+      let promises = this.data.map(async el => {
+        return {
+          id: el.id,
+          ids: await this.getAllBimObjects(el.id),
+          color: el.color
+        };
+      });
+
+      let allBimObjects = await Promise.all(promises);
+
+      EventBus.$emit("seeAll", allBimObjects);
+    },
+    exportData() {
+      //let excelRows = Object.assign({}, this.data);
+      //excelRows.rooms = this.data.rooms.length;
+      let headers = this.getHeader();
+      let excelData = [
+        {
+          name: "Tableau",
+          author: "",
+          data: [
+            {
+              name: "Tableau",
+              header: headers,
+              rows: this.getRow()
+            }
+          ]
+        }
+      ];
+      excelManager.export(excelData).then(reponse => {
+        fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
+      });
+      console.log("expoooooooooooort", this.data);
     }
   },
   async mounted() {},
@@ -152,6 +198,17 @@ export default {
 <style scoped>
 .tab {
   padding: 0 -20 px 0 -10px;
+}
+.boutton-barre {
+  padding: 14px !important;
+}
+.barre {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.el-icon-download {
+  width: 30px;
 }
 </style>
 

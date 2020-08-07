@@ -28,10 +28,14 @@ with this file. If not, see
 
       <el-tab-pane label="Tableau">
         <el-row class="barre">
-          <el-button @click="exportData"
-                     icon="el-icon-download"></el-button>
-          <el-button @click="SeeAll"
-                     icon="el-icon-view"></el-button>
+          <el-button class="boutton-barre"
+                     icon="el-icon-download"
+                     circle
+                     @click="exportData"></el-button>
+          <el-button class="boutton-barre"
+                     icon="el-icon-view"
+                     circle
+                     @click="SeeAll"></el-button>
 
         </el-row>
 
@@ -43,8 +47,14 @@ with this file. If not, see
                   :header-cell-style='{"background-color": "#f0f2f5"}'
                   @row-click="SeeEvent">
 
-          <el-table-column prop=name
-                           label="Nom">
+          <el-table-column label="Name">
+            <template slot-scope="scope">
+              <div>
+                <div class="spinal-table-cell-color"
+                     :style="{'background-color': scope.row.color}"></div>
+                <div> {{ scope.row.name }} </div>
+              </div>
+            </template>
           </el-table-column>
           <el-table-column prop="rooms.length"
                            label="Nombre de pièces"
@@ -59,7 +69,7 @@ with this file. If not, see
               {{scope.row.surface}} m²
             </template>
           </el-table-column>
-          <el-table-column prop=color
+          <!-- <el-table-column prop=color
                            label="Couleur"
                            align="center">
             <template slot-scope="scope">
@@ -70,7 +80,7 @@ with this file. If not, see
 
               </div>
             </template>
-          </el-table-column>
+          </el-table-column> -->
 
           <!-- <el-table-column>
 
@@ -85,7 +95,8 @@ with this file. If not, see
                            align="center">
             <template slot-scope="scope">
               <el-button @click="seeRoomTable(scope.row)"
-                         icon="el-icon-top-right"></el-button>
+                         icon="el-icon-arrow-right"
+                         circle></el-button>
             </template>
           </el-table-column>
 
@@ -99,7 +110,9 @@ with this file. If not, see
       <el-tab-pane label="Dashboard">
         <el-row class="barre">
 
-          <el-button @click="SeeAll"
+          <el-button class="boutton-barre"
+                     @click="SeeAll"
+                     circle
                      icon="el-icon-view"></el-button>
 
         </el-row>
@@ -139,6 +152,9 @@ export default {
   components: { ChartsPiece, ChartsEsp, roomLstVue },
   props: ["selectCategorie"],
   methods: {
+    getColor(color) {
+      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+    },
     async SeeEvent(data) {
       console.log("SEEEEEEE");
       const allBimObjects = await this.getAllBimObjects(data.id);
@@ -275,16 +291,25 @@ export default {
   text-align: center;
   padding-top: 100px;
 }
-.tab {
+
+.boutton-barre {
+  padding: 14px !important;
 }
 .barre {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
-  background-color: #f5f7fa;
 }
 .el-icon-download {
-  width: 15px;
+  width: 30px;
+}
+
+.spinal-table-cell-color {
+  height: 100%;
+  width: 5px;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 </style>
 

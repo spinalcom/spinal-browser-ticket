@@ -24,7 +24,6 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-
     <el-breadcrumb class="breadcrumb-style"
                    separator="/">
       <el-breadcrumb-item>
@@ -200,14 +199,5 @@ export default {
 .breadcrumb-style {
   font-size: 20px;
   margin: 15px 0 20px 2px;
-}
-
-.boutton-barre {
-  padding: 14px !important;
-}
-.barre {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
 }
 </style>
