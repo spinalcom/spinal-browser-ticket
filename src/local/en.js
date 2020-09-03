@@ -36,7 +36,16 @@ export default {
   "geographicRoom": "Room",
   "BIMObject": "Object",
   "Area": "Area",
-  "Name": "Name"
+  "Name": "Name",
+  "SpaceManagement.Nom": "Name",
+  "SpaceManagement.Categories": "Categories",
+  "SpaceManagement.NombreTotalGroupe": "Total number of groups",
+  "SpaceManagement.NombreTotalPiece": "Total Number of rooms",
+  "SpaceManagement.SurfaceTotale": "Total surface",
+  "SpaceManagement.Groupe": "Group",
+  "SpaceManagement.NombreDePiece": "Number of rooms",
+  "SpaceManagement.ListeDePiece": "List of rooms",
+  "SpaceManagement.Surface": "Surface"
 
 };
 

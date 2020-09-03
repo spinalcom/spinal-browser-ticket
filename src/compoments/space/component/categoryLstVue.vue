@@ -47,7 +47,7 @@ with this file. If not, see
                   :header-cell-style='{"background-color": "#f0f2f5"}'
                   @row-click="SeeEvent">
 
-          <el-table-column label="Name">
+          <el-table-column :label="$t('SpaceManagement.Nom')">
             <template slot-scope="scope">
               <div>
                 <div class="spinal-table-cell-color"
@@ -57,16 +57,16 @@ with this file. If not, see
             </template>
           </el-table-column>
           <el-table-column prop="rooms.length"
-                           label="Nombre de pièces"
+                           :label="$t('SpaceManagement.NombreDePiece')"
                            align="center">
           </el-table-column>
           true
           <el-table-column prop="surface"
-                           label="Surface"
+                           :label="$t('SpaceManagement.Surface')"
                            align="center">
             <template slot-scope="scope">
 
-              {{scope.row.surface}} m²
+              {{scope.row.surface | roundSurface}} m²
             </template>
           </el-table-column>
           <!-- <el-table-column prop=color
@@ -91,7 +91,7 @@ with this file. If not, see
             </template>
 
           </el-table-column> -->
-          <el-table-column label="Liste de pièces"
+          <el-table-column :label="$t('SpaceManagement.ListeDePiece')"
                            align="center">
             <template slot-scope="scope">
               <el-button @click="seeRoomTable(scope.row)"
@@ -278,6 +278,11 @@ export default {
     }
   },
   watch: {},
+  filters: {
+    roundSurface(surface) {
+      return Math.round(surface * 100) / 100;
+    }
+  },
   beforeDestroy() {},
   async mounted() {
     console.log("tttttttttt", this.data);

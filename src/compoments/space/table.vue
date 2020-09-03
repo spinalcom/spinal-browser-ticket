@@ -105,6 +105,7 @@ export default {
       spinalBackEnd.spaceBack
         .getDataFilterItem(item)
         .then(result => {
+          console.log("resuuuuuuuultat____", result);
           this.contextLst = result;
 
           if (this.contextSelected) {

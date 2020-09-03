@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
  *
@@ -33,5 +34,16 @@ export default {
   "geographicRoom": "Local",
   "BIMObject": "Objet",
   "Area": "Surface",
-  "Name": "Nom"
+  "Name": "Nom",
+  "SpaceManagement.Nom": "Nom",
+  "SpaceManagement.Categories": "Categories",
+  "SpaceManagement.NombreTotalGroupe": "Nombre Total de groupe",
+  "SpaceManagement.NombreTotalPiece": "Nombre de pièces",
+  "SpaceManagement.SurfaceTotale": "Surface Totale",
+  "SpaceManagement.Groupe": "Groupe",
+  "SpaceManagement.NombreDePiece": "Nombre de pièces",
+  "SpaceManagement.ListeDePiece": "Liste de pièces",
+  "SpaceManagement.Surface": "Surface"
+
+
 };

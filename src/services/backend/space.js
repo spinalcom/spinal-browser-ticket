@@ -177,7 +177,8 @@ export default class Space {
           groups.push({
             rooms,
             id: grp.id,
-            name: grp.name
+            name: grp.name,
+            color: grp.color
           });
         }
         cats.push({

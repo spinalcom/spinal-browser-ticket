@@ -51,7 +51,7 @@ with this file. If not, see
     <el-tabs type="border-card">
 
       <el-tab-pane label="Tableau">
-        <el-row class="barre">
+        <!-- <el-row class="barre">
           <el-button class="boutton-barre"
                      icon="el-icon-download"
                      circle
@@ -61,7 +61,11 @@ with this file. If not, see
                      circle
                      @click="SeeAll"></el-button>
 
-        </el-row>
+        </el-row> -->
+
+        <header-bar :header="getHeader()"
+                    :content="getRow()"
+                    :data="categories"></header-bar>
 
         <el-table :data="categories"
                   border
@@ -70,23 +74,23 @@ with this file. If not, see
                   :header-cell-style='{"background-color": "#f0f2f5"}'>
 
           <el-table-column prop="name"
-                           label="Nom"
+                           :label="$t('SpaceManagement.Nom')"
                            width="180">
           </el-table-column>
 
           <el-table-column prop="groups.length"
-                           label="Nombre total de groupe"
+                           :label="$t('SpaceManagement.NombreTotalGroupe')"
                            align="center">
           </el-table-column>
 
-          <el-table-column label="Nombre de pièces"
+          <el-table-column :label="$t('SpaceManagement.NombreTotalPiece')"
                            align="center">
             <template slot-scope="scope">
               {{getRoomsCount(scope.row)}}
             </template>
           </el-table-column>
 
-          <el-table-column label="Surface Totale"
+          <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
                            align="center">
             <template slot-scope="scope">
               {{getSurfaceTotale(scope.row)}} m²
@@ -107,6 +111,7 @@ with this file. If not, see
 
 <script>
 import SpinalBackend from "../../services/spinalBackend";
+import headerBarVue from "./component/headerBar.vue";
 
 export default {
   data() {
@@ -114,7 +119,9 @@ export default {
       categories: []
     };
   },
-  components: {},
+  components: {
+    "header-bar": headerBarVue
+  },
   props: ["contextSelected"],
   methods: {
     getRoomsCount(category) {
@@ -130,6 +137,84 @@ export default {
 
     seeGroups(category) {
       this.$emit("seeGroups", category);
+    },
+
+    getHeader() {
+      return [
+        {
+          key: "name",
+          header: "name",
+          width: 10
+        },
+        {
+          key: "groups",
+          header: "Groupes",
+          width: 10
+        },
+        {
+          key: "rooms",
+          header: "Nombre de pièces",
+          width: 10
+        },
+        {
+          key: "surface",
+          header: "Surface Totale",
+          width: 10
+        }
+      ];
+      // if (this.roomSelected) {
+      //   return [
+      //     {
+      //       key: "name",
+      //       header: "name",
+      //       width: 10
+      //     },
+      //     {
+      //       key: "surface",
+      //       header: "Surface",
+      //       width: 10
+      //     }
+      //   ];
+      // } else {
+      //   return [
+      //     {
+      //       key: "name",
+      //       header: "name",
+      //       width: 10
+      //     },
+      //     {
+      //       key: "rooms",
+      //       header: "Nombre de pièces",
+      //       width: 10
+      //     },
+      //     {
+      //       key: "surface",
+      //       header: "Surface",
+      //       width: 10
+      //     }
+      //   ];
+      // }
+    },
+
+    getRow() {
+      // if (this.roomSelected) {
+      //   return this.roomSelected.rooms;
+      // } else {
+      //   return this.data.map(gitu => {
+      //     let excelRows = Object.assign({}, gitu);
+      //     excelRows.rooms = gitu.rooms.length;
+      //     return excelRows;
+      //   });
+      // }
+
+      return this.categories.map(el => {
+        return {
+          name: el.name,
+          groups: el.groups.length,
+          rooms: this.getRoomsCount(el),
+          surface: this.getSurfaceTotale(el)
+        };
+      });
     }
   },
   async mounted() {

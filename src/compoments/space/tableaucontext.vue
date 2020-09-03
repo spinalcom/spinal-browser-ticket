@@ -51,7 +51,7 @@ with this file. If not, see
     <el-tabs type="border-card">
 
       <el-tab-pane label="Tableau">
-        <el-row class="barre">
+        <!-- <el-row class="barre">
           <el-button class="boutton-barre"
                      icon="el-icon-download"
                      circle
@@ -61,13 +61,17 @@ with this file. If not, see
                      circle
                      @click="SeeAll"></el-button>
 
-        </el-row>
+        </el-row> -->
+
+        <header-bar :header="getHeader()"
+                    :content="getRow()"
+                    :data="contextLst"></header-bar>
 
         <el-table :data="contextLst"
                   border
                   style="width: 100%"
                   :header-cell-style="{'background-color': '#f0f2f5'}">
-          <el-table-column label="Name">
+          <el-table-column :label="$t('SpaceManagement.Nom')">
             <template slot-scope="scope">
               <div>
                 <div v-if="scope.row.color"
@@ -79,25 +83,25 @@ with this file. If not, see
           </el-table-column>
 
           <el-table-column prop="categories.length"
-                           label="Categories"
+                           :label="$t('SpaceManagement.Categories')"
                            align="center">
           </el-table-column>
 
-          <el-table-column label=" Groupe"
+          <el-table-column :label="$t('SpaceManagement.Groupe')"
                            align="center">
             <template slot-scope="scope">
               {{getContextGroup(scope.row)}}
             </template>
           </el-table-column>
 
-          <el-table-column label="Nombre de pièces"
+          <el-table-column :label="$t('SpaceManagement.NombreTotalPiece')"
                            align="center">
             <template slot-scope="scope">
               {{getRoomsCount(scope.row)}}
             </template>
           </el-table-column>
 
-          <el-table-column label="Surface Totale"
+          <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
                            align="center">
             <template slot-scope="scope">
               {{getSurfaceTotale(scope.row)}} m²
@@ -119,12 +123,17 @@ with this file. If not, see
 
 <script>
 import SpinalBackend from "../../services/spinalBackend";
+// import fileSaver from "file-saver";
+
+import headerBar from "./component/headerBar.vue";
 
 export default {
   data() {
     return {};
   },
-  components: {},
+  components: {
+    "header-bar": headerBar
+  },
   props: ["contextLst"],
   methods: {
     getColor(color) {
@@ -162,27 +171,89 @@ export default {
 
       EventBus.$emit("seeAll", allBimObjects);
     },
-    exportData() {
-      //let excelRows = Object.assign({}, this.data);
-      //excelRows.rooms = this.data.rooms.length;
-      let headers = this.getHeader();
-      let excelData = [
+
+    getHeader() {
+      return [
         {
-          name: "Tableau",
-          author: "",
-          data: [
-            {
-              name: "Tableau",
-              header: headers,
-              rows: this.getRow()
-            }
-          ]
+          key: "name",
+          header: "name",
+          width: 10
+        },
+        {
+          key: "categories",
+          header: "Categories",
+          width: 10
+        },
+        {
+          key: "groups",
+          header: "Groupes",
+          width: 10
+        },
+        {
+          key: "rooms",
+          header: "Nombre de pièces",
+          width: 10
+        },
+        {
+          key: "surface",
+          header: "Surface Totale",
+          width: 10
         }
       ];
-      excelManager.export(excelData).then(reponse => {
-        fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
+      // if (this.roomSelected) {
+      //   return [
+      //     {
+      //       key: "name",
+      //       header: "name",
+      //       width: 10
+      //     },
+      //     {
+      //       key: "surface",
+      //       header: "Surface",
+      //       width: 10
+      //     }
+      //   ];
+      // } else {
+      //   return [
+      //     {
+      //       key: "name",
+      //       header: "name",
+      //       width: 10
+      //     },
+      //     {
+      //       key: "rooms",
+      //       header: "Nombre de pièces",
+      //       width: 10
+      //     },
+      //     {
+      //       key: "surface",
+      //       header: "Surface",
+      //       width: 10
+      //     }
+      //   ];
+      // }
+    },
+
+    getRow() {
+      // if (this.roomSelected) {
+      //   return this.roomSelected.rooms;
+      // } else {
+      //   return this.data.map(gitu => {
+      //     let excelRows = Object.assign({}, gitu);
+      //     excelRows.rooms = gitu.rooms.length;
+      //     return excelRows;
+      //   });
+      // }
+
+      return this.contextLst.map(el => {
+        return {
+          name: el.name,
+          categories: el.categories.length,
+          groups: this.getContextGroup(el),
+          rooms: this.getRoomsCount(el),
+          surface: this.getSurfaceTotale(el)
+        };
       });
-      console.log("expoooooooooooort", this.data);
     }
   },
   async mounted() {},
