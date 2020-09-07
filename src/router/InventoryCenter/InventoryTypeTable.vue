@@ -84,12 +84,13 @@ export default {
   name: "InventoryTypeTable",
   props: {
     nodeType: { required: true, type: String },
+    collums: { required: false, type: Array, default: () => [] },
     items: { required: true, type: Array },
     viewKey: { require: true, type: String, default: "" }
   },
   data() {
     return {
-      collums: [],
+      // collums: [],
       haveChildren: false,
       data: [],
       loading: true,
@@ -164,7 +165,7 @@ export default {
       this.updateColor(res, colorUsed);
       this.haveChildren = haveChild;
       this.data = res;
-      this.collums = Array.from(collums);
+      // this.collums = Array.from(collums);
       this.loading = false;
       Promise.all(prom).then(() => {
         this.loadingArea = false;
