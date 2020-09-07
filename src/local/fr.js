@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
  *
@@ -33,5 +34,14 @@ export default {
   "data-room.geographicRoom": "Locaux",
   "data-room.BIMObject": "Objets",
   "data-room.Area": "Surface",
-  "data-room.Name": "Nom"
+  "data-room.Name": "Nom",
+  "SpaceManagement.Nom": "Nom",
+  "SpaceManagement.Categories": "Categories",
+  "SpaceManagement.NombreTotalGroupe": "Nombre Total de groupe",
+  "SpaceManagement.NombreTotalPiece": "Nombre de pièces",
+  "SpaceManagement.SurfaceTotale": "Surface Totale",
+  "SpaceManagement.Groupe": "Groupe",
+  "SpaceManagement.NombreDePiece": "Nombre de pièces",
+  "SpaceManagement.ListeDePiece": "Liste de pièces",
+  "SpaceManagement.Surface": "Surface"
 };

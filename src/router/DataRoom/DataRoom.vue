@@ -51,11 +51,11 @@ with this file. If not, see
                   </div>
                 </div>
               </template>
-
               <DataRoomTypeTable :ref="`data-room-table`"
                                  :view-key="viewKey"
                                  :node-type="item.nodeType"
-                                 :items="item.items">
+                                 :items="item.items"
+                                 :collums="item.cols">
               </DataRoomTypeTable>
             </el-collapse-item>
           </el-collapse>
@@ -105,9 +105,18 @@ export default {
       this.items = [];
       this.activeNames = [];
       for (const [nodeType, items] of mapItems) {
-        this.items.push({ nodeType, items });
+        const cols = new Set();
+        for (const item of items) {
+          if (item.children) {
+            for (const [childTypes] of item.children) {
+              cols.add(childTypes);
+            }
+          }
+        }
+        this.items.push({ nodeType, items, cols: Array.from(cols) });
         this.activeNames.push(nodeType);
       }
+
       this.currentView = view;
     },
     changeView(item) {

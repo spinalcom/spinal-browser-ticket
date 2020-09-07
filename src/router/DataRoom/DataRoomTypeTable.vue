@@ -84,12 +84,12 @@ export default {
   name: "DataRoomTypeTable",
   props: {
     nodeType: { required: true, type: String },
+    collums: { required: false, type: Array, default: () => [] },
     items: { required: true, type: Array },
     viewKey: { require: true, type: String, default: "" }
   },
   data() {
     return {
-      collums: [],
       haveChildren: false,
       data: [],
       loading: true,
@@ -131,7 +131,6 @@ export default {
       this.loadingArea = true;
       this.haveArea = false;
       const res = [];
-      const collums = new Set();
       let haveChild = false;
       const prom = [];
       const colorUsed = [];
@@ -153,7 +152,6 @@ export default {
         if (item.children) {
           for (const [childTypes, childItems] of item.children) {
             haveChild = true;
-            collums.add(childTypes);
             resItem[childTypes] = childItems.length;
             resItem.haveChild = true;
           }
@@ -164,7 +162,6 @@ export default {
       this.updateColor(res, colorUsed);
       this.haveChildren = haveChild;
       this.data = res;
-      this.collums = Array.from(collums);
       this.loading = false;
       Promise.all(prom).then(() => {
         this.loadingArea = false;

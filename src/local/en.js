@@ -27,16 +27,21 @@ export default {
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
   "error.returntodrive.title": "Error",
-
-
-
   "data-room.geographicContext": "Contexts",
   "data-room.geographicBuilding": "Buildings",
   "data-room.geographicFloor": "Floors",
   "data-room.geographicRoom": "Rooms",
   "data-room.BIMObject": "Objects",
   "data-room.Area": "Area",
-  "data-room.Name": "Name"
-
+  "data-room.Name": "Name",
+  "SpaceManagement.Nom": "Name",
+  "SpaceManagement.Categories": "Categories",
+  "SpaceManagement.NombreTotalGroupe": "Total number of groups",
+  "SpaceManagement.NombreTotalPiece": "Total Number of rooms",
+  "SpaceManagement.SurfaceTotale": "Total surface",
+  "SpaceManagement.Groupe": "Group",
+  "SpaceManagement.NombreDePiece": "Number of rooms",
+  "SpaceManagement.ListeDePiece": "List of rooms",
+  "SpaceManagement.Surface": "Surface"
 };
 
