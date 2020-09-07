@@ -41,10 +41,10 @@ import {
   ROOM_TYPE,
   EQUIPMENT_TYPE
 } from "../../constants";
-export class InventoryItem {
+export class DataRoomItem {
   name: string;
   serverId: number;
-  children?: Map<string, InventoryItem[]>;
+  children?: Map<string, DataRoomItem[]>;
 
   constructor(name: string, serverId: number) {
     this.name = name
@@ -149,7 +149,7 @@ export class InventoryItem {
       .then((resArr) => resArr.reduce((prev, curr) => prev + curr, 0));
   }
 
-  addChildrenInItem(allItems: Map<number, InventoryItem>, node: SpinalNode<any>): void {
+  addChildrenInItem(allItems: Map<number, DataRoomItem>, node: SpinalNode<any>): void {
     if (typeof this.children === "undefined") {
       Object.assign(this, { children: new Map() })
     }
@@ -158,17 +158,17 @@ export class InventoryItem {
       this.children.set(nodeType, [])
     }
     const arr = this.children.get(nodeType)
-    const child = InventoryItem.getItemFromMap(allItems, node);
+    const child = DataRoomItem.getItemFromMap(allItems, node);
     arr.push(child);
   }
 
-  static getItemFromMap(allItems: Map<number, InventoryItem>, node: SpinalNode<any>)
-    : InventoryItem {
+  static getItemFromMap(allItems: Map<number, DataRoomItem>, node: SpinalNode<any>)
+    : DataRoomItem {
     const server_id: number = node._server_id
     if (allItems.has(server_id)) {
       return allItems.get(server_id)
     }
-    const item: InventoryItem = new InventoryItem(node.info.name.get(), server_id)
+    const item: DataRoomItem = new DataRoomItem(node.info.name.get(), server_id)
     allItems.set(server_id, item);
     return item
   }

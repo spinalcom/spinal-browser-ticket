@@ -29,7 +29,7 @@ with this file. If not, see
             :header-cell-style="{'background-color': '#f0f2f5'}"
             @row-click="selectInView"
             @row-dblclick="SeeEvent">
-    <el-table-column :label="$t('Name')">
+    <el-table-column :label="$t('data-room.Name')">
       <template slot-scope="scope">
         <div>
           <div v-if="scope.row.color"
@@ -41,7 +41,7 @@ with this file. If not, see
     </el-table-column>
     <el-table-column v-if="haveArea"
                      align="center"
-                     :label="$t('Area')">
+                     :label="$t(`data-room.Area`)">
       <template slot-scope="scope">
         <div v-loading="loadingArea">
           {{ roundNumber(scope.row.area) }}
@@ -52,7 +52,7 @@ with this file. If not, see
     <el-table-column v-for="collum in collums"
                      :key="collum"
                      align="center"
-                     :label="$t(collum)">
+                     :label="$t(`data-room.${collum}`)">
       <template slot-scope="scope">
         {{ collumValue(scope.row, collum) }}
       </template>
@@ -81,7 +81,7 @@ import { ColorGenerator } from "../../services/utlils/ColorGenerator";
 import { EventBus } from "../../services/event";
 
 export default {
-  name: "InventoryTypeTable",
+  name: "DataRoomTypeTable",
   props: {
     nodeType: { required: true, type: String },
     items: { required: true, type: Array },
@@ -233,13 +233,13 @@ export default {
       });
     },
     selectInView(item) {
-      EventBus.$emit("inventory-select-item", {
+      EventBus.$emit("data-room-select-item", {
         server_id: item.serverId,
         color: item.color
       });
     },
     SeeEvent(item) {
-      EventBus.$emit("inventory-color-item", {
+      EventBus.$emit("data-room-color-item", {
         server_id: item.serverId,
         color: item.color
       });
@@ -248,7 +248,7 @@ export default {
       let items = this.data.map(item => {
         return { server_id: item.serverId, color: item.color };
       });
-      EventBus.$emit("inventory-color-all", items, { server_id: zone });
+      EventBus.$emit("data-room-color-all", items, { server_id: zone });
     }
   }
 };

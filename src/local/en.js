@@ -30,13 +30,13 @@ export default {
 
 
 
-  "geographicContext": "Context",
-  "geographicBuilding": "Building",
-  "geographicFloor": "Floor",
-  "geographicRoom": "Room",
-  "BIMObject": "Object",
-  "Area": "Area",
-  "Name": "Name"
+  "data-room.geographicContext": "Contexts",
+  "data-room.geographicBuilding": "Buildings",
+  "data-room.geographicFloor": "Floors",
+  "data-room.geographicRoom": "Rooms",
+  "data-room.BIMObject": "Objects",
+  "data-room.Area": "Area",
+  "data-room.Name": "Name"
 
 };
 

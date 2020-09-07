@@ -30,7 +30,7 @@ var lastColorZone = null;
 var lastColorItem = null;
 
 
-EventBus.$on('inventory-color-item', async (item) => {
+EventBus.$on('data-room-color-item', async (item) => {
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === item.server_id)) {
       lastColorItem = null
@@ -50,12 +50,12 @@ EventBus.$on('inventory-color-item', async (item) => {
   }
 });
 
-EventBus.$on('inventory-select-item', async (item) => {
+EventBus.$on('data-room-select-item', async (item) => {
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
   viewerUtils.selectObjects(lstByModel);
 });
 
-EventBus.$on('inventory-color-all', async (items, zone) => {
+EventBus.$on('data-room-color-all', async (items, zone) => {
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === zone.server_id)) {
       lastColorItem = null

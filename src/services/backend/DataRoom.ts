@@ -30,10 +30,10 @@ import {
 import { SpinalGraph, SpinalContext, SpinalNode } from "spinal-env-viewer-graph-service";
 import { FileSystem } from 'spinal-core-connectorjs_type'
 
-import { InventoryItem } from './InventoryItem'
-type mapInventoryItem = Map<string, InventoryItem[]>
+import { DataRoomItem } from './DataRoomItem'
+type mapDataRoomItem = Map<string, DataRoomItem[]>
 
-export default class BackEndInventory {
+export default class BackEndDataRoom {
   initDefer = q.defer();
   contexts: SpinalContext<any>[] = []
 
@@ -50,8 +50,8 @@ export default class BackEndInventory {
     this.initDefer.resolve(this.contexts);
   }
 
-  async getContexts() {
-    const res: Map<string, InventoryItem[]> = new Map()
+  async getContexts(): Promise<Map<string, DataRoomItem[]>> {
+    const res: Map<string, DataRoomItem[]> = new Map()
     await Promise.all(this.contexts.map(async (item) => {
       return this.getItemsInContext(item, item, true).then((map) => {
         for (const [key, value] of map) {
@@ -64,8 +64,7 @@ export default class BackEndInventory {
     return res;
   }
 
-  getItems(serverId: number, contextServerId: number)
-    : Promise<mapInventoryItem> {
+  getItems(serverId: number, contextServerId: number): Promise<mapDataRoomItem> {
     const node = <SpinalNode<any>>(FileSystem._objects[serverId]);
     const context = <SpinalContext<any>>(FileSystem._objects[contextServerId]);
     if (!node || !context) return Promise.resolve(new Map());
@@ -73,19 +72,19 @@ export default class BackEndInventory {
   }
 
   private async getItemsInContext(node: SpinalNode<any>,
-    context: SpinalContext<any>, giveSelf = false): Promise<mapInventoryItem> {
+    context: SpinalContext<any>, giveSelf = false): Promise<mapDataRoomItem> {
     const seen: Set<SpinalNode<any>> = new Set([node]);
-    let promises: Promise<{ children: SpinalNode<any>[]; item: InventoryItem; }>[] = [];
+    let promises: Promise<{ children: SpinalNode<any>[]; item: DataRoomItem; }>[] = [];
     let nextGen: SpinalNode<any>[] = [node];
     let currentGen: SpinalNode<any>[] = [];
-    const res: mapInventoryItem = new Map()
-    const allItems: Map<number, InventoryItem> = new Map();
+    const res: mapDataRoomItem = new Map()
+    const allItems: Map<number, DataRoomItem> = new Map();
     const nodeType: string = node.info.type.get();
     if (!res.has(nodeType)) {
       res.set(nodeType, []);
     }
     const arr = res.get(nodeType);
-    const item = InventoryItem.getItemFromMap(allItems, node);
+    const item = DataRoomItem.getItemFromMap(allItems, node);
     arr.push(item)
     let depth = 0;
     while (nextGen.length) {
@@ -95,13 +94,13 @@ export default class BackEndInventory {
       depth += 1;
       for (const n of currentGen) {
         if (depth <= 2 || (n.info.type && n.info.type.get() !== ROOM_TYPE)) {
-          const item = InventoryItem.getItemFromMap(allItems, n);
+          const item = DataRoomItem.getItemFromMap(allItems, n);
           promises.push(n.getChildrenInContext(context).then((children) => {
             return { children, item }
           }));
         }
       }
-      const childrenArrays: { children: SpinalNode<any>[]; item: InventoryItem; }[]
+      const childrenArrays: { children: SpinalNode<any>[]; item: DataRoomItem; }[]
         = await Promise.all(promises);
       for (const children of childrenArrays) {
         for (const child of children.children) {
@@ -116,9 +115,4 @@ export default class BackEndInventory {
     if (giveSelf) return res;
     return typeof item.children !== "undefined" ? item.children : new Map();
   }
-
-
-
-
-
 }

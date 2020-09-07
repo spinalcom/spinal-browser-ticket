@@ -27,11 +27,11 @@ export default {
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
   "error.returntodrive.title": "Erreur",
-  "geographicContext": "Context",
-  "geographicBuilding": "Bâtiment",
-  "geographicFloor": "Etage",
-  "geographicRoom": "Local",
-  "BIMObject": "Objet",
-  "Area": "Surface",
-  "Name": "Nom"
+  "data-room.geographicContext": "Contexts",
+  "data-room.geographicBuilding": "Bâtiments",
+  "data-room.geographicFloor": "Etages",
+  "data-room.geographicRoom": "Locaux",
+  "data-room.BIMObject": "Objets",
+  "data-room.Area": "Surface",
+  "data-room.Name": "Nom"
 };
