@@ -112,11 +112,12 @@ export default {
             for (const context of this.contextLst) {
               if (this.contextSelected.id === context.id) {
                 const selectCategorie = this.selectCategorie;
-                this.SelectContext(context);
+                this.SelectContext(context, false);
                 if (selectCategorie) {
                   for (const cat of this.contextSelected.categories) {
                     if (selectCategorie.id === cat.id) {
-                      this.onclick(cat);
+                      this.onclick(cat, false);
+                      // this.selectCategorie = categorie;
                     }
                   }
                 }
@@ -135,10 +136,10 @@ export default {
     });
   },
   methods: {
-    onclick(categorie) {
+    onclick(categorie, changepage = true) {
       this.selectCategorie = categorie;
       // this.breadcrumbs = [];
-      if (categorie) {
+      if (categorie && changepage) {
         const categorieIndex = 1;
         this.breadcrumbs.splice(categorieIndex);
 
@@ -147,12 +148,15 @@ export default {
           {
             name: categorie.name,
             click: () => {
-              this.onclick(categorie);
+              const realCategory = this.contextSelected.categories.find(
+                el => el.id === categorie.id
+              );
+              this.onclick(realCategory);
               this.$refs.categoryListe.resetRoomSelected();
             }
           }
         ];
-      } else {
+      } else if (changepage) {
         this.contextSelected = null;
         this.breadcrumbs = [];
       }
@@ -163,20 +167,24 @@ export default {
       this.breadcrumbs = [...this.breadcrumbs, resultat];
     },
 
-    SelectContext(context) {
-      this.breadcrumbs = [];
-      this.selectCategorie = null;
+    SelectContext(context, changepage = true) {
       this.contextSelected = context;
 
-      const obj = {
-        name: context.name,
-        click: () => {
-          this.SelectContext(context);
-        }
-      };
+      if (changepage) {
+        this.selectCategorie = null;
+        this.breadcrumbs = [];
+        const obj = {
+          name: context.name,
+          click: () => {
+            const another = this.contextLst.find(el => el.id === context.id);
+            this.SelectContext(another);
+          }
+        };
 
-      this.breadcrumbs = [...this.breadcrumbs, obj];
-      this.contextSelected = context;
+        this.breadcrumbs = [...this.breadcrumbs, obj];
+      }
+
+      // this.contextSelected = context;
     }
   }
 };

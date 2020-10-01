@@ -41,11 +41,11 @@ export default {
   "SpaceManagement.Categories": "Categories",
   "SpaceManagement.NombreTotalGroupe": "Total number of groups",
   "SpaceManagement.NombreTotalPiece": "Total Number of rooms",
-  "SpaceManagement.SurfaceTotale": "Total surface",
+  "SpaceManagement.SurfaceTotale": "Total Area",
   "SpaceManagement.Groupe": "Group",
   "SpaceManagement.NombreDePiece": "Number of rooms",
   "SpaceManagement.ListeDePiece": "List of rooms",
-  "SpaceManagement.Surface": "Surface"
+  "SpaceManagement.Surface": "Area"
 
 };
 

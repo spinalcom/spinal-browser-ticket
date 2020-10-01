@@ -104,6 +104,7 @@ with this file. If not, see
         <div v-else>
           <roomLstVue :rooms="roomSelected.rooms"
                       :color="roomSelected.color"
+                      ref="roomscomponent"
                       @seeEvent="SeeEvent"> </roomLstVue>
         </div>
       </el-tab-pane>
@@ -116,8 +117,22 @@ with this file. If not, see
                      icon="el-icon-view"></el-button>
 
         </el-row>
-        <ChartsPiece :entreprise="data"></ChartsPiece>
-        <ChartsEsp :entreprise="data"></ChartsEsp>
+
+        <el-carousel height="500px">
+          <el-carousel-item v-for="item in 1"
+                            :key="item">
+            <h3 class="small">
+              <ChartsPiece :entreprise="data"></ChartsPiece>
+            </h3>
+          </el-carousel-item>
+          <el-carousel-item v-for="item in 1"
+                            :key="item">
+            <h3 class="small">
+              <ChartsEsp :entreprise="data"></ChartsEsp>
+            </h3>
+          </el-carousel-item>
+        </el-carousel>
+
       </el-tab-pane>
     </el-tabs>
 
@@ -157,7 +172,7 @@ export default {
     },
     async SeeEvent(data) {
       console.log("SEEEEEEE");
-      const allBimObjects = await this.getAllBimObjects(data.id);
+      const allBimObjects = await this.getAllBimObjects(data);
       EventBus.$emit("see", {
         id: data.id,
         ids: allBimObjects,
@@ -165,18 +180,32 @@ export default {
       });
     },
 
-    async getAllBimObjects(id) {
-      const allBimObjects = await groupManagerUtilities.getBimObjects(id);
+    async getAllBimObjects(data) {
+      // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
+      const promises = data.rooms.map(el =>
+        groupManagerUtilities.getBimObjects(el.id)
+      );
+
+      const allBimObjects = await Promise.all(promises).then(result => {
+        result = result.flat(10);
+        return result;
+      });
 
       return allBimObjects.map(el => el.get());
     },
     async SeeAll() {
+      if (this.roomSelected) {
+        this.$refs.roomscomponent.SeeAll();
+        return;
+      }
+
       let promises = this.data.map(async el => {
         return {
           id: el.id,
-          ids: await this.getAllBimObjects(el.id),
+          ids: await this.getAllBimObjects(el),
           color: el.color
         };
+        seeRoomTable;
       });
 
       let allBimObjects = await Promise.all(promises);
@@ -203,11 +232,16 @@ export default {
       excelManager.export(excelData).then(reponse => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
+      rooms;
       console.log("expoooooooooooort", this.data);
     },
 
     seeRoomTable(roomData) {
-      this.roomSelected = { rooms: roomData.rooms, color: roomData.color };
+      this.roomSelected = {
+        id: roomData.id,
+        rooms: roomData.rooms,
+        color: roomData.color
+      };
       this.$emit("addbreadcrumb", {
         name: roomData.name,
         click: () => {
@@ -267,17 +301,31 @@ export default {
   computed: {
     data: function() {
       return this.selectCategorie.groups.map(obj => {
-        return {
+        // if (this.roomSelected && this.roomSelected.id === obj.id) {
+        //   this.roomSelected = obj;
+        // }
+        let roo = {
           id: obj.id,
           name: obj.name,
           color: obj.color,
           rooms: obj.rooms,
           surface: obj.rooms.reduce((acc, e) => acc + e.surface, 0)
         };
+
+        if (this.roomSelected && this.roomSelected.id === roo.id) {
+          this.roomSelected = {
+            id: roo.id,
+            rooms: roo.rooms,
+            color: roo.color
+          };
+        }
+        return roo;
       });
     }
   },
-  watch: {},
+  watch: {
+    selectCategorie() {}
+  },
   filters: {
     roundSurface(surface) {
       return Math.round(surface * 100) / 100;

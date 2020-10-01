@@ -53,6 +53,7 @@ with this file. If not, see
 </template>
 
 <script>
+// import { EventBus } from "../../../services/event";
 export default {
   data() {
     return {
@@ -63,11 +64,20 @@ export default {
   props: ["rooms", "color"],
   methods: {
     SeeEvent(data) {
-      this.$emit("seeEvent", { ...data, color: this.color });
+      this.$emit("seeEvent", { rooms: [data], color: this.color });
+    },
+    SeeAll() {
+      this.$emit("seeEvent", { rooms: this.rooms, color: this.color });
     }
   },
-  async mounted() {},
-  watch: {},
+  async mounted() {
+    // this.rooms = this.roomSelected.rooms;
+  },
+  watch: {
+    // roomSelected() {
+    //   this.rooms = this.roomSelected.rooms;
+    // }
+  },
   beforeDestroy() {}
 };
 </script>
