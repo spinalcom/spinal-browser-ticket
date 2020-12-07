@@ -240,8 +240,7 @@ export default {
         rooms: roomData.rooms,
         color: roomData.color
       };
-
-      this.$emit("updateBreadcrumb", {
+      const resetRoomFct = this.$emit("updateBreadcrumb", {
         index: 2,
         item: {
           name: roomData.name,

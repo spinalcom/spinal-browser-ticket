@@ -25,7 +25,9 @@ with this file. If not, see
 <template>
   <div>
     <el-tabs type="card">
-      <el-tab-pane label="Équipements">Rôle</el-tab-pane>
+      <el-tab-pane label="Équipements">
+        Rôle
+      </el-tab-pane>
 
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// TICKET /////////////////////////////////////
@@ -34,9 +36,8 @@ with this file. If not, see
         <el-table :data="tickets"
                   border
                   style="width: 100%"
-                  :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
-                  :header-cell-style='{"background-color": "#f0f2f5"}'>
-
+                  :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
+                  :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
           <el-table-column prop="name"
                            :label="$t('SpaceManagement.Nom')"
                            width="180">
@@ -50,17 +51,16 @@ with this file. If not, see
           <el-table-column label="utilisateur"
                            align="center">
             <template slot-scope="scope">
-              {{scope.row.user.name}}
+              {{ scope.row.user.name }}
             </template>
           </el-table-column>
 
           <el-table-column label="Date de création"
                            align="center">
             <template slot-scope="scope">
-              {{scope.row.creationDate | formatDate}}
+              {{ scope.row.creationDate | formatDate }}
             </template>
           </el-table-column>
-
         </el-table>
       </el-tab-pane>
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
@@ -70,13 +70,11 @@ with this file. If not, see
         <el-table :data="documents"
                   border
                   style="width: 100%"
-                  :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
-                  :header-cell-style='{"background-color": "#f0f2f5"}'>
-
+                  :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
+                  :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
           <el-table-column :label="$t('SpaceManagement.Nom')">
             <template slot-scope="scope">
-              {{scope.row.name.get()}}
-
+              {{ scope.row.name.get() }}
             </template>
           </el-table-column>
 
@@ -86,8 +84,8 @@ with this file. If not, see
             <template slot-scope="scope">
               <el-button v
                          icon="el-icon-download"
-                         @click="exportFichier(scope.row)"
-                         circle></el-button>
+                         circle
+                         @click="exportFichier(scope.row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -98,11 +96,9 @@ with this file. If not, see
      ////////////////////////////////////////////////////////////////////////////////////////-->
       <el-tab-pane label="Notation">
         <el-container>
-          <message-component :nodeInfo="nodeInfo"></message-component>
+          <message-component :node-info="nodeInfo"></message-component>
         </el-container>
-
       </el-tab-pane>
-
     </el-tabs>
   </div>
 </template>
@@ -117,6 +113,15 @@ import {
 } from "spinal-env-viewer-graph-service";
 import messageComponent from "./messageComponent.vue";
 export default {
+  components: { "message-component": messageComponent },
+  filters: {
+    formatDate: function(date) {
+      const newDate = new Date(date);
+      return `${newDate.getDate()}/${newDate.getMonth() +
+        1}/${newDate.getFullYear()}`;
+    }
+  },
+  props: ["nodeId"],
   data() {
     return {
       tickets: [],
@@ -124,8 +129,29 @@ export default {
       nodeInfo: { selectedNode: SpinalGraphService.getRealNode(this.nodeId) }
     };
   },
-  components: { "message-component": messageComponent },
-  props: ["nodeId"],
+  watch: {
+    nodeId() {
+      this.nodeInfo = {
+        selectedNode: SpinalGraphService.getRealNode(this.nodeId)
+      };
+    }
+  },
+  async mounted() {
+    // this.tickets = await serviceTicketPersonalized.getTicketsFromNode(
+    //   this.nodeId
+    // );
+    // this.documents = await FileExplorer.getDirectory(
+    //   SpinalGraphService.getRealNode(this.nodeId)
+    // ).then(directory => {
+    //   let res = [];
+    //   for (let index = 0; index < directory.length; index++) {
+    //     const element = directory[index];
+    //     res.push(element);
+    //   }
+    //   return res;
+    // });
+  },
+  beforeDestroy() {},
   methods: {
     exportFichier(file) {
       if (file._info.model_type.get() != "Directory") {
@@ -155,37 +181,7 @@ export default {
         // check recursive directory & create a ZIP
       }
     }
-  },
-  async mounted() {
-    this.tickets = await serviceTicketPersonalized.getTicketsFromNode(
-      this.nodeId
-    );
-    this.documents = await FileExplorer.getDirectory(
-      SpinalGraphService.getRealNode(this.nodeId)
-    ).then(directory => {
-      let res = [];
-      for (let index = 0; index < directory.length; index++) {
-        const element = directory[index];
-        res.push(element);
-      }
-      return res;
-    });
-  },
-  watch: {
-    nodeId() {
-      this.nodeInfo = {
-        selectedNode: SpinalGraphService.getRealNode(this.nodeId)
-      };
-    }
-  },
-  filters: {
-    formatDate: function(date) {
-      const newDate = new Date(date);
-      return `${newDate.getDate()}/${newDate.getMonth() +
-        1}/${newDate.getFullYear()}`;
-    }
-  },
-  beforeDestroy() {}
+  }
 };
 </script>
 

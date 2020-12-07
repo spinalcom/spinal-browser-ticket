@@ -73,7 +73,7 @@ with this file. If not, see
       <room-data v-if="roomNodeId"
                  :node-id="roomNodeId"></room-data>
 
-      <categoryLstVue v-else
+      <categoryLstVue v-show="!roomNodeId"
                       ref="categoryListe"
                       :select-categorie="selectCategorie"
                       @addbreadcrumb="addbreadcrumb"
@@ -95,10 +95,12 @@ import RoomData from "./component/RoomData.vue";
 import { EventBus } from "../../services/event";
 
 export default {
-  components: { categoryLstVue,
+  components: {
+    categoryLstVue,
     tableauContext,
     tableauCategory,
-    "room-data": RoomData},
+    "room-data": RoomData
+  },
   props: [],
   data() {
     return {
@@ -151,7 +153,6 @@ export default {
       this.selectCategorie = categorie;
       // this.breadcrumbs = [];
       if (categorie && changepage) {
-        const categorieIndex = 1;
         this.removeAndAddBreadcrumb({
           index: 1,
           item: {
@@ -161,12 +162,14 @@ export default {
                 el => el.id === categorie.id
               );
               this.onclick(realCategory);
-              this.$refs.categoryListe.resetRoomSelected();
+              this.roomNodeId = null;
+              // this.$refs.categoryListe.resetRoomSelected();
             }
           }
         });
       } else if (changepage) {
         this.contextSelected = null;
+        this.roomNodeId = null;
         this.breadcrumbs = [];
       }
     },
@@ -189,6 +192,7 @@ export default {
           name: context.name,
           click: () => {
             const another = this.contextLst.find(el => el.id === context.id);
+            this.roomNodeId = null;
             this.SelectContext(another);
           }
         };
@@ -201,6 +205,7 @@ export default {
 
     removeAndAddBreadcrumb(data) {
       console.log(data);
+      this.roomNodeId = null;
       this.breadcrumbs.splice(data.index);
 
       this.breadcrumbs = [...this.breadcrumbs, data.item];
