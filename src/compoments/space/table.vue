@@ -24,7 +24,6 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-
     <el-breadcrumb class="breadcrumb-style"
                    separator="/">
       <el-breadcrumb-item>
@@ -71,32 +70,41 @@ with this file. If not, see
                  icon="el-icon-back"></el-button> -->
       <!-- <el-button @click="onclick(null)">BACK
       </el-button> -->
+      <room-data v-if="roomNodeId"
+                 :node-id="roomNodeId"></room-data>
 
-      <categoryLstVue ref="categoryListe"
+      <categoryLstVue v-else
+                      ref="categoryListe"
                       :select-categorie="selectCategorie"
                       @addbreadcrumb="addbreadcrumb"
-                      @updateBreadcrumb="removeAndAddBreadcrumb">
+                      @updateBreadcrumb="removeAndAddBreadcrumb"
+                      @resetRoomSelect="roomNodeId = null">
       </categoryLstVue>
     </div>
   </div>
 </template>
 
 <script>
-import SpinalBackend, { spinalBackEnd } from "../../services/spinalBackend";
+import { spinalBackEnd } from "../../services/spinalBackend";
 import categoryLstVue from "./component/categoryLstVue";
 import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
-import { roomLstVue } from "../space/component/roomLstVue";
+// import { roomLstVue } from "../space/component/roomLstVue";
+import RoomData from "./component/RoomData.vue";
 
 import { EventBus } from "../../services/event";
 
 export default {
-  components: { categoryLstVue, tableauContext, tableauCategory },
+  components: { categoryLstVue,
+    tableauContext,
+    tableauCategory,
+    "room-data": RoomData},
   props: [],
   data() {
     return {
       contextLst: [],
       selectCategorie: null,
+      roomNodeId: null,
       breadcrumbs: [],
       contextSelected: null
     };
@@ -165,6 +173,9 @@ export default {
 
     addbreadcrumb(resultat) {
       console.log("appelle de add breadcrubm");
+      if (typeof resultat.roomNodeId !== "undefined") {
+        this.roomNodeId = resultat.roomNodeId;
+      }
       this.breadcrumbs = [...this.breadcrumbs, resultat];
     },
 

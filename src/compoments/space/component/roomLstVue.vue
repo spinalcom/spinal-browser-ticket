@@ -25,16 +25,15 @@ with this file. If not, see
 
 <template>
   <el-row>
-
-    <el-table v-if="TabRoom === false"
-              :data="rooms"
-              class="tab"
-              border
-              style="width: 100%"
-              :header-cell-style='{"background-color": "#f0f2f5"}'
-              @row-click="SeeEvent">
-
-      <el-table-column prop=name
+    <!-- v-if="TabRoom === false" -->
+    <el-table
+      :data="rooms"
+      class="tab"
+      border
+      style="width: 100%"
+      :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}"
+      @row-click="SeeEvent">
+      <el-table-column prop="name"
                        label="Nom"
                        align="center">
       </el-table-column>
@@ -43,8 +42,7 @@ with this file. If not, see
                        label="Surface"
                        align="center">
         <template slot-scope="scope">
-
-          {{scope.row.surface}} m²
+          {{ scope.row.surface }} m²
         </template>
       </el-table-column>
       <el-table-column label=""
@@ -53,15 +51,13 @@ with this file. If not, see
         <template slot-scope="scope">
           <el-button v
                      icon="el-icon-arrow-right"
-                     @click.stop="PaPie(scope.row)"
-                     circle></el-button>
+                     circle
+                     @click.stop="PaPie(scope.row)"></el-button>
         </template>
       </el-table-column>
-
     </el-table>
-    <room-data v-else
-               :nodeId="nodeId"></room-data>
-
+    <!-- <room-data v-else
+               :nodeId="nodeId"></room-data> -->
   </el-row>
 </template>
 
@@ -69,6 +65,8 @@ with this file. If not, see
 // import { EventBus } from "../../../services/event";
 import RoomData from "../component/RoomData.vue";
 export default {
+  components: { "room-data": RoomData },
+  props: ["rooms", "color"],
   data() {
     return {
       contextLst: [],
@@ -76,8 +74,15 @@ export default {
       nodeId: undefined
     };
   },
-  components: { "room-data": RoomData },
-  props: ["rooms", "color"],
+  watch: {
+    // roomSelected() {
+    //   this.rooms = this.roomSelected.rooms;
+    // }
+  },
+  async mounted() {
+    // this.rooms = this.roomSelected.rooms;
+  },
+  beforeDestroy() {},
   methods: {
     SeeEvent(data) {
       this.$emit("seeEvent", { rooms: [data], color: this.color });
@@ -90,6 +95,7 @@ export default {
       this.nodeId = roo.id;
       this.$emit("addBreadcrumb", {
         name: roo.name,
+        roomNodeId: roo.id,
         click: () => {
           console.log("cliquez");
           // this.seeRoomTable(roomData);
@@ -99,15 +105,6 @@ export default {
     resetTabRoom() {
       this.TabRoom = false;
     }
-  },
-  async mounted() {
-    // this.rooms = this.roomSelected.rooms;
-  },
-  watch: {
-    // roomSelected() {
-    //   this.rooms = this.roomSelected.rooms;
-    // }
-  },
-  beforeDestroy() {}
+  }
 };
 </script>
