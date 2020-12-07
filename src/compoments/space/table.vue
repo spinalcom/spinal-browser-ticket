@@ -74,7 +74,9 @@ with this file. If not, see
 
       <categoryLstVue ref="categoryListe"
                       :select-categorie="selectCategorie"
-                      @addbreadcrumb="addbreadcrumb"></categoryLstVue>
+                      @addbreadcrumb="addbreadcrumb"
+                      @updateBreadcrumb="removeAndAddBreadcrumb">
+      </categoryLstVue>
     </div>
   </div>
 </template>
@@ -84,6 +86,7 @@ import SpinalBackend, { spinalBackEnd } from "../../services/spinalBackend";
 import categoryLstVue from "./component/categoryLstVue";
 import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
+import { roomLstVue } from "../space/component/roomLstVue";
 
 import { EventBus } from "../../services/event";
 
@@ -141,11 +144,9 @@ export default {
       // this.breadcrumbs = [];
       if (categorie && changepage) {
         const categorieIndex = 1;
-        this.breadcrumbs.splice(categorieIndex);
-
-        this.breadcrumbs = [
-          ...this.breadcrumbs,
-          {
+        this.removeAndAddBreadcrumb({
+          index: 1,
+          item: {
             name: categorie.name,
             click: () => {
               const realCategory = this.contextSelected.categories.find(
@@ -155,7 +156,7 @@ export default {
               this.$refs.categoryListe.resetRoomSelected();
             }
           }
-        ];
+        });
       } else if (changepage) {
         this.contextSelected = null;
         this.breadcrumbs = [];
@@ -185,6 +186,13 @@ export default {
       }
 
       // this.contextSelected = context;
+    },
+
+    removeAndAddBreadcrumb(data) {
+      console.log(data);
+      this.breadcrumbs.splice(data.index);
+
+      this.breadcrumbs = [...this.breadcrumbs, data.item];
     }
   }
 };

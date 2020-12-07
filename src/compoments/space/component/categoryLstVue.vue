@@ -25,51 +25,59 @@ with this file. If not, see
 <template>
   <el-row>
     <el-tabs type="border-card">
+      <template v-if="categorieRoomSelect && roomSelected">
+        <!-- <roomLstVue :rooms="roomSelected.rooms"
+                    :color="roomSelected.color"
+                    ref="roomscomponent"
+                    @seeEvent="SeeEvent"
+                    @addBreadcrumb="emitBreadcrumb"> </roomLstVue> -->
+      </template>
 
-      <el-tab-pane label="Tableau">
-        <el-row class="barre">
-          <el-button class="boutton-barre"
-                     icon="el-icon-download"
-                     circle
-                     @click="exportData"></el-button>
-          <el-button class="boutton-barre"
-                     icon="el-icon-view"
-                     circle
-                     @click="SeeAll"></el-button>
+      <template v-else>
+        <el-tab-pane label="Tableau">
+          <el-row class="barre">
+            <el-button class="boutton-barre"
+                       icon="el-icon-download"
+                       circle
+                       @click="exportData"></el-button>
+            <el-button class="boutton-barre"
+                       icon="el-icon-view"
+                       circle
+                       @click="SeeAll"></el-button>
 
-        </el-row>
+          </el-row>
 
-        <el-table v-if="!roomSelected"
-                  :data="data"
-                  class="tab"
-                  border
-                  style="width: 100%"
-                  :header-cell-style='{"background-color": "#f0f2f5"}'
-                  @row-click="SeeEvent">
+          <el-table v-if="!roomSelected"
+                    :data="data"
+                    class="tab"
+                    border
+                    style="width: 100%"
+                    :header-cell-style='{"background-color": "#f0f2f5"}'
+                    @row-click="SeeEvent">
 
-          <el-table-column :label="$t('SpaceManagement.Nom')">
-            <template slot-scope="scope">
-              <div>
-                <div class="spinal-table-cell-color"
-                     :style="{'background-color': scope.row.color}"></div>
-                <div> {{ scope.row.name }} </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="rooms.length"
-                           :label="$t('SpaceManagement.NombreDePiece')"
-                           align="center">
-          </el-table-column>
-          true
-          <el-table-column prop="surface"
-                           :label="$t('SpaceManagement.Surface')"
-                           align="center">
-            <template slot-scope="scope">
+            <el-table-column :label="$t('SpaceManagement.Nom')">
+              <template slot-scope="scope">
+                <div>
+                  <div class="spinal-table-cell-color"
+                       :style="{'background-color': scope.row.color}"></div>
+                  <div> {{ scope.row.name }} </div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="rooms.length"
+                             :label="$t('SpaceManagement.NombreDePiece')"
+                             align="center">
+            </el-table-column>
+            true
+            <el-table-column prop="surface"
+                             :label="$t('SpaceManagement.Surface')"
+                             align="center">
+              <template slot-scope="scope">
 
-              {{scope.row.surface | roundSurface}} m²
-            </template>
-          </el-table-column>
-          <!-- <el-table-column prop=color
+                {{scope.row.surface | roundSurface}} m²
+              </template>
+            </el-table-column>
+            <!-- <el-table-column prop=color
                            label="Couleur"
                            align="center">
             <template slot-scope="scope">
@@ -82,7 +90,7 @@ with this file. If not, see
             </template>
           </el-table-column> -->
 
-          <!-- <el-table-column>
+            <!-- <el-table-column>
 
             <template slot="header"
                       slot-scope="scope">
@@ -91,49 +99,51 @@ with this file. If not, see
             </template>
 
           </el-table-column> -->
-          <el-table-column :label="$t('SpaceManagement.ListeDePiece')"
-                           align="center">
-            <template slot-scope="scope">
-              <el-button @click="seeRoomTable(scope.row)"
-                         icon="el-icon-arrow-right"
-                         circle></el-button>
-            </template>
-          </el-table-column>
+            <el-table-column :label="$t('SpaceManagement.ListeDePiece')"
+                             align="center">
+              <template slot-scope="scope">
+                <el-button @click="seeRoomTable(scope.row)"
+                           icon="el-icon-arrow-right"
+                           circle></el-button>
+              </template>
+            </el-table-column>
 
-        </el-table>
-        <div v-else>
-          <roomLstVue :rooms="roomSelected.rooms"
-                      :color="roomSelected.color"
-                      ref="roomscomponent"
-                      @seeEvent="SeeEvent"> </roomLstVue>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="Dashboard">
-        <el-row class="barre">
+          </el-table>
+          <!-- <div v-else>
+            <roomLstVue :rooms="roomSelected.rooms"
+                        :color="roomSelected.color"
+                        ref="roomscomponent"
+                        @seeEvent="SeeEvent"
+                        @addBreadcrumb="emitBreadcrumb"> </roomLstVue>
+          </div> -->
+        </el-tab-pane>
+        <el-tab-pane label="Dashboard">
+          <el-row class="barre">
 
-          <el-button class="boutton-barre"
-                     @click="SeeAll"
-                     circle
-                     icon="el-icon-view"></el-button>
+            <el-button class="boutton-barre"
+                       @click="SeeAll"
+                       circle
+                       icon="el-icon-view"></el-button>
 
-        </el-row>
+          </el-row>
 
-        <el-carousel height="500px">
-          <el-carousel-item v-for="item in 1"
-                            :key="item">
-            <h3 class="small">
-              <ChartsPiece :entreprise="data"></ChartsPiece>
-            </h3>
-          </el-carousel-item>
-          <el-carousel-item v-for="item in 1"
-                            :key="item">
-            <h3 class="small">
-              <ChartsEsp :entreprise="data"></ChartsEsp>
-            </h3>
-          </el-carousel-item>
-        </el-carousel>
+          <el-carousel height="500px"
+                       :loop="false">
+            <el-carousel-item>
+              <h3 class="small">
+                <ChartsPiece :entreprise="data"></ChartsPiece>
+              </h3>
+            </el-carousel-item>
+            <el-carousel-item>
+              <h3 class="small">
+                <ChartsEsp :entreprise="data"></ChartsEsp>
+              </h3>
+            </el-carousel-item>
+          </el-carousel>
 
-      </el-tab-pane>
+        </el-tab-pane>
+      </template>
+
     </el-tabs>
 
     <!-- <el-row>
@@ -161,7 +171,8 @@ export default {
       categoryLst: [],
       fields: [],
       items: [],
-      roomSelected: null
+      roomSelected: null,
+      categorieRoomSelect: null
     };
   },
   components: { ChartsPiece, ChartsEsp, roomLstVue },
@@ -242,13 +253,50 @@ export default {
         rooms: roomData.rooms,
         color: roomData.color
       };
-      this.$emit("addbreadcrumb", {
-        name: roomData.name,
-        click: () => {
-          // this.seeRoomTable(roomData);
+
+      this.$emit("updateBreadcrumb", {
+        index: 2,
+        item: {
+          name: roomData.name,
+          click: () => {
+            this.$refs.roomscomponent.resetTabRoom();
+
+            const groupSelected = this.selectCategorie.groups.find(
+              el => el.id === roomData.id
+            );
+
+            this.seeRoomTable(groupSelected);
+          }
         }
       });
+
+      // this.$emit("addbreadcrumb", {
+      //   name: roomData.name,
+      //   click: () => {
+
+      //     const groupSelected = this.selectCategorie.groups.find(
+      //       el => el.id === roomData.id
+      //     );
+
+      //     this.$refs.roomscomponent.resetTabRoom();
+
+      //     this.$emit("updateBreadcrumb", {
+      //       index: 2,
+      //       item: {
+      //         ...groupSelected,
+      //         click: () => {
+      //           this.$refs.roomscomponent.resetTabRoom();
+      //         }
+      //       }
+      //     });
+      //   }
+      // });
     },
+    emitBreadcrumb(data) {
+      console.log(data);
+      this.$emit("addbreadcrumb", data);
+    },
+
     resetRoomSelected() {
       this.roomSelected = null;
     },
@@ -296,7 +344,8 @@ export default {
           return excelRows;
         });
       }
-    }
+    },
+    isRoom() {}
   },
   computed: {
     data: function() {

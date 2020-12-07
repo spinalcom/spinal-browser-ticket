@@ -26,7 +26,8 @@ with this file. If not, see
 <template>
   <el-row>
 
-    <el-table :data="rooms"
+    <el-table v-if="TabRoom === false"
+              :data="rooms"
               class="tab"
               border
               style="width: 100%"
@@ -46,21 +47,36 @@ with this file. If not, see
           {{scope.row.surface}} m²
         </template>
       </el-table-column>
+      <el-table-column label=""
+                       width="65"
+                       align="center">
+        <template slot-scope="scope">
+          <el-button v
+                     icon="el-icon-arrow-right"
+                     @click.stop="PaPie(scope.row)"
+                     circle></el-button>
+        </template>
+      </el-table-column>
 
     </el-table>
+    <room-data v-else
+               :nodeId="nodeId"></room-data>
 
   </el-row>
 </template>
 
 <script>
 // import { EventBus } from "../../../services/event";
+import RoomData from "../component/RoomData.vue";
 export default {
   data() {
     return {
-      contextLst: []
+      contextLst: [],
+      TabRoom: false,
+      nodeId: undefined
     };
   },
-  components: {},
+  components: { "room-data": RoomData },
   props: ["rooms", "color"],
   methods: {
     SeeEvent(data) {
@@ -68,6 +84,20 @@ export default {
     },
     SeeAll() {
       this.$emit("seeEvent", { rooms: this.rooms, color: this.color });
+    },
+    PaPie(roo) {
+      this.TabRoom = true;
+      this.nodeId = roo.id;
+      this.$emit("addBreadcrumb", {
+        name: roo.name,
+        click: () => {
+          console.log("cliquez");
+          // this.seeRoomTable(roomData);
+        }
+      });
+    },
+    resetTabRoom() {
+      this.TabRoom = false;
     }
   },
   async mounted() {
