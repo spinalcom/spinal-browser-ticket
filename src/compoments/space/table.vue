@@ -35,8 +35,8 @@ with this file. If not, see
       </el-breadcrumb-item>
     </el-breadcrumb>
 
-    <div v-if="selectCategorie == null"
-         class="root">
+    <div class="spacecon_container"
+         v-if="selectCategorie == null">
       <!-- <el-card class="box-card"
                v-for="context in contextLst"
                :key=context.id>
@@ -64,7 +64,8 @@ with this file. If not, see
                         @seeGroups="onclick"></tableau-category>
     </div>
 
-    <div v-else>
+    <div class="spacecon_container"
+         v-else>
       <!-- <el-button class="back-icon"
                  @click="onclick(null)"
                  icon="el-icon-back"></el-button> -->
@@ -163,7 +164,7 @@ export default {
               );
               this.onclick(realCategory);
               this.roomNodeId = null;
-              // this.$refs.categoryListe.resetRoomSelected();
+              this.$refs.categoryListe.resetRoomSelected();
             }
           }
         });
@@ -217,9 +218,9 @@ export default {
 <style scoped>
 .spacecon {
   width: 100%;
-  padding: 0 10px;
+  height: 100%;
 }
-.card-content {
+/* .card-content {
   display: flex;
   flex-direction: column;
 }
@@ -229,18 +230,31 @@ export default {
 }
 .clearfix {
   text-align: center;
-}
-.breadcrumb-style {
-  font-size: 20px;
-  margin: 15px 0 20px 2px;
+} */
+
+.spacecon .breadcrumb-style {
+  width: 100%;
+  height: 60px;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0 5px 0 5px;
 }
 
-.boutton-barre {
+.spacecon .spacecon_container {
+  width: 100%;
+  height: calc(100% - 70px);
+  max-height: calc(100% - 70px);
+  /* overflow: auto; */
+}
+
+/* .boutton-barre {
   padding: 14px !important;
 }
 .barre {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
-}
+} */
 </style>

@@ -151,7 +151,7 @@ export default {
     },
 
     restoreState() {
-      const viewer = window.spinal.ForgeViewer.viewer;
+      const viewer = window.spinal.SpinalForgeViewer.viewerManager.viewer;
 
       if (Object.keys(this.viewPoint).length === 0) return;
 

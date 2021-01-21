@@ -23,8 +23,9 @@ with this file. If not, see
 -->
 
 <template>
-  <el-row>
-    <el-tabs type="border-card">
+  <el-row class="tableauContextRow">
+    <el-tabs class="tabsContainer"
+             type="border-card">
       <el-tab-pane label="Tableau">
         <!-- <el-row class="barre">
           <el-button class="boutton-barre"
@@ -95,7 +96,8 @@ with this file. If not, see
         </el-table>
       </el-tab-pane>
     </el-tabs>
-  </el-row></el-tabs></el-tab-pane>
+  </el-row>
+  <!-- </el-tabs></el-tab-pane> -->
 </template>
 
 <script>
@@ -244,17 +246,31 @@ export default {
 </script>
 
 <style scoped>
-.tab {
+/* .tab {
   padding: 0 -20 px 0 -10px;
-}
-.boutton-barre {
+}*/
+/* .boutton-barre {
   padding: 14px !important;
+} */
+
+.tableauContextRow {
+  width: 100%;
+  height: 100%;
+  background-color: yellow;
 }
+
+.tableauContextRow .tabsContainer {
+  width: 100%;
+  height: 100%;
+  background-color: green;
+}
+
 .barre {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
 }
+
 .el-icon-download {
   width: 30px;
 }

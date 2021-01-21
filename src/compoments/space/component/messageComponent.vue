@@ -453,7 +453,8 @@ export default {
     }
   },
   mounted() {
-    console.log("salut moussa");
+    this.resetBind();
+    this.updatedd();
   }
 };
 </script>
