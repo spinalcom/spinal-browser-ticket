@@ -26,19 +26,19 @@ import { spinalIO } from './spinalIO';
 import { SpinalGraph } from 'spinal-model-graph';
 import q from "q";
 
-export default class GenericSpinalBack
+export default class BackendInitializer
 {
-  static instance: GenericSpinalBack
+  static instance: BackendInitializer
   graph: SpinalGraph<any> = null;
   initDefer = q.defer();
 
   constructor() {
   }
 
-  static getInstance() : GenericSpinalBack {
-    if (!GenericSpinalBack.instance)
-      GenericSpinalBack.instance = new GenericSpinalBack
-    return GenericSpinalBack.instance
+  static getInstance() : BackendInitializer {
+    if (!BackendInitializer.instance)
+      BackendInitializer.instance = new BackendInitializer
+    return BackendInitializer.instance
   }
 
   async init() {
