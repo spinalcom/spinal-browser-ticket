@@ -65,7 +65,6 @@ EventBus.$on('view-color-all', async (items, zone) => {
     lastColorZone = zone
     lastColorItem = null
     for (const item of items) {
-      console.debug(item.server_id)
       const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item, true);
       for (const { selection, model } of lstByModel) {
         viewerUtils.colorThemingItems(model, item.color, selection);
