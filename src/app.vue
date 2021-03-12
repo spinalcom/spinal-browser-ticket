@@ -70,11 +70,13 @@ export default Vue.extend({
       DocumentReady(async () => {
         await getDefaultLanguage();
         console.error(e);
-        console.log(this.$t("error.returntodrive.confirmbtntext"));
-        const title = this.$t("error.returntodrive.title");
-        const comfimText = this.$t("error.returntodrive.confirmbtntext");
-        const msg = this.$t("error.returntodrive.text");
-        errorDialog.call(this, title, comfimText, msg, e);
+        // @ts-ignore
+        window.location = "/html/spinaltwin/login.html" + location.hash + location.search;
+        // console.log(this.$t("error.returntodrive.confirmbtntext"));
+        // const title = this.$t("error.returntodrive.title");
+        // const comfimText = this.$t("error.returntodrive.confirmbtntext");
+        // const msg = this.$t("error.returntodrive.text");
+        // errorDialog.call(this, title, comfimText, msg, e);
       });
     }
   },
