@@ -83,6 +83,7 @@ export default {
           title: target.name,
           name: target.name,
           content: target.content,
+          props: target.props,
         });
         this.activetab = target.name;
       },
