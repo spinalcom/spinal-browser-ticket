@@ -29,9 +29,6 @@ with this file. If not, see
       </SpinalBreadcrumb>
     </el-header>
     <el-main>
-      <div v-if="items !== false">
-        {{ $t(`node-type.${items.nodeType}`) }}
-      </div>
       <tab-manager :tabsprop="tabs"/>
       <!-- <explorer :Properties="tabs[0].props"></explorer> -->
     </el-main>
