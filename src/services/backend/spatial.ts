@@ -36,7 +36,8 @@ import {
   FLOOR_TYPE,
   ROOM_TYPE,
   EQUIPMENT_TYPE,
-  GEO_RELATIONS
+  GEO_RELATIONS,
+  EQUIPMENT_RELATION,
 } from '../../constants';
 import { EventBus } from '../event';
 import { FileSystem } from 'spinal-core-connectorjs_type';
@@ -227,6 +228,20 @@ export default class BackEndSpatial {
   async getLstByModel(item, addRoomRef = false) {
     const node = getNodeFromItem(item);
     const relations = [...GEO_RELATIONS, "hasReferenceObject.ROOM"]
+    const listNode = await node.find(relations, (n) => {
+      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+    });
+    return sortBIMObjectByModel(listNode);
+  }
+
+  /**
+   * @param { {server_id: number} } item
+   * @memberof BackEndSpatial
+   * @returns { Promise<{model, selection: number[] }[]>}
+   */
+  async getLstByModelEquipment(item, addRoomRef = false) {
+    const node = getNodeFromItem(item);
+    const relations = [...EQUIPMENT_RELATION]
     const listNode = await node.find(relations, (n) => {
       return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
     });
