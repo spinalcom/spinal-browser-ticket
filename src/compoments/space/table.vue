@@ -24,7 +24,6 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-
     <el-breadcrumb class="breadcrumb-style"
                    separator="/">
       <el-breadcrumb-item>
@@ -36,8 +35,8 @@ with this file. If not, see
       </el-breadcrumb-item>
     </el-breadcrumb>
 
-    <div v-if="selectCategorie == null"
-         class="root">
+    <div class="spacecon_container"
+         v-if="selectCategorie == null">
       <!-- <el-card class="box-card"
                v-for="context in contextLst"
                :key=context.id>
@@ -65,35 +64,50 @@ with this file. If not, see
                         @seeGroups="onclick"></tableau-category>
     </div>
 
-    <div v-else>
+    <div class="spacecon_container"
+         v-else>
       <!-- <el-button class="back-icon"
                  @click="onclick(null)"
                  icon="el-icon-back"></el-button> -->
       <!-- <el-button @click="onclick(null)">BACK
       </el-button> -->
+      <room-data v-if="roomNodeId"
+                 :node-id="roomNodeId"></room-data>
 
-      <categoryLstVue ref="categoryListe"
+      <categoryLstVue v-show="!roomNodeId"
+                      ref="categoryListe"
                       :select-categorie="selectCategorie"
-                      @addbreadcrumb="addbreadcrumb"></categoryLstVue>
+                      @addbreadcrumb="addbreadcrumb"
+                      @updateBreadcrumb="removeAndAddBreadcrumb"
+                      @resetRoomSelect="roomNodeId = null">
+      </categoryLstVue>
     </div>
   </div>
 </template>
 
 <script>
-import SpinalBackend, { spinalBackEnd } from "../../services/spinalBackend";
+import { spinalBackEnd } from "../../services/spinalBackend";
 import categoryLstVue from "./component/categoryLstVue";
 import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
+// import { roomLstVue } from "../space/component/roomLstVue";
+import RoomData from "./component/RoomData.vue";
 
 import { EventBus } from "../../services/event";
 
 export default {
-  components: { categoryLstVue, tableauContext, tableauCategory },
+  components: {
+    categoryLstVue,
+    tableauContext,
+    tableauCategory,
+    "room-data": RoomData
+  },
   props: [],
   data() {
     return {
       contextLst: [],
       selectCategorie: null,
+      roomNodeId: null,
       breadcrumbs: [],
       contextSelected: null
     };
@@ -112,11 +126,12 @@ export default {
             for (const context of this.contextLst) {
               if (this.contextSelected.id === context.id) {
                 const selectCategorie = this.selectCategorie;
-                this.SelectContext(context);
+                this.SelectContext(context, false);
                 if (selectCategorie) {
                   for (const cat of this.contextSelected.categories) {
                     if (selectCategorie.id === cat.id) {
-                      this.onclick(cat);
+                      this.onclick(cat, false);
+                      // this.selectCategorie = categorie;
                     }
                   }
                 }
@@ -135,48 +150,66 @@ export default {
     });
   },
   methods: {
-    onclick(categorie) {
+    onclick(categorie, changepage = true) {
       this.selectCategorie = categorie;
       // this.breadcrumbs = [];
-      if (categorie) {
-        const categorieIndex = 1;
-        this.breadcrumbs.splice(categorieIndex);
-
-        this.breadcrumbs = [
-          ...this.breadcrumbs,
-          {
+      if (categorie && changepage) {
+        this.removeAndAddBreadcrumb({
+          index: 1,
+          item: {
             name: categorie.name,
             click: () => {
-              this.onclick(categorie);
+              const realCategory = this.contextSelected.categories.find(
+                el => el.id === categorie.id
+              );
+              this.onclick(realCategory);
+              this.roomNodeId = null;
               this.$refs.categoryListe.resetRoomSelected();
             }
           }
-        ];
-      } else {
+        });
+      } else if (changepage) {
         this.contextSelected = null;
+        this.roomNodeId = null;
         this.breadcrumbs = [];
       }
     },
 
     addbreadcrumb(resultat) {
       console.log("appelle de add breadcrubm");
+      if (typeof resultat.roomNodeId !== "undefined") {
+        this.roomNodeId = resultat.roomNodeId;
+      }
       this.breadcrumbs = [...this.breadcrumbs, resultat];
     },
 
-    SelectContext(context) {
-      this.breadcrumbs = [];
-      this.selectCategorie = null;
+    SelectContext(context, changepage = true) {
       this.contextSelected = context;
 
-      const obj = {
-        name: context.name,
-        click: () => {
-          this.SelectContext(context);
-        }
-      };
+      if (changepage) {
+        this.selectCategorie = null;
+        this.breadcrumbs = [];
+        const obj = {
+          name: context.name,
+          click: () => {
+            const another = this.contextLst.find(el => el.id === context.id);
+            this.roomNodeId = null;
+            this.SelectContext(another);
+          }
+        };
 
-      this.breadcrumbs = [...this.breadcrumbs, obj];
-      this.contextSelected = context;
+        this.breadcrumbs = [...this.breadcrumbs, obj];
+      }
+
+      // this.contextSelected = context;
+    },
+
+    removeAndAddBreadcrumb(data) {
+      console.log(data);
+      this.roomNodeId = null;
+      this.breadcrumbs.splice(data.index);
+
+      this.breadcrumbs = [...this.breadcrumbs, data.item];
     }
   }
 };
@@ -185,9 +218,9 @@ export default {
 <style scoped>
 .spacecon {
   width: 100%;
-  padding: 0 10px;
+  height: 100%;
 }
-.card-content {
+/* .card-content {
   display: flex;
   flex-direction: column;
 }
@@ -197,18 +230,31 @@ export default {
 }
 .clearfix {
   text-align: center;
-}
-.breadcrumb-style {
-  font-size: 20px;
-  margin: 15px 0 20px 2px;
+} */
+
+.spacecon .breadcrumb-style {
+  width: 100%;
+  height: 60px;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0 5px 0 5px;
 }
 
-.boutton-barre {
+.spacecon .spacecon_container {
+  width: 100%;
+  height: calc(100% - 70px);
+  max-height: calc(100% - 70px);
+  /* overflow: auto; */
+}
+
+/* .boutton-barre {
   padding: 14px !important;
 }
 .barre {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
-}
+} */
 </style>

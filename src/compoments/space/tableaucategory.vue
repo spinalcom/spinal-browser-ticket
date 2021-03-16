@@ -22,34 +22,9 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-<!--
-Copyright 2020 SpinalCom - www.spinalcom.com
-
-This file is part of SpinalCore.
-
-Please read all of the following terms and conditions
-of the Free Software license Agreement ("Agreement")
-carefully.
-
-This Agreement is a legally binding contract between
-the Licensee (as defined below) and SpinalCom that
-sets forth the terms and conditions that govern your
-use of the Program. By installing and/or using the
-Program, you agree to abide by all the terms and
-conditions stated or referenced herein.
-
-If you do not agree to abide by these terms and
-conditions, do not demonstrate your acceptance and do
-not install or use the Program.
-You should have received a copy of the license along
-with this file. If not, see
-<http://resources.spinalcom.com/licenses.pdf>.
--->
-
 <template>
   <el-row>
     <el-tabs type="border-card">
-
       <el-tab-pane label="Tableau">
         <!-- <el-row class="barre">
           <el-button class="boutton-barre"
@@ -70,9 +45,8 @@ with this file. If not, see
         <el-table :data="categories"
                   border
                   style="width: 100%"
-                  :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
-                  :header-cell-style='{"background-color": "#f0f2f5"}'>
-
+                  :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
+                  :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
           <el-table-column prop="name"
                            :label="$t('SpaceManagement.Nom')"
                            width="180">
@@ -86,14 +60,14 @@ with this file. If not, see
           <el-table-column :label="$t('SpaceManagement.NombreTotalPiece')"
                            align="center">
             <template slot-scope="scope">
-              {{getRoomsCount(scope.row)}}
+              {{ getRoomsCount(scope.row) }}
             </template>
           </el-table-column>
 
           <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
                            align="center">
             <template slot-scope="scope">
-              {{getSurfaceTotale(scope.row)}} m²
+              {{ getSurfaceTotale(scope.row) }} m²
             </template>
           </el-table-column>
           <el-table-column label=""
@@ -107,6 +81,9 @@ with this file. If not, see
             </template>
           </el-table-column>
         </el-table>
+      </el-tab-pane>
+    </el-tabs>
+  </el-row></el-tabs></el-tab-pane>
 </template>
 
 <script>
@@ -114,15 +91,24 @@ import SpinalBackend from "../../services/spinalBackend";
 import headerBarVue from "./component/headerBar.vue";
 
 export default {
+  components: {
+    "header-bar": headerBarVue
+  },
+  props: ["contextSelected"],
   data() {
     return {
       categories: []
     };
   },
-  components: {
-    "header-bar": headerBarVue
+  watch: {
+    contextSelected() {
+      this.categories = this.contextSelected.categories;
+    }
   },
-  props: ["contextSelected"],
+  async mounted() {
+    this.categories = this.contextSelected.categories;
+  },
+  beforeDestroy() {},
   methods: {
     getRoomsCount(category) {
       return SpinalBackend.spaceBack.getCategoriesRoomCount(category);
@@ -216,16 +202,7 @@ export default {
         };
       });
     }
-  },
-  async mounted() {
-    this.categories = this.contextSelected.categories;
-  },
-  watch: {
-    contextSelected() {
-      this.categories = this.contextSelected.categories;
-    }
-  },
-  beforeDestroy() {}
+  }
 };
 </script>
 
