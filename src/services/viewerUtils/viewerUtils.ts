@@ -33,7 +33,7 @@ type RotateToFace = "top" | 'front' | "right" | "left" | "back" | 'bottom' |
   "front,bottom,left" | "back,bottom,left"
 
 export class ViewerUtils {
-  elementColored: Set<{model, dbIds: number[]}> = new Set();
+  elementColored: Set<{ model, dbIds: number[] }> = new Set();
   restoreColorMaterialBinded: () => void;
   materials = {};
   // Map<Model, Map<colorString, Set<dbIdString > > >
@@ -157,7 +157,7 @@ export class ViewerUtils {
   }
 
   colorThemingItems(model, color: string, dbIds: number[]) {
-    this.elementColored.add({model, dbIds});
+    this.elementColored.add({ model, dbIds });
     const _color = this.convertHewToRGB(color);
 
     dbIds.forEach(dbId => {
@@ -170,7 +170,7 @@ export class ViewerUtils {
 
   }
   restoreColorThemingItems() {
-    for (const {model, dbIds} of this.elementColored) {
+    for (const { model, dbIds } of this.elementColored) {
       for (const dbid of dbIds) {
         model.setThemingColor(
           dbid,
