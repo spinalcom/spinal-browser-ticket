@@ -39,6 +39,7 @@ import Ripple from 'vue-ripple-directive'
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './app.css';
+import  './compoments/sidebar/eventSideBar'
 
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts)

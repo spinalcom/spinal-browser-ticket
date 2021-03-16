@@ -181,3 +181,19 @@ group.expanded.category > leaf.expanded.property > lmvheader > div {
     width: 100% !important;
   }
 }
+
+.spinal-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.spinal-scrollbar::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(169, 169, 169, 0.9);
+}
+.spinal-scrollbar::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}

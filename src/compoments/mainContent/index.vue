@@ -30,18 +30,22 @@ with this file. If not, see
          :class="{'abs-viewer' : absviewer}">
       <div ref="viewerContent"
            class="viewer-content">
-        <appViewer :isMinimized="absviewer">
-        </appViewer>
+        <spinalNavbar class="main-navbar"></spinalNavbar>
+        <div class="content-viewer-view">
+          <appViewer :is-minimized="absviewer">
+          </appViewer>
+          <el-button v-show="!absviewer"
+                     size="mini"
+                     class="btn-abs-viewer-popio"
+                     @click="onPopClick">
+            <i data-eva="collapse-outline"
+               data-eva-animation="zoom"
+               height="30px"
+               data-eva-height="24"
+               data-eva-width="24"></i>
+          </el-button>
+        </div>
       </div>
-      <el-button size="mini"
-                 class="btn-abs-viewer-popio"
-                 @click="onPopClick">
-        <i data-eva="collapse-outline"
-           data-eva-animation="zoom"
-           height="30px"
-           data-eva-height="24"
-           data-eva-width="24"></i>
-      </el-button>
     </div>
     <div class="spinal-other-container">
       <router-view></router-view>
@@ -89,16 +93,20 @@ with this file. If not, see
 <script>
 import createDragElement from "../../services/utlils/createDragElement";
 import appViewer from "./viewer/viewer.vue";
+import spinalNavbar from "../navbar/spinalNavbar.vue";
 
 export default {
-  name: "main-content",
+  name: "MainContent",
+  components: {
+    appViewer,
+    spinalNavbar
+  },
   data() {
     return {
       absviewer: false,
       hideViewer: false
     };
   },
-  components: { appViewer },
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
     eva.replace();
@@ -145,7 +153,7 @@ export default {
 .spinal-viewer-container {
   height: 100%;
   width: 50%;
-  background-color: #ededed;
+  background-color: #222222f0;
   position: relative;
   display: flex;
 }
@@ -168,7 +176,14 @@ export default {
     display: block;
   }
 }
-
+.content-viewer-view {
+  height: calc(100% - 60px);
+  position: relative;
+  margin: 0px 5px 10px 10px;
+  background: #222222f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
 .abs-viewer ~ .spinal-other-container {
   height: 100%;
   width: 100%;

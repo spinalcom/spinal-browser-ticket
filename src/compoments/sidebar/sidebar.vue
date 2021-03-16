@@ -27,7 +27,7 @@ with this file. If not, see
     <sidebarMenu ref="sidebarmenu"
                  v-loading="loading"
                  :title="title"
-                 :canGoBack="!!selected"
+                 :can-go-back="!!selected"
                  :items="dataComputed"
                  @goBack="goBack"
                  @homeSelect="homeSelect"
@@ -45,10 +45,10 @@ with this file. If not, see
 <script>
 import sidebarMenu from "./sidebarMenu.vue";
 import { EventBus } from "../../services/event";
-import "./eventSideBar";
+// import "./eventSideBar";
 
 export default {
-  name: "sidebar",
+  name: "Sidebar",
   components: { sidebarMenu },
   data() {
     return {
