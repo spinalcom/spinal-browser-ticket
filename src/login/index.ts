@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 SpinalCom - www.spinalcom.com
+ * Copyright 2021 SpinalCom - www.spinalcom.com
  * 
  * This file is part of SpinalCore.
  * 
@@ -22,32 +22,15 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-export function errorDialog(title, comfimText, msg, error) {
-  const h = this.$createElement;
-  const msgText = [h('span', null, msg)]
-  if (error) {
-    msgText.push(
-      h('br', null, null),
-      h('i', { style: 'color: teal' }, error)
-    )
-  }
+import "babel-polyfill";
+import Vue from "vue";
+import ElementUI from 'element-ui';
+import App from "./app.vue";
+import 'element-ui/lib/theme-chalk/index.css';
+import './app.css';
 
-  this.$msgbox({
-    title,
-    message: h('p', null, msgText),
-    confirmButtonText: comfimText,
-    closeOnClickModal: false,
-    beforeClose: (action, instance, done) => {
-      if (action === 'confirm') {
-        // @ts-ignore
-        window.location = "/html/spinaltwin/login.html" + location.hash + location.search;
-        // window.location = "/html/drive/";
-        done();
-      } else {
-        done();
-      }
-    }
-  })
-}
+Vue.use(ElementUI);
 
-export default errorDialog;
+new Vue({
+  render: h => h(App)
+}).$mount('#app');
