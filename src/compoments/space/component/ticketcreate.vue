@@ -29,14 +29,16 @@ with this file. If not, see
                @click="dialogFormVisible = true">
     </el-button>
 
-    <el-dialog title="Adresse d'expédition"
-               :visible.sync="dialogFormVisible">
+    <div class="div-dialog"
+         title="Adresse d'expédition"
+         v-if="dialogFormVisible">
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Tableau Categorie Ticket /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-cascader-panel v-on:change="cascaderSelection"
-                         :props="props"></el-cascader-panel>
-
+      <div class="radio-cas">
+        <el-cascader-panel v-on:change="cascaderSelection"
+                           :props="props"></el-cascader-panel>
+      </div>
       <br>
 
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
@@ -59,13 +61,13 @@ with this file. If not, see
         </el-form-item>
       </el-form>
 
-      <span slot="footer"
-            class="dialog-footer">
+      <div slot="footer"
+           class="dialog-footer">
         <el-button @click="dialogFormVisible = false">Annuler</el-button>
         <el-button type="primary"
                    @click="confirmTicket">Confirmer</el-button>
-      </span>
-    </el-dialog>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -156,3 +158,22 @@ export default {
 };
 </script>
 
+<style scoped>
+.div-dialog {
+  position: absolute;
+  background: white;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+.radio-cas {
+  overflow-x: auto;
+  padding: 5px;
+}
+
+el-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+</style>

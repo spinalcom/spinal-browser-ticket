@@ -50,7 +50,16 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// TICKET /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Tickets">
+    <el-tab-pane class="pane-ticket"
+                 label="Tickets">
+      <div class="barre">
+        <ticket-create v-bind:nodeId="nodeId"
+                       @reload="updateticket"></ticket-create>
+        <header-bar :header="ticketHeader"
+                    :content="ticketContent"
+                    :data="ticketData"></header-bar>
+
+      </div>
       <el-table :data="tickets"
                 border
                 style="width: 100%"
@@ -80,13 +89,22 @@ with this file. If not, see
           </template>
         </el-table-column>
       </el-table>
-      <ticket-create v-bind:nodeId="nodeId"
-                     @reload="updateticket"></ticket-create>
+
     </el-tab-pane>
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// DOCUMENTATION /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
     <el-tab-pane label="Documentation">
+      <div class="barre">
+
+        <document-create v-bind:nodeId="nodeId"
+                         @reload="updateDocument"></document-create>
+        <header-bar :header="ticketHeader"
+                    :content="ticketContent"
+                    :data="ticketData"></header-bar>
+
+      </div>
+
       <el-table :data="documents"
                 border
                 style="width: 100%"
@@ -109,14 +127,7 @@ with this file. If not, see
           </template>
         </el-table-column>
       </el-table>
-      <div class="button-room">
-        <div class="button-supprimer">
-          <i class="el-icon-remove-outline"></i>
-        </div>
-        <div class="button-ajouter">
-          <i class="el-icon-circle-plus-outline"></i>
-        </div>
-      </div>
+
     </el-tab-pane>
 
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
@@ -132,10 +143,15 @@ with this file. If not, see
        ////////////////////////////////// Calendrier /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
     <el-tab-pane label="Calendrier">
-      <vueCal :events="calendrier"></vueCal>
-      <div class="button-ajouter">
-        <i class="el-icon-circle-plus-outline"></i>
+      <div class="barre">
+        <header-bar :header="ticketHeader"
+                    :content="ticketContent"
+                    :data="ticketData"></header-bar>
+        <ticket-create v-bind:nodeId="nodeId"
+                       @reload="updateticket"></ticket-create>
       </div>
+      <vueCal :events="calendrier"></vueCal>
+
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -144,22 +160,22 @@ with this file. If not, see
 // import SpinalBackend from "../../services/spinalBackend";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import {
-  SpinalGraph,
-  SpinalGraphService
-} from "spinal-env-viewer-graph-service";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import messageComponent from "./messageComponent.vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { SpinalEventService } from "spinal-env-viewer-task-service";
 import GeographicContext from "spinal-env-viewer-context-geographic-service";
 import ticketcreate from "./ticketcreate.vue";
-const { EQUIPMENT_RELATION } = GeographicContext.constants;
+import headerBarVue from "./headerBar.vue";
+import documentcreateVue from "./documentcreate.vue";
 export default {
   components: {
     "message-component": messageComponent,
     VueCal,
-    "ticket-create": ticketcreate
+    "ticket-create": ticketcreate,
+    "header-bar": headerBarVue,
+    "document-create": documentcreateVue
   },
   filters: {
     formatDate: function(date) {
@@ -173,6 +189,9 @@ export default {
     return {
       tickets: [],
       documents: [],
+      ticketHeader: [],
+      ticketData: [],
+      ticketContent: [],
       nodeInfo: { selectedNode: SpinalGraphService.getRealNode(this.nodeId) },
       calendrier: [],
       equipement: []
@@ -205,19 +224,36 @@ export default {
     this.tickets = await serviceTicketPersonalized.getTicketsFromNode(
       this.nodeId
     );
-    this.documents = await FileExplorer.getDirectory(
-      SpinalGraphService.getRealNode(this.nodeId)
-    ).then(directory => {
-      let res = [];
-      for (let index = 0; index < directory.length; index++) {
-        const element = directory[index];
-        res.push(element);
-      }
-      return res;
+
+    this.ticketHeader = [
+      { key: "name", header: "name", width: 15 },
+      { key: "priority", header: "priority", width: 15 },
+      { key: "user", header: "utilisateur", width: 15 },
+      { key: "creationDate", header: "date de création", width: 15 }
+    ];
+
+    this.ticketContent = this.tickets.map(el => ({
+      name: el.name,
+      priority: el.priority,
+      user: el.user ? el.user.name : "unknow",
+      creationDate: this._formatDate(el.creationDate)
+    }));
+
+    const salle = SpinalGraphService.getInfo(this.nodeId).get();
+
+    /**
+     * Pas une bonne idée de parcourir tout le tableau pour la même salle
+     * ajouter une condition dans headerBar.vue pour regler ce probleme
+     */
+    this.ticketData = this.tickets.map(el => {
+      el.rooms = [salle];
+      return el;
     });
+
+    this.documents = await this.getDocuments();
     let varEquipement = await SpinalGraphService.getChildren(
       this.nodeId,
-      EQUIPMENT_RELATION
+      GeographicContext.constants.EQUIPMENT_RELATION
     );
     this.equipement = varEquipement.map(item => {
       return item.get();
@@ -262,6 +298,21 @@ export default {
       this.tickets = await serviceTicketPersonalized.getTicketsFromNode(
         this.nodeId
       );
+    },
+    getDocuments() {
+      return FileExplorer.getDirectory(
+        SpinalGraphService.getRealNode(this.nodeId)
+      ).then(directory => {
+        let res = [];
+        for (let index = 0; index < directory.length; index++) {
+          const element = directory[index];
+          res.push(element);
+        }
+        return res;
+      });
+    },
+    async updateDocument() {
+      this.documents = await this.getDocuments();
     }
   }
 };
@@ -277,5 +328,21 @@ export default {
 }
 .button-supprimer {
   display: inline-block;
+}
+.pane-ticket {
+  position: relative;
+  height: calc(100% - 20px);
+}
+</style>
+
+<style>
+.tabsContainer .el-tabs__content {
+  width: 100%;
+  height: 100%;
+}
+
+.barre {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

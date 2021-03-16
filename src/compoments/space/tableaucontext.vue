@@ -262,7 +262,6 @@ export default {
 .tableauContextRow .tabsContainer {
   width: 100%;
   height: 100%;
-  background-color: green;
 }
 
 .barre {
