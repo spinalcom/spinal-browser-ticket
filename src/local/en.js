@@ -27,13 +27,19 @@ export default {
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
   "error.returntodrive.title": "Error",
-  "data-room.geographicContext": "Contexts",
-  "data-room.geographicBuilding": "Buildings",
-  "data-room.geographicFloor": "Floors",
-  "data-room.geographicRoom": "Rooms",
-  "data-room.BIMObject": "Objects",
+  "data-room.geographicContext": "Contexts", // Could be generic
+  "data-room.geographicBuilding": "Buildings", // Could be generic
+  "data-room.geographicFloor": "Floors", // Could be generic
+  "data-room.geographicRoom": "Rooms", // Could be generic
+  "data-room.BIMObject": "Objects", // Could be generic
   "data-room.Area": "Area",
   "data-room.Name": "Name",
+  "node-type.context" : "Contexts",
+  "node-type.groupingCategory" : "Categories",
+  "node-type.BIMObjectGroupContext" : "BIM objects groups contexts",
+  "node-type.BIMObjectGroup" : "BIM Object Groups",
+  "node-type.BIMObject" : " BIM Objects",
+  "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",
   "SpaceManagement.Categories": "Categories",
   "SpaceManagement.NombreTotalGroupe": "Total number of groups",
