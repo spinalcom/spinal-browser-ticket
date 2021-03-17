@@ -23,10 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <el-breadcrumb class="spinal-breadcrumb"
-                 separator="/">
-    <el-breadcrumb-item v-for="(bc, index) in breadcrumb"
-                        :key="index">
+  <el-breadcrumb class="spinal-breadcrumb" separator="/">
+    <el-breadcrumb-item v-for="(bc, index) in breadcrumb" :key="index">
       <a @click="selectBreadcrumb(bc)">{{ bc.name }}</a>
     </el-breadcrumb-item>
   </el-breadcrumb>
@@ -40,7 +38,7 @@ export default {
   props: { viewKey: { require: true, type: String, default: "" } },
   data() {
     return {
-      breadcrumb: []
+      breadcrumb: [],
     };
   },
   mounted() {
@@ -54,10 +52,10 @@ export default {
     selectBreadcrumb(bc) {
       const viewManager = ViewManager.getInstance(this.viewKey);
       viewManager.move(bc.serverId);
-      // console.log("selectBreadcrumb",breadcrumb );
+      // console.log("selectBreadcrumb", breadcrumb);
       // this.$emit("selectHome");
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -32,32 +32,44 @@ import {
   TICKET_RELATION_STEP_TICKET,
   TICKET_TICKET_TYPE,
   TICKET_RELATION_PROCESS_OBJET,
-  TICKET_OBJECT_TYPE
-} from '../../constants';
+  TICKET_OBJECT_TYPE,
+  EQUIPMENT_TYPE
+} from '../../../constants';
 import q from "q";
 
 import { FileSystem } from 'spinal-core-connectorjs_type';
-import { EventBus } from '../event';
-import ProcessOnChange from '../utlils/ProcessOnChange';
-import throttle from 'lodash.throttle';
 import { SpinalGraphService, SpinalNode, SpinalContext } from 'spinal-env-viewer-graph-service';
-
 import { TicketItem } from './ticketItem'
+const anyWin: any = window;
+
 type mapTicketItem = Map<string, TicketItem[]>
 
 
 export default class BackEndTicket {
   initDefer = q.defer();
-  info: any;
-  ticketContext: SpinalNode<any>;
   contexts: SpinalContext<any>[] = []
+  static instance: BackEndTicket
 
   constructor() {
-    this.info = {
-      contextStructure: [],
-      allTickets: []
-    };
   }
+
+  static getInstance(): BackEndTicket {
+    if (!BackEndTicket.instance)
+      BackEndTicket.instance = new BackEndTicket
+    return BackEndTicket.instance
+  }
+
+  async init(graph) {
+    // this.ticketContext = await graph.getContext(TICKET_CONTEXT_NAME);
+    const children = await graph.getChildren();
+    for (const context of children) {
+      if (context.info.type.get() === "SpinalSystemServiceTicket") {
+        this.contexts.push(context);
+      }
+    }
+    this.initDefer.resolve(this.contexts);
+  }
+
   async getContexts(): Promise<Map<string, TicketItem[]>> {
     const res: Map<string, TicketItem[]> = new Map()
     await Promise.all(this.contexts.map(async (item) => {
@@ -78,7 +90,6 @@ export default class BackEndTicket {
     if (!node || !context) return Promise.resolve(new Map());
     return this.getItemsInContext(node, context)
   }
-
 
   private async getItemsInContext(node: SpinalNode<any>,
     context: SpinalContext<any>, giveSelf = false): Promise<mapTicketItem> {
@@ -121,22 +132,56 @@ export default class BackEndTicket {
         }
       }
     }
+    for (const [, arrayTicket] of res) {
+      arrayTicket.forEach(item => item.getCountTicket())
+    }
     if (giveSelf) return res;
     return typeof item.children !== "undefined" ? item.children : new Map();
   }
 
 
+  async getLstByModel(item, addRoomRef = false) {
+    const node = this.getNodeFromItem(item);
+    console.log("-+--+--", node);
+    console.log("++++++++++++++++++++", TICKET_RELATION_CONTEXT_PROCESS);
 
+    const relations = [TICKET_RELATION_CONTEXT_PROCESS, TICKET_RELATION_PROCESS_STEP, TICKET_RELATION_STEP_TICKET, TICKET_RELATION_PROCESS_OBJET, "hasReferenceObject.ROOM"]
+    if (node) {
+      const listNode = await node.find(relations, (n) => {
+        return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+      });
+      return this.sortBIMObjectByModel(listNode);
+    }
+    else return this.sortBIMObjectByModel([]);
+  }
+  getNodeFromItem(item) {
+    return FileSystem._objects[item.server_id];
+  }
 
-
-  async init(graph) {
-    // this.ticketContext = await graph.getContext(TICKET_CONTEXT_NAME);
-    const children = await graph.getChildren();
-    for (const context of children) {
-      if (context.info.type.get() === "SpinalSystemServiceTicket") {
-        this.contexts.push(context);
+  sortBIMObjectByModel(arrayOfBIMObject): { selection: number[], model }[] {
+    let arrayModel = [];
+    for (const nodeBIMObject of arrayOfBIMObject) {
+      const bimFileId = nodeBIMObject.info.bimFileId.get();
+      const dbId = nodeBIMObject.info.dbid.get();
+      const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
+      const obj = this.getOrAddModelIfMissing(arrayModel, model);
+      obj.selection.push(dbId);
+    }
+    return arrayModel;
+  }
+  getOrAddModelIfMissing(array, model): { selection: number[], model } {
+    for (const obj of array) {
+      if (obj.model === model) {
+        return obj;
       }
     }
-    this.initDefer.resolve(this.contexts);
+    const obj = {
+      selection: [],
+      model
+    };
+    array.push(obj);
+    return obj;
   }
 }
+
+

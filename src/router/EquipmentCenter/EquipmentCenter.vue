@@ -25,10 +25,11 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
+      <SpinalBreadcrumb :view-key="viewKey">
+      </SpinalBreadcrumb>
     </el-header>
     <el-main>
-      <tab-manager :tabsprop="tabs" />
+      <tab-manager :tabsprop="tabs"/>
     </el-main>
   </el-container>
 </template>
@@ -39,20 +40,21 @@ with this file. If not, see
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from "../../compoments/tabManager/tabManager.vue";
+import TabManager from '../../compoments/tabManager/tabManager.vue';
 
 // Specific components
-import Explorer from "./components/Explorer.vue";
-import Visualizer from "./components/Visualizer.vue";
+import Explorer from './components/Explorer.vue'
+import Visualizer from './components/Visualizer.vue'
 
-const VIEW_KEY = "Ticket Center";
+const VIEW_KEY = "Equipment Center";
 
 // Component exports
 export default {
-  name: "TicketCenter",
-  components: {
+  name: "EquipmentCenter",
+  components : {
     SpinalBreadcrumb,
     TabManager,
+    Explorer,
   },
   data() {
     return {
@@ -77,6 +79,5 @@ export default {
       ],
     };
   },
-  methods: {},
 };
 </script>

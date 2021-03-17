@@ -24,42 +24,36 @@
 
 import { spinalIO } from './spinalIO';
 import { SpinalGraph } from 'spinal-model-graph';
-import BackEndSpatial from './backend/spatial';
-import BackEndViewer from './backend/viewer';
-import BackEndSpace from "./backend/space";
-import BackEndDataRoom from './backend/DataRoom';
-import BackEndTicket from './backend/ticket';
 import q from "q";
 
-class SpinalBackEnd {
+export default class BackendInitializer {
+  static instance: BackendInitializer
   graph: SpinalGraph<any> = null;
-  spatialBack = new BackEndSpatial();
-  viewerBack = new BackEndViewer();
-  spaceBack = new BackEndSpace();
-  DataRoomBack = new BackEndDataRoom();
-  BackEndTicket = new BackEndTicket();
-
   initDefer = q.defer();
 
   constructor() {
   }
 
+  static getInstance(): BackendInitializer {
+    if (!BackendInitializer.instance)
+      BackendInitializer.instance = new BackendInitializer
+    return BackendInitializer.instance
+  }
+
   async init() {
     try {
-      const graph = await this.getGraph();
-      await Promise.all([
-        this.spatialBack.init(graph),
-        this.viewerBack.init(graph),
-        this.DataRoomBack.init(graph),
-        this.spaceBack.init(graph),
-        this.BackEndTicket.init(graph)
-      ]);
+      this.graph = await this.getGraph();
       this.initDefer.resolve();
     } catch (error) {
       this.initDefer.reject(error);
     }
   }
-
+  async initback(appBack) {
+    await this.initDefer.promise
+    await Promise.all([
+      appBack.init(this.graph),
+    ]);
+  }
   async getGraph() {
     const rootModel = await spinalIO.getModel();
     if (rootModel instanceof SpinalGraph) { this.graph = rootModel; }
@@ -69,10 +63,5 @@ class SpinalBackEnd {
   waitInit() {
     return this.initDefer.promise;
   }
-
 }
 
-const spinalBackEnd = new SpinalBackEnd();
-
-export default spinalBackEnd;
-export { SpinalBackEnd, spinalBackEnd };
