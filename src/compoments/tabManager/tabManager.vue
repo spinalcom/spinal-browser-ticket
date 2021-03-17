@@ -103,8 +103,13 @@ export default {
             if (nextTab) {
               activeName = nextTab.name;
             }
-          }
-        });
+          });
+        }
+        this.activetab = activeName;
+        this.opentabs = tmptabs.filter(tab => tab.name !== targetName);
+      },
+      debug(active) {
+        console.log(active)
       }
       this.activetab = activeName;
       this.opentabs = tmptabs.filter((tab) => tab.name !== targetName);
