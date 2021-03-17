@@ -122,34 +122,36 @@ export default {
   async mounted() {
     this.contextLst = await spinalBackEnd.spaceBack.getData();
 
-    EventBus.$on("sidebar-selected-item", item => {
-      spinalBackEnd.spaceBack
-        .getDataFilterItem(item)
-        .then(result => {
-          console.log("resuuuuuuuultat____", result);
-          this.contextLst = result;
+    EventBus.$on("sidebar-homeSelect", item => {
+      if (item) {
+        spinalBackEnd.spaceBack
+          .getDataFilterItem(item)
+          .then(result => {
+            console.log("resuuuuuuuultat____", result);
+            this.contextLst = result;
 
-          if (this.contextSelected) {
-            for (const context of this.contextLst) {
-              if (this.contextSelected.id === context.id) {
-                const selectCategorie = this.selectCategorie;
-                this.SelectContext(context, false);
-                if (selectCategorie) {
-                  for (const cat of this.contextSelected.categories) {
-                    if (selectCategorie.id === cat.id) {
-                      this.onclick(cat, false);
-                      // this.selectCategorie = categorie;
+            if (this.contextSelected) {
+              for (const context of this.contextLst) {
+                if (this.contextSelected.id === context.id) {
+                  const selectCategorie = this.selectCategorie;
+                  this.SelectContext(context, false);
+                  if (selectCategorie) {
+                    for (const cat of this.contextSelected.categories) {
+                      if (selectCategorie.id === cat.id) {
+                        this.onclick(cat, false);
+                        // this.selectCategorie = categorie;
+                      }
                     }
                   }
+                  break;
                 }
-                break;
               }
             }
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
     });
 
     EventBus.$on("sidebar-homeSelect", item => {

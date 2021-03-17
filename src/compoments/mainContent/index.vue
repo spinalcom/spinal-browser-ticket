@@ -177,7 +177,7 @@ export default {
   }
 }
 .content-viewer-view {
-  height: calc(100% - 60px);
+  height: calc(100% - 68px);
   position: relative;
   margin: 0px 5px 10px 10px;
   background: #222222f0;

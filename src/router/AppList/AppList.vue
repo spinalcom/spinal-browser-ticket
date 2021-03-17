@@ -24,7 +24,12 @@ with this file. If not, see
 
 <template>
   <div class="applist-main-container">
-    <div class="applist-container">
+    <div class="app-list-header">Application List <el-button
+                 icon="el-icon-s-grid"
+                 circle
+                 @click="openDrawer"></el-button>
+    </div>
+    <div class="applist-container spinal-scrollbar">
       <router-link v-for="route in routes"
                    :key="route.path"
                    v-ripple
@@ -47,6 +52,7 @@ with this file. If not, see
 
 <script lang="ts">
 import { routes } from "../router";
+import { EventBus } from "../../services/event";
 export default {
   name: "AppList",
   data() {
@@ -65,6 +71,9 @@ export default {
           name: index
         });
       }
+    },
+    openDrawer() {
+      EventBus.$emit("open-drawer");
     }
   }
 };
@@ -72,19 +81,43 @@ export default {
 
 <style scoped>
 .applist-main-container {
-  background-color: white;
-  padding: 16px;
+  background-color: #222222f0;
+  padding: 0;
   width: 100%;
+  position: relative;
+  overflow: hidden;
 }
+.applist-main-container > * {
+  margin: 5px;
+  position: relative;
+  background-color: white;
+}
+.app-list-header {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  padding: 5px;
+  text-align: center;
+  font-size: 1.4em;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .router-link-btn {
   text-decoration-color: unset;
   text-decoration-line: unset;
 }
+
 .applist-container {
   display: flex;
   flex-wrap: wrap;
-  height: 100%;
-  width: 100%;
+  height: calc(100% - 68px);
+  border-radius: 4px;
+  padding: 16px;
+  overflow: auto;
+  position: relative;
   justify-content: space-around;
 }
 .applist-container > * {
