@@ -23,28 +23,29 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs type="border-card" :value="activetab" @tab-remove="removeTab">
-    <el-tab-pane
-      v-for="tab in opentabs"
-      :key="tab.name"
-      :label="tab.name"
-      :name="tab.name"
-      :closable="true"
-    >
-      <component :is="tab.content" :Properties="tab.props"></component>
+  <el-tabs type="border-card"
+           :value="activetab"
+           @tab-remove="removeTab">
+    <el-tab-pane v-for="tab in opentabs"
+                 :key="tab.name"
+                 :label="tab.name"
+                 :name="tab.name"
+                 :closable="true">
+      <component :is="tab.content"
+                 :Properties="tab.props"></component>
     </el-tab-pane>
     <el-tab-pane :disabled="true">
       <span slot="label">
-        <el-dropdown trigger="click" @command="addTab">
-          <el-button type="primary" plain>
+        <el-dropdown trigger="click"
+                     @command="addTab">
+          <el-button type="primary"
+                     plain>
             ···
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item
-              v-for="tab in tabs"
-              :key="tab.name"
-              :command="tab"
-            >
+            <el-dropdown-item v-for="tab in tabs"
+                              :key="tab.name"
+                              :command="tab">
               <div v-if="!hasTab(opentabs, tab)">
                 {{ tab.name }}
               </div>
@@ -65,7 +66,7 @@ export default {
     return {
       tabs: this.tabsprop,
       opentabs: [],
-      activetab: this.tabsprop[0].name,
+      activetab: this.tabsprop[0].name
     };
   },
   async mounted() {
@@ -89,7 +90,7 @@ export default {
         title: target.name,
         name: target.name,
         content: target.content,
-        props: target.props,
+        props: target.props
       });
       this.activetab = target.name;
     },
@@ -103,21 +104,16 @@ export default {
             if (nextTab) {
               activeName = nextTab.name;
             }
-          });
-        }
-        this.activetab = activeName;
-        this.opentabs = tmptabs.filter(tab => tab.name !== targetName);
-      },
-      debug(active) {
-        console.log(active)
+          }
+        });
       }
       this.activetab = activeName;
-      this.opentabs = tmptabs.filter((tab) => tab.name !== targetName);
+      this.opentabs = tmptabs.filter(tab => tab.name !== targetName);
     },
     debug(active) {
-      console.debug(active);
-    },
-  },
+      console.log(active);
+    }
+  }
 };
 </script>
 
