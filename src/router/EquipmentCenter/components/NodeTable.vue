@@ -58,7 +58,7 @@ with this file. If not, see
                     circle
                     @click="onSelectItem(scope.row)"></el-button>
       </div>
-    </el-table-column>
+    <!-- </el-table-column>
     <el-table-column label=""
                       width="65"
                       align="center">
@@ -67,7 +67,7 @@ with this file. If not, see
                     circle
                     @click="debugNode(scope.row)"></el-button>
       </div>
-    </el-table-column>
+    </el-table-column> -->
   </el-table>
 </template>
 
@@ -111,7 +111,7 @@ export default {
     },
     SeeEvent(item)
     {
-      EventBus.$emit("view-color-item", {
+      EventBus.$emit("view-isolate-item", {
         server_id: item.serverId,
         color: item.color
       });
@@ -121,6 +121,14 @@ export default {
         return { server_id: item.serverId, color: item.color };
       });
       EventBus.$emit("view-color-all", items, { server_id: zone });
+    },
+    ShowAll()
+    {
+      EventBus.$emit("view-show-all");
+    },
+    isolateAll(zone)
+    {
+      EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
@@ -181,12 +189,6 @@ export default {
     columnValue(item, key) {
       if (item[key]) return item[key];
       return 0;
-    },
-    seeAll() {
-      let items = this.data.map(item => {
-        return { server_id: item.serverId, color: item.color };
-      });
-      EventBus.$emit("view-color-all", items, { server_id: zone });
     },
     exportToExcel() {
       let headers = [

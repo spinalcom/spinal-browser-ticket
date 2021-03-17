@@ -23,18 +23,15 @@
  */
 
 import {
-  TICKET_CONTEXT_NAME,
-  TICKET_CONTEXT_TYPE,
-  TICKET_RELATION_CONTEXT_PROCESS,
-  TICKET_PROCESS_TYPE,
-  TICKET_RELATION_PROCESS_STEP,
-  TICKET_STEP_TYPE,
-  TICKET_RELATION_STEP_TICKET,
-  TICKET_TICKET_TYPE,
-  TICKET_RELATION_PROCESS_OBJET,
-  TICKET_OBJECT_TYPE,
-  EQUIPMENT_TYPE
-} from '../../../constants';
+  SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_TICKET_SECTION_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_PROCESS_RELATION_NAME,
+  PROCESS_HAS_TICKET_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_STEP_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_TICKET_TYPE
+} from "./constants"
+import { EQUIPMENT_TYPE } from "../../../constants"
+import { spinalIO } from "../../../services/spinalIO"
 import q from "q";
 
 import { FileSystem } from 'spinal-core-connectorjs_type';
@@ -113,7 +110,7 @@ export default class BackEndTicket {
       nextGen = [];
       depth += 1;
       for (const n of currentGen) {
-        if (depth <= 2 || (n.info.type && n.info.type.get() !== TICKET_TICKET_TYPE)) {
+        if (depth <= 2 || (n.info.type && n.info.type.get() !== SPINAL_TICKET_SERVICE_TICKET_TYPE)) {
           const item = TicketItem.getItemFromMap(allItems, n);
           promises.push(n.getChildrenInContext(context).then((children) => {
             return { children, item }
@@ -142,15 +139,36 @@ export default class BackEndTicket {
 
   async getLstByModel(item, addRoomRef = false) {
     const node = this.getNodeFromItem(item);
-    console.log("-+--+--", node);
-    console.log("++++++++++++++++++++", TICKET_RELATION_CONTEXT_PROCESS);
+    // console.log("-+--+--", node);
+    // console.log("++++++++++++++++++++", SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
 
-    const relations = [TICKET_RELATION_CONTEXT_PROCESS, TICKET_RELATION_PROCESS_STEP, TICKET_RELATION_STEP_TICKET, TICKET_RELATION_PROCESS_OBJET, "hasReferenceObject.ROOM"]
+    const relations = [SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+      SPINAL_TICKET_SERVICE_TICKET_SECTION_RELATION_NAME,
+      SPINAL_TICKET_SERVICE_PROCESS_RELATION_NAME,
+      PROCESS_HAS_TICKET_RELATION_NAME,
+      SPINAL_TICKET_SERVICE_STEP_RELATION_NAME]
+    var listNodeSelected = []
+    var _listNodeSelected = []
     if (node) {
       const listNode = await node.find(relations, (n) => {
-        return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+        return (n.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE);
       });
-      return this.sortBIMObjectByModel(listNode);
+      for (const ticket of listNode) {
+        let _ticket = spinalIO.loadPtr(ticket.info.elementSelected)
+        listNodeSelected.push(_ticket)
+      }
+      var rooms = await Promise.all(listNodeSelected)
+      for (const room of rooms) {
+        let _room = room.getChildren(["hasReferenceObject.ROOM"])
+        _listNodeSelected.push(_room)
+      }
+      var _rooms = await Promise.all(_listNodeSelected);
+      var res = _rooms.reduce((acc, item) => {
+        acc.push(...item)
+        return acc;
+      }, [])
+
+      return this.sortBIMObjectByModel(res);
     }
     else return this.sortBIMObjectByModel([]);
   }

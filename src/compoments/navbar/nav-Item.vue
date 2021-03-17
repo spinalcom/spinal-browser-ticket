@@ -24,36 +24,31 @@ with this file. If not, see
 
 <template>
   <div class="navbar-item">
-    <i class="arrow-left-icon"
-       data-eva="arrow-ios-forward-outline"
-       data-eva-fill="#EDEDED"></i>
-    <div>
-      <el-button class="button-icon-left-focus"
-                 v-if="icon"
-                 type="info"
-                 :icon="icon"
-                 size="small"
-                 :disabled="!select"
-                 @click="$emit('focusItem', select)"
-                 circle></el-button>
-      <el-select v-model="selectCompu"
-                 :placeholder="label"
-                 @mouseover="onMouseOver"
-                 clearable>
-        <el-option v-for="item in itemsComputed"
-                   :key="item.server_id"
-                   :label="item.name"
-                   :value="item">
-        </el-option>
-      </el-select>
-
-    </div>
+    <el-dropdown :class="{ 'spinal-dropdown-disabled': itemsComputed.length === 0}"
+                 split-button
+                 type="default"
+                 trigger="click"
+                 @click="focusItem">
+      <span class="el-dropdown-link">
+        {{ selectCompu }}
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item v-for="(item) in itemsComputed"
+                          :key="item.server_id"
+                          :label="item.name"
+                          :value="item">
+          <span class="dropdown-item-container"
+                @click="handleCommand(item)"
+                @mouseover="onMouseOver(item)">{{ item.name }}</span>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
   </div>
 </template>
 
 <script>
 export default {
-  name: "navItem",
+  name: "NavItem",
   props: ["label", "items", "select", "icon"],
   data() {
     return {};
@@ -62,9 +57,11 @@ export default {
     selectCompu: {
       get() {
         try {
+          console.log("this.select", this.select);
+          if (this.select.name === "") return this.label;
           return this.select.name;
         } catch (e) {
-          return null;
+          return this.label;
         }
       },
       set(value) {
@@ -79,19 +76,47 @@ export default {
       return res;
     }
   },
-  methods: {
-    onMouseOver(e) {
-      console.log("onMouseOver", e);
-    }
-  },
   mounted() {
     eva.replace();
+  },
+  methods: {
+    onMouseOver(item) {
+      this.$emit("onMouseOver", item);
+    },
+    handleCommand(value) {
+      console.log("handleCommand", value);
+      this.$emit("select", value);
+    },
+    focusItem() {
+      this.$emit("focusItem", this.select);
+    }
   }
 };
 </script>
 
 <style scoped>
 .navbar-item {
+  flex-grow: 1;
+  display: flex;
+  align-self: center;
+  margin: 0px 5px;
+  /* background: white; */
+}
+.navbar-item > * {
+  display: flex;
+  align-self: center;
+  width: 100%;
+}
+
+.navbar-item > div > .el-button {
+  margin-left: 8px;
+}
+.spinal-dropdown-disabled {
+  cursor: not-allowed !important;
+  color: #bbb !important;
+}
+
+/* .navbar-item {
   flex-grow: 1;
   display: flex;
   align-self: center;
@@ -136,7 +161,7 @@ export default {
   .navbar-item > .arrow-left-icon {
     display: none;
   }
-}
+} */
 </style>
 
 <style>
@@ -146,6 +171,14 @@ export default {
   /* color: #ededed; */
   color: #1d4b5e;
 }
+.navbar-item .el-button-group {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.navbar-item .el-button-group .el-button:first-child {
+  width: calc(100% - 28px);
+}
 
 .button-icon-left-focus.is-disabled,
 .button-icon-left-focus.is-disabled:active,
@@ -154,5 +187,40 @@ export default {
   color: #fff !important;
   background-color: #c8c9cc !important;
   border-color: #c8c9cc !important;
+}
+.dropdown-item-container {
+  float: left;
+  width: calc(100% + 40px);
+  margin-left: -20px;
+  padding-left: 20px;
+}
+.el-dropdown-menu.el-popper {
+  max-height: 95vh;
+  overflow: auto;
+}
+
+.el-dropdown-menu.el-popper::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.el-dropdown-menu.el-popper::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(169, 169, 169, 0.9);
+}
+.el-dropdown-menu.el-popper::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+
+
+.spinal-dropdown-disabled * {
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background-color: #c8c9cc !important;
+  border-radius: 4px;
 }
 </style>

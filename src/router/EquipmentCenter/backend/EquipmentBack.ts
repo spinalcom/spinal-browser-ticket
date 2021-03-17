@@ -25,7 +25,6 @@
 import q from "q";
 import {
   EQUIPMENT_TYPE,
-  TICKET_TICKET_TYPE
 } from "../../../constants";
 
 import { EquipmentItem } from "./EquipmentItem"
@@ -34,7 +33,8 @@ import { FileSystem } from 'spinal-core-connectorjs_type'
 
 type mapEquipmentItem = Map<string, EquipmentItem[]>
 
-export default class EquipmentBack {
+
+export class EquipmentBack {
   initDefer = q.defer();
   contexts: SpinalContext<any>[] = []
   static instance: EquipmentBack
@@ -51,7 +51,8 @@ export default class EquipmentBack {
   async init(graph: SpinalGraph<any>) {
     const children = await graph.getChildren();
     for (const context of children) {
-      if (context.info.type.get() === "SpinalSystemServiceTicket") {
+
+      if (context.info.type.get() === "BIMObjectGroupContext") {
         this.contexts.push(context);
       }
     }
@@ -60,6 +61,7 @@ export default class EquipmentBack {
 
   async getContexts(): Promise<Map<string, EquipmentItem[]>> {
     const result: Map<string, EquipmentItem[]> = new Map()
+
     await Promise.all(this.contexts.map(async (item) => {
       return this.getItemsInContext(item, item, true).then((map) => {
         for (const [key, value] of map) {
@@ -101,7 +103,7 @@ export default class EquipmentBack {
       nextGen = [];
       depth += 1;
       for (const n of currentGen) {
-        if (depth <= 2 || (n.info.type && n.info.type.get() !== TICKET_TICKET_TYPE)) {
+        if (depth <= 2 || (n.info.type && n.info.type.get() !== EQUIPMENT_TYPE)) {
           const item = EquipmentItem.getItemFromMap(allItems, n);
           promises.push(n.getChildrenInContext(context).then((children) => {
             return { children, item }

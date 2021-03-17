@@ -1,5 +1,5 @@
 <!--
-Copyright 2020 SpinalCom - www.spinalcom.com
+Copyright 2021 SpinalCom - www.spinalcom.com
 
 This file is part of SpinalCore.
 
@@ -22,31 +22,55 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-<!--
-Copyright 2020 SpinalCom - www.spinalcom.com
+  <!--
+  Copyright 2020 SpinalCom - www.spinalcom.com
 
-This file is part of SpinalCore.
+  This file is part of SpinalCore.
 
-Please read all of the following terms and conditions
-of the Free Software license Agreement ("Agreement")
-carefully.
+  Please read all of the following terms and conditions
+  of the Free Software license Agreement ("Agreement")
+  carefully.
 
-This Agreement is a legally binding contract between
-the Licensee (as defined below) and SpinalCom that
-sets forth the terms and conditions that govern your
-use of the Program. By installing and/or using the
-Program, you agree to abide by all the terms and
-conditions stated or referenced herein.
+  This Agreement is a legally binding contract between
+  the Licensee (as defined below) and SpinalCom that
+  sets forth the terms and conditions that govern your
+  use of the Program. By installing and/or using the
+  Program, you agree to abide by all the terms and
+  conditions stated or referenced herein.
 
-If you do not agree to abide by these terms and
-conditions, do not demonstrate your acceptance and do
-not install or use the Program.
-You should have received a copy of the license along
-with this file. If not, see
-<http://resources.spinalcom.com/licenses.pdf>.
--->
+  If you do not agree to abide by these terms and
+  conditions, do not demonstrate your acceptance and do
+  not install or use the Program.
+  You should have received a copy of the license along
+  with this file. If not, see
+  <http://resources.spinalcom.com/licenses.pdf>.
+  -->
 
-<template>
+  <!--
+  Copyright 2020 SpinalCom - www.spinalcom.com
+
+  This file is part of SpinalCore.
+
+  Please read all of the following terms and conditions
+  of the Free Software license Agreement ("Agreement")
+  carefully.
+
+  This Agreement is a legally binding contract between
+  the Licensee (as defined below) and SpinalCom that
+  sets forth the terms and conditions that govern your
+  use of the Program. By installing and/or using the
+  Program, you agree to abide by all the terms and
+  conditions stated or referenced herein.
+
+  If you do not agree to abide by these terms and
+  conditions, do not demonstrate your acceptance and do
+  not install or use the Program.
+  You should have received a copy of the license along
+  with this file. If not, see
+  <http://resources.spinalcom.com/licenses.pdf>.
+  -->
+
+  <template>
   <el-row class="barre">
     <el-button class="boutton-barre"
                icon="el-icon-download"
@@ -60,12 +84,13 @@ with this file. If not, see
   </el-row>
 </template>
 
-<script>
+  <script>
 // import SpinalBackend from "../../services/spinalBackend";
 
 import fileSaver from "file-saver";
 import { EventBus } from "../../../services/event";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 
 export default {
   data() {
@@ -118,7 +143,7 @@ export default {
     getSalles(item) {
       if (item.rooms) {
         return item.rooms.map(el => {
-          el["color"] = item.color;
+          el["color"] = item.color ? item.color : "#ffffff";
           return el;
         });
       } else if (item.groups) {
@@ -136,3 +161,14 @@ export default {
 };
 </script>
 
+  <style scoped>
+.barre {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+/* .boutton-barre {
+  width: 40px;
+} */
+</style>

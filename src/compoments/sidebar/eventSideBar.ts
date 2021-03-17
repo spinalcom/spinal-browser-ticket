@@ -39,7 +39,6 @@ EventBus.$on('sidebar-mouseover-item', async (item) => {
   viewerUtils.selectObjects(lstByModel);
 });
 EventBus.$on('sidebar-homeSelect', async (item) => {
-
   if (!item) {
     const face = 'front,top,right';
     await viewerUtils.waitInitialized();

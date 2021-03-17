@@ -25,56 +25,70 @@ with this file. If not, see
 <template>
   <el-container v-loading="loading"
                 class="body-container">
-    <el-header class="main-header">
+    <!-- <el-header class="main-header">
       <spinal-header></spinal-header>
-    </el-header>
-    <spinalNavbar class="main-navbar"></spinalNavbar>
+    </el-header> -->
+    <!-- <spinalNavbar class="main-navbar"></spinalNavbar> -->
     <div class="body-main-container">
-      <el-aside width="201px"
+      <!-- <el-aside width="201px"
                 class="side-bar-container">
-        <spinal-side-bar></spinal-side-bar>
-      </el-aside>
+                <spinal-side-bar></spinal-side-bar>
+      </el-aside> -->
       <mainContent></mainContent>
     </div>
+    <el-drawer class="spinal-drawer"
+               :visible.sync="drawer"
+               :with-header="false">
+      <drawer @close="drawer = false"></drawer>
+    </el-drawer>
   </el-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import spinalHeader from "./compoments/header/header.vue";
-import spinalSideBar from "./compoments/sidebar/sidebar.vue";
+// import spinalSideBar from "./compoments/sidebar/sidebar.vue";
 import spinalBackEnd from "./services/spinalBackend";
-import spinalNavbar from "./compoments/navbar/spinalNavbar.vue";
+// import spinalNavbar from "./compoments/navbar/spinalNavbar.vue";
 import mainContent from "./compoments/mainContent/index.vue";
-import { errorDialog } from "./services/utlils/errorDialog";
+// import { errorDialog } from "./services/utlils/errorDialog";
 import DocumentReady from "./services/utlils/DocumentReady";
 import { getDefaultLanguage } from "./services/i18n";
+import drawer from "./compoments/drawer/drawer.vue";
+import { EventBus } from "./services/event";
 
 export default Vue.extend({
   components: {
     "spinal-header": spinalHeader,
-    "spinal-side-bar": spinalSideBar,
+    // "spinal-side-bar": spinalSideBar,
     mainContent,
-    spinalNavbar
+    drawer
   },
   data() {
     return {
-      loading: true
+      loading: true,
+      drawer: false
     };
   },
   async mounted() {
     try {
       await spinalBackEnd.getGraph();
       this.loading = false;
+      EventBus.$on("open-drawer", () => {
+        this.drawer = true;
+      });
     } catch (e) {
       DocumentReady(async () => {
         await getDefaultLanguage();
         console.error(e);
-        console.log(this.$t("error.returntodrive.confirmbtntext"));
-        const title = this.$t("error.returntodrive.title");
-        const comfimText = this.$t("error.returntodrive.confirmbtntext");
-        const msg = this.$t("error.returntodrive.text");
-        errorDialog.call(this, title, comfimText, msg, e);
+        // @ts-ignore
+        window.location =
+          "/html/spinaltwin/login.html" + location.hash + location.search;
+        // console.log(this.$t("error.returntodrive.confirmbtntext"));
+        // const title = this.$t("error.returntodrive.title");
+        // const comfimText = this.$t("error.returntodrive.confirmbtntext");
+        // const msg = this.$t("error.returntodrive.text");
+        // errorDialog.call(this, title, comfimText, msg, e);
       });
     }
   },
@@ -89,6 +103,7 @@ export default Vue.extend({
   display: flex;
 }
 .body-main-container {
+  width: 100%;
   min-height: 0;
   flex-grow: 1;
   display: flex;
@@ -116,13 +131,14 @@ export default Vue.extend({
   margin-bottom: 2px;
 }
 .main-navbar {
-  display: none;
+  display: flex;
+  /* display: none; */
 }
 
 @media screen and (max-width: 992px) {
-  .side-bar-container {
+  /* .side-bar-container {
     display: none;
-  }
+  } */
   .main-navbar {
     display: flex;
   }

@@ -22,8 +22,8 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-export const DISABLE_VIEWER = false // for dev
-// export const DISABLE_VIEWER = false
+// export const DISABLE_VIEWER = true // for dev
+export const DISABLE_VIEWER = false
 
 export {
   CONTEXT_TYPE as SPATIAL_CONTEXT_TYPE,
@@ -51,6 +51,7 @@ export {
   EQUIPMENT_RELATION,
   EQUIPMENT_TYPE
 } from 'spinal-env-viewer-context-geographic-service/build/constants.js';
+
 import {
   SITE_RELATION,
   BUILDING_RELATION,
@@ -60,7 +61,6 @@ import {
   EQUIPMENT_RELATION,
   REFERENCE_RELATION
 } from 'spinal-env-viewer-context-geographic-service/build/constants.js';
-
 
 export {
   TICKET_CONTEXT_NAME,
@@ -88,6 +88,7 @@ export {
 //   TICKET_RELATION_PROCESS_OBJET as SPINAL_TICKET_SERVICE_INCIDENT_SECTION_RELATION_NAME,
 //   TICKET_OBJECT_TYPE as SPINAL_TICKET_SERVICE_INCIDENT_SECTION_TYPE
 // } from 'spinal-service-ticket/dist/Constants.js';
+
 
 export const GEO_RELATIONS = [
   SITE_RELATION,

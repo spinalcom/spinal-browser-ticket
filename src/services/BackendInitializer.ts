@@ -26,6 +26,7 @@ import { spinalIO } from './spinalIO';
 import { SpinalGraph } from 'spinal-model-graph';
 import q from "q";
 
+
 export default class BackendInitializer {
   static instance: BackendInitializer
   graph: SpinalGraph<any> = null;
@@ -33,7 +34,6 @@ export default class BackendInitializer {
 
   constructor() {
   }
-
   static getInstance(): BackendInitializer {
     if (!BackendInitializer.instance)
       BackendInitializer.instance = new BackendInitializer
@@ -64,4 +64,3 @@ export default class BackendInitializer {
     return this.initDefer.promise;
   }
 }
-

@@ -39,7 +39,7 @@ with this file. If not, see
 import { ViewManager } from "../../../services/ViewManager/ViewManager";
 // import { spinalBackEnd } from "../../../services/spinalBackend";
 import { EquipmentBack } from "../backend/EquipmentBack";
-// import GenericSpinalBack from '../../../services/MyGenericBack'
+// import BackendInitializer from '../../../services/BackendInitializer'
 import "../../../services/EventHandler";
 
 export default {
@@ -74,15 +74,15 @@ export default {
   },
   async mounted() {
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it
-    // ViewManager.getInstance(this.Properties.viewKey).viewSubscribe(
-    //   this.onViewChange.bind(this),
-    //   0
-    // );
+    ViewManager.getInstance(this.Properties.viewKey).viewSubscribe(
+      this.onViewChange.bind(this),
+      0
+    );
     Plotly.newPlot(this.$refs.charts, this.data);
   },
   methods: {
     async onViewChange(view) {
-      console.debug(view);
+      // console.debug(view)
       this.CurrentObject = view.name;
 
       // Plotly.redraw(this.$refs.charts, this.data);

@@ -23,32 +23,40 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <div v-for="(item, idx) in items" :key="idx" style="width: 100%">
+  <div v-if="Properties.items !== false">
+    <el-container>
       <el-header>
-        {{ $t(`node-type.${item.nodeType}`) }}
+        {{ $t(`node-type.${Properties.items.nodeType}`) }}
         <div style="float: right">
           <el-button
             icon="el-icon-download"
             circle
-            @click.stop="exportToExcel(idx)"
+            @click.stop="exportToExcel()"
           >
           </el-button>
-          <el-button icon="el-icon-view" circle @click.stop="SeeAll(idx)">
+          <el-button
+            icon="el-icon-picture-outline-round"
+            circle
+            @click.stop="SeeAll()"
+          >
+          </el-button>
+          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
+          </el-button>
+          <el-button icon="el-icon-view" circle @click.stop="ShowAll()">
           </el-button>
         </div>
       </el-header>
       <el-main>
         <node-table
-          :ref="`Explorer-table`"
+          :ref="'Explorer-table'"
           :view-key="Properties.viewKey"
-          :items="item.items"
-          :columns="item.cols"
+          :items="Properties.items.items"
+          :columns="Properties.items.cols"
         >
         </node-table>
       </el-main>
-    </div>
-  </el-container>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -60,7 +68,6 @@ import { EventBus } from "../../../services/event";
 import "../../../services/EventHandler";
 
 import NodeTable from "./NodeTable.vue";
-
 export default {
   name: "Explorer",
   components: { NodeTable },
@@ -78,73 +85,32 @@ export default {
   },
   data() {
     return {
-      items: [],
+      items: false,
       contextServId: 0,
       currentView: null,
     };
   },
-  async mounted() {
-    await BackendInitializer.getInstance().initback(
-      EquipmentBack.getInstance()
-    );
-    // Get the ViewManager instance for the TicketCenter viewKey and initializes it
-    ViewManager.getInstance(this.Properties.viewKey).init(
-      this.onViewChange.bind(this),
-      0
-    );
-  },
   methods: {
-    async onViewChange(view) {
-      let mapItems;
-
-      if (view.serverId === 0) {
-        this.contextServId = 0;
-        mapItems = await EquipmentBack.getInstance().getContexts();
-      } else {
-        if (this.contextServId === 0) {
-          this.contextServId = view.serverId;
-        }
-        mapItems = await EquipmentBack.getInstance().getItems(
-          view.serverId,
-          this.contextServId
-        );
-      }
-      this.items = [];
-      for (const [nodeType, items] of mapItems) {
-        const cols = new Set();
-        for (const item of items) {
-          if (item.children) {
-            for (const [childTypes] of item.children) {
-              cols.add(childTypes);
-            }
-          }
-        }
-        this.items.push({ nodeType, items, cols: Array.from(cols) });
-      }
-      this.currentView = view;
-      (async () => {
-        console.log(
-          "+++++++++++++++++++++++++++",
-          await BackendInitializer.getInstance().initback(
-            EquipmentBack.getInstance()
-          )
-        );
-      })();
-    },
     changeView(item) {
       ViewManager.getInstance(this.Properties.viewKey).push(
         item.name,
         item.serverId
       );
     },
-    SeeAll(index) {
-      this.$refs["Explorer-table"][index].SeeAll(this.currentView.serverId);
+    SeeAll() {
+      this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
     },
-    exportToExcel(index) {
-      this.$refs["Explorer-table"][index].exportToExcel();
+    isolateAll() {
+      this.$refs["Explorer-table"].isolateAll(this.Properties.view.serverId);
     },
-    async debug() {
-      console.debug("");
+    exportToExcel() {
+      this.$refs["Explorer-table"].exportToExcel();
+    },
+    ShowAll() {
+      this.$refs["Explorer-table"].ShowAll();
+    },
+    async debug(what) {
+      console.debug("Debugging", what);
     },
   },
 };
