@@ -16,6 +16,7 @@
   "license": "Free_Software_License_Agreement.pdf",
   "dependencies": {},
   "devDependencies": {
+    "vue-hot-reload-api": "^2.3.4",
     "@babel/core": "^7.4.5",
     "@vue/component-compiler-utils": "^3.2.0",
     "aes-js": "^3.1.2",
