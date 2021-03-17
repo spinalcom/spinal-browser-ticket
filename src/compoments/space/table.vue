@@ -24,19 +24,26 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-    <el-breadcrumb class="breadcrumb-style"
-                   separator="/">
-      <el-breadcrumb-item>
-        <a @click="onclick(null)">Space Management</a>
-      </el-breadcrumb-item>
-      <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
-                          :key="index">
-        <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
-      </el-breadcrumb-item>
-    </el-breadcrumb>
+    <div class="spinal-space-header">
+      <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
+        <el-breadcrumb class="breadcrumb-style"
+                       separator="/">
+          <el-breadcrumb-item>
+            <a @click="onclick(null)">Space Management</a>
+          </el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
+                              :key="index">
+            <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <el-button icon="el-icon-s-grid"
+                 circle
+                 @click="openDrawer"></el-button>
+    </div>
 
-    <div class="spacecon_container"
-         v-if="selectCategorie == null">
+    <div v-if="selectCategorie == null"
+         class="spacecon_container">
       <!-- <el-card class="box-card"
                v-for="context in contextLst"
                :key=context.id>
@@ -64,8 +71,8 @@ with this file. If not, see
                         @seeGroups="onclick"></tableau-category>
     </div>
 
-    <div class="spacecon_container"
-         v-else>
+    <div v-else
+         class="spacecon_container">
       <!-- <el-button class="back-icon"
                  @click="onclick(null)"
                  icon="el-icon-back"></el-button> -->
@@ -210,6 +217,9 @@ export default {
       this.breadcrumbs.splice(data.index);
 
       this.breadcrumbs = [...this.breadcrumbs, data.item];
+    },
+    openDrawer() {
+      EventBus.$emit("open-drawer");
     }
   }
 };
@@ -231,14 +241,20 @@ export default {
 .clearfix {
   text-align: center;
 } */
-
+.spinal-space-header-breadcrum-container {
+  width: calc(100% - 43px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
+}
 .spacecon .breadcrumb-style {
   width: 100%;
-  height: 60px;
   font-size: 1.2em;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 0 5px 0 5px;
 }
 
@@ -247,6 +263,15 @@ export default {
   height: calc(100% - 70px);
   max-height: calc(100% - 70px);
   /* overflow: auto; */
+}
+.spinal-space-header {
+  display: flex;
+  height: 43px;
+  justify-content: space-between;
+  margin: 10px 10px 5px 5px;
+  align-items: center;
+  border-radius: 4px;
+  background: white;
 }
 
 /* .boutton-barre {
