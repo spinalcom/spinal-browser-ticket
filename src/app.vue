@@ -55,7 +55,7 @@ import mainContent from "./compoments/mainContent/index.vue";
 import DocumentReady from "./services/utlils/DocumentReady";
 import { getDefaultLanguage } from "./services/i18n";
 import drawer from "./compoments/drawer/drawer.vue";
-import {EventBus} from "./services/event";
+import { EventBus } from "./services/event";
 
 export default Vue.extend({
   components: {
@@ -103,6 +103,7 @@ export default Vue.extend({
   display: flex;
 }
 .body-main-container {
+  width: 100%;
   min-height: 0;
   flex-grow: 1;
   display: flex;
