@@ -116,7 +116,7 @@ export default {
     },
     async debug(what)
     {
-      console.debug("Debugging", what);
+      console.log("Debugging", what);
     },
   },
 };

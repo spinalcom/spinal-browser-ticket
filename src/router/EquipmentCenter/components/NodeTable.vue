@@ -134,7 +134,7 @@ export default {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     debugNode(item) {
-      console.debug(item)
+      console.log(item)
     },
     update() {
       this.loading = true;
@@ -173,7 +173,6 @@ export default {
           this.setColorItem(itm.serverId, color);
           Object.assign(itm, { color });
         }
-        console.debug(colorGen, colorUsed)
       }
     },
     setColorItem(serverId, color) {

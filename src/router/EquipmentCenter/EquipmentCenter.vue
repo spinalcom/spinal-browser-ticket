@@ -100,6 +100,7 @@ export default {
           this.contextServId
         );
       }
+      console.debug(mapItems)
       for (const [nodeType, items] of mapItems) {
         const cols = new Set()
         for (const item of items) {
@@ -112,7 +113,7 @@ export default {
         this.items = {nodeType, items, cols: Array.from(cols)};
       }
       this.currentView = view;
-      console.debug(this.items.nodeType)
+      console.debug("items :", this.items)
       // this.tabs = [
       //   {
       //     name: "Explorer",
