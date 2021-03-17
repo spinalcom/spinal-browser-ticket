@@ -23,19 +23,29 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="spinal-navbar-main-container">
-    <el-collapse-transition>
+  <div class="spinal-navbar-main-container spinal-scrollbar">
+    <!-- <el-collapse-transition>
       <el-button v-if="!openMenu"
                  class="bread-btn"
                  :class="{'bread-btn-opened' : openMenu}"
                  icon="el-icon-arrow-left"
                  @click="openMenu = !openMenu">
         <div class="bread">
-          <p v-if="building">{{building.name}}</p>
-          <p v-if="selectedLevel">/</p>
-          <p v-if="selectedLevel">{{selectedLevel.name}}</p>
-          <p v-if="selectedRoom">/</p>
-          <p v-if="selectedRoom">{{selectedRoom.name}}</p>
+          <p v-if="building">
+            {{ building.name }}
+          </p>
+          <p v-if="selectedLevel">
+            /
+          </p>
+          <p v-if="selectedLevel">
+            {{ selectedLevel.name }}
+          </p>
+          <p v-if="selectedRoom">
+            /
+          </p>
+          <p v-if="selectedRoom">
+            {{ selectedRoom.name }}
+          </p>
         </div>
       </el-button>
       <el-button v-else
@@ -43,39 +53,43 @@ with this file. If not, see
                  icon="el-icon-arrow-right"
                  @click="openMenu = !openMenu">
       </el-button>
-    </el-collapse-transition>
+    </el-collapse-transition> -->
     <el-collapse-transition>
       <div v-if="openMenu"
            class="nav-list-selector-container">
-        <el-collapse-transition>
-          <navItem icon='el-icon-office-building'
+        <!-- <el-collapse-transition>
+          <navItem icon="el-icon-office-building"
                    label="Building"
-                   :items='[building]'
+                   :items="[building]"
+                   :select="building"
                    @focusItem="focusItem"
-                   :select='building'></navItem>
-        </el-collapse-transition>
-        <el-collapse-transition>
-          <navItem v-if="building"
-                   icon="el-icon-receiving"
-                   label="Etage"
-                   :items='levels'
-                   @focusItem="focusItem"
-                   :select='selectedLevel'
-                   @select="onLevelChange"></navItem>
-        </el-collapse-transition>
-        <el-collapse-transition>
-
-          <navItem v-if="selectedLevel"
-                   icon="el-icon-receiving"
-                   label="Local"
-                   :items='selectedLevelRooms'
-                   @focusItem="focusItem"
-                   :select='selectedRoom'
-                   @select="onRoomChange"></navItem>
-        </el-collapse-transition>
+                   @onMouseOver="onMouseOver"></navItem>
+        </el-collapse-transition> -->
+        <el-button class="button-icon-left-focus"
+                   type="default"
+                   icon="el-icon-office-building"
+                   @click="focusItem(building)"></el-button>
+        <!-- :disabled="!select" -->
+        <!-- <el-collapse-transition> -->
+        <navItem icon="el-icon-office-building"
+                 label="Etage"
+                 :items="levels"
+                 :select="selectedLevel"
+                 @focusItem="focusItem"
+                 @select="onLevelChange"
+                 @onMouseOver="onMouseOver"></navItem>
+        <!-- </el-collapse-transition> -->
+        <!-- <el-collapse-transition> -->
+        <navItem icon="el-icon-receiving"
+                 label="Local"
+                 :items="selectedLevelRooms"
+                 :select="selectedRoom"
+                 @focusItem="focusItem"
+                 @select="onRoomChange"
+                 @onMouseOver="onMouseOver"></navItem>
+        <!-- </el-collapse-transition> -->
       </div>
     </el-collapse-transition>
-
   </div>
 </template>
 
@@ -84,7 +98,7 @@ import { EventBus } from "../../services/event";
 import navItem from "./nav-Item.vue";
 
 export default {
-  name: "spinalNavbar",
+  name: "SpinalNavbar",
   components: { navItem },
   data() {
     return {
@@ -124,6 +138,9 @@ export default {
     focusItem(item) {
       if (this.building === item) EventBus.$emit("sidebar-homeSelect");
       else EventBus.$emit("sidebar-homeSelect", item);
+    },
+    onMouseOver(item) {
+      EventBus.$emit("sidebar-mouseover-item", item);
     }
   }
 };
@@ -136,6 +153,7 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   background: #222222f0;
+  overflow-x: auto;
   /* background-image: radial-gradient(circle at top left, #04092d, #1d3461); */
   /* background-image: radial-gradient(circle at top left, #494949, #58595b); */
   /* background-image: radial-gradient(
@@ -156,6 +174,8 @@ export default {
 .bread > * {
   align-self: center;
   padding: 0 3px;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 .switch-menu-bread {
   align-self: center;
@@ -164,7 +184,7 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
-  padding: 5px 0;
+  padding: 5px 0 5px 5px;
 }
 .bread-btn {
   display: flex !important;
@@ -200,5 +220,11 @@ export default {
   .spinal-navbar-main-container {
     height: unset;
   }
+}
+
+.nav-list-selector-container .button-icon-left-focus {
+  margin: 5px;
+  align-self: center;
+  height: 38px;
 }
 </style>

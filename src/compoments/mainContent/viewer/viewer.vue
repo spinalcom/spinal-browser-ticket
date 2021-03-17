@@ -222,7 +222,6 @@ export default {
     },
 
     elementIsColored(elementCol) {
-      console.log("yuuuuuu", this.elementColored);
       return this.elementColored.get(elementCol) != undefined;
     },
 
