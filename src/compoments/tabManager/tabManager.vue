@@ -104,7 +104,7 @@ export default {
         this.opentabs = tmptabs.filter(tab => tab.name !== targetName);
       },
       debug(active) {
-        console.debug(active)
+        console.log(active)
       }
   }
 };
