@@ -28,6 +28,7 @@ import BackEndSpatial from './backend/spatial';
 import BackEndViewer from './backend/viewer';
 import BackEndSpace from "./backend/space";
 import BackEndDataRoom from './backend/DataRoom';
+import BackEndTicket from './backend/ticket';
 import q from "q";
 
 class SpinalBackEnd {
@@ -36,6 +37,8 @@ class SpinalBackEnd {
   viewerBack = new BackEndViewer();
   spaceBack = new BackEndSpace();
   DataRoomBack = new BackEndDataRoom();
+  BackEndTicket = new BackEndTicket();
+
   initDefer = q.defer();
 
   constructor() {
@@ -48,7 +51,8 @@ class SpinalBackEnd {
         this.spatialBack.init(graph),
         this.viewerBack.init(graph),
         this.DataRoomBack.init(graph),
-        this.spaceBack.init(graph)
+        this.spaceBack.init(graph),
+        this.BackEndTicket.init(graph)
       ]);
       this.initDefer.resolve();
     } catch (error) {

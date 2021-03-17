@@ -63,7 +63,6 @@ import q from "q";
 // const Icontexts = contexts.map(el => this.Icontext(el));
 // const res = await Promise.all(Icontexts)
 // this.initDefer.resolve(res);
-// console.log("resss", res);
 
 
 
@@ -103,11 +102,10 @@ export default class Space {
     // .then(el => {
     //   return SpinalGraphService.getRealNode(el.id)
     // });
-    console.log("contexts ", contexts);
+    // console.log("contexts ", contexts);
     const Icontexts = contexts.map(el => this.Icontext(el));
     const res = await Promise.all(Icontexts);
     this.initDefer.resolve(res);
-    console.log("resss", res);
 
     // let categories = roomsGroupContext.map(async (context) => {
     //     //console.log(context);

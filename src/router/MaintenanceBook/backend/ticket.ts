@@ -23,41 +23,50 @@
  */
 
 import {
-  TICKET_CONTEXT_NAME,
-  TICKET_CONTEXT_TYPE,
-  TICKET_RELATION_CONTEXT_PROCESS,
-  TICKET_PROCESS_TYPE,
-  TICKET_RELATION_PROCESS_STEP,
-  TICKET_STEP_TYPE,
-  TICKET_RELATION_STEP_TICKET,
-  TICKET_TICKET_TYPE,
-  TICKET_RELATION_PROCESS_OBJET,
-  TICKET_OBJECT_TYPE
-} from '../../constants';
+  SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_TICKET_SECTION_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_PROCESS_RELATION_NAME,
+  PROCESS_HAS_TICKET_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_STEP_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_TICKET_TYPE
+} from "./constants"
+import { EQUIPMENT_TYPE } from "../../../constants"
+import { spinalIO } from "../../../services/spinalIO"
 import q from "q";
 
 import { FileSystem } from 'spinal-core-connectorjs_type';
-import { EventBus } from '../event';
-import ProcessOnChange from '../utlils/ProcessOnChange';
-import throttle from 'lodash.throttle';
 import { SpinalGraphService, SpinalNode, SpinalContext } from 'spinal-env-viewer-graph-service';
-
 import { TicketItem } from './ticketItem'
+const anyWin: any = window;
+
 type mapTicketItem = Map<string, TicketItem[]>
 
 
 export default class BackEndTicket {
   initDefer = q.defer();
-  info: any;
-  ticketContext: SpinalNode<any>;
   contexts: SpinalContext<any>[] = []
+  static instance: BackEndTicket
 
   constructor() {
-    this.info = {
-      contextStructure: [],
-      allTickets: []
-    };
   }
+
+  static getInstance(): BackEndTicket {
+    if (!BackEndTicket.instance)
+      BackEndTicket.instance = new BackEndTicket
+    return BackEndTicket.instance
+  }
+
+  async init(graph) {
+    // this.ticketContext = await graph.getContext(TICKET_CONTEXT_NAME);
+    const children = await graph.getChildren();
+    for (const context of children) {
+      if (context.info.type.get() === "SpinalSystemServiceTicket") {
+        this.contexts.push(context);
+      }
+    }
+    this.initDefer.resolve(this.contexts);
+  }
+
   async getContexts(): Promise<Map<string, TicketItem[]>> {
     const res: Map<string, TicketItem[]> = new Map()
     await Promise.all(this.contexts.map(async (item) => {
@@ -78,7 +87,6 @@ export default class BackEndTicket {
     if (!node || !context) return Promise.resolve(new Map());
     return this.getItemsInContext(node, context)
   }
-
 
   private async getItemsInContext(node: SpinalNode<any>,
     context: SpinalContext<any>, giveSelf = false): Promise<mapTicketItem> {
@@ -102,7 +110,7 @@ export default class BackEndTicket {
       nextGen = [];
       depth += 1;
       for (const n of currentGen) {
-        if (depth <= 2 || (n.info.type && n.info.type.get() !== TICKET_TICKET_TYPE)) {
+        if (depth <= 2 || (n.info.type && n.info.type.get() !== SPINAL_TICKET_SERVICE_TICKET_TYPE)) {
           const item = TicketItem.getItemFromMap(allItems, n);
           promises.push(n.getChildrenInContext(context).then((children) => {
             return { children, item }
@@ -121,22 +129,77 @@ export default class BackEndTicket {
         }
       }
     }
+    for (const [, arrayTicket] of res) {
+      arrayTicket.forEach(item => item.getCountTicket())
+    }
     if (giveSelf) return res;
     return typeof item.children !== "undefined" ? item.children : new Map();
   }
 
 
+  async getLstByModel(item, addRoomRef = false) {
+    const node = this.getNodeFromItem(item);
+    // console.log("-+--+--", node);
+    // console.log("++++++++++++++++++++", SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
 
+    const relations = [SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+      SPINAL_TICKET_SERVICE_TICKET_SECTION_RELATION_NAME,
+      SPINAL_TICKET_SERVICE_PROCESS_RELATION_NAME,
+      PROCESS_HAS_TICKET_RELATION_NAME,
+      SPINAL_TICKET_SERVICE_STEP_RELATION_NAME]
+    var listNodeSelected = []
+    var _listNodeSelected = []
+    if (node) {
+      const listNode = await node.find(relations, (n) => {
+        return (n.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE);
+      });
+      for (const ticket of listNode) {
+        let _ticket = spinalIO.loadPtr(ticket.info.elementSelected)
+        listNodeSelected.push(_ticket)
+      }
+      var rooms = await Promise.all(listNodeSelected)
+      for (const room of rooms) {
+        let _room = room.getChildren(["hasReferenceObject.ROOM"])
+        _listNodeSelected.push(_room)
+      }
+      var _rooms = await Promise.all(_listNodeSelected);
+      var res = _rooms.reduce((acc, item) => {
+        acc.push(...item)
+        return acc;
+      }, [])
 
+      return this.sortBIMObjectByModel(res);
+    }
+    else return this.sortBIMObjectByModel([]);
+  }
+  getNodeFromItem(item) {
+    return FileSystem._objects[item.server_id];
+  }
 
-  async init(graph) {
-    // this.ticketContext = await graph.getContext(TICKET_CONTEXT_NAME);
-    const children = await graph.getChildren();
-    for (const context of children) {
-      if (context.info.type.get() === "SpinalSystemServiceTicket") {
-        this.contexts.push(context);
+  sortBIMObjectByModel(arrayOfBIMObject): { selection: number[], model }[] {
+    let arrayModel = [];
+    for (const nodeBIMObject of arrayOfBIMObject) {
+      const bimFileId = nodeBIMObject.info.bimFileId.get();
+      const dbId = nodeBIMObject.info.dbid.get();
+      const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
+      const obj = this.getOrAddModelIfMissing(arrayModel, model);
+      obj.selection.push(dbId);
+    }
+    return arrayModel;
+  }
+  getOrAddModelIfMissing(array, model): { selection: number[], model } {
+    for (const obj of array) {
+      if (obj.model === model) {
+        return obj;
       }
     }
-    this.initDefer.resolve(this.contexts);
+    const obj = {
+      selection: [],
+      model
+    };
+    array.push(obj);
+    return obj;
   }
 }
+
+

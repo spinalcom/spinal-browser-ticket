@@ -21,148 +21,163 @@ You should have received a copy of the license along
 with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
-
 <template>
-  <el-table v-loading="loading"
-            :data="data"
-            border
-            style="width: 100%"
-            :header-cell-style="{'background-color': '#f0f2f5'}"
-            @row-click="selectInView"
-            @row-dblclick="SeeEvent">
+  <el-table
+    v-loading="loading"
+    :data="data"
+    border
+    style="width: 100%"
+    :header-cell-style="{ 'background-color': '#f0f2f5' }"
+    @row-click="selectInView"
+    @row-dblclick="SeeEvent"
+  >
     <el-table-column :label="$t('explorer.Name')">
-      <div slot-scope="scope">
-        <div v-if="scope.row.color"
-              class="spinal-table-cell-color"
-              :style="getColor(scope.row.color)"></div>
-        <div> {{ scope.row.name }} </div>
-      </div>
+      <template slot-scope="scope">
+        <div>
+          <div
+            v-if="scope.row.color"
+            class="spinal-table-cell-color"
+            :style="getColor(scope.row.color)"
+          ></div>
+          <div>{{ scope.row.name }}</div>
+        </div>
+      </template>
     </el-table-column>
 
-    <el-table-column v-for="column in columns"
-                      :key="column"
-                      align="center"
-                      :label="$t(`node-type.${column}`)">
-      <div slot-scope="scope">
-        {{ columnValue(scope.row, column) }}
-      </div>
+    <el-table-column
+      v-if="haveProcess"
+      align="center"
+      :label="$t(`view.Process`)"
+    >
+      <template slot-scope="scope">
+        <div v-loading="loadingProcess">
+          {{ roundNumber(scope.row.Process) }}
+        </div>
+      </template>
     </el-table-column>
 
-    <el-table-column v-if="haveChildren"
-                      label=""
-                      width="65"
-                      align="center">
-      <div slot-scope="scope">
-        <el-button v-if="scope.row.haveChild"
-                    icon="el-icon-arrow-right"
-                    circle
-                    @click="onSelectItem(scope.row)"></el-button>
-      </div>
-    <!-- </el-table-column>
-    <el-table-column label=""
-                      width="65"
-                      align="center">
-      <div slot-scope="scope">
-        <el-button icon="el-icon-arrow-down"
-                    circle
-                    @click="debugNode(scope.row)"></el-button>
-      </div>
-    </el-table-column> -->
+    <el-table-column
+      v-for="collum in collums"
+      :key="collum"
+      align="center"
+      :label="$t(`view.${collum}`)"
+    >
+      <template slot-scope="scope">
+        {{ collumValue(scope.row, collum) }}
+      </template>
+    </el-table-column>
+
+    <el-table-column v-if="haveChildren" label="" width="65" align="center">
+      <template slot-scope="scope">
+        <el-button
+          v-if="scope.row.haveChild"
+          icon="el-icon-arrow-right"
+          circle
+          @click="onSelectItem(scope.row)"
+        ></el-button>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
 import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
-import { EventBus } from "../../../services/event";
+import { roundNumber } from "../../../services/utlils/roundNumber";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
+import { EventBus } from "../../../services/event";
 
 export default {
-  name:"NodeTable",
-  props : {
-    viewKey: { required: true, type: String, },
-    items: { required: true, type: Array,  },
-    columns: { required: true, type: Array, },
+  name: "TicketTypeTable",
+  props: {
+    viewKey: { require: true, type: String, default: "" },
+    items: { required: true, type: Array },
+    collums: { required: false, type: Array, default: () => [] },
+    nodeType: { required: true, type: String },
   },
   data() {
     return {
       data: [],
       loading: true,
-      loadingArea: true,
+      loadingProcess: true,
       haveChildren: false,
+      haveProcess: false,
     };
   },
   watch: {
     items() {
       this.update();
-    }
+    },
   },
   mounted() {
     this.update();
   },
   methods: {
-    selectInView(item)
-    {
+    roundNumber,
+    selectInView(item) {
       EventBus.$emit("view-select-item", {
         server_id: item.serverId,
-        color: item.color
+        color: item.color,
       });
     },
-    SeeEvent(item)
-    {
-      EventBus.$emit("view-isolate-item", {
+    SeeEvent(item) {
+      EventBus.$emit("view-color-item", {
         server_id: item.serverId,
-        color: item.color
+        color: item.color,
       });
     },
     SeeAll(zone) {
-      let items = this.data.map(item => {
+      let items = this.data.map((item) => {
         return { server_id: item.serverId, color: item.color };
       });
       EventBus.$emit("view-color-all", items, { server_id: zone });
-    },
-    ShowAll()
-    {
-      EventBus.$emit("view-show-all");
-    },
-    isolateAll(zone)
-    {
-      EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     debugNode(item) {
-      console.debug(item)
+      console.debug(item);
     },
-    update() {
+    async update() {
       this.loading = true;
+      this.loadingProcess = true;
+      this.haveProcess = false;
       const res = [];
-      const colorUsed = [];
       let haveChild = false;
-
+      const prom = [];
+      const colorUsed = [];
       for (const item of this.items) {
         const resItem = {
           name: item.name,
           serverId: item.serverId,
           haveChild: false,
           color: item.getColor(),
+          process: 0,
         };
         if (resItem.color) colorUsed.push(resItem.color);
+        // if (item.isLocationType()) this.haveProcess = true;
+        // prom.push;
+        // (await item.getProcess()).then((result) => {
+        // resItem.process = await item.getProcess();
+        // })();
         if (item.children) {
           for (const [childTypes, childItems] of item.children) {
+            haveChild = true;
             resItem[childTypes] = childItems.length;
             resItem.haveChild = true;
-            haveChild = true;
           }
         }
         res.push(resItem);
       }
-      this.data = res;
-      this.updateColor(this.data, colorUsed);
+
+      this.updateColor(res, colorUsed);
       this.haveChildren = haveChild;
+      this.data = res;
       this.loading = false;
+      Promise.all(prom).then(() => {
+        this.loadingProcess = false;
+      });
     },
     updateColor(res, colorUsed) {
       if (colorUsed.length !== this.items.length) {
@@ -173,7 +188,6 @@ export default {
           this.setColorItem(itm.serverId, color);
           Object.assign(itm, { color });
         }
-        console.debug(colorGen, colorUsed)
       }
     },
     setColorItem(serverId, color) {
@@ -186,23 +200,34 @@ export default {
     getColor(color) {
       return { backgroundColor: color[0] === "#" ? color : `#${color}` };
     },
-    columnValue(item, key) {
+    collumValue(item, key) {
       if (item[key]) return item[key];
       return 0;
+    },
+    seeAll() {
+      let items = this.data.map((item) => {
+        return { server_id: item.serverId, color: item.color };
+      });
+      EventBus.$emit("view-color-all", items, { server_id: zone });
     },
     exportToExcel() {
       let headers = [
         {
           key: "name",
           header: this.$t("name"),
-          width: 20
+          width: 20,
+        },
+        {
+          key: "process",
+          header: this.$t("Process"),
+          width: 10,
         },
       ];
-      for (const column of this.columns) {
+      for (const collum of this.collums) {
         headers.push({
-          key: column,
-          header: this.$t(column),
-          width: 10
+          key: collum,
+          header: this.$t(collum),
+          width: 10,
         });
       }
       let excelData = [
@@ -213,14 +238,30 @@ export default {
             {
               name: "Tableau",
               header: headers,
-              rows: this.data
-            }
-          ]
-        }
+              rows: this.data,
+            },
+          ],
+        },
       ];
-      excelManager.export(excelData).then(reponse => {
+      excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
+    },
+    rowHaveChildren(item) {
+      if (item.children) {
+        // eslint-disable-next-line no-unused-vars
+        for (const it of item.children) {
+          return true;
+        }
+      }
+      return false;
+    },
+    getItemFromServerId(serverId) {
+      for (const item of this.items) {
+        if (item.serverId === serverId) {
+          return item;
+        }
+      }
     },
   },
 };

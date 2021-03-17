@@ -22,7 +22,6 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-declare module '*.vue' {
-  import Vue from 'vue'
-  export default Vue
-}
+import Vue from 'vue';
+
+export const EventBus = new Vue();

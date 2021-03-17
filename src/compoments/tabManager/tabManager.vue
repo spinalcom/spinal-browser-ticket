@@ -24,19 +24,29 @@ with this file. If not, see
 
 <template>
   <el-tabs type="border-card" :value="activetab" @tab-remove="removeTab">
-    <el-tab-pane v-for="(tab) in opentabs" :key="tab.name" :label="tab.name" :name="tab.name" :closable="true">
-        <component :is="tab.content" :Properties="tab.props" ></component>
+    <el-tab-pane
+      v-for="tab in opentabs"
+      :key="tab.name"
+      :label="tab.name"
+      :name="tab.name"
+      :closable="true"
+    >
+      <component :is="tab.content" :Properties="tab.props"></component>
     </el-tab-pane>
     <el-tab-pane :disabled="true">
       <span slot="label">
         <el-dropdown trigger="click" @command="addTab">
           <el-button type="primary" plain>
-              ···
+            ···
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(tab) in tabs" :key="tab.name" :command="tab">
-              <div v-if="!(hasTab(opentabs, tab))">
-                {{tab.name}}
+            <el-dropdown-item
+              v-for="tab in tabs"
+              :key="tab.name"
+              :command="tab"
+            >
+              <div v-if="!hasTab(opentabs, tab)">
+                {{ tab.name }}
               </div>
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -47,68 +57,63 @@ with this file. If not, see
 </template>
 
 <script>
-
 export default {
   name: "tabManager",
-  components: { },
+  components: {},
   props: { tabsprop: Array },
   data() {
     return {
-        tabs: this.tabsprop,
-	      opentabs: [],
-        activetab: this.tabsprop[0].name,
+      tabs: this.tabsprop,
+      opentabs: [],
+      activetab: this.tabsprop[0].name,
     };
   },
   async mounted() {
-    for (const tab of this.tabs)
-    {
-      if (!tab.optional)
-      {
-        this.opentabs.push(tab)
+    for (const tab of this.tabs) {
+      if (!tab.optional) {
+        this.opentabs.push(tab);
       }
     }
   },
   methods: {
-      hasTab(tabArray, tab) {
-        for (var idx = 0; idx < tabArray.length; idx += 1){
-          if (tabArray[idx].name === tab.name)
-          {
-            return true
-          }
+    hasTab(tabArray, tab) {
+      for (var idx = 0; idx < tabArray.length; idx += 1) {
+        if (tabArray[idx].name === tab.name) {
+          return true;
         }
-        return false
-      },
-      addTab(target) {
-        this.opentabs.push({
-          title: target.name,
-          name: target.name,
-          content: target.content,
-          props: target.props,
-        });
-        this.activetab = target.name;
-      },
-      removeTab(targetName) {
-        let tmptabs = this.opentabs;
-        let activeName = this.activetab;
-        if (activeName === targetName) {
-          tmptabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              let nextTab = tmptabs[index + 1] || tmptabs[index - 1];
-              if (nextTab) {
-                activeName = nextTab.name;
-              }
-            }
-          });
-        }
-        this.activetab = activeName;
-        this.opentabs = tmptabs.filter(tab => tab.name !== targetName);
-      },
-      debug(active) {
-        console.debug(active)
       }
-  }
+      return false;
+    },
+    addTab(target) {
+      this.opentabs.push({
+        title: target.name,
+        name: target.name,
+        content: target.content,
+        props: target.props,
+      });
+      this.activetab = target.name;
+    },
+    removeTab(targetName) {
+      let tmptabs = this.opentabs;
+      let activeName = this.activetab;
+      if (activeName === targetName) {
+        tmptabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            let nextTab = tmptabs[index + 1] || tmptabs[index - 1];
+            if (nextTab) {
+              activeName = nextTab.name;
+            }
+          }
+        });
+      }
+      this.activetab = activeName;
+      this.opentabs = tmptabs.filter((tab) => tab.name !== targetName);
+    },
+    debug(active) {
+      console.debug(active);
+    },
+  },
 };
 </script>
 
-<style>
-</style>
+<style></style>

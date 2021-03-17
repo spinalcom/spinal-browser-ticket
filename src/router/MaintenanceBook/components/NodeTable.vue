@@ -23,67 +23,86 @@ with this file. If not, see
 -->
 
 <template>
-  <el-table v-loading="loading"
-            :data="data"
-            border
-            style="width: 100%"
-            :header-cell-style="{'background-color': '#f0f2f5'}"
-            @row-click="selectInView"
-            @row-dblclick="SeeEvent">
-    <el-table-column :label="$t('explorer.Name')">
+  <el-table
+    v-if="ticketView == true"
+    v-loading="loading"
+    :data="data"
+    border
+    style="width: 100%"
+    :header-cell-style="{ 'background-color': '#f0f2f5' }"
+    @row-click="selectInView"
+    @row-dblclick="SeeEvent"
+  >
+    <el-table-column :label="$t(`${explorerTab()}`)">
       <div slot-scope="scope">
-        <div v-if="scope.row.color"
-              class="spinal-table-cell-color"
-              :style="getColor(scope.row.color)"></div>
-        <div> {{ scope.row.name }} </div>
+        <div
+          v-if="scope.row.color"
+          class="spinal-table-cell-color"
+          :style="getColor(scope.row.color)"
+        ></div>
+        <div>{{ scope.row.name }}</div>
       </div>
     </el-table-column>
 
-    <el-table-column v-for="column in columns"
-                      :key="column"
-                      align="center"
-                      :label="$t(`node-type.${column}`)">
-      <div slot-scope="scope">
-        {{ columnValue(scope.row, column) }}
-      </div>
+    <el-table-column
+      v-for="column in columns"
+      :key="column"
+      align="center"
+      :label="$t(`${explorerDetailsTab()}`)"
+    >
+      <div slot-scope="scope">{{ columnValue(scope.row, column) }}</div>
+    </el-table-column>
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <el-table-column
+      align="center"
+      :label="$t(`TicketNumber`)"
+      v-if="haveChildren"
+    >
+      <div slot-scope="scope">{{ ticketNumber(scope.row) }}</div>
     </el-table-column>
 
-    <el-table-column v-if="haveChildren"
-                      label=""
-                      width="65"
-                      align="center">
+    <el-table-column v-if="haveChildren" label="" width="65" align="center">
       <div slot-scope="scope">
-        <el-button v-if="scope.row.haveChild"
-                    icon="el-icon-arrow-right"
-                    circle
-                    @click="onSelectItem(scope.row)"></el-button>
+        <el-button
+          v-if="scope.row.haveChild"
+          icon="el-icon-arrow-right"
+          circle
+          @click="onSelectItem(scope.row)"
+        ></el-button>
       </div>
-    <!-- </el-table-column>
-    <el-table-column label=""
-                      width="65"
-                      align="center">
+    </el-table-column>
+    <el-table-column
+      v-if="haveChildren === false"
+      label=""
+      width="65"
+      align="center"
+    >
       <div slot-scope="scope">
-        <el-button icon="el-icon-arrow-down"
-                    circle
-                    @click="debugNode(scope.row)"></el-button>
+        <el-button
+          icon="el-icon-s-operation"
+          circle
+          @click="detailsTicket(scope.row)"
+        ></el-button>
       </div>
-    </el-table-column> -->
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
 import { ViewManager } from "../../../services/ViewManager/ViewManager";
 import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
-import { EventBus } from "../../../services/event";
+import { EventBus } from "../backend/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 
 export default {
-  name:"NodeTable",
-  props : {
-    viewKey: { required: true, type: String, },
-    items: { required: true, type: Array,  },
-    columns: { required: true, type: Array, },
+  name: "NodeTable",
+  components: {},
+  props: {
+    viewKey: { required: true, type: String },
+    items: { required: true, type: Array },
+    columns: { required: true, type: Array },
   },
   data() {
     return {
@@ -91,50 +110,70 @@ export default {
       loading: true,
       loadingArea: true,
       haveChildren: false,
+      ticketView: true,
     };
   },
   watch: {
     items() {
       this.update();
-    }
+    },
   },
   mounted() {
+    this.ticketView = true;
     this.update();
   },
   methods: {
-    selectInView(item)
-    {
+    explorerTest() {
+      if (condition) {
+      }
+    },
+    selectInView(item) {
       EventBus.$emit("view-select-item", {
         server_id: item.serverId,
-        color: item.color
+        color: item.color,
       });
     },
-    SeeEvent(item)
-    {
-      EventBus.$emit("view-isolate-item", {
+    SeeEvent(item) {
+      EventBus.$emit("view-color-item", {
         server_id: item.serverId,
-        color: item.color
+        color: item.color,
       });
     },
     SeeAll(zone) {
-      let items = this.data.map(item => {
+      let items = this.data.map((item) => {
         return { server_id: item.serverId, color: item.color };
       });
+
       EventBus.$emit("view-color-all", items, { server_id: zone });
-    },
-    ShowAll()
-    {
-      EventBus.$emit("view-show-all");
-    },
-    isolateAll(zone)
-    {
-      EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
-    debugNode(item) {
-      console.debug(item)
+    detailsTicket(item) {
+      // EventBus.$emit("detailsTicket", item);
+      // this.ticketView = false;
+      console.log("columns", this.columns[0]);
+      return "hello";
+    },
+    explorerDetailsTab() {
+      for (const column of this.columns) {
+        if (column && column === "SpinalServiceTicketProcess")
+          return "Processes";
+        else if (column && column === "SpinalSystemServiceTicketTypeStep")
+          return "Steps";
+        else if (column && column === "SpinalSystemServiceTicketTypeTicket")
+          return "Tickets";
+      }
+    },
+    explorerTab() {
+      for (const item of this.items) {
+        if (item.type === "SpinalSystemServiceTicket") return "Workflow";
+        else if (item.type === "SpinalServiceTicketProcess") return "Processes";
+        else if (item.type === "SpinalSystemServiceTicketTypeStep")
+          return "Steps";
+        else if (item.type === "SpinalSystemServiceTicketTypeTicket")
+          return "Tickets";
+      }
     },
     update() {
       this.loading = true;
@@ -173,7 +212,7 @@ export default {
           this.setColorItem(itm.serverId, color);
           Object.assign(itm, { color });
         }
-        console.debug(colorGen, colorUsed)
+        console.debug(colorGen, colorUsed);
       }
     },
     setColorItem(serverId, color) {
@@ -190,19 +229,26 @@ export default {
       if (item[key]) return item[key];
       return 0;
     },
+    ticketNumber(item) {
+      for (const _item of this.items) {
+        if (_item.name === item.name) {
+          return _item.allTickets;
+        }
+      }
+    },
     exportToExcel() {
       let headers = [
         {
           key: "name",
           header: this.$t("name"),
-          width: 20
+          width: 20,
         },
       ];
       for (const column of this.columns) {
         headers.push({
           key: column,
           header: this.$t(column),
-          width: 10
+          width: 10,
         });
       }
       let excelData = [
@@ -213,12 +259,12 @@ export default {
             {
               name: "Tableau",
               header: headers,
-              rows: this.data
-            }
-          ]
-        }
+              rows: this.data,
+            },
+          ],
+        },
       ];
-      excelManager.export(excelData).then(reponse => {
+      excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
