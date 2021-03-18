@@ -42,6 +42,22 @@ export default {
   "SpaceManagement.Groupe": "Group",
   "SpaceManagement.NombreDePiece": "Number of rooms",
   "SpaceManagement.ListeDePiece": "List of rooms",
-  "SpaceManagement.Surface": "Surface"
+  "SpaceManagement.Surface": "Surface",
+
+  "HeatmapCenter.Contextes": "Contexts",
+  "HeatmapCenter.Nb_groupes": "Groups",
+  "HeatmapCenter.Groupe": "Group",
+  "HeatmapCenter.Categories": "Categories",
+  "HeatmapCenter.Nb_pieces": "Rooms",
+  "HeatmapCenter.Nb_profils": "Profils",
+  "HeatmapCenter.lst_profils": "List of profils",
+  "HeatmapCenter.Surface": "Area(M²)",
+  "HeatmapCenter.Groupes":"Groups",
+  "HeatmapCenter.Indicateurs": "Indicator",
+  "HeatmapCenter.Profil": "Profil",
+  "HeatmapCenter.Valeur": "Value",
+  "HeatmapCenter.Heatmap_bool": "Display Heatmap",
+  "HeatmapCenter.Courbe_bool": "Display graph",
+  "HeatmapCenter.GO": "Go"
 };
 

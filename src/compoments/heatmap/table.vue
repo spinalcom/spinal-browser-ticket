@@ -1,0 +1,216 @@
+<!--
+Copyright 2020 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
+<template>
+  <div class="spacecon">
+
+    <el-breadcrumb class="breadcrumb-style"
+                   separator="/">
+      <el-breadcrumb-item>
+        <a @click="onclick(null)">Heatmap Center</a>
+      </el-breadcrumb-item>
+      <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
+                          :key="index">
+        <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
+      </el-breadcrumb-item>
+    </el-breadcrumb>
+
+    <!-- Si on a pas encore choisi de catégorie -->
+    <div v-if="selectCategorie == null" 
+         class="root"> 
+
+      <!-- Si on a pas encore choisi de contexte -->
+      <tableau-context v-if="contextSelected === null"
+                       :context-lst="contextLst"
+                       @select="SelectContext">
+      </tableau-context>
+
+      <!-- Si on a choisi un contexte -->
+      <tableau-category v-else
+                        :context-selected="contextSelected"
+                        @seeGroups="onclick">
+      </tableau-category>
+    </div>
+
+    <!-- Si on a choisi une catégorie  -->
+    <div v-if ="selectCategorie != null && profilSelected==null">
+      <groupLstVue ref="categoryListe"
+                      :select-categorie="selectCategorie"
+                      @addbreadcrumb="addbreadcrumb"></groupLstVue>
+    </div>
+
+      <heatmap-vue v-if ="profilSelected!=null" :profil="profilSelected">
+
+
+
+
+      </heatmap-vue>
+
+
+
+
+
+
+
+  </div>
+</template>
+
+<script>
+import { spinalBackEnd } from "../../services/spinalBackend";
+import groupLstVue from "./component/groupLstVue";
+import tableauContext from "./tableaucontext";
+import tableauCategory from "./tableaucategory";
+
+import { EventBus } from "../../services/event";
+import HeatmapVue from './component/heatmapVue.vue';
+
+
+export default {
+  components: { groupLstVue, tableauContext, tableauCategory,HeatmapVue},
+  props: [],
+  data() {
+    return {
+      contextLst: [],
+      selectCategorie: null,
+      breadcrumbs: [],
+      contextSelected: null,
+      profilSelected:null
+    };
+  },
+  async mounted() {
+    this.profilSelected=null;
+    this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts
+
+    EventBus.$on("sidebar-selected-item", item => {
+      spinalBackEnd.heatmapBack
+        .getDataFilterItem(item)
+        .then(result => {
+          console.log("resuuuuuuuultat____", result);
+          this.contextLst = result;
+
+          if (this.contextSelected) {
+            for (const context of this.contextLst) {
+              if (this.contextSelected.id === context.id) {
+                const selectCategorie = this.selectCategorie;
+                this.SelectContext(context);
+                if (selectCategorie) {
+                  for (const cat of this.contextSelected.categories) {
+                    if (selectCategorie.id === cat.id) {
+                      this.onclick(cat);
+                    }
+                  }
+                }
+                break;
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
+
+    EventBus.$on("sidebar-homeSelect", item => {
+      console.log("sidebar-homeSelect", item);
+    });
+  },
+  methods: {
+    onclick(categorie) {
+      this.profilSelected=null;
+      this.selectCategorie = categorie;
+      if (categorie) {
+        const categorieIndex = 1;
+        this.breadcrumbs.splice(categorieIndex);
+
+        this.breadcrumbs = [
+          ...this.breadcrumbs,
+          {
+            name: categorie.name,
+            click: () => {
+              this.onclick(categorie);
+              this.$refs.categoryListe.resetRoomSelected();
+            }
+          }
+        ];
+      } else {
+        this.contextSelected = null;
+        this.breadcrumbs = [];
+      }
+    },
+
+    addbreadcrumb(resultat) {
+      console.log("appelle de add breadcrubm");
+      this.breadcrumbs = [...this.breadcrumbs, resultat];
+    },
+
+    SelectContext(context) {
+      this.breadcrumbs = [];
+      this.selectCategorie = null;
+      this.profilSelected=null;
+      this.contextSelected = context;
+
+      const obj = {
+        name: context.name,
+        click: () => {
+          this.SelectContext(context);
+        }
+      };
+
+      this.breadcrumbs = [...this.breadcrumbs, obj];
+      this.contextSelected = context;
+    }
+  }
+};
+</script>
+
+<style scoped>
+.spacecon {
+  width: 100%;
+  padding: 0 10px;
+}
+.card-content {
+  display: flex;
+  flex-direction: column;
+}
+.card-content > * {
+  margin-left: 0;
+  margin-top: 10px;
+}
+.clearfix {
+  text-align: center;
+}
+.breadcrumb-style {
+  font-size: 20px;
+  margin: 15px 0 20px 2px;
+}
+
+.boutton-barre {
+  padding: 14px !important;
+}
+.barre {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+</style>

@@ -43,5 +43,31 @@ export default {
   "SpaceManagement.Groupe": "Groupe",
   "SpaceManagement.NombreDePiece": "Nombre de pièces",
   "SpaceManagement.ListeDePiece": "Liste de pièces",
-  "SpaceManagement.Surface": "Surface"
+  "SpaceManagement.Surface": "Surface",
+
+  "HeatmapCenter.Contextes": "Contextes",
+  "HeatmapCenter.Categories": "Catégories",
+  "HeatmapCenter.Groupe": "Groupe",
+  "HeatmapCenter.Nb_groupes": "Groupes",
+  "HeatmapCenter.Nb_pieces": "Pièces",
+  "HeatmapCenter.Nb_profils": "Profiles",
+  "HeatmapCenter.lst_profils": "Liste des profiles",
+  "HeatmapCenter.Surface": "Surface(M²)",
+  "HeatmapCenter.Groupes":"Groupes",
+  "HeatmapCenter.Indicateurs": "Indicateurs",
+  "HeatmapCenter.Profil": "Profil",
+  "HeatmapCenter.Valeur": "Valeur",
+  "HeatmapCenter.Heatmap_bool": "Afficher Heatmap",
+  "HeatmapCenter.Courbe_bool": "Afficher courbe",
+  "HeatmapCenter.GO": "Go"
+
+
+
+
+
+
+
+
+
+
 };

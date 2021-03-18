@@ -32,11 +32,12 @@ import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-ser
 import { FileSystem } from 'spinal-core-connectorjs_type';
 import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 
+
 import q from "q";
 
 
 
-export default class Space {
+export default class Heatmap {
 
   constructor() {
     this.allContext;
@@ -52,14 +53,14 @@ export default class Space {
     //ROOM_TYPE
     await SpinalGraphService.waitForInitialization();
     let contextNodes = await graph.getChildren("hasContext");
-    const cons = await groupManagerService.getGroupContexts(ROOM_TYPE);
+    const cons = await groupManagerService.getGroupContexts("SpinalControlPointGroupContext");
     const contexts = contextNodes.filter(context => {
       for (const con of cons) {
         let id = typeof con.id === "string" ? con.id : con.id.get();
         if (context.info.id.get() === id) return true;
       }
       return false;
-      // return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
+      
     });
     console.log("contexts ", contexts);
     const Icontexts = contexts.map(el => this.Icontext(el));
@@ -93,12 +94,12 @@ export default class Space {
       for (const cat of d.categories) {
         const groups = [];
         for (const grp of cat.groups) {
-          const rooms = [];
-          for (const r of grp.rooms) {
-            if (idsAGarder.includes(r.id)) rooms.push(r);
+          const profils = [];
+          for (const r of grp.profils) {
+            if (idsAGarder.includes(r.id)) profils.push(r);
           }
           groups.push({
-            rooms,
+            profils,
             id: grp.id,
             name: grp.name,
             color: grp.color
@@ -150,10 +151,10 @@ export default class Space {
   }
 
   async Igroup(group) {
-    let roomLst = await groupManagerService.getElementsLinkedToGroup(group.id.get());
+    let profilLst = await groupManagerService.getElementsLinkedToGroup(group.id.get());
     let arr3 = [];
-    for (let room of roomLst) {
-      arr3.push(this.Iroom(room));
+    for (let profil of profilLst) {
+      arr3.push(this.Iprofil(profil));
     }
 
     if (typeof group.color === "undefined") {
@@ -180,18 +181,30 @@ export default class Space {
 
   }
 
-  async Iroom(room) {
-    let realnode = SpinalGraphService.getRealNode(room.id.get());
+  async Iprofil(profil) {
+    let realnode = SpinalGraphService.getRealNode(profil.id.get());
     let attributesLst = await serviceDocumentation.getAllAttributes(realnode);
     let espace = this.getsurface(attributesLst);
     return {
-      name: room.name.get(),
-      id: room.id.get(),
+      name: profil.name.get(),
+      id: profil.id.get(),
       surface: espace
 
     };
   }
 
+
+  async getVariables(profil){
+    let realnode = SpinalGraphService.getRealNode(profil.id);
+    console.log(profil.id);
+    let element = await realnode.getElement();
+    
+    console.log(element);
+    return SpinalGraphService.getInfo(realnode);
+
+    //return {r:"lol",a:"lala"};
+
+  }
 
 
 

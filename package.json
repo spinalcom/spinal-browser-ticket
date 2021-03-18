@@ -15,6 +15,8 @@
   "author": "",
   "license": "Free_Software_License_Agreement.pdf",
   "dependencies": {
+    "@chenfengyuan/vue-carousel": "^1.0.6",
+    "@wyhaya/vue-slide": "^1.0.2",
     "aes-js": "^3.1.2",
     "apexcharts": "^3.19.2",
     "component": "^1.1.0",
@@ -24,11 +26,13 @@
     "lodash.throttle": "^4.1.1",
     "parcel-bundler": "^1.12.4",
     "velocity-animate": "^1.5.2",
-    "vue": "^2.6.11",
+    "vue": "^2.6.12",
     "vue-apexcharts": "^1.5.3",
     "vue-i18n": "^8.18.2",
     "vue-plotly": "^1.0.1",
-    "vue-ripple-directive": "^2.0.1"
+    "vue-ripple-directive": "^2.0.1",
+    "vue-template-compiler": "^2.6.12",
+    "vueperslides": "^2.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
