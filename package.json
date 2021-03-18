@@ -14,11 +14,11 @@
   "keywords": [],
   "author": "",
   "license": "Free_Software_License_Agreement.pdf",
-  "dependencies": {},
-  "devDependencies": {
-    "vue-hot-reload-api": "^2.3.4",
+  "dependencies": {
     "@babel/core": "^7.4.5",
+    "@chenfengyuan/vue-carousel": "^1.0.6",
     "@vue/component-compiler-utils": "^3.2.0",
+    "@wyhaya/vue-slide": "^1.0.2",
     "aes-js": "^3.1.2",
     "apexcharts": "^3.19.2",
     "axios": "^0.21.1",
@@ -33,6 +33,7 @@
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.5.0",
     "sass": "^1.32.8",
+    "spinal-env-viewer-plugin-control-endpoint-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-control-endpoint-service.git",
     "spinal-env-viewer-plugin-documentation": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation.git",
     "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
     "spinal-env-viewer-plugin-excel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-excel-manager-service.git",
@@ -46,16 +47,20 @@
     "vue": "^2.6.12",
     "vue-apexcharts": "^1.5.3",
     "vue-cal": "^3.10.0",
+    "vue-hot-reload-api": "^2.3.4",
     "vue-i18n": "^8.22.1",
     "vue-plotly": "^1.0.1",
     "vue-ripple-directive": "^2.0.1",
     "vue-router": "^3.5.1",
-    "vue-template-compiler": "^2.6.12"
+    "vueperslides": "^2.13.0"
   },
   "browserslist": [
     "last 1 chrome versions"
   ],
   "staticFiles": {
     "staticPath": "src/public"
+  },
+  "devDependencies": {
+    "vue-template-compiler": "^2.6.12"
   }
 }

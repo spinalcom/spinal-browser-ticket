@@ -28,8 +28,8 @@ import Vue from "vue";
 Vue.use(VueRouter);
 
 const AppList = () => import('./AppList/AppList.vue');
-// const OperationCenter = () => import('./OperationCenter/OperationCenter.vue');
 const MaintenanceBook = () => import('./MaintenanceBook/MaintenanceBook.vue');
+ const HeatmapCenter = () => import('./HeatmapCenter/HeatmapCenter.vue');
 const SpaceCenter = () => import('./Space Center/spacecenter.vue');
 const SpaceCenterGestion = () => import('../compoments/space/component/categoryLstVue.vue');
 const DataRoom = () => import("./DataRoom/DataRoom.vue")
@@ -37,10 +37,10 @@ const EquipmentCenter = () => import("./EquipmentCenter/EquipmentCenter.vue")
 export const routes = [ 
   { path: '*', redirect: { name: 'App List' } },
   { path: '/AppList', name: 'App List', component: AppList },
-  { path: '/TicketCenter', name: 'Ticket Center', component: MaintenanceBook },
-  { path: '/Spacecenter', name: 'Space Center', component: SpaceCenter },
   { path: '/DataRoom', name: 'Data Room', component: DataRoom },
-  { path: '/EquipmentCenter', name: 'Equipment Center', component: EquipmentCenter },
+  { path: '/TicketCenter', name: 'Ticket Center', component: MaintenanceBook },
+  { path: '/HeatmapCenter', name: 'Heatmap Center', component: HeatmapCenter },
+  { path: '/Spacecenter', name: 'Space Center', component: SpaceCenter },
   { path: '/EquipmentCenter', name: 'Equipment Center', component: EquipmentCenter },
 ];
 const realroutes = [...routes,
