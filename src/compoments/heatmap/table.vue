@@ -24,21 +24,27 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
+    <div class="spinal-space-header">
+      <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
+        <el-breadcrumb class="breadcrumb-style"
+                       separator="/">
+          <el-breadcrumb-item>
+            <a @click="onclick(null)">Heatmap Center</a>
+          </el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
+                              :key="index">
+            <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
 
-    <el-breadcrumb class="breadcrumb-style"
-                   separator="/">
-      <el-breadcrumb-item>
-        <a @click="onclick(null)">Heatmap Center</a>
-      </el-breadcrumb-item>
-      <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
-                          :key="index">
-        <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
-      </el-breadcrumb-item>
-    </el-breadcrumb>
-
+      <el-button icon="el-icon-s-grid"
+                 circle
+                 @click="openDrawer"></el-button>
+    </div>
     <!-- Si on a pas encore choisi de catégorie -->
-    <div v-if="selectCategorie == null" 
-         class="root"> 
+    <div v-if="selectCategorie == null"
+         class="root">
 
       <!-- Si on a pas encore choisi de contexte -->
       <tableau-context v-if="contextSelected === null"
@@ -54,24 +60,16 @@ with this file. If not, see
     </div>
 
     <!-- Si on a choisi une catégorie  -->
-    <div v-if ="selectCategorie != null && profilSelected==null">
+    <div v-if="selectCategorie != null && profilSelected==null">
       <groupLstVue ref="categoryListe"
-                      :select-categorie="selectCategorie"
-                      @addbreadcrumb="addbreadcrumb"></groupLstVue>
+                   :select-categorie="selectCategorie"
+                   @addbreadcrumb="addbreadcrumb"></groupLstVue>
     </div>
 
-      <heatmap-vue v-if ="profilSelected!=null" :profil="profilSelected">
+    <heatmap-vue v-if="profilSelected!=null"
+                 :profil="profilSelected">
 
-
-
-
-      </heatmap-vue>
-
-
-
-
-
-
+    </heatmap-vue>
 
   </div>
 </template>
@@ -83,11 +81,10 @@ import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
 
 import { EventBus } from "../../services/event";
-import HeatmapVue from './component/heatmapVue.vue';
-
+import HeatmapVue from "./component/heatmapVue.vue";
 
 export default {
-  components: { groupLstVue, tableauContext, tableauCategory,HeatmapVue},
+  components: { groupLstVue, tableauContext, tableauCategory, HeatmapVue },
   props: [],
   data() {
     return {
@@ -95,11 +92,11 @@ export default {
       selectCategorie: null,
       breadcrumbs: [],
       contextSelected: null,
-      profilSelected:null
+      profilSelected: null
     };
   },
   async mounted() {
-    this.profilSelected=null;
+    this.profilSelected = null;
     this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts
 
     EventBus.$on("sidebar-selected-item", item => {
@@ -137,7 +134,7 @@ export default {
   },
   methods: {
     onclick(categorie) {
-      this.profilSelected=null;
+      this.profilSelected = null;
       this.selectCategorie = categorie;
       if (categorie) {
         const categorieIndex = 1;
@@ -167,7 +164,7 @@ export default {
     SelectContext(context) {
       this.breadcrumbs = [];
       this.selectCategorie = null;
-      this.profilSelected=null;
+      this.profilSelected = null;
       this.contextSelected = context;
 
       const obj = {
@@ -179,6 +176,9 @@ export default {
 
       this.breadcrumbs = [...this.breadcrumbs, obj];
       this.contextSelected = context;
+    },
+    openDrawer() {
+      EventBus.$emit("open-drawer");
     }
   }
 };
@@ -201,8 +201,12 @@ export default {
   text-align: center;
 }
 .breadcrumb-style {
-  font-size: 20px;
-  margin: 15px 0 20px 2px;
+  width: 100%;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 0 5px 0 5px;
 }
 
 .boutton-barre {
@@ -212,5 +216,21 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+}
+.spinal-space-header {
+  display: flex;
+  height: 43px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  background: white;
+}
+.spinal-space-header-breadcrum-container {
+  width: calc(100% - 43px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
 }
 </style>
