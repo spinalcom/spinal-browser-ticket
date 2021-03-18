@@ -75,6 +75,7 @@ export default class BackEndSpatial {
     this.floors = [];
   }
 
+  
   async getContextSpatial(graph) {
     const children = await graph.getChildren();
     for (const context of children) {
