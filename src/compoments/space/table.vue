@@ -238,7 +238,7 @@ export default {
 }
 
 .spinal-space-header-container {
-  background-color: #222222;
+  background-color: #fdfdfd;
   height: 55px;
   padding: 10px 5px 5px 5px;
 }
