@@ -266,7 +266,7 @@ export default {
   width: 100%;
   height: calc(100% - 55px);
   padding: 5px 10px 10px 5px;
-  background-color: #222;
+  background-color: #fdfdfd;
   overflow: auto;
 }
 

@@ -149,10 +149,10 @@ export default {
 <style>
 .spinal-navbar-main-container {
   height: 60px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04); */
   display: flex;
   flex-wrap: nowrap;
-  background: #222222f0;
+  background: #fdfdfd;
   overflow-x: auto;
   /* background-image: radial-gradient(circle at top left, #04092d, #1d3461); */
   /* background-image: radial-gradient(circle at top left, #494949, #58595b); */

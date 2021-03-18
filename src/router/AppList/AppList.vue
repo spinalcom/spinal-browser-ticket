@@ -83,7 +83,7 @@ export default {
 
 <style scoped>
 .applist-main-container {
-  background-color: #222;
+  background-color: #fdfdfd;
   padding: 0;
   width: 100%;
   position: relative;
