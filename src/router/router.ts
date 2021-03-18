@@ -37,9 +37,10 @@ const EquipmentCenter = () => import("./EquipmentCenter/EquipmentCenter.vue")
 export const routes = [ 
   { path: '*', redirect: { name: 'App List' } },
   { path: '/AppList', name: 'App List', component: AppList },
-  { path: '/MaintenanceBook', name: 'Maintenance Book', component: MaintenanceBook },
-  { path: '/Spacecenter', name: 'Space center', component: SpaceCenter },
+  { path: '/TicketCenter', name: 'Ticket Center', component: MaintenanceBook },
+  { path: '/Spacecenter', name: 'Space Center', component: SpaceCenter },
   { path: '/DataRoom', name: 'Data Room', component: DataRoom },
+  { path: '/EquipmentCenter', name: 'Equipment Center', component: EquipmentCenter },
   { path: '/EquipmentCenter', name: 'Equipment Center', component: EquipmentCenter },
 ];
 const realroutes = [...routes,
