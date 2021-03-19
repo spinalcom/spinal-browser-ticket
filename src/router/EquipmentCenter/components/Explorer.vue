@@ -27,29 +27,35 @@ with this file. If not, see
     <el-container>
       <el-header>
         {{ $t(`node-type.${Properties.items.nodeType}`) }}
-        <div  style="float: right">
+        <div style="float: right">
           <el-button
             icon="el-icon-download"
             circle
-            @click.stop="exportToExcel()">
+            @click.stop="exportToExcel()"
+          >
           </el-button>
           <el-button
             icon="el-icon-picture-outline-round"
             circle
-            @click.stop="SeeAll()">
+            @click.stop="SeeAll()"
+          >
           </el-button>
-          <el-button
-            icon="el-icon-aim"
-            circle
-            @click.stop="isolateAll()">
+          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
           </el-button>
+<<<<<<< HEAD
+=======
+          <el-button icon="el-icon-view" circle @click.stop="ShowAll()">
+          </el-button>
+>>>>>>> 4532f078b744472833be2e897c91b80bf979d430
         </div>
       </el-header>
       <el-main>
-        <node-table :ref="'Explorer-table'"
-                    :view-key="Properties.viewKey"
-                    :items="Properties.items.items"
-                    :columns="Properties.items.cols">
+        <node-table
+          :ref="'Explorer-table'"
+          :view-key="Properties.viewKey"
+          :items="Properties.items.items"
+          :columns="Properties.items.cols"
+        >
         </node-table>
       </el-main>
     </el-container>
@@ -59,30 +65,26 @@ with this file. If not, see
 <script>
 import { ViewManager } from "../../../services/ViewManager/ViewManager";
 // import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from '../backend/EquipmentBack'
-import BackendInitializer from '../../../services/BackendInitializer'
+import { EquipmentBack } from "../backend/EquipmentBack";
+import BackendInitializer from "../../../services/BackendInitializer";
 import { EventBus } from "../../../services/event";
-import '../../../services/EventHandler';
+import "../../../services/EventHandler";
 
-import NodeTable from './NodeTable.vue'
-
+import NodeTable from "./NodeTable.vue";
 export default {
   name: "Explorer",
   components: { NodeTable },
-  props : {
-    Properties:
-    {
+  props: {
+    Properties: {
       required: true,
       type: Object,
-      validator: function (value)
-      {
-        if (value.viewKey == "")
-        {
-          return('danger')
+      validator: function(value) {
+        if (value.viewKey == "") {
+          return "danger";
         }
-        return('success')
-      }
-    }
+        return "success";
+      },
+    },
   },
   data() {
     return {
@@ -93,25 +95,25 @@ export default {
   },
   methods: {
     changeView(item) {
-      ViewManager.getInstance(this.Properties.viewKey).push(item.name, item.serverId);
+      ViewManager.getInstance(this.Properties.viewKey).push(
+        item.name,
+        item.serverId
+      );
     },
     SeeAll() {
       this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
     },
-    isolateAll()
-    {
+    isolateAll() {
       this.$refs["Explorer-table"].isolateAll(this.Properties.view.serverId);
     },
     exportToExcel() {
       this.$refs["Explorer-table"].exportToExcel();
     },
-    ShowAll()
-    {
+    ShowAll() {
       this.$refs["Explorer-table"].ShowAll();
     },
-    async debug(what)
-    {
-      console.log("Debugging", what);
+    async debug(what) {
+      console.debug("Debugging", what);
     },
   },
 };

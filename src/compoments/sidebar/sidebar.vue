@@ -24,20 +24,23 @@ with this file. If not, see
 
 <template>
   <div class="spinal-sidebar-container">
-    <sidebarMenu ref="sidebarmenu"
-                 v-loading="loading"
-                 :title="title"
-                 :can-go-back="!!selected"
-                 :items="dataComputed"
-                 @goBack="goBack"
-                 @homeSelect="homeSelect"
-                 @selected="onSelect"
-                 @onMouseOver="onMouseOver"></sidebarMenu>
-    <hr>
-    <a href="http://spinalcom.com/"
-       target="_blank">
-      <img src="../../assets/imgs/spinalcore-poweredby-yellow.png"
-           alt="spinalcore-poweredby">
+    <sidebarMenu
+      ref="sidebarmenu"
+      v-loading="loading"
+      :title="title"
+      :can-go-back="!!selected"
+      :items="dataComputed"
+      @goBack="goBack"
+      @homeSelect="homeSelect"
+      @selected="onSelect"
+      @onMouseOver="onMouseOver"
+    ></sidebarMenu>
+    <hr />
+    <a href="http://spinalcom.com/" target="_blank">
+      <img
+        src="../../assets/imgs/spinalcore-poweredby-yellow.png"
+        alt="spinalcore-poweredby"
+      />
     </a>
   </div>
 </template>
@@ -56,7 +59,7 @@ export default {
       selected: null,
       path: [],
       loading: true,
-      title: ""
+      title: "",
     };
   },
   computed: {
@@ -65,7 +68,7 @@ export default {
         return this.selected.children;
       }
       return this.data;
-    }
+    },
   },
   mounted() {
     this.updateTitleButton();
@@ -98,7 +101,7 @@ export default {
     //   return null;
     // },
     sideBarChange(data, building) {
-      console.log("sideBarChange", data);
+      // console.log("sideBarChange", data);
 
       this.loading = false;
       this.data = data;
@@ -143,16 +146,15 @@ export default {
     },
     onMouseOver(item) {
       EventBus.$emit("sidebar-mouseover-item", item);
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 .spinal-sidebar-container {
   height: 100%;
-  background-color: #222;
-  background-image: radial-gradient(at top left, #222, #222, #252525);
+  background-color: #fdfdfd;
 }
 .spinal-sidebar-container hr {
   color: whitesmoke;

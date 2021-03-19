@@ -1,22 +1,33 @@
 {
   "compilerOptions": {
-    "module": "ES6",
+    "module": "CommonJS",
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "sourceMap": true,
     "downlevelIteration": true,
+    "baseUrl": "src",
+    "target": "es6"
   },
-  "experimentalDecorators":true,
+  "experimentalDecorators": true,
   "paths": {
     "@/*": [
       "src/*"
-    ]
+    ],
+    "/@/*": [
+      "src/*"
+    ],
+    "/@/img/*": [
+      "src/assets/img/*"
+    ],
   },
   "files": [
     "src/shims-vue.d.ts"
   ],
   "exclude": [
     "node_modules"
+  ],
+  "inclure": [
+    "./src/**/*"
   ]
 }

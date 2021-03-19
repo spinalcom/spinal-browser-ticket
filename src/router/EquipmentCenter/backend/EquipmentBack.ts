@@ -33,15 +33,15 @@ import { FileSystem } from 'spinal-core-connectorjs_type'
 
 type mapEquipmentItem = Map<string, EquipmentItem[]>
 
-export class EquipmentBack
-{
+
+export class EquipmentBack {
   initDefer = q.defer();
   contexts: SpinalContext<any>[] = []
   static instance: EquipmentBack
-  
+
   constructor() {
   }
-  
+
   static getInstance(): EquipmentBack {
     if (!EquipmentBack.instance)
       EquipmentBack.instance = new EquipmentBack
@@ -52,6 +52,7 @@ export class EquipmentBack
     this.contexts = []
     const children = await graph.getChildren();
     for (const context of children) {
+
       if (context.info.type.get() === "BIMObjectGroupContext") {
         this.contexts.push(context);
       }
@@ -59,8 +60,7 @@ export class EquipmentBack
     this.initDefer.resolve(this.contexts);
   }
 
-  async getContexts(): Promise<Map<string, EquipmentItem[]>>
-  {
+  async getContexts(): Promise<Map<string, EquipmentItem[]>> {
     const result: Map<string, EquipmentItem[]> = new Map()
 
     await Promise.all(this.contexts.map(async (item) => {

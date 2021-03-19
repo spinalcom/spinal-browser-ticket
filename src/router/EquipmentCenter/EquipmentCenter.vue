@@ -25,11 +25,10 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <SpinalBreadcrumb :view-key="viewKey">
-      </SpinalBreadcrumb>
+      <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
     </el-header>
     <el-main>
-      <tab-manager :tabsprop="tabs"/>
+      <tab-manager :tabsprop="tabs" />
       <!-- <explorer :Properties="tabs[0].props"></explorer> -->
     </el-main>
   </el-container>
@@ -38,24 +37,25 @@ with this file. If not, see
 <script>
 // Script & tools
 import { ViewManager } from "../../services/ViewManager/ViewManager";
-import { EquipmentBack } from './backend/EquipmentBack'
-import BackendInitializer from '../../services/BackendInitializer'
+import { EquipmentBack } from "./backend/EquipmentBack";
+import BackendInitializer from "../../services/BackendInitializer";
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from '../../compoments/tabManager/tabManager.vue';
+import TabManager from "../../compoments/tabManager/tabManager.vue";
 
 // Specific components
-import Explorer from './components/Explorer.vue'
-import Visualizer from './components/Visualizer.vue'
-import CategoryAttribute from './components/CategoryAttribute.vue'
+import Explorer from "./components/Explorer.vue";
+import Visualizer from "./components/Visualizer.vue";
+
+import CategoryAttribute from "./components/CategoryAttribute.vue";
 
 const VIEW_KEY = "Equipment Center";
 
 // Component exports
 export default {
   name: "EquipmentCenter",
-  components : {
+  components: {
     SpinalBreadcrumb,
     TabManager,
     Explorer,
@@ -78,15 +78,18 @@ export default {
       ],
     };
   },
-  async mounted()
-  {
-    await BackendInitializer.getInstance().initback(EquipmentBack.getInstance());
+  async mounted() {
+    await BackendInitializer.getInstance().initback(
+      EquipmentBack.getInstance()
+    );
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it
-    await ViewManager.getInstance(this.viewKey).init(this.onViewChange.bind(this), 0);
+    await ViewManager.getInstance(this.viewKey).init(
+      this.onViewChange.bind(this),
+      0
+    );
   },
   methods: {
-    async onViewChange(view)
-    {
+    async onViewChange(view) {
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
@@ -101,15 +104,15 @@ export default {
         );
       }
       for (const [nodeType, items] of mapItems) {
-        const cols = new Set()
+        const cols = new Set();
         for (const item of items) {
           if (item.children) {
             for (const [childTypes] of item.children) {
-              cols.add(childTypes)
+              cols.add(childTypes);
             }
           }
         }
-        this.items = {nodeType, items, cols: Array.from(cols)};
+        this.items = { nodeType, items, cols: Array.from(cols) };
       }
       this.currentView = view;
       // this.tabs = [
@@ -144,6 +147,5 @@ export default {
 <style scoped>
 equipement-center {
   overflow-y: hidden;
-}
-
-</style>>
+}</style
+>>

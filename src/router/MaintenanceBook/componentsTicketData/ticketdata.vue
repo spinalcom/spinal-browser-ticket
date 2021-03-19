@@ -1,5 +1,5 @@
 <!--
-Copyright 2020 SpinalCom - www.spinalcom.com
+Copyright 2021 SpinalCom - www.spinalcom.com
 
 This file is part of SpinalCore.
 
@@ -21,12 +21,8 @@ You should have received a copy of the license along
 with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
-
 <template>
   <el-container>
-    <el-header>
-      <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    </el-header>
     <el-main>
       <tab-manager :tabsprop="tabs" />
     </el-main>
@@ -38,40 +34,29 @@ with this file. If not, see
 // import { ViewManager } from "../../services/ViewManager/ViewManager";
 
 // Generic components
-import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from "../../compoments/tabManager/tabManager.vue";
+import TabManager from "../../../compoments/tabManager/tabManager";
 
 // Specific components
-import Explorer from "./components/Explorer.vue";
-import Visualizer from "./components/Visualizer.vue";
-
-const VIEW_KEY = "Ticket Center";
+import Data from "./data";
+import Documentation from "./documentation";
 
 // Component exports
 export default {
-  name: "TicketCenter",
+  name: "TicketData",
   components: {
-    SpinalBreadcrumb,
     TabManager,
   },
   data() {
     return {
-      viewKey: VIEW_KEY,
       tabs: [
         {
-          name: "Explorer",
-          content: Explorer,
-          props: {
-            viewKey: VIEW_KEY,
-          },
+          name: "Data",
+          content: Data,
           optional: false,
         },
         {
-          name: "Visualizer",
-          content: Visualizer,
-          props: {
-            viewKey: VIEW_KEY,
-          },
+          name: "Documentation",
+          content: Documentation,
           optional: false,
         },
       ],
