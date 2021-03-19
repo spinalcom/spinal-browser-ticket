@@ -63,7 +63,6 @@ export class EquipmentBack
   {
     const result: Map<string, EquipmentItem[]> = new Map()
 
-    console.debug("contexts : ", this.contexts);
     await Promise.all(this.contexts.map(async (item) => {
       return this.getItemsInContext(item, item, true).then((map) => {
         for (const [key, value] of map) {
