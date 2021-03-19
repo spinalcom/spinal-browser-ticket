@@ -42,11 +42,6 @@ with this file. If not, see
           </el-button>
           <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
           </el-button>
-<<<<<<< HEAD
-=======
-          <el-button icon="el-icon-view" circle @click.stop="ShowAll()">
-          </el-button>
->>>>>>> 4532f078b744472833be2e897c91b80bf979d430
         </div>
       </el-header>
       <el-main>
