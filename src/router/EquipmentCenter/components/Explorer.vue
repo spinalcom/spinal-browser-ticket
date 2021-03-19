@@ -43,11 +43,6 @@ with this file. If not, see
             circle
             @click.stop="isolateAll()">
           </el-button>
-          <el-button
-            icon="el-icon-view"
-            circle
-            @click.stop="ShowAll()">
-          </el-button>
         </div>
       </el-header>
       <el-main>
