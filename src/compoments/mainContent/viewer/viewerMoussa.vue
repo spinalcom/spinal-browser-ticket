@@ -42,9 +42,10 @@ import { EventBus } from "../../../services/event";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { DISABLE_VIEWER } from "../../../constants";
 
+import "spinal-env-viewer-plugin-forge";
+
 import HeatmapLegendContainer from "../../heatmap/heatmap-legends/container.vue";
 
-import "spinal-env-viewer-plugin-forge";
 export default {
    name: "AppViewer",
    props: ["isMinimized"],
@@ -196,6 +197,7 @@ export default {
             );
          });
       },
+
       restoreAllColor() {
          for (const [, lst] of this.elementColored) {
             for (const child of lst) {
@@ -239,6 +241,7 @@ export default {
       },
 
       elementIsColored(elementCol) {
+         console.log("yuuuuuu", this.elementColored);
          return this.elementColored.get(elementCol) != undefined;
       },
 
