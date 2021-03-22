@@ -25,15 +25,7 @@ with this file. If not, see
 <template>
   <el-container v-loading="loading"
                 class="body-container">
-    <!-- <el-header class="main-header">
-      <spinal-header></spinal-header>
-    </el-header> -->
-    <!-- <spinalNavbar class="main-navbar"></spinalNavbar> -->
     <div class="body-main-container">
-      <!-- <el-aside width="201px"
-                class="side-bar-container">
-                <spinal-side-bar></spinal-side-bar>
-      </el-aside> -->
       <mainContent></mainContent>
     </div>
     <el-drawer class="spinal-drawer"
@@ -47,11 +39,8 @@ with this file. If not, see
 <script lang="ts">
 import Vue from "vue";
 import spinalHeader from "./compoments/header/header.vue";
-// import spinalSideBar from "./compoments/sidebar/sidebar.vue";
 import spinalBackEnd from "./services/spinalBackend";
-// import spinalNavbar from "./compoments/navbar/spinalNavbar.vue";
 import mainContent from "./compoments/mainContent/index.vue";
-// import { errorDialog } from "./services/utlils/errorDialog";
 import DocumentReady from "./services/utlils/DocumentReady";
 import { getDefaultLanguage } from "./services/i18n";
 import drawer from "./compoments/drawer/drawer.vue";
@@ -60,7 +49,6 @@ import { EventBus } from "./services/event";
 export default Vue.extend({
   components: {
     "spinal-header": spinalHeader,
-    // "spinal-side-bar": spinalSideBar,
     mainContent,
     drawer
   },
@@ -84,11 +72,6 @@ export default Vue.extend({
         // @ts-ignore
         window.location =
           "/html/spinaltwin/login.html" + location.hash + location.search;
-        // console.log(this.$t("error.returntodrive.confirmbtntext"));
-        // const title = this.$t("error.returntodrive.title");
-        // const comfimText = this.$t("error.returntodrive.confirmbtntext");
-        // const msg = this.$t("error.returntodrive.text");
-        // errorDialog.call(this, title, comfimText, msg, e);
       });
     }
   },
@@ -108,6 +91,7 @@ export default Vue.extend({
   flex-grow: 1;
   display: flex;
   position: relative;
+  background-color: #fafafa;
 }
 .side-bar-container {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);

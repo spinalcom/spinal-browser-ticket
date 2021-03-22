@@ -24,70 +24,51 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-    <div class="spinal-space-header">
-      <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
-        <el-breadcrumb class="breadcrumb-style"
-                       separator="/">
-          <el-breadcrumb-item>
-            <a @click="onclick(null)">Space Management</a>
-          </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
-                              :key="index">
-            <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
-          </el-breadcrumb-item>
-        </el-breadcrumb>
+    <div class="spinal-space-header-container">
+      <div class="spinal-space-header">
+        <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
+          <el-breadcrumb class="breadcrumb-style"
+                         separator="/">
+            <el-breadcrumb-item>
+              <a @click="onclick(null)">Space Management</a>
+            </el-breadcrumb-item>
+            <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
+                                :key="index">
+              <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
+            </el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
+        <el-button icon="el-icon-s-grid"
+                   circle
+                   @click="openDrawer"></el-button>
       </div>
-      <el-button icon="el-icon-s-grid"
-                 circle
-                 @click="openDrawer"></el-button>
     </div>
+    <div class="spinal-space-spacecon_container-container">
+      <div v-if="selectCategorie == null"
+           class="spacecon_container">
+        <tableau-context v-if="contextSelected === null"
+                         :context-lst="contextLst"
+                         @select="SelectContext">
+        </tableau-context>
 
-    <div v-if="selectCategorie == null"
-         class="spacecon_container">
-      <!-- <el-card class="box-card"
-               v-for="context in contextLst"
-               :key=context.id>
+        <tableau-category v-else
+                          :context-selected="contextSelected"
+                          @seeGroups="onclick"></tableau-category>
+      </div>
 
-        <div slot="header"
-             class="clearfix">
-          <span>{{context.name}}</span>
-        </div>
-        <div class="card-content">
-          <el-button v-for="contextCat in context.categories"
-                     :key=contextCat.id
-                     @click="onclick(contextCat)">
-            {{contextCat.name}}
-          </el-button>
-        </div>
-      </el-card> -->
+      <div v-else
+           class="spacecon_container">
+        <room-data v-if="roomNodeId"
+                   :node-id="roomNodeId"></room-data>
 
-      <tableau-context v-if="contextSelected === null"
-                       :context-lst="contextLst"
-                       @select="SelectContext">
-      </tableau-context>
-
-      <tableau-category v-else
-                        :context-selected="contextSelected"
-                        @seeGroups="onclick"></tableau-category>
-    </div>
-
-    <div v-else
-         class="spacecon_container">
-      <!-- <el-button class="back-icon"
-                 @click="onclick(null)"
-                 icon="el-icon-back"></el-button> -->
-      <!-- <el-button @click="onclick(null)">BACK
-      </el-button> -->
-      <room-data v-if="roomNodeId"
-                 :node-id="roomNodeId"></room-data>
-
-      <categoryLstVue v-show="!roomNodeId"
-                      ref="categoryListe"
-                      :select-categorie="selectCategorie"
-                      @addbreadcrumb="addbreadcrumb"
-                      @updateBreadcrumb="removeAndAddBreadcrumb"
-                      @resetRoomSelect="roomNodeId = null">
-      </categoryLstVue>
+        <categoryLstVue v-show="!roomNodeId"
+                        ref="categoryListe"
+                        :select-categorie="selectCategorie"
+                        @addbreadcrumb="addbreadcrumb"
+                        @updateBreadcrumb="removeAndAddBreadcrumb"
+                        @resetRoomSelect="roomNodeId = null">
+        </categoryLstVue>
+      </div>
     </div>
   </div>
 </template>
@@ -101,7 +82,7 @@ import tableauCategory from "./tableaucategory";
 import RoomData from "./component/RoomData.vue";
 
 import { EventBus } from "../../services/event";
-
+import "./space.css";
 export default {
   components: {
     categoryLstVue,
@@ -122,34 +103,36 @@ export default {
   async mounted() {
     this.contextLst = await spinalBackEnd.spaceBack.getData();
 
-    EventBus.$on("sidebar-selected-item", item => {
-      spinalBackEnd.spaceBack
-        .getDataFilterItem(item)
-        .then(result => {
-          console.log("resuuuuuuuultat____", result);
-          this.contextLst = result;
+    EventBus.$on("sidebar-homeSelect", item => {
+      if (item) {
+        spinalBackEnd.spaceBack
+          .getDataFilterItem(item)
+          .then(result => {
+            console.log("resuuuuuuuultat____", result);
+            this.contextLst = result;
 
-          if (this.contextSelected) {
-            for (const context of this.contextLst) {
-              if (this.contextSelected.id === context.id) {
-                const selectCategorie = this.selectCategorie;
-                this.SelectContext(context, false);
-                if (selectCategorie) {
-                  for (const cat of this.contextSelected.categories) {
-                    if (selectCategorie.id === cat.id) {
-                      this.onclick(cat, false);
-                      // this.selectCategorie = categorie;
+            if (this.contextSelected) {
+              for (const context of this.contextLst) {
+                if (this.contextSelected.id === context.id) {
+                  const selectCategorie = this.selectCategorie;
+                  this.SelectContext(context, false);
+                  if (selectCategorie) {
+                    for (const cat of this.contextSelected.categories) {
+                      if (selectCategorie.id === cat.id) {
+                        this.onclick(cat, false);
+                        // this.selectCategorie = categorie;
+                      }
                     }
                   }
+                  break;
                 }
-                break;
               }
             }
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
     });
 
     EventBus.$on("sidebar-homeSelect", item => {
@@ -229,18 +212,14 @@ export default {
 .spacecon {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
-/* .card-content {
-  display: flex;
-  flex-direction: column;
+
+.spinal-space-header-container {
+  background-color: #fdfdfd;
+  height: 48px;
+  padding: 7px 5px 5px 5px;
 }
-.card-content > * {
-  margin-left: 0;
-  margin-top: 10px;
-}
-.clearfix {
-  text-align: center;
-} */
 .spinal-space-header-breadcrum-container {
   width: calc(100% - 43px);
   overflow-x: auto;
@@ -251,7 +230,6 @@ export default {
 }
 .spacecon .breadcrumb-style {
   width: 100%;
-  font-size: 1.2em;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
@@ -259,19 +237,24 @@ export default {
 }
 
 .spacecon .spacecon_container {
-  width: 100%;
-  height: calc(100% - 70px);
-  max-height: calc(100% - 70px);
-  /* overflow: auto; */
+  border-radius: 4px;
+  height: 100%;
 }
+.spinal-space-spacecon_container-container {
+  width: 100%;
+  height: calc(100% - 48px);
+  padding: 5px 10px 10px 5px;
+  background-color: #fdfdfd;
+}
+
 .spinal-space-header {
   display: flex;
   height: 43px;
   justify-content: space-between;
-  margin: 10px 10px 5px 5px;
   align-items: center;
   border-radius: 4px;
   background: white;
+  padding-right: 5px;
 }
 
 /* .boutton-barre {

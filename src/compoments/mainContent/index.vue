@@ -23,27 +23,42 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="spinal-main-container">
-    <div v-show="!absviewer"
-         ref="viewerContainer"
-         class="spinal-viewer-container"
-         :class="{'abs-viewer' : absviewer}">
-      <div ref="viewerContent"
-           class="viewer-content">
-        <spinalNavbar class="main-navbar"></spinalNavbar>
-        <div class="content-viewer-view">
-          <appViewer :is-minimized="absviewer">
-          </appViewer>
-          <el-button v-show="!absviewer"
-                     size="mini"
-                     class="btn-abs-viewer-popio"
-                     @click="onPopClick">
-            <i data-eva="collapse-outline"
-               data-eva-animation="zoom"
-               height="30px"
-               data-eva-height="24"
-               data-eva-width="24"></i>
-          </el-button>
+  <div class="spinal-main-container"
+       :class="{'have-abs-viewer' : absviewer}">
+    <div class="spinal-main-container-left">
+      <spinalNavbar class="main-navbar"></spinalNavbar>
+      <div v-show="!absviewer"
+           ref="viewerContainer"
+           class="spinal-viewer-container"
+           :class="{'abs-viewer' : absviewer}">
+        <div ref="viewerContent"
+             class="viewer-content">
+          <div class="content-viewer-view">
+            <appViewer ref="viewerItem">
+              <!-- :is-minimized="absviewer" -->
+            </appViewer>
+            <el-button-group class="btn-abs-viewer-popio"
+                             v-show="!absviewer">
+              <el-button size="mini"
+                         class=""
+                         @click="onMiniClick">
+                <i data-eva="minus-outline"
+                   data-eva-animation="zoom"
+                   height="30px"
+                   data-eva-height="24"
+                   data-eva-width="24"></i>
+              </el-button>
+              <el-button size="mini"
+                         class=""
+                         @click="onPopClick">
+                <i data-eva="expand-outline"
+                   data-eva-animation="zoom"
+                   data-eva-height="24"
+                   data-eva-width="24"></i>
+              </el-button>
+            </el-button-group>
+
+          </div>
         </div>
       </div>
     </div>
@@ -117,13 +132,23 @@ export default {
       this.absviewer = !this.absviewer;
       if (this.absviewer) {
         this.$refs.viewerContainerMini.append(this.$refs.viewerContent);
+        this.$refs.viewerItem.handleMinized(false);
       } else {
         this.$refs.viewerContainer.append(this.$refs.viewerContent);
+        this.hideViewer = false;
+        this.$refs.viewerItem.handleMinized(true);
       }
     },
     onMiniClick(event) {
       event.stopPropagation();
       this.hideViewer = !this.hideViewer;
+      if (!this.absviewer) {
+        this.absviewer = !this.absviewer;
+        this.$refs.viewerContainerMini.append(this.$refs.viewerContent);
+        this.$refs.viewerItem.handleMinized(false);
+      } else {
+        this.$refs.viewerItem.handleMinized(false);
+      }
     }
   }
 };
@@ -131,10 +156,22 @@ export default {
 
 <style>
 .spinal-main-container,
-.spinal-main-container > .spinal-viewer-container,
-.spinal-main-container > .spinal-other-container {
+.spinal-main-container .spinal-viewer-container,
+.spinal-main-container .spinal-other-container {
   transition: 200ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
+.spinal-main-container.have-abs-viewer {
+  flex-direction: column-reverse;
+}
+
+.spinal-main-container.have-abs-viewer .spinal-main-container-left {
+  width: 100%;
+  height: unset;
+}
+.spinal-main-container.have-abs-viewer .spinal-other-container {
+  width: 100%;
+}
+
 .spinal-other-container > div {
   width: 100%;
 }
@@ -152,10 +189,17 @@ export default {
 }
 .spinal-viewer-container {
   height: 100%;
-  width: 50%;
-  background-color: #222222f0;
+  width: 100%;
+  background-color: #fdfdfd;
   position: relative;
   display: flex;
+  flex-grow: 1;
+}
+.spinal-main-container-left {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
 }
 .spinal-other-container {
   width: 50%;
@@ -165,22 +209,31 @@ export default {
 }
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {
-    height: 50%;
+    height: 100%;
     width: 100%;
   }
   .spinal-other-container {
     height: 50%;
     width: 100%;
   }
+  .spinal-main-container.have-abs-viewer .spinal-other-container {
+    height: unset;
+  }
+
   .spinal-main-container {
-    display: block;
+    flex-direction: column-reverse;
+  }
+  .spinal-main-container-left {
+    height: 50%;
+    width: 100%;
   }
 }
 .content-viewer-view {
-  height: calc(100% - 60px);
+  flex-grow: 1;
+  height: calc(100% - 68px);
   position: relative;
   margin: 0px 5px 10px 10px;
-  background: #222222f0;
+  background: #fdfdfd;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -223,9 +276,10 @@ export default {
 
 .viewer-content {
   position: relative;
-  /* height: 100%; */
   flex: 1;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .viewer-container-mini {
   display: flex;
@@ -243,7 +297,7 @@ export default {
   position: absolute;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   left: calc(100% - var(--minimized-viewer-width) - 8px);
-  top: calc(100% - var(--minimized-viewer-height) - 8px);
+  top: calc(100% - var(--minimized-viewer-height) - 58px);
 }
 
 .viewer-container-mini.hideViewer .viewer-content {
@@ -253,7 +307,7 @@ export default {
   --minimized-viewer-width: 120px;
   --minimized-viewer-height: 30px;
   left: calc(100% - var(--minimized-viewer-width) - 8px);
-  top: calc(100% - var(--minimized-viewer-height) - 8px);
+  top: calc(100% - var(--minimized-viewer-height) - 58px);
   width: var(--minimized-viewer-width);
   height: var(--minimized-viewer-height);
 }

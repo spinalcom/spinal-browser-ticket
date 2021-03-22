@@ -154,8 +154,7 @@ export default {
 <style scoped>
 .spinal-sidebar-container {
   height: 100%;
-  background-color: #222;
-  background-image: radial-gradient(at top left, #222, #222, #252525);
+  background-color: #fdfdfd;
 }
 .spinal-sidebar-container hr {
   color: whitesmoke;

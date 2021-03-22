@@ -49,6 +49,7 @@ export class EquipmentBack {
   }
 
   async init(graph: SpinalGraph<any>) {
+    this.contexts = []
     const children = await graph.getChildren();
     for (const context of children) {
 
