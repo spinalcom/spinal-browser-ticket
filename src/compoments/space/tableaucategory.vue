@@ -83,7 +83,7 @@ with this file. If not, see
         </el-table>
       </el-tab-pane>
     </el-tabs>
-  </el-row></el-tabs></el-tab-pane>
+  </el-row>
 </template>
 
 <script>

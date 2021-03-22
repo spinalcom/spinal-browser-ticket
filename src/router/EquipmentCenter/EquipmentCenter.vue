@@ -65,16 +65,6 @@ export default {
       viewKey: VIEW_KEY,
       items: false,
       tabs: [
-        {
-          name: "Explorer",
-          content: Explorer,
-          props: {
-            viewKey: VIEW_KEY,
-            items: false,
-            view: false,
-          },
-          optional: false,
-        },
       ],
     };
   },
@@ -148,5 +138,5 @@ export default {
 <style scoped>
 equipement-center {
   overflow-y: hidden;
-}</style
->>
+}
+</style>

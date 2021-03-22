@@ -24,11 +24,11 @@ with this file. If not, see
 
 <template>
   <div class="data-room">
-    <div class="data-room-breadcrumb-container">
+    <div class="data-room-breadcrumb-container" style="margin: 10px;">
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
-    <el-row>
+    <el-row v-if="display===false">
       <el-tabs type="border-card">
         <el-tab-pane label="Tableau">
           <el-collapse v-model="activeNames">
@@ -62,6 +62,7 @@ with this file. If not, see
         </el-tab-pane>
       </el-tabs>
     </el-row>
+    <tab-manager v-else :tabsprop="tabs" />
   </div>
 </template>
 
@@ -70,17 +71,34 @@ import { ViewManager } from "../../services/ViewManager/ViewManager";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
+import TabManager from "../../compoments/tabManager/tabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
+import Explorer from "./components/Explorer.vue";
+import CategoryAttribute from "./components/CategoryAttribute.vue";
 import './DataRoomEventHandler';
 export default {
-  components: { SpinalBreadcrumb, DataRoomTypeTable },
+  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager, Explorer, CategoryAttribute },
   data() {
     return {
       currentView: null,
       viewKey: VIEWKEY_DATA_ROOM_CENTER,
       contextServId: 0,
       items: [],
-      activeNames: []
+      dataEq: {},
+      display: false,
+      activeNames: [],
+      tabs: [
+        /*{
+          name: "Tableau",
+          content: Explorer,
+          props: {
+            viewKey: VIEWKEY_DATA_ROOM_CENTER,
+            items: false,
+            view: false,
+          },
+          optional: false,
+        },*/
+      ],
     };
   },
   async mounted() {
@@ -89,6 +107,7 @@ export default {
   },
   methods: {
     async onViewChange(view) {
+      this.display = false;
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
@@ -103,6 +122,7 @@ export default {
         );
       }
       this.items = [];
+      this.tabs = [];
       this.activeNames = [];
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
@@ -118,6 +138,32 @@ export default {
       }
 
       this.currentView = view;
+      this.tabs = [
+        {
+          name: "Tableau",
+          content: Explorer,
+          props: {
+            viewKey: VIEWKEY_DATA_ROOM_CENTER,
+            items: false,
+            view: false,
+          },
+          optional: false,
+        },
+      ]
+      this.tabs[0].props.items = this.items;
+      this.tabs[0].props.view = this.currentView;
+      if (this.items[0].nodeType === "BIMObject") {
+        console.log(this.tabs);
+        this.display = true;
+        console.log("here");
+        this.tabs.push({
+          name: "Category Attribute",
+          props: {
+            viewKey: VIEWKEY_DATA_ROOM_CENTER,
+          },
+          optional: false,
+        });
+      }
     },
     changeView(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
