@@ -133,8 +133,9 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Notes">
-      <el-container>
+    <el-tab-pane class="tab-class"
+                 label="Notes">
+      <el-container class="container-class">
         <message-component :node-info="nodeInfo"></message-component>
       </el-container>
     </el-tab-pane>
@@ -333,12 +334,16 @@ export default {
   position: relative;
   height: calc(100% - 20px);
 }
+.container-class,
+.tab-class {
+  height: 100%;
+}
 </style>
 
 <style>
 .tabsContainer .el-tabs__content {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
 }
 
 .barre {
