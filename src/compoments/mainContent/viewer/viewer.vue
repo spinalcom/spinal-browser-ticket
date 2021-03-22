@@ -30,9 +30,6 @@ with this file. If not, see
 
 <script>
 import { ForgeViewer } from "spinal-forge-viewer";
-// import GraphService from "../../config/GraphService";
-// import { forgeExtentionManager } from "./ForgeExtentionManager";
-// import { eventViewerManager } from "./EventViewerManager";
 import { spinalBackEnd } from "../../../services/spinalBackend";
 import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
 import { EventBus } from "../../../services/event";
@@ -42,7 +39,6 @@ import { DISABLE_VIEWER } from "../../../constants";
 import "spinal-env-viewer-plugin-forge";
 export default {
   name: "AppViewer",
-  props: ["isMinimized"],
   data() {
     this.elementColored = new Map();
     return {
@@ -52,38 +48,17 @@ export default {
       materials: {}
     };
   },
-  watch: {
-    isMinimized() {
-      if (this.viewer && this.viewer.toolbar && this.viewer.viewCubeUi) {
-        if (this.isMinimized) {
-          this.viewer.toolbar.setDisplay("none");
-          this.viewer.viewCubeUi.setVisible(false);
-        } else {
-          this.viewer.toolbar.setDisplay("");
-          this.viewer.viewCubeUi.setVisible(true);
-        }
-        setTimeout(this.viewer.resize.bind(this.viewer), 400);
-      }
-    }
-  },
+
   mounted() {
     EventBus.$on("see", data => {
       this.isoLate(data.ids);
       this.restoreAllColor();
-      // if (this.elementIsColored(data.id)) {
-      //   this.restorColor(data.ids, data.id);
-      // } else {
       this.colorsRooms(data.ids, data.color, data.id);
-      // }
     });
 
     EventBus.$on("seeAll", data => {
       if (this.allElementAreColored(data)) {
         this.restoreAllColor();
-        //   data.forEach(element => {
-        //     ids.push(...element.ids);
-        //     this.restorColor(element.ids, element.id);
-        //   });
       } else {
         let ids = [];
         this.restoreAllColor();
@@ -96,39 +71,21 @@ export default {
     });
 
     return this.createViewer();
-    // const container = document.getElementById("autodesk_forge_viewer");
-    // this.forgeViewer = new ForgeViewer(container, false);
-    // // forgeExtentionManager.viewer = this.forgeViewer.viewer;
-    // await this.forgeViewer.start(
-    //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
-    //   true
-    // );
 
-    // // await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
-    // // let scenes = await GraphService.getScene();
-    // // await window.spinal.SpinalForgeViewer.loadModelFromNode(
-    // //   scenes[0].info.id.get()
-    // // );
-    // this.viewer = this.forgeViewer.viewer;
-
-    // await spinalBackEnd.waitInit();
-    // const scenes = await spinalBackEnd.viewerBack.getScenes();
-    // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
-    // this.viewer.fitToView();
-    // // // viewerUtils.initViewer(this.forgeViewer.viewer);
-    // // // this.createSetColor();
-    // // // this.createRestoreColor();
-    // // // this.getEvents();
-    // // const exten = forgeExtentionManager.getExtentions();
-
-    // // exten.forEach(ext => {
-    // //   this.forgeViewer.loadExtension(ext);
-    // // });
-
-    // // viewerUtils.fitToView();
-    // // eventViewerManager.init(this.viewer, forgeExtentionManager);
   },
   methods: {
+    handleMinized(toShowUI) {
+      if (this.viewer) {
+        if (toShowUI === false) {
+          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("none");
+          if (this.viewer.viewCubeUi) this.viewer.viewCubeUi.setVisible(false);
+        } else {
+          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("");
+          if (this.viewer.viewCubeUi) this.viewer.viewCubeUi.setVisible(true);
+        }
+        setTimeout(this.viewer.resize.bind(this.viewer), 400);
+      }
+    },
     async createViewer() {
       const container = document.getElementById("autodesk_forge_viewer");
       this.forgeViewer = new ForgeViewer(container, false);
@@ -214,10 +171,10 @@ export default {
       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result
         ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-        }
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+          }
         : null;
     },
 
