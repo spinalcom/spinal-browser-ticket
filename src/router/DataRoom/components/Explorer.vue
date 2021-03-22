@@ -26,7 +26,6 @@ with this file. If not, see
   <div v-if="Properties.items !== false">
     <el-container>
       <el-header>
-        {{ $t(`node-type.BIMObject`) }}
         <div style="float: right">
           <el-button
             icon="el-icon-download"

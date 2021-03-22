@@ -44,11 +44,13 @@ import {
 export class DataRoomItem {
   name: string;
   serverId: number;
+  nodeId: string;
   children?: Map<string, DataRoomItem[]>;
 
-  constructor(name: string, serverId: number) {
+  constructor(name: string, serverId: number, nodeId: string) {
     this.name = name
     this.serverId = serverId
+    this.nodeId = nodeId
   }
 
   getType(): string {
@@ -168,7 +170,7 @@ export class DataRoomItem {
     if (allItems.has(server_id)) {
       return allItems.get(server_id)
     }
-    const item: DataRoomItem = new DataRoomItem(node.info.name.get(), server_id)
+    const item: DataRoomItem = new DataRoomItem(node.info.name.get(), server_id, node.info.id.get())
     allItems.set(server_id, item);
     return item
   }

@@ -28,19 +28,15 @@ with this file. If not, see
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
-    <el-row v-if="display===false">
+    <el-row v-if="display === false">
       <el-tabs type="border-card">
-        <el-tab-pane label="Tableau">
-          <el-collapse v-model="activeNames">
-            <el-collapse-item v-for="(item, index) in items"
+        <el-tab-pane :label="panel">
+            <div v-for="(item, index) in items"
                               :key="item.nodeType"
                               :name="item.nodeType">
-              <template slot="title">
-                <div class="data-room-collapse-bar">
-                  <div class="data-room-collapse-bar-title">
-                    {{ $t(`data-room.${item.nodeType}`) }}
-                  </div>
-                  <div>
+                              <el-header>
+        <div style="float: right">
+          
                     <el-button icon="el-icon-download"
                                circle
                                @click.stop="exportData(index)">
@@ -48,21 +44,20 @@ with this file. If not, see
                     <el-button icon="el-icon-view"
                                circle
                                @click.stop="SeeAllClick(index)"></el-button>
-                  </div>
-                </div>
-              </template>
+        </div>
+      </el-header>
               <DataRoomTypeTable :ref="`data-room-table`"
                                  :view-key="viewKey"
                                  :node-type="item.nodeType"
                                  :items="item.items"
                                  :collums="item.cols">
               </DataRoomTypeTable>
-            </el-collapse-item>
-          </el-collapse>
+            </div>
         </el-tab-pane>
       </el-tabs>
     </el-row>
-    <tab-manager v-else :tabsprop="tabs" />
+    <room-data v-else
+                   :node-id="nodeId"></room-data>
   </div>
 </template>
 
@@ -73,16 +68,20 @@ const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
 import TabManager from "../../compoments/tabManager/tabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
-import Explorer from "./components/Explorer.vue";
+import RoomData from "./components/RoomData.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import './DataRoomEventHandler';
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { FileSystem } from 'spinal-core-connectorjs_type';
 export default {
-  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager, Explorer, CategoryAttribute },
+  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager, "room-data": RoomData, CategoryAttribute },
   data() {
     return {
       currentView: null,
+      panel: null,
       viewKey: VIEWKEY_DATA_ROOM_CENTER,
       contextServId: 0,
+      nodeId: null,
       items: [],
       dataEq: {},
       display: false,
@@ -124,23 +123,37 @@ export default {
       this.items = [];
       this.tabs = [];
       this.activeNames = [];
+      let nodeId;
+      let serverId;
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
         for (const item of items) {
+          nodeId = item.nodeId;
           if (item.children) {
             for (const [childTypes] of item.children) {
               cols.add(childTypes);
             }
           }
         }
-        this.items.push({ nodeType, items, cols: Array.from(cols) });
+        this.items.push({ nodeType, items, cols: Array.from(cols), nodeId });
         this.activeNames.push(nodeType);
       }
-
       this.currentView = view;
-      this.tabs = [
+      if (this.items[0].nodeType === "geographicContext") {
+        this.panel = "Contextes";
+      }
+      if (this.items[0].nodeType === "geographicBuilding") {
+        this.panel = "Bâtiments";
+      }
+      if (this.items[0].nodeType === "geographicFloor") {
+        this.panel = "Etages";
+      }
+      if (this.items[0].nodeType === "geographicRoom") {
+        this.panel = "Pièces";
+      }
+      /*this.tabs = [
         {
-          name: "Tableau",
+          name: "Equipements",
           content: Explorer,
           props: {
             viewKey: VIEWKEY_DATA_ROOM_CENTER,
@@ -149,24 +162,15 @@ export default {
           },
           optional: false,
         },
-      ]
-      this.tabs[0].props.items = this.items;
-      this.tabs[0].props.view = this.currentView;
+      ]*/
       if (this.items[0].nodeType === "BIMObject") {
-        console.log(this.tabs);
-        this.display = true;
-        console.log("here");
-        this.tabs.push({
-          name: "Category Attribute",
-          props: {
-            viewKey: VIEWKEY_DATA_ROOM_CENTER,
-          },
-          optional: false,
-        });
+        this.display = true
+        const idNode = localStorage.getItem("nodeId");
+        this.nodeId = idNode;
       }
     },
     changeView(item) {
-      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
     },
     exportData(index) {
       this.$refs["data-room-table"][index].exportToExcel();
