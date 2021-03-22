@@ -153,7 +153,7 @@ export default {
 .spinal-viewer-container {
   height: 100%;
   width: 50%;
-  background-color: #222222f0;
+  background-color: #fdfdfd;
   position: relative;
   display: flex;
 }
@@ -180,7 +180,7 @@ export default {
   height: calc(100% - 68px);
   position: relative;
   margin: 0px 5px 10px 10px;
-  background: #222222f0;
+  background: #fdfdfd;
   border-radius: 4px;
   overflow: hidden;
 }

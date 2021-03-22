@@ -38,10 +38,12 @@ with this file. If not, see
                    class="router-link-btn">
         <el-card :body-style="{ padding: '0px' }"
                  shadow="always">
-          <div class="app-item-image-container">
+          <!-- <div class="app-item-image-container">
             <svg class="app-item-image"></svg>
-          </div>
+          </div> -->
           <div class="app-item-text">
+            <i class="el-icon-edit"
+               style="font-size: 30px;"></i>
             <span>{{ route.name }}</span>
           </div>
         </el-card>
@@ -81,7 +83,7 @@ export default {
 
 <style scoped>
 .applist-main-container {
-  background-color: #222222f0;
+  background-color: #fdfdfd;
   padding: 0;
   width: 100%;
   position: relative;
@@ -98,7 +100,6 @@ export default {
   border-radius: 4px;
   padding: 5px;
   text-align: center;
-  font-size: 1.4em;
   height: 40px;
   display: flex;
   align-items: center;
@@ -123,12 +124,18 @@ export default {
 .applist-container > * {
   width: 30%;
   align-self: center;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   cursor: pointer;
 }
 .applist-container > * > * {
-  background-color: #1d3461;
-  color: white;
+  background-color: #dcdfe6;
+  height: 100px;
+  color: black;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
 }
 .applist-container > *:hover > * {
   background-color: #6290c8;
