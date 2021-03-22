@@ -28,13 +28,19 @@ export default {
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
   "error.returntodrive.title": "Erreur",
-  "geographicContext": "Context",
-  "geographicBuilding": "Bâtiment",
-  "geographicFloor": "Etage",
-  "geographicRoom": "Local",
-  "BIMObject": "Objet",
-  "Area": "Surface",
-  "Name": "Nom",
+  "data-room.geographicContext": "Contextes", // Could be generic
+  "data-room.geographicBuilding": "Bâtiments", // Could be generic
+  "data-room.geographicFloor": "Etages", // Could be generic
+  "data-room.geographicRoom": "Locaux", // Could be generic
+  "data-room.BIMObject": "Objets", // Could be generic
+  "data-room.Area": "Surface",
+  "data-room.Name": "Nom",
+  "node-type.context" : "Contextes",
+  "node-type.groupingCategory" : "Catégories",
+  "node-type.BIMObjectGroupContext" : "Contextes de groupes d'objets BIM",
+  "node-type.BIMObjectGroup" : "Groupes d'objets BIM",
+  "node-type.BIMObject" : "Objets BIM",
+  "explorer.Name": "Nom",
   "SpaceManagement.Nom": "Nom",
   "SpaceManagement.Categories": "Categories",
   "SpaceManagement.NombreTotalGroupe": "Nombre Total de groupe",
@@ -44,6 +50,4 @@ export default {
   "SpaceManagement.NombreDePiece": "Nombre de pièces",
   "SpaceManagement.ListeDePiece": "Liste de pièces",
   "SpaceManagement.Surface": "Surface"
-
-
 };

@@ -40,7 +40,8 @@ export function errorDialog(title, comfimText, msg, error) {
     beforeClose: (action, instance, done) => {
       if (action === 'confirm') {
         // @ts-ignore
-        window.location = "/html/drive/";
+        window.location = "/html/spinaltwin/login.html" + location.hash + location.search;
+        // window.location = "/html/drive/";
         done();
       } else {
         done();

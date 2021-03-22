@@ -23,15 +23,60 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
-    MaintenanceBook
-  </div>
+  <el-container>
+    <el-header>
+      <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
+    </el-header>
+    <el-main>
+      <tab-manager :tabsprop="tabs" />
+    </el-main>
+  </el-container>
 </template>
+
 <script>
+// Script & tools
+// import { ViewManager } from "../../services/ViewManager/ViewManager";
+
+// Generic components
+import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
+import TabManager from "../../compoments/tabManager/tabManager.vue";
+
+// Specific components
+import Explorer from "./components/Explorer.vue";
+import Visualizer from "./components/Visualizer.vue";
+
+const VIEW_KEY = "Ticket Center";
+
+// Component exports
 export default {
-  name: "MaintenanceBook",
+  name: "TicketCenter",
+  components: {
+    SpinalBreadcrumb,
+    TabManager,
+  },
   data() {
-    return {};
-  }
+    return {
+      viewKey: VIEW_KEY,
+      tabs: [
+        {
+          name: "Explorer",
+          content: Explorer,
+          props: {
+            viewKey: VIEW_KEY,
+          },
+          optional: false,
+        },
+        {
+          name: "Visualizer",
+          content: Visualizer,
+          props: {
+            viewKey: VIEW_KEY,
+          },
+          optional: false,
+        },
+      ],
+    };
+  },
+  methods: {},
 };
 </script>

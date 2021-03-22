@@ -1,19 +1,19 @@
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -33,7 +33,7 @@ type RotateToFace = "top" | 'front' | "right" | "left" | "back" | 'bottom' |
   "front,bottom,left" | "back,bottom,left"
 
 export class ViewerUtils {
-  elementColored: Set<{model, dbIds: number[]}> = new Set();
+  elementColored: Set<{ model, dbIds: number[] }> = new Set();
   restoreColorMaterialBinded: () => void;
   materials = {};
   // Map<Model, Map<colorString, Set<dbIdString > > >
@@ -112,14 +112,27 @@ export class ViewerUtils {
    */
   isolateObjects(lstByModel) {
     if (!this.viewer) return;
-    for (const { model, selection } of lstByModel) {
-      if (selection.length > 0) {
-        this.viewer.isolate(selection, model);
-      } else {
-        model.getObjectTree(tree => {
-          let dbidRoot = tree.nodeAccess.dbIdToIndex[model.getRootId()];
-          this.viewer.isolate([dbidRoot], model);
-        });
+    // @ts-ignore
+    for (const key in spinal.SpinalForgeViewer.viewerManager.models) {
+      let found = false;
+      for (const { model, selection } of lstByModel) {
+        if (model.id == key) {
+          found = true
+          if (selection.length > 0) {
+            this.viewer.isolate(selection, model);
+          } else {
+            model.getObjectTree(tree => {
+              let dbidRoot = tree.nodeAccess.dbIdToIndex[model.getRootId()];
+              this.viewer.isolate([dbidRoot], model);
+            });
+          }
+          continue;
+        }
+      }
+      if (found === false) {
+        // @ts-ignore
+        const model = spinal.SpinalForgeViewer.viewerManager.models[key];
+        this.viewer.hide([1], model)
       }
     }
   }
@@ -144,7 +157,7 @@ export class ViewerUtils {
   }
 
   colorThemingItems(model, color: string, dbIds: number[]) {
-    this.elementColored.add({model, dbIds});
+    this.elementColored.add({ model, dbIds });
     const _color = this.convertHewToRGB(color);
 
     dbIds.forEach(dbId => {
@@ -157,7 +170,7 @@ export class ViewerUtils {
 
   }
   restoreColorThemingItems() {
-    for (const {model, dbIds} of this.elementColored) {
+    for (const { model, dbIds } of this.elementColored) {
       for (const dbid of dbIds) {
         model.setThemingColor(
           dbid,

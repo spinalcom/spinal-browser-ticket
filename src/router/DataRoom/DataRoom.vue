@@ -23,8 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="inventory-center">
-    <div class="inventory-center-breadcrumb-container">
+  <div class="data-room">
+    <div class="data-room-breadcrumb-container">
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
@@ -36,9 +36,9 @@ with this file. If not, see
                               :key="item.nodeType"
                               :name="item.nodeType">
               <template slot="title">
-                <div class="inventory-collapse-bar">
-                  <div class="inventory-collapse-bar-title">
-                    {{ $t(item.nodeType) }}
+                <div class="data-room-collapse-bar">
+                  <div class="data-room-collapse-bar-title">
+                    {{ $t(`data-room.${item.nodeType}`) }}
                   </div>
                   <div>
                     <el-button icon="el-icon-download"
@@ -51,13 +51,12 @@ with this file. If not, see
                   </div>
                 </div>
               </template>
-
-              <InventoryTypeTable :ref="`intentory-table`"
-                                  :view-key="viewKey"
-                                  :node-type="item.nodeType"
-                                  :items="item.items"
-                                  :collums="item.cols">
-              </InventoryTypeTable>
+              <DataRoomTypeTable :ref="`data-room-table`"
+                                 :view-key="viewKey"
+                                 :node-type="item.nodeType"
+                                 :items="item.items"
+                                 :collums="item.cols">
+              </DataRoomTypeTable>
             </el-collapse-item>
           </el-collapse>
         </el-tab-pane>
@@ -69,16 +68,16 @@ with this file. If not, see
 <script>
 import { ViewManager } from "../../services/ViewManager/ViewManager";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-const VIEWKEY_INVENTORY_CENTER = "Inventory Center";
+const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
-import InventoryTypeTable from "./InventoryTypeTable.vue";
-import "./InventoryEventHandler";
+import DataRoomTypeTable from "./DataRoomTypeTable.vue";
+import './DataRoomEventHandler';
 export default {
-  components: { SpinalBreadcrumb, InventoryTypeTable },
+  components: { SpinalBreadcrumb, DataRoomTypeTable },
   data() {
     return {
       currentView: null,
-      viewKey: VIEWKEY_INVENTORY_CENTER,
+      viewKey: VIEWKEY_DATA_ROOM_CENTER,
       contextServId: 0,
       items: [],
       activeNames: []
@@ -93,12 +92,12 @@ export default {
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
-        mapItems = await spinalBackEnd.InventoryBack.getContexts();
+        mapItems = await spinalBackEnd.DataRoomBack.getContexts();
       } else {
         if (this.contextServId === 0) {
           this.contextServId = view.serverId;
         }
-        mapItems = await spinalBackEnd.InventoryBack.getItems(
+        mapItems = await spinalBackEnd.DataRoomBack.getItems(
           view.serverId,
           this.contextServId
         );
@@ -124,38 +123,38 @@ export default {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     exportData(index) {
-      this.$refs["intentory-table"][index].exportToExcel();
+      this.$refs["data-room-table"][index].exportToExcel();
     },
     SeeAllClick(index) {
-      this.$refs["intentory-table"][index].SeeAll(this.currentView.serverId);
+      this.$refs["data-room-table"][index].SeeAll(this.currentView.serverId);
     }
   }
 };
 </script>
 
 <style>
-.inventory-center-barre {
+.data-room-barre {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
   background-color: #f5f7fa;
 }
-/* .inventory-center .el-icon-download {
+/* .data-room .el-icon-download {
   width: 15px;
 } */
 
-.inventory-center .el-collapse-item__header {
+.data-room .el-collapse-item__header {
   direction: rtl;
 }
 </style>
 
 <style scoped>
-.inventory-collapse-bar {
+.data-room-collapse-bar {
   direction: ltr;
   display: flex;
   flex-grow: 1;
 }
-.inventory-collapse-bar-title {
+.data-room-collapse-bar-title {
   flex-grow: 1;
 }
 </style>

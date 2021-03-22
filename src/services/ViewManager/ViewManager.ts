@@ -33,7 +33,7 @@ export class ViewManager {
   static instances: Map<string, ViewManager> = new Map();
   viewKey: string;
   breadcrumb: ISpinalView[] = []
-  onChangeFct: ViewManagerOnChangeFct = null;
+  onChangeFct: ViewManagerOnChangeFct[] = [];
   breacrumbSubscribeFct: ViewManagerBreacrumbSubscribeFct = null;
 
   constructor(viewKey) {
@@ -46,34 +46,39 @@ export class ViewManager {
   }
 
   init(onChangeFct: ViewManagerOnChangeFct, serverId) {
-    this.onChangeFct = onChangeFct;
-    const view = { name: this.viewKey, serverId };
+    this.onChangeFct = []
+    this.onChangeFct.push(onChangeFct)
+    const view = { name: this.viewKey, serverId }
     this.breadcrumb = [view]
-    if (this.onChangeFct) this.onChangeFct(view)
+    this.onChangeFct.forEach(fct => {fct(view)})
     if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
   }
 
   push(name: string, serverId: number) {
     const view = { name, serverId };
     this.breadcrumb.push(view);
-    if (this.onChangeFct) this.onChangeFct(view)
+    this.onChangeFct.forEach(fct => {fct(view)})
     if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
   }
 
   breacrumbSubscribe(fct: ViewManagerBreacrumbSubscribeFct) {
     this.breacrumbSubscribeFct = fct;
   }
+  viewSubscribe(changeFct: ViewManagerOnChangeFct, serverId) {
+    const view = { name: this.viewKey, serverId }
+    this.onChangeFct.push(changeFct)
+    this.onChangeFct.forEach(fct => {fct(view)})
+  }
 
-  move(serverId: number) {
+ move(serverId: number) {
     for (var i = this.breadcrumb.length - 1; i >= 0; i--) {
       const bc = this.breadcrumb[i];
       if (bc.serverId === serverId) {
-        if (this.onChangeFct) this.onChangeFct(bc)
+        this.onChangeFct.forEach(fct => {fct(bc)})
         if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
         return;
       } else
         this.breadcrumb.pop();
     }
   }
-
 }

@@ -22,117 +22,128 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 <template>
-  <el-table v-loading="loading"
-            :data="data"
-            border
-            style="width: 100%"
-            :header-cell-style="{'background-color': '#f0f2f5'}"
-            @row-click="selectInView"
-            @row-dblclick="SeeEvent">
-    <el-table-column :label="$t('Name')">
+  <el-table
+    v-loading="loading"
+    :data="data"
+    border
+    style="width: 100%"
+    :header-cell-style="{ 'background-color': '#f0f2f5' }"
+    @row-click="selectInView"
+    @row-dblclick="SeeEvent"
+  >
+    <el-table-column :label="$t('explorer.Name')">
       <template slot-scope="scope">
         <div>
-          <div v-if="scope.row.color"
-               class="spinal-table-cell-color"
-               :style="getColor(scope.row.color)"></div>
-          <div> {{ scope.row.name }} </div>
-        </div>
-      </template>
-    </el-table-column>
-    <el-table-column v-if="haveArea"
-                     align="center"
-                     :label="$t('Area')">
-      <template slot-scope="scope">
-        <div v-loading="loadingArea">
-          {{ roundNumber(scope.row.area) }}
+          <div
+            v-if="scope.row.color"
+            class="spinal-table-cell-color"
+            :style="getColor(scope.row.color)"
+          ></div>
+          <div>{{ scope.row.name }}</div>
         </div>
       </template>
     </el-table-column>
 
-    <el-table-column v-for="collum in collums"
-                     :key="collum"
-                     align="center"
-                     :label="$t(collum)">
+    <el-table-column
+      v-if="haveProcess"
+      align="center"
+      :label="$t(`view.Process`)"
+    >
+      <template slot-scope="scope">
+        <div v-loading="loadingProcess">
+          {{ roundNumber(scope.row.Process) }}
+        </div>
+      </template>
+    </el-table-column>
+
+    <el-table-column
+      v-for="collum in collums"
+      :key="collum"
+      align="center"
+      :label="$t(`view.${collum}`)"
+    >
       <template slot-scope="scope">
         {{ collumValue(scope.row, collum) }}
       </template>
     </el-table-column>
 
-    <el-table-column v-if="haveChildren"
-                     label=""
-                     width="65"
-                     align="center">
+    <el-table-column v-if="haveChildren" label="" width="65" align="center">
       <template slot-scope="scope">
-        <el-button v-if="scope.row.haveChild"
-                   icon="el-icon-arrow-right"
-                   circle
-                   @click="onSelectItem(scope.row)"></el-button>
+        <el-button
+          v-if="scope.row.haveChild"
+          icon="el-icon-arrow-right"
+          circle
+          @click="onSelectItem(scope.row)"
+        ></el-button>
       </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script>
-import { ViewManager } from "../../services/ViewManager/ViewManager";
-import { roundNumber } from "../../services/utlils/roundNumber";
+import { ViewManager } from "../../../services/ViewManager/ViewManager";
+import { roundNumber } from "../../../services/utlils/roundNumber";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
-import { ColorGenerator } from "../../services/utlils/ColorGenerator";
-import { EventBus } from "../../services/event";
+import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
+import { EventBus } from "../../../services/event";
 
 export default {
-  name: "InventoryTypeTable",
+  name: "TicketTypeTable",
   props: {
-    nodeType: { required: true, type: String },
-    collums: { required: false, type: Array, default: () => [] },
+    viewKey: { require: true, type: String, default: "" },
     items: { required: true, type: Array },
-    viewKey: { require: true, type: String, default: "" }
+    collums: { required: false, type: Array, default: () => [] },
+    nodeType: { required: true, type: String },
   },
   data() {
     return {
-      // collums: [],
-      haveChildren: false,
       data: [],
       loading: true,
-      loadingArea: true,
-      haveArea: false
+      loadingProcess: true,
+      haveChildren: false,
+      haveProcess: false,
     };
   },
   watch: {
     items() {
       this.update();
-    }
+    },
   },
   mounted() {
     this.update();
   },
   methods: {
     roundNumber,
-    getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+    selectInView(item) {
+      EventBus.$emit("view-select-item", {
+        server_id: item.serverId,
+        color: item.color,
+      });
     },
-    collumValue(item, key) {
-      if (item[key]) return item[key];
-      return 0;
+    SeeEvent(item) {
+      EventBus.$emit("view-color-item", {
+        server_id: item.serverId,
+        color: item.color,
+      });
     },
-    rowHaveChildren(item) {
-      if (item.children) {
-        // eslint-disable-next-line no-unused-vars
-        for (const it of item.children) {
-          return true;
-        }
-      }
-      return false;
+    SeeAll(zone) {
+      let items = this.data.map((item) => {
+        return { server_id: item.serverId, color: item.color };
+      });
+      EventBus.$emit("view-color-all", items, { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
-    update() {
+    debugNode(item) {
+      console.debug(item);
+    },
+    async update() {
       this.loading = true;
-      this.loadingArea = true;
-      this.haveArea = false;
+      this.loadingProcess = true;
+      this.haveProcess = false;
       const res = [];
-      const collums = new Set();
       let haveChild = false;
       const prom = [];
       const colorUsed = [];
@@ -142,19 +153,17 @@ export default {
           serverId: item.serverId,
           haveChild: false,
           color: item.getColor(),
-          area: 0
+          process: 0,
         };
         if (resItem.color) colorUsed.push(resItem.color);
-        if (item.isLocationType()) this.haveArea = true;
-        prom.push(
-          item.getArea().then(result => {
-            resItem.area = result;
-          })
-        );
+        // if (item.isLocationType()) this.haveProcess = true;
+        // prom.push;
+        // (await item.getProcess()).then((result) => {
+        // resItem.process = await item.getProcess();
+        // })();
         if (item.children) {
           for (const [childTypes, childItems] of item.children) {
             haveChild = true;
-            collums.add(childTypes);
             resItem[childTypes] = childItems.length;
             resItem.haveChild = true;
           }
@@ -165,10 +174,9 @@ export default {
       this.updateColor(res, colorUsed);
       this.haveChildren = haveChild;
       this.data = res;
-      // this.collums = Array.from(collums);
       this.loading = false;
       Promise.all(prom).then(() => {
-        this.loadingArea = false;
+        this.loadingProcess = false;
       });
     },
     updateColor(res, colorUsed) {
@@ -189,31 +197,37 @@ export default {
         }
       }
     },
-    getItemFromServerId(serverId) {
-      for (const item of this.items) {
-        if (item.serverId === serverId) {
-          return item;
-        }
-      }
+    getColor(color) {
+      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+    },
+    collumValue(item, key) {
+      if (item[key]) return item[key];
+      return 0;
+    },
+    seeAll() {
+      let items = this.data.map((item) => {
+        return { server_id: item.serverId, color: item.color };
+      });
+      EventBus.$emit("view-color-all", items, { server_id: zone });
     },
     exportToExcel() {
       let headers = [
         {
           key: "name",
           header: this.$t("name"),
-          width: 20
+          width: 20,
         },
         {
-          key: "area",
-          header: this.$t("Area"),
-          width: 10
-        }
+          key: "process",
+          header: this.$t("Process"),
+          width: 10,
+        },
       ];
       for (const collum of this.collums) {
         headers.push({
           key: collum,
           header: this.$t(collum),
-          width: 10
+          width: 10,
         });
       }
       let excelData = [
@@ -224,34 +238,32 @@ export default {
             {
               name: "Tableau",
               header: headers,
-              rows: this.data
-            }
-          ]
-        }
+              rows: this.data,
+            },
+          ],
+        },
       ];
-      excelManager.export(excelData).then(reponse => {
+      excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
-    selectInView(item) {
-      EventBus.$emit("inventory-select-item", {
-        server_id: item.serverId,
-        color: item.color
-      });
+    rowHaveChildren(item) {
+      if (item.children) {
+        // eslint-disable-next-line no-unused-vars
+        for (const it of item.children) {
+          return true;
+        }
+      }
+      return false;
     },
-    SeeEvent(item) {
-      EventBus.$emit("inventory-color-item", {
-        server_id: item.serverId,
-        color: item.color
-      });
+    getItemFromServerId(serverId) {
+      for (const item of this.items) {
+        if (item.serverId === serverId) {
+          return item;
+        }
+      }
     },
-    SeeAll(zone) {
-      let items = this.data.map(item => {
-        return { server_id: item.serverId, color: item.color };
-      });
-      EventBus.$emit("inventory-color-all", items, { server_id: zone });
-    }
-  }
+  },
 };
 </script>
 

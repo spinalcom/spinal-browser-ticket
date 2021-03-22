@@ -23,24 +23,25 @@ with this file. If not, see
 -->
 
 <template>
-  <el-breadcrumb class="spinal-breadcrumb"
-                 separator="/">
-    <el-breadcrumb-item v-for="(bc, index) in breadcrumb"
-                        :key="index">
-      <a @click="selectBreadcrumb(bc)">{{ bc.name }}</a>
-    </el-breadcrumb-item>
-  </el-breadcrumb>
+  <div class="spinal-breadcrumb">
+    <el-breadcrumb class="spinal-breadcrumb-item" separator="/">
+      <el-breadcrumb-item v-for="(bc, index) in breadcrumb" :key="index">
+        <a @click="selectBreadcrumb(bc)">{{ bc.name }}</a>
+      </el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
+  </div>
 </template>
 
 <script>
 import { ViewManager } from "../../services/ViewManager/ViewManager";
-
+import { EventBus } from "../../services/event";
 export default {
   name: "SpinalBreadcrumb",
   props: { viewKey: { require: true, type: String, default: "" } },
   data() {
     return {
-      breadcrumb: []
+      breadcrumb: [],
     };
   },
   mounted() {
@@ -54,15 +55,28 @@ export default {
     selectBreadcrumb(bc) {
       const viewManager = ViewManager.getInstance(this.viewKey);
       viewManager.move(bc.serverId);
-      // console.log("selectBreadcrumb",breadcrumb );
+      // console.log("selectBreadcrumb", breadcrumb);
       // this.$emit("selectHome");
-    }
-  }
+    },
+    openDrawer() {
+      EventBus.$emit("open-drawer");
+    },
+  },
 };
 </script>
 
 <style>
 .spinal-breadcrumb {
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  margin: 10px 10px 5px 5px;
+  border-radius: 4px;
+  align-items: center;
+  background-color: white;
+}
+.spinal-breadcrumb-item {
   font-size: 20px;
   margin: 10px 0 10px 10px;
 }

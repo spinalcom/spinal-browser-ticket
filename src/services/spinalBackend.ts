@@ -27,7 +27,8 @@ import { SpinalGraph } from 'spinal-model-graph';
 import BackEndSpatial from './backend/spatial';
 import BackEndViewer from './backend/viewer';
 import BackEndSpace from "./backend/space";
-import BackEndInventory from './backend/Inventory';
+import BackEndDataRoom from './backend/DataRoom';
+import BackEndTicket from './backend/ticket';
 import q from "q";
 
 class SpinalBackEnd {
@@ -35,7 +36,9 @@ class SpinalBackEnd {
   spatialBack = new BackEndSpatial();
   viewerBack = new BackEndViewer();
   spaceBack = new BackEndSpace();
-  InventoryBack = new BackEndInventory();
+  DataRoomBack = new BackEndDataRoom();
+  BackEndTicket = new BackEndTicket();
+
   initDefer = q.defer();
 
   constructor() {
@@ -47,8 +50,9 @@ class SpinalBackEnd {
       await Promise.all([
         this.spatialBack.init(graph),
         this.viewerBack.init(graph),
-        this.InventoryBack.init(graph),
-        this.spaceBack.init(graph)
+        this.DataRoomBack.init(graph),
+        this.spaceBack.init(graph),
+        this.BackEndTicket.init(graph)
       ]);
       this.initDefer.resolve();
     } catch (error) {
