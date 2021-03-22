@@ -26,10 +26,10 @@ with this file. If not, see
   <div>
     <el-button icon="el-icon-circle-plus-outline"
                circle
-               @click="dialogFormVisible = true">
+               @click="dialogFormVisible = !dialogFormVisible">
     </el-button>
 
-    <div class="div-dialog"
+    <div class="div-dialog spinal-scrollbar"
          title="Adresse d'expédition"
          v-if="dialogFormVisible">
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
@@ -162,9 +162,14 @@ export default {
 .div-dialog {
   position: absolute;
   background: white;
-  z-index: 1;
+  border: 2px gray solid;
+  overflow: auto;
+  z-index: 3;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
+  border-radius: 4px;
+  top: 49px;
+  padding: 5px;
 }
 .radio-cas {
   overflow-x: auto;

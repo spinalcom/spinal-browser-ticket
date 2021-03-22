@@ -202,7 +202,6 @@ export default {
 }
 .breadcrumb-style {
   width: 100%;
-  font-size: 1.2em;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
