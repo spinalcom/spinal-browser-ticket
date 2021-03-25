@@ -28,10 +28,18 @@ with this file. If not, see
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
+<<<<<<< HEAD
     <el-row v-if="display === false">
       <el-tabs type="border-card">
         <el-tab-pane :label="panel">
             <div v-for="(item, index) in items"
+=======
+    <el-row>
+      <el-tabs class="data-room-tabs" type="border-card">
+        <el-tab-pane label="Tableau">
+          <el-collapse v-model="activeNames">
+            <el-collapse-item v-for="(item, index) in items"
+>>>>>>> origin/graphic-normalisation
                               :key="item.nodeType"
                               :name="item.nodeType">
                               <el-header>
@@ -191,19 +199,29 @@ export default {
 .data-room-barre {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 10px;
   background-color: #f5f7fa;
 }
 /* .data-room .el-icon-download {
   width: 15px;
 } */
 
-.data-room .el-collapse-item__header {
-  direction: rtl;
+.data-room {
+  direction: ltr;
+  margin: 5px 5px 5px 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 </style>
 
 <style scoped>
+
+.data-room-tabs {
+  margin: 5px auto;
+  height: calc(100% - 55px);
+  overflow: auto;
+  border-radius: 5px;
+}
+
 .data-room-collapse-bar {
   direction: ltr;
   display: flex;
@@ -212,6 +230,7 @@ export default {
 .data-room-collapse-bar-title {
   flex-grow: 1;
 }
+<<<<<<< HEAD
 .spacecon .spacecon_container {
   border-radius: 4px;
 }
@@ -223,3 +242,6 @@ export default {
   overflow: auto;
 }
 </style>
+=======
+</style>
+>>>>>>> origin/graphic-normalisation
