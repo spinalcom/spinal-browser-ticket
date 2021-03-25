@@ -147,8 +147,8 @@ export default {
 }
 
 .tab-manager {
-  margin: 10px 0;
-  height: calc(100% - 55px);
+  margin: 10px 10px 10px 0px;
+  height: calc(100% - 65px);
   border-radius: 5px;
 }
 
