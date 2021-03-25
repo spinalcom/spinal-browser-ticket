@@ -23,14 +23,16 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs type="border-card"
+  <el-tabs class="tab-manager-tabs"
+           type="border-card"
            :value="activetab"
            @tab-remove="removeTab">
     <el-tab-pane v-for="tab in opentabs"
                  :key="tab.name"
                  :label="tab.name"
                  :name="tab.name"
-                 :closable="false">
+                 :closable="false"
+                 class="tab-manager-pane">
       <component :is="tab.content"
                  :Properties="tab.props"></component>
     </el-tab-pane>
@@ -117,4 +119,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.tab-manager-tabs .el-tabs__content {
+  height: calc(100% - 38px);
+}
+</style>

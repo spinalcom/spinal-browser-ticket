@@ -23,43 +23,42 @@ with this file. If not, see
 -->
 
 <template>
-<div>
   <el-table v-loading="loading"
             :data="data"
             border
-            style="width: 100%; height: 400px; overflow: auto;"
+            style="width: 100%;"
             :header-cell-style="{'background-color': '#f0f2f5'}"
             @row-click="selectInView"
             @row-dblclick="SeeEvent">
     <el-table-column :label="$t('explorer.Name')">
       <div slot-scope="scope">
         <div v-if="scope.row.color"
-              class="spinal-table-cell-color"
-              :style="getColor(scope.row.color)"></div>
+             class="spinal-table-cell-color"
+             :style="getColor(scope.row.color)"></div>
         <div> {{ scope.row.name }} </div>
       </div>
     </el-table-column>
 
     <el-table-column v-for="column in columns"
-                      :key="column"
-                      align="center"
-                      :label="$t(`node-type.${column}`)">
+                     :key="column"
+                     align="center"
+                     :label="$t(`node-type.${column}`)">
       <div slot-scope="scope">
         {{ columnValue(scope.row, column) }}
       </div>
     </el-table-column>
 
     <el-table-column v-if="haveChildren"
-                      label=""
-                      width="65"
-                      align="center">
+                     label=""
+                     width="65"
+                     align="center">
       <div slot-scope="scope">
         <el-button v-if="scope.row.haveChild"
-                    icon="el-icon-arrow-right"
-                    circle
-                    @click="onSelectItem(scope.row)"></el-button>
+                   icon="el-icon-arrow-right"
+                   circle
+                   @click="onSelectItem(scope.row)"></el-button>
       </div>
-    <!-- </el-table-column>
+      <!-- </el-table-column>
     <el-table-column label=""
                       width="65"
                       align="center">
@@ -70,7 +69,6 @@ with this file. If not, see
       </div>
     </el-table-column> -->
   </el-table>
-</div>
 </template>
 
 <script>
@@ -81,18 +79,18 @@ import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 
 export default {
-  name:"NodeTable",
-  props : {
-    viewKey: { required: true, type: String, },
-    items: { required: true, type: Array,  },
-    columns: { required: true, type: Array, },
+  name: "NodeTable",
+  props: {
+    viewKey: { required: true, type: String },
+    items: { required: true, type: Array },
+    columns: { required: true, type: Array }
   },
   data() {
     return {
       data: [],
       loading: true,
       loadingArea: true,
-      haveChildren: false,
+      haveChildren: false
     };
   },
   watch: {
@@ -104,15 +102,13 @@ export default {
     this.update();
   },
   methods: {
-    selectInView(item)
-    {
+    selectInView(item) {
       EventBus.$emit("view-select-item", {
         server_id: item.serverId,
         color: item.color
       });
     },
-    SeeEvent(item)
-    {
+    SeeEvent(item) {
       EventBus.$emit("view-isolate-item", {
         server_id: item.serverId,
         color: item.color
@@ -124,19 +120,17 @@ export default {
       });
       EventBus.$emit("view-color-all", items, { server_id: zone });
     },
-    ShowAll()
-    {
+    ShowAll() {
       EventBus.$emit("view-show-all");
     },
-    isolateAll(zone)
-    {
+    isolateAll(zone) {
       EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     debugNode(item) {
-      console.log(item)
+      console.log(item);
     },
     update() {
       this.loading = true;
@@ -149,7 +143,7 @@ export default {
           name: item.name,
           serverId: item.serverId,
           haveChild: false,
-          color: item.getColor(),
+          color: item.getColor()
         };
         if (resItem.color) colorUsed.push(resItem.color);
         if (item.children) {
@@ -197,7 +191,7 @@ export default {
           key: "name",
           header: this.$t("name"),
           width: 20
-        },
+        }
       ];
       for (const column of this.columns) {
         headers.push({
@@ -222,8 +216,8 @@ export default {
       excelManager.export(excelData).then(reponse => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -235,5 +229,4 @@ export default {
   left: 0;
   top: 0;
 }
-
 </style>
