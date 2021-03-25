@@ -113,6 +113,10 @@ export default {
 
          this.colorElement();
       },
+
+      gradients() {
+         this.colorElement();
+      },
    },
 };
 </script>

@@ -1,41 +1,64 @@
 <template>
 
-   <div class="spacecon spaceL-top">
-      <h2> {{profil.name}} </h2>
+   <div class="_heatmapContainer spaceL-top">
+      <div class="name"> {{profil.name}} </div>
 
-      <div class="btn space-top btn-size space-right">
-         <i
-            @click="decreaseIndex()"
-            class="arrow left"
-         ></i>
-         {{variableSelected ? variableSelected.name : ""}}
-         <i
-            @click="increaseIndex()"
-            class="arrow right"
-         ></i>
+      <div class="buttons">
+         <div class="btn space-top btn-size space-right">
+            <i
+               @click="decreaseIndex()"
+               class="arrow left"
+            ></i>
+            {{variableSelected ? variableSelected.name : ""}}
+            <i
+               @click="increaseIndex()"
+               class="arrow right"
+            ></i>
+         </div>
+
+         <!-- <div class="btn space-top btn-size"> <i class="arrow left"></i> Unité de temps <i class="arrow right"></i></div> -->
       </div>
 
-      <div class="btn space-top btn-size"> <i class="arrow left"></i> Unité de temps <i class="arrow right"></i></div>
-
       <vueper-slides
+         :slide-ratio="1 / 2"
+         :touchable="false"
+         prevent-y-scroll
+         class="space-top"
+      >
+         <!-- <vueper-slides
          :slide-ratio="1 / 2"
          fixed-height="500px"
          :dragging-distance="70"
          prevent-y-scroll
          class="space-top"
-      >
+      > -->
 
-         <vueper-slide
+         <!-- <vueper-slide
             class="heigth"
             v-for="(slide, i) in slides"
             :key="i"
             :title="slide.title"
             :content="slide.content"
             :image="slide.image"
-         />
+         /> -->
+
+         <vueper-slide
+            class="heigth"
+            v-for="(slide, i) in slides"
+            :key="i"
+         >
+            <template v-slot:content>
+               <component
+                  :is="renderComponent(i)"
+                  :variableSelected="variableSelected"
+                  :profil="profil"
+                  @sendDataUpdated="sendDataUpdated"
+               />
+            </template>
+         </vueper-slide>
+
       </vueper-slides>
    </div>
-
 </template>
 
 
@@ -45,6 +68,9 @@ import { EventBus } from "../../../services/event";
 import { spinalBackEnd } from "../../../services/spinalBackend";
 
 import "vueperslides/dist/vueperslides.css";
+
+import profilInfoComponent from "./carrousel-component/profil_info_component.vue";
+import chartComponent from "./carrousel-component/chart_component.vue";
 
 const backendService = spinalBackEnd.heatmapBack;
 
@@ -56,27 +82,37 @@ export default {
    data() {
       return {
          variableSelected: undefined,
+         endpoints: [],
          details: [],
          //variables:["Variable 1","Variable 2", "Variable 3"],
          variables: [],
          index: undefined,
          slides: [
             {
-               title: "Slide #1",
-               content: "Graphiques",
+               title: "Profil info",
+               content: profilInfoComponent,
                image: require("./img2.jpg"),
             },
-            {
-               title: "Slide #2",
-               content: "Graphiques",
-               image: require("./img.jpg"),
-            },
+            // {
+            //    title: "Chart",
+            //    content: chartComponent,
+            //    image: require("./img.jpg"),
+            // },
          ],
       };
    },
-   components: { VueperSlides, VueperSlide },
+   components: {
+      VueperSlides,
+      VueperSlide,
+      profilInfoComponent,
+      chartComponent,
+   },
 
    methods: {
+      renderComponent(i) {
+         return this.slides[i].content;
+      },
+
       decreaseIndex() {
          if (this.index > 0) this.index--;
          else {
@@ -93,14 +129,23 @@ export default {
 
       async formatAndSendData(variableSelected) {
          const gradients = this.getColorGradient(variableSelected.config);
-         const endpoints = await this.getEndpointToBind(variableSelected.id);
+         this.endpoints = await this.getEndpointToBind(variableSelected.id);
          const obj = {
             profil: variableSelected,
             gradients,
-            endpoints,
+            endpoints: this.endpoints,
          };
 
          EventBus.$emit("seeHeatMap", obj);
+      },
+
+      sendDataUpdated() {
+         const gradients = this.getColorGradient(this.variableSelected.config);
+         EventBus.$emit("seeHeatMap", {
+            profil: this.variableSelected,
+            gradients,
+            endpoints: this.endpoints,
+         });
       },
 
       getColorGradient(config) {
@@ -166,7 +211,6 @@ export default {
 
    watch: {
       variableSelected() {
-         console.log("variableSelected", this.variableSelected);
          if (this.variableSelected) {
             // const parsed = JSON.parse(this.variableSelected);
             this.formatAndSendData(this.variableSelected);
@@ -186,18 +230,69 @@ export default {
 };
 </script>
 
-
-<style>
-.vueperslides__arrow {
-   color: black;
-}
-</style>
-
 <style scoped>
-.heigth {
+._heatmapContainer {
+   width: 100%;
    height: 100%;
+   /* padding: 35px 10px; */
 }
 
+._heatmapContainer .name {
+   width: 100%;
+   height: 50px;
+   display: flex;
+   align-items: center;
+   font-size: 1.5em;
+   /* background-color: green; */
+}
+
+._heatmapContainer .buttons {
+   width: 100%;
+   height: 60px;
+   margin: 10px 0;
+}
+
+._heatmapContainer .buttons .btn {
+   width: 300px;
+   height: 100%;
+   color: #333;
+   background-color: #fff;
+   border-color: #ccc;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+._heatmapContainer .buttons .btn .arrow {
+   border: solid black;
+   border-width: 0 3px 3px 0;
+   display: inline-block;
+   padding: 3px;
+}
+
+._heatmapContainer .buttons .btn .arrow.right {
+   transform: rotate(-45deg);
+   -webkit-transform: rotate(-45deg);
+}
+
+._heatmapContainer .buttons .btn .arrow.left {
+   transform: rotate(135deg);
+   -webkit-transform: rotate(135deg);
+}
+
+._heatmapContainer .space-top {
+   width: 100%;
+   height: calc(100% - 140px);
+   /* background-color: green; */
+}
+
+._heatmapContainer .space-top .heigth {
+   width: 100%;
+   height: 100%;
+   /* background-color: red; */
+}
+
+/* 
 .arrow {
    border: solid black;
    border-width: 0 3px 3px 0;
@@ -213,11 +308,6 @@ export default {
 .left {
    transform: rotate(135deg);
    -webkit-transform: rotate(135deg);
-}
-
-.spacecon {
-   width: 100%;
-   padding: 35px 10px;
 }
 
 .btn-size {
@@ -263,5 +353,25 @@ export default {
    color: #333;
    background-color: #fff;
    border-color: #ccc;
+} */
+</style>
+
+
+<style>
+._heatmapContainer .space-top .vueperslides__inner {
+   width: 100%;
+   height: 100%;
+}
+
+._heatmapContainer
+   .space-top
+   .vueperslides__inner
+   .vueperslides__parallax-wrapper {
+   width: 100%;
+   height: 100%;
+}
+
+.vueperslides__arrow {
+   color: black;
 }
 </style>
