@@ -24,14 +24,16 @@ with this file. If not, see
 
 <template>
   <div class="data-room">
-    <div class="data-room-breadcrumb-container"
-         style="margin: 10px;">
+    <div class="data-room-breadcrumb-container">
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
-    <el-row v-if="display === false">
-      <el-tabs type="border-card">
-        <el-tab-pane :label="panel">
+    <el-row class="data-room-data-container"
+            v-if="display === false">
+      <el-tabs type="border-card"
+               class="data-room-data-tabs">
+        <el-tab-pane class="data-room-data-pane"
+                     :label="panel">
           <div v-for="(item, index) in items"
                :key="item.nodeType"
                :name="item.nodeType">
@@ -47,7 +49,8 @@ with this file. If not, see
                            @click.stop="SeeAllClick(index)"></el-button>
               </div>
             </el-header>
-            <DataRoomTypeTable :ref="`data-room-table`"
+            <DataRoomTypeTable class="data-room-data-table spinal-scrollbar"
+                               :ref="`data-room-table`"
                                :view-key="viewKey"
                                :node-type="item.nodeType"
                                :items="item.items"
@@ -212,9 +215,29 @@ export default {
   overflow-x: auto;
   overflow-y: hidden;
 }
+.data-room-data-tabs .el-tabs__content {
+  height: calc(100% - 37px);
+}
 </style>
 
 <style scoped>
+.data-room-data-pane,
+.data-room-data-pane > div {
+  height: 100%;
+}
+.data-room-data-table {
+  height: calc(100% - 60px);
+  overflow: auto;
+}
+.data-room-breadcrumb-container {
+  margin: 0 10px 10px 10px;
+}
+.data-room-data-container {
+  height: calc(100% - 65px);
+}
+.data-room-data-tabs {
+  height: 100%;
+}
 .data-room-tabs {
   margin: 5px auto;
   height: calc(100% - 55px);
@@ -229,8 +252,6 @@ export default {
 }
 .data-room-collapse-bar-title {
   flex-grow: 1;
-}
-<<<<<<< HEAD .spacecon .spacecon_container {
   border-radius: 4px;
 }
 .spinal-space-spacecon_container-container {
@@ -241,6 +262,3 @@ export default {
   overflow: auto;
 }
 </style>
-=======
-</style>
->>>>>>> origin/graphic-normalisation
