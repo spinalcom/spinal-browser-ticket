@@ -28,7 +28,7 @@ with this file. If not, see
       <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
         <el-breadcrumb class="breadcrumb-style"
                        separator="/">
-          <el-breadcrumb-item>
+          <el-breadcrumb-item class="breadcrumb-item">
             <a @click="onclick(null)">Heatmap Center</a>
           </el-breadcrumb-item>
           <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
@@ -186,8 +186,10 @@ export default {
 
 <style scoped>
 .spacecon {
-  width: 100%;
-  padding: 0 10px;
+  direction: ltr;
+  margin: 5px 5px 5px 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .card-content {
   display: flex;
@@ -201,12 +203,13 @@ export default {
   text-align: center;
 }
 .breadcrumb-style {
-  width: 100%;
-  font-size: 1.2em;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   flex-wrap: nowrap;
-  padding: 0 5px 0 5px;
+  margin: 5px 10px 5px 10px;
+  border-radius: 4px;
+  align-items: center;
+  background-color: white;
 }
 
 .boutton-barre {
@@ -219,11 +222,11 @@ export default {
 }
 .spinal-space-header {
   display: flex;
-  height: 43px;
   justify-content: space-between;
   align-items: center;
   border-radius: 4px;
   background: white;
+  margin: 5px 10px 5px 10px;
 }
 .spinal-space-header-breadcrum-container {
   width: calc(100% - 43px);
@@ -232,5 +235,8 @@ export default {
   white-space: nowrap;
   height: 100%;
   display: flex;
+}
+.root {
+  margin: 10px auto;
 }
 </style>
