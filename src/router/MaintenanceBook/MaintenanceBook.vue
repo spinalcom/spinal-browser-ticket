@@ -80,11 +80,14 @@ export default {
 
 <style scoped>
 .ticket-center {
-  overflow: hidden;
+  margin: 5px 5px 5px 0px;
+  height: calc(100% - 20px);
+  border-radius: 5px;
 }
 
 .tab-manager {
-  height: calc(100% - 60px);
+  margin: 5px 0;
+  height: calc(100% - 55px);
   border-radius: 5px;
 }
 </style>

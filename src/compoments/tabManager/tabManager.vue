@@ -123,4 +123,8 @@ export default {
 .tab-manager-tabs .el-tabs__content {
   height: calc(100% - 38px);
 }
+
+.tab-manager-pane {
+  height: 100%;
+}
 </style>

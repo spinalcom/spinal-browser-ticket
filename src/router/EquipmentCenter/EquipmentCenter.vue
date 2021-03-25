@@ -152,3 +152,11 @@ export default {
   border-radius: 5px;
 }
 </style>
+
+<style>
+
+.spl-height-control {
+  height: 100%;
+}
+
+</style>
