@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
+  <div class="spl-height-control">
     <div class="spl-button-bar">
       <el-button class="spl-el-button"
                  icon="el-icon-aim"
@@ -41,8 +41,7 @@ with this file. If not, see
                  @click.stop="exportToExcel()">
       </el-button>
     </div>
-    <div v-if="Properties.items !== false"
-         class="spl-table">
+    <div v-if="Properties.items !== false" class="spl-height-control">
       <node-table :ref="'Explorer-table'"
                   :view-key="Properties.viewKey"
                   :items="itemsComputed"
@@ -120,10 +119,6 @@ export default {
 </script>
 
 <style scoped>
-.spl-table {
-  padding: 5px 5px 5px 5px;
-  overflow-y: unset auto;
-}
 
 .spl-el-button {
   margin: 0 0 0 10px;
