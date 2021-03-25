@@ -23,8 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-<div
-            >
+<div>
   <el-table v-loading="loading"
             :data="data"
             border

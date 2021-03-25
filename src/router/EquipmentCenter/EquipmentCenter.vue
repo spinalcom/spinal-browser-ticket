@@ -143,13 +143,12 @@ export default {
 
 <style scoped>
 .equipment-center {
-  margin: 5px 5px 5px 5px;
   overflow: hidden;
 }
 
 .tab-manager {
-  margin: 10px auto;
-  height: calc(100% - 55px);
+  margin: 10px 10px 10px 0px;
+  height: calc(100% - 65px);
   border-radius: 5px;
 }
 </style>

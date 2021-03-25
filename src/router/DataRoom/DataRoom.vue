@@ -209,7 +209,6 @@ export default {
 
 .data-room {
   direction: ltr;
-  margin: 5px 5px 5px 5px;
   overflow-x: auto;
   overflow-y: hidden;
 }
