@@ -23,15 +23,11 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
-      <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    </el-header>
-    <el-main>
-      <tab-manager :tabsprop="tabs" />
-      <!-- <explorer :Properties="tabs[0].props"></explorer> -->
-    </el-main>
-  </el-container>
+  <div class="equipment-center">
+    <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
+    <tab-manager class="tab-manager" :tabsprop="tabs" />
+    <!-- <explorer :Properties="tabs[0].props"></explorer> -->
+  </div>
 </template>
 
 <script>
@@ -103,7 +99,6 @@ export default {
           this.contextServId
         );
       }
-      console.debug(mapItems)
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
         for (const item of items) {
@@ -146,7 +141,18 @@ export default {
 </script>
 
 <style scoped>
-equipement-center {
+
+.equipment-center {
+  margin: 5px 5px 5px 5px;
+  overflow-x: auto;
   overflow-y: hidden;
-}</style
->>
+}
+
+.tab-manager {
+  margin: 5px auto;
+  height: calc(100% - 55px);
+  overflow: auto;
+  border-radius: 5px;
+}
+
+</style>

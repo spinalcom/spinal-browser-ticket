@@ -48,7 +48,7 @@ EventBus.$on('sidebar-homeSelect', async (item) => {
   } else {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
-    await viewerUtils.rotateTo('top');
+    await viewerUtils.rotateTo('front,top,right');
     viewerUtils.fitToView(lstByModel);
   }
 });
