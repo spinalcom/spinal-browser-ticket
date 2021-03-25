@@ -57,6 +57,7 @@ export default {
   },
   mounted() {
     EventBus.$on("see", data => {
+      console.log("on see", data);
       this.isoLate(data.ids);
       this.restoreAllColor();
       this.colorsRooms(data.ids, data.color, data.id);
@@ -158,17 +159,41 @@ export default {
       this.viewer.impl.invalidate(true, true, true);
     },
 
-    isoLate(roomsList) {
-      let dbIds = roomsList.map(el => el.dbid);
-      if (roomsList.length === 0) {
-        this.viewer.isolate(dbIds, this.viewer.model);
-      } else {
-        let model = window.spinal.BimObjectService.getModelByBimfile(
-          roomsList[0].bimFileId
-        );
-
-        this.viewer.isolate(dbIds, model);
+    pushToModel(targetArray, ids, model) {
+      for (const obj of targetArray) {
+        if (obj.model === model) {
+          for (const id of ids) {
+            obj.selection.add(id);
+          }
+          return;
+        }
       }
+
+      const idSet = new Set();
+      for (const id of ids) {
+        idSet.add(id);
+      }
+      targetArray.push({
+        model,
+        selection: (idSet)
+      });
+    },
+
+    convertForIsolate(roomLst) {
+      const data = [];
+      for (const room of roomLst) {
+        let model = window.spinal.BimObjectService.getModelByBimfile(
+          room.bimFileId
+        );
+        this.pushToModel(data, [room.dbid], model);
+      }
+      return data.map(it => {
+        return {model: it.model, selection : Array.from(it.selection)}
+      });
+    },
+
+    isoLate(roomsList) {
+      viewerUtils.isolateObjects(this.convertForIsolate(roomsList));
     },
 
     convertHewToRGB(hex) {
