@@ -30,12 +30,17 @@ import { groupManagerService } from "spinal-env-viewer-plugin-group-manager-serv
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { FileSystem } from 'spinal-core-connectorjs_type';
-import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
+// import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 
+import { spinalControlPointService } from "spinal-env-viewer-plugin-control-endpoint-service";
+import tinygradient from "tinygradient";
+import { REFERENCE_OBJECT_RELATION_NAME, BIM_OBJECT_TYPE } from 'spinal-env-viewer-plugin-forge/dist/Constants'
+// import { SpinalForgeViewer } from 'spinal-env-viewer-plugin-forge'
 
 import q from "q";
 
 
+// const spinalForgeViewer = new SpinalForgeViewer();
 
 export default class Heatmap {
 
@@ -60,13 +65,12 @@ export default class Heatmap {
         if (context.info.id.get() === id) return true;
       }
       return false;
-      
+
     });
-    console.log("contexts ", contexts);
+
     const Icontexts = contexts.map(el => this.Icontext(el));
     const res = await Promise.all(Icontexts);
     this.initDefer.resolve(res);
-    console.log("resss", res);
 
 
   }
@@ -78,7 +82,6 @@ export default class Heatmap {
 
   async getDataFilterItem(item) {
     const data = await this.initDefer.promise;
-    console.log("getDataFilterItem Item", item);
     if (!item) return data;
     const itemNode = FileSystem._objects[item.server_id];
     if (itemNode.getType().get() !== "geographicFloor") {
@@ -86,8 +89,6 @@ export default class Heatmap {
     }
 
     const idsAGarder = item.children.map(obj => obj.id);
-    console.log("getDataFilterItem Item node", itemNode);
-    console.log("getDataFilterItem data", data);
     const tmp = [];
     for (const d of data) {
       const cats = [];
@@ -121,12 +122,12 @@ export default class Heatmap {
     return tmp;
   }
 
-
   async Icontext(context) {
     let catLst = await groupManagerService.getCategories(context.info.id.get());
+    const contextId = context.info.id.get();
     let arr = [];
     for (let cat of catLst) {
-      arr.push(this.Icategorie(cat));
+      arr.push(this.Icategorie(cat, contextId));
     }
 
     return {
@@ -136,12 +137,11 @@ export default class Heatmap {
     };
   }
 
-
-  async Icategorie(categorie) {
+  async Icategorie(categorie, contextId) {
     let grpLst = await groupManagerService.getGroups(categorie.id.get());
     let arr2 = [];
     for (let grp of grpLst) {
-      arr2.push(this.Igroup(grp));
+      arr2.push(this.Igroup(grp, contextId));
     }
     return {
       name: categorie.name.get(),
@@ -150,11 +150,11 @@ export default class Heatmap {
     };
   }
 
-  async Igroup(group) {
+  async Igroup(group, contextId) {
     let profilLst = await groupManagerService.getElementsLinkedToGroup(group.id.get());
     let arr3 = [];
     for (let profil of profilLst) {
-      arr3.push(this.Iprofil(profil));
+      arr3.push(this.Iprofil(profil, contextId));
     }
 
     if (typeof group.color === "undefined") {
@@ -181,35 +181,21 @@ export default class Heatmap {
 
   }
 
-  async Iprofil(profil) {
+  async Iprofil(profil, contextId) {
     let realnode = SpinalGraphService.getRealNode(profil.id.get());
     let attributesLst = await serviceDocumentation.getAllAttributes(realnode);
     let espace = this.getsurface(attributesLst);
+    let itemLinked = await this.getElementLinkedToProfil(profil);
+    let endpointsProfils = await this.getEndpointsProfil(contextId, profil);
+
     return {
       name: profil.name.get(),
       id: profil.id.get(),
-      surface: espace
-
+      surface: espace,
+      rooms: itemLinked,
+      endpointsProfils: endpointsProfils
     };
   }
-
-
-  async getVariables(profil){
-    let realnode = SpinalGraphService.getRealNode(profil.id);
-    console.log(profil.id);
-    let element = await realnode.getElement();
-    
-    console.log(element);
-    return SpinalGraphService.getInfo(realnode);
-
-    //return {r:"lol",a:"lala"};
-
-  }
-
-
-
-
-
 
   getRandomColor() {
     var letters = "0123456789ABCDEF";
@@ -220,6 +206,46 @@ export default class Heatmap {
     return color;
   }
 
+  getElementLinkedToProfil(profil) {
+    const id = profil.id.get();
+    return spinalControlPointService.loadElementLinked(id).then((result) => {
+      const promises = []
+
+      for (let i = 0; i < result.length; i++) {
+        SpinalGraphService._addNode(result[i])
+        const groupId = result[i].getId().get()
+        promises.push(spinalControlPointService.getDataFormated(groupId))
+      }
+
+      return Promise.all(promises).then((result) => {
+        const profilFound = result.flat().find(el => el.id === id);
+
+        if (!profilFound) return [];
+
+        const prom = profilFound.rooms.map(async room => {
+          room.references = await this._getRoomReferences(room.id);
+          return room
+        });
+
+        return Promise.all(prom).then((references) => {
+          return references.flat();
+        })
+      })
+    })
+  }
+
+  getEndpointsProfil(contextId, profil) {
+    const id = profil.id.get();
+    return spinalControlPointService.getControlPointProfil(contextId, id).then((result) => {
+
+      const res = []
+      for (let i = 0; i < result.endpoints.length; i++) {
+        res.push(result.endpoints[i].get())
+      }
+
+      return res;
+    })
+  }
 
 
   ///////////////////////////////////////////////////////////
@@ -284,6 +310,114 @@ export default class Heatmap {
 
   getGroupRoomCount(groupObject) {
     return groupObject.rooms.length;
+  }
+
+
+
+
+  ///////////////////////////////////////////////////////////////////////////
+  ////                      HEATMAP UTILITIES                      ////
+  ///////////////////////////////////////////////////////////////////////////
+
+  getGradientColor(min, average, max) {
+    let colorLength = average ? 10 : 2;
+    let colors = average ? [min.color, average.color, max.color] : [min.color, max.color];
+
+    let gradient = tinygradient(colors);
+
+    return gradient.rgb(colorLength);
+  }
+
+  getColor(value, minValue, maxValue, gradientColor) {
+    if (typeof minValue === "boolean" && typeof maxValue === "boolean")
+      return value ? gradientColor[1].toHex() : gradientColor[0].toHex();
+
+    if (!isNaN(value)) {
+      let index = Math.floor(((value - minValue) * 10) / (maxValue - minValue));
+
+      if (index < 0) {
+        index = 0;
+      } else if (index >= gradientColor.length) {
+        index = gradientColor.length - 1;
+      }
+
+      return gradientColor[index].toHex();
+    }
+    return undefined;
+
+  }
+
+  getEnumGradientColor(liste) {
+    return liste.map(el => ({ value: el.name, color: el.color }));
+  }
+
+  getEnumColor(value, liste) {
+    const found = liste.find(el => el.name === value);
+    if (found) return found.color;
+  }
+
+  _convertHexToRGB(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+      : null;
+  }
+
+  convertColorToVector(argColor) {
+    const color = argColor[0] === "#" ? argColor : `#${argColor}`;
+    const rgbColor = this._convertHexToRGB(color);
+
+    return rgbColor
+      ? new THREE.Vector4(
+        rgbColor.r / 255,
+        rgbColor.g / 255,
+        rgbColor.b / 255,
+        0.7
+      )
+      : new THREE.Vector4(1, 0, 0, 0);
+  }
+
+  async _getRoomReferences(roomId) {
+    const info = SpinalGraphService.getInfo(roomId);
+    let references = []
+
+    if (info && info.type.get() === BIM_OBJECT_TYPE) {
+      references = [info];
+    } else {
+      references = await SpinalGraphService.getChildren(roomId, [REFERENCE_OBJECT_RELATION_NAME]);
+    }
+
+
+    const bims = references.map(el => el.get());
+
+    const bimMap = new Map();
+
+    for (const bimObject of bims) {
+      const bimFileId = bimObject.bimFileId;
+      const dbid = bimObject.dbid;
+
+      if (typeof bimMap.get(bimFileId) === "undefined") {
+        bimMap.set(bimFileId, new Set());
+      }
+
+      bimMap.get(bimFileId).add(dbid);
+    }
+
+    const res = []
+
+    for (const [key, value] of bimMap.entries()) {
+      res.push({
+        model: window.spinal.BimObjectService
+          .getModelByBimfile(key),
+        ids: Array.from(value)
+      })
+    }
+
+    return res;
   }
 
 }
