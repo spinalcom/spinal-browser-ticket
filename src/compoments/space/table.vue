@@ -46,23 +46,6 @@ with this file. If not, see
     <div class="spinal-space-spacecon_container-container">
       <div v-if="selectCategorie == null"
            class="spacecon_container">
-        <!-- <el-card class="box-card"
-               v-for="context in contextLst"
-               :key=context.id>
-
-        <div slot="header"
-             class="clearfix">
-          <span>{{context.name}}</span>
-        </div>
-        <div class="card-content">
-          <el-button v-for="contextCat in context.categories"
-                     :key=contextCat.id
-                     @click="onclick(contextCat)">
-            {{contextCat.name}}
-          </el-button>
-        </div>
-      </el-card> -->
-
         <tableau-context v-if="contextSelected === null"
                          :context-lst="contextLst"
                          @select="SelectContext">
@@ -75,11 +58,6 @@ with this file. If not, see
 
       <div v-else
            class="spacecon_container">
-        <!-- <el-button class="back-icon"
-                 @click="onclick(null)"
-                 icon="el-icon-back"></el-button> -->
-        <!-- <el-button @click="onclick(null)">BACK
-      </el-button> -->
         <room-data v-if="roomNodeId"
                    :node-id="roomNodeId"></room-data>
 
@@ -104,7 +82,7 @@ import tableauCategory from "./tableaucategory";
 import RoomData from "./component/RoomData.vue";
 
 import { EventBus } from "../../services/event";
-
+import "./space.css";
 export default {
   components: {
     categoryLstVue,
@@ -273,12 +251,12 @@ export default {
 
 .spacecon .spacecon_container {
   border-radius: 4px;
+  height: 100%;
 }
 .spinal-space-spacecon_container-container {
   width: 100%;
   padding: 5px 10px 10px 5px;
   background-color: #fdfdfd;
-  overflow: auto;
 }
 
 .spinal-space-header {
@@ -287,6 +265,7 @@ export default {
   align-items: center;
   border-radius: 4px;
   background: white;
+  padding-right: 5px;
 }
 
 /* .boutton-barre {

@@ -50,14 +50,12 @@ export default function rotateTo(viewer, face) {
         viewer.getCamera().rotation.y == 0 &&
         viewer.getCamera().rotation.z == 0) return resolve();
     }
-    this.currentFace = face;
-    if (viewer.autocam.orthographicFaces && (this.currentFace.indexOf(',') !== -1)) {
+    if (viewer.autocam.orthographicFaces && (face.indexOf(',') !== -1)) {
       viewer.autocam.setCameraOrtho(false);
     }
-    viewer.autocam.calculateCubeTransform(this.currentFace);
+    viewer.autocam.calculateCubeTransform(face);
     viewer.autocam.elapsedTime = 0;
     viewer.autocam.sphericallyInterpolateTransition(() => {
-      if (this.mouseMoveSave) { this.processMouseMove(this.mouseMoveSave); }
       resolve();
     });
   });

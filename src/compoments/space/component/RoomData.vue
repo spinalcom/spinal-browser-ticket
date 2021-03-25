@@ -23,137 +23,159 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs class="tabsContainer"
-           type="border-card">
+  <el-row class="spinal-space-tableau-row">
 
-    <!-- ///////////////////////////////////////////////////////////////////////////////////-
+    <el-tabs class="tabs-container"
+             type="border-card">
+
+      <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Équipements /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Équipements">
-      <el-table :data="equipement"
-                border
-                style="width: 100%"
-                :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-        <el-table-column prop="name"
-                         :label="$t('SpaceManagement.Nom')">
-        </el-table-column>
-        <el-table-column align="center"
-                         width="150">
-          <template>
-            <el-button icon="el-icon-arrow-right"
-                       circle></el-button>
-          </template>
-        </el-table-column>
-    </el-tab-pane>
 
-    <!-- ///////////////////////////////////////////////////////////////////////////////////-
+      <el-tab-pane label="Equipement"
+                   class="spinal-space-tab-container">
+        <!-- <header-bar :header="getHeader()"
+                  :content="getRow()"
+                  :data="categories"></header-bar> -->
+        <div class="spinal-space-table-content spinal-scrollbar">
+          <el-table :data="equipement"
+                    border
+                    style="width: 100%"
+                    :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
+                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
+            <el-table-column prop="name"
+                             :label="$t('SpaceManagement.Nom')">
+            </el-table-column>
+            <el-table-column align="center"
+                             width="65">
+              <template>
+                <el-button icon="el-icon-arrow-right"
+                           circle></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
+
+      <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// TICKET /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane class="pane-ticket"
-                 label="Tickets">
-      <div class="barre">
-        <ticket-create v-bind:nodeId="nodeId"
-                       @reload="updateticket"></ticket-create>
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
+      <el-tab-pane class="spinal-space-tab-container"
+                   label="Tickets">
+        <div class="barre">
+          <ticket-create v-bind:nodeId="nodeId"
+                         @reload="updateticket"></ticket-create>
+          <header-bar :header="ticketHeader"
+                      :content="ticketContent"
+                      :data="ticketData"></header-bar>
 
-      </div>
-      <el-table :data="tickets"
-                border
-                style="width: 100%"
-                :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-        <el-table-column prop="name"
-                         :label="$t('SpaceManagement.Nom')"
-                         width="180">
-        </el-table-column>
+        </div>
+        <div class="spinal-space-table-content spinal-scrollbar">
 
-        <el-table-column prop="priority"
-                         label="Priorités"
-                         align="center">
-        </el-table-column>
+          <el-table :data="tickets"
+                    border
+                    style="width: 100%"
+                    :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
+                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
+            <el-table-column prop="name"
+                             :label="$t('SpaceManagement.Nom')"
+                             width="180">
+            </el-table-column>
 
-        <el-table-column label="utilisateur"
-                         align="center">
-          <template slot-scope="scope">
-            <!-- {{ scope.row.user.name }} -->
-          </template>
-        </el-table-column>
+            <el-table-column prop="priority"
+                             label="Priorités"
+                             align="center">
+            </el-table-column>
 
-        <el-table-column label="Date de création"
-                         align="center">
-          <template slot-scope="scope">
-            {{ scope.row.creationDate | formatDate }}
-          </template>
-        </el-table-column>
-      </el-table>
+            <el-table-column label="utilisateur"
+                             align="center">
+              <template slot-scope="scope">
+                <!-- {{ scope.row.user.name }} -->
+              </template>
+            </el-table-column>
 
-    </el-tab-pane>
-    <!-- ///////////////////////////////////////////////////////////////////////////////////-
+            <el-table-column label="Date de création"
+                             align="center">
+              <template slot-scope="scope">
+                {{ scope.row.creationDate | formatDate }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+
+      </el-tab-pane>
+      <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// DOCUMENTATION /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Documentation">
-      <div class="barre">
+      <el-tab-pane class="spinal-space-tab-container"
+                   label="Documentation">
+        <div class="barre">
+          <document-create v-bind:nodeId="nodeId"
+                           @reload="updateDocument"></document-create>
+          <header-bar :header="ticketHeader"
+                      :content="ticketContent"
+                      :data="ticketData"></header-bar>
+        </div>
+        <div class="spinal-space-table-content spinal-scrollbar">
+          <el-table :data="documents"
+                    border
+                    style="width: 100%"
+                    :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
+                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
+            <el-table-column :label="$t('SpaceManagement.Nom')">
+              <template slot-scope="scope">
+                {{ scope.row.name.get() }}
+              </template>
+            </el-table-column>
 
-        <document-create v-bind:nodeId="nodeId"
-                         @reload="updateDocument"></document-create>
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
+            <el-table-column label=""
+                             width="70"
+                             align="center">
+              <template slot-scope="scope">
+                <el-button v
+                           icon="el-icon-download"
+                           circle
+                           @click="exportFichier(scope.row)"></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
 
-      </div>
+      </el-tab-pane>
 
-      <el-table :data="documents"
-                border
-                style="width: 100%"
-                :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-        <el-table-column :label="$t('SpaceManagement.Nom')">
-          <template slot-scope="scope">
-            {{ scope.row.name.get() }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label=""
-                         width="70"
-                         align="center">
-          <template slot-scope="scope">
-            <el-button v
-                       icon="el-icon-download"
-                       circle
-                       @click="exportFichier(scope.row)"></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-    </el-tab-pane>
-
-    <!-- ///////////////////////////////////////////////////////////////////////////////////-
+      <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Notes">
-      <el-container>
-        <message-component :node-info="nodeInfo"></message-component>
-      </el-container>
-    </el-tab-pane>
+      <el-tab-pane class="spinal-space-tab-container"
+                   class="tab-class"
+                   label="Notes">
+        <el-container class="container-class">
+          <message-component :node-info="nodeInfo"></message-component>
+        </el-container>
+      </el-tab-pane>
 
-    <!-- ///////////////////////////////////////////////////////////////////////////////////-
+      <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Calendrier /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Calendrier">
-      <div class="barre">
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
-        <ticket-create v-bind:nodeId="nodeId"
-                       @reload="updateticket"></ticket-create>
-      </div>
-      <vueCal :events="calendrier"></vueCal>
+      <el-tab-pane class="spinal-space-tab-container"
+                   label="Calendrier">
+        <div class="barre">
+          <div></div>
+          <!-- PLACEHOLDER DIV DELETE IT AFTER YOU CREATE THE BUTTON -->
+          <!-- <ticket-create v-bind:nodeId="nodeId"
+                         @reload="updateticket"></ticket-create> -->
+          <header-bar :header="ticketHeader"
+                      :content="ticketContent"
+                      :data="ticketData"></header-bar>
+        </div>
+        <div class="spinal-space-table-content spinal-scrollbar">
 
-    </el-tab-pane>
-  </el-tabs>
+          <vueCal :events="calendrier"></vueCal>
+        </div>
+
+      </el-tab-pane>
+    </el-tabs>
+  </el-row>
 </template>
 
 <script>
@@ -333,12 +355,16 @@ export default {
   position: relative;
   height: calc(100% - 20px);
 }
+.container-class,
+.tab-class {
+  height: 100%;
+}
 </style>
 
 <style>
 .tabsContainer .el-tabs__content {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
 }
 
 .barre {
