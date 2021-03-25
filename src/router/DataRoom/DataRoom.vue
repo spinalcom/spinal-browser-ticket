@@ -56,8 +56,13 @@ with this file. If not, see
         </el-tab-pane>
       </el-tabs>
     </el-row>
-    <room-data v-else
+    <div  v-else class="spinal-space-spacecon_container-container">
+      <div
+           class="spacecon_container">
+    <room-data
                    :node-id="nodeId"></room-data>
+           </div>
+    </div>
   </div>
 </template>
 
@@ -206,5 +211,15 @@ export default {
 }
 .data-room-collapse-bar-title {
   flex-grow: 1;
+}
+.spacecon .spacecon_container {
+  border-radius: 4px;
+}
+.spinal-space-spacecon_container-container {
+  width: 100%;
+  height: calc(100% - 55px);
+  padding: 5px 10px 10px 5px;
+  background-color: #fdfdfd;
+  overflow: auto;
 }
 </style>

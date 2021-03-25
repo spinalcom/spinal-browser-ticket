@@ -39,7 +39,8 @@ with this file. If not, see
 
     </el-container>
 
-    <div class="form">
+    <br/>
+    <div class="form row">
       <form @submit.prevent="addNote"
             class="noteForm">
 
@@ -71,23 +72,24 @@ with this file. If not, see
           </md-speed-dial-target>
 
           <md-speed-dial-content> -->
-        <div>
+        <div class="row col-lg-4" style="
+    padding-left: 30px;">
 
-          <el-button type="primary"
+          <el-button class="col-lg-1" type="primary"
                      @click="saveViewPoint"
-                     :title="'save point of view'"
+                     :title="'Enregistrer un point de la vue'"
                      icon="el-icon-position">
           </el-button>
 
-          <el-button type="primary"
+          <el-button class="col-lg-1" type="primary"
                      @click="TakeScreenShot"
-                     :title="'Take a screenshot'"
+                     :title="`Prendre une capture d'écran`"
                      icon="el-icon-camera-solid">
           </el-button>
 
-          <el-button type="primary"
+          <el-button class="col-lg-1" type="primary"
                      @click="addPJ"
-                     :title="'Add Attachment'"
+                     :title="'Ajouter une pièce jointe'"
                      icon="el-icon-paperclip">
           </el-button>
         </div>
@@ -95,7 +97,7 @@ with this file. If not, see
         <!-- </md-speed-dial-content>
         </md-speed-dial> -->
 
-        <div class="messageForm">
+        <div class="messageForm col-lg-6">
           <el-container class="pjDiv md-scrollbar"
                         v-if="messages.pj.length > 0">
 
@@ -111,7 +113,7 @@ with this file. If not, see
           </el-input>
         </div>
 
-        <div class="sendBtn">
+        <div class="sendBtn col-lg-2">
           <el-button type="primary"
                      @click.prevent="addNote"
                      icon="el-icon-s-promotion">
@@ -531,6 +533,7 @@ export default {
 .notesContainer .form .noteForm .sendBtn {
   flex: 1 1 15%;
   display: flex;
+  max-width: initial;
   align-items: flex-end;
 }
 </style>

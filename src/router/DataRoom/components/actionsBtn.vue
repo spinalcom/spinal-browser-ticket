@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div v-if="hover">
+  <div class="pull-right" >
     <el-button type="primary"
                icon="el-icon-download"
                @click="download">
