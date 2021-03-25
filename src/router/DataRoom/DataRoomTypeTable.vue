@@ -22,6 +22,7 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 <template>
+
   <el-table v-loading="loading"
             :data="data"
             border
@@ -124,7 +125,8 @@ export default {
       return false;
     },
     onSelectItem(item) {
-      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+      localStorage.setItem("nodeId", item.nodeId);
+      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
     },
     update() {
       this.loading = true;
@@ -137,6 +139,7 @@ export default {
       for (const item of this.items) {
         const resItem = {
           name: item.name,
+          nodeId: item.nodeId,
           serverId: item.serverId,
           haveChild: false,
           color: item.getColor(),
@@ -242,6 +245,7 @@ export default {
       });
     },
     SeeAll(zone) {
+
       let items = this.data.map(item => {
         return { server_id: item.serverId, color: item.color };
       });

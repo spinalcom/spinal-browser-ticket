@@ -166,6 +166,7 @@ export default {
     },
 
     addbreadcrumb(resultat) {
+      console.log(resultat);
       console.log("appelle de add breadcrubm");
       if (typeof resultat.roomNodeId !== "undefined") {
         this.roomNodeId = resultat.roomNodeId;
