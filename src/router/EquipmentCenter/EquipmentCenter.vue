@@ -61,16 +61,6 @@ export default {
       viewKey: VIEW_KEY,
       items: false,
       tabs: [
-        {
-          name: "Explorer",
-          content: Explorer,
-          props: {
-            viewKey: VIEW_KEY,
-            items: false,
-            view: false,
-          },
-          optional: false,
-        },
       ],
     };
   },
