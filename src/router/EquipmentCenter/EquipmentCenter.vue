@@ -25,7 +25,8 @@ with this file. If not, see
 <template>
   <div class="equipment-center">
     <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    <tab-manager class="tab-manager" :tabsprop="tabs" />
+    <tab-manager class="tab-manager"
+                 :tabsprop="tabs" />
     <!-- <explorer :Properties="tabs[0].props"></explorer> -->
   </div>
 </template>
@@ -61,6 +62,16 @@ export default {
       viewKey: VIEW_KEY,
       items: false,
       tabs: [
+        {
+          name: "Explorer",
+          content: Explorer,
+          props: {
+            viewKey: VIEW_KEY,
+            items: false,
+            view: false,
+          },
+          optional: false,
+        },
       ],
     };
   },
@@ -131,7 +142,6 @@ export default {
 </script>
 
 <style scoped>
-
 .equipment-center {
   margin: 5px 5px 5px 5px;
   overflow: hidden;
@@ -142,5 +152,4 @@ export default {
   height: calc(100% - 55px);
   border-radius: 5px;
 }
-
 </style>

@@ -23,31 +23,30 @@ with this file. If not, see
 -->
 
 <template>
-  <div v-if="Properties.items !== false">
+  <div>
     <div class="spl-button-bar">
       <el-button class="spl-el-button"
-        icon="el-icon-aim" circle
-        @click.stop="isolateAll()"
-      >
+                 icon="el-icon-aim"
+                 circle
+                 @click.stop="isolateAll()">
       </el-button>
       <el-button class="spl-el-button"
-        icon="el-icon-picture-outline-round" circle
-        @click.stop="SeeAll()"
-      >
+                 icon="el-icon-picture-outline-round"
+                 circle
+                 @click.stop="SeeAll()">
       </el-button>
       <el-button class="spl-el-button"
-        icon="el-icon-download" circle
-        @click.stop="exportToExcel()"
-      >
+                 icon="el-icon-download"
+                 circle
+                 @click.stop="exportToExcel()">
       </el-button>
     </div>
-    <div class="spl-table">
-      <node-table
-        :ref="'Explorer-table'"
-        :view-key="Properties.viewKey"
-        :items="Properties.items.items"
-        :columns="Properties.items.cols"
-      >
+    <div v-if="Properties.items !== false"
+         class="spl-table">
+      <node-table :ref="'Explorer-table'"
+                  :view-key="Properties.viewKey"
+                  :items="itemsComputed"
+                  :columns="cols">
       </node-table>
     </div>
   </div>
@@ -74,15 +73,25 @@ export default {
           return "danger";
         }
         return "success";
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       items: false,
       contextServId: 0,
-      currentView: null,
+      currentView: null
     };
+  },
+  computed: {
+    itemsComputed() {
+      if (this.Properties && this.Properties.items && this.Properties.items.items) return this.Properties.items.items
+      return []
+    },
+    cols() {
+      if (this.Properties && this.Properties.cols) return this.Properties.cols
+      return []
+    }
   },
   methods: {
     changeView(item) {
@@ -105,8 +114,8 @@ export default {
     },
     async debug(what) {
       console.debug("Debugging", what);
-    },
-  },
+    }
+  }
 };
 </script>
 
