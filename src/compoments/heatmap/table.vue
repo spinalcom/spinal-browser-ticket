@@ -187,17 +187,14 @@ export default {
 
 <style scoped>
 .spacecon {
-<<<<<<< HEAD
   width: 100%;
   height: 100%;
   /* overflow: hidden; */
   padding: 0 5px;
-=======
-  direction: ltr;
+  /* direction: ltr;
   margin: 5px 5px 5px 5px;
   overflow-x: auto;
-  overflow-y: hidden;
->>>>>>> origin/graphic-normalisation
+  overflow-y: hidden; */
 }
 /* .card-content {
    display: flex;

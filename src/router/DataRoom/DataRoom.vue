@@ -24,52 +24,44 @@ with this file. If not, see
 
 <template>
   <div class="data-room">
-    <div class="data-room-breadcrumb-container" style="margin: 10px;">
+    <div class="data-room-breadcrumb-container"
+         style="margin: 10px;">
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
-<<<<<<< HEAD
     <el-row v-if="display === false">
       <el-tabs type="border-card">
         <el-tab-pane :label="panel">
-            <div v-for="(item, index) in items"
-=======
-    <el-row>
-      <el-tabs class="data-room-tabs" type="border-card">
-        <el-tab-pane label="Tableau">
-          <el-collapse v-model="activeNames">
-            <el-collapse-item v-for="(item, index) in items"
->>>>>>> origin/graphic-normalisation
-                              :key="item.nodeType"
-                              :name="item.nodeType">
-                              <el-header>
-        <div style="float: right">
-          
-                    <el-button icon="el-icon-download"
-                               circle
-                               @click.stop="exportData(index)">
-                    </el-button>
-                    <el-button icon="el-icon-view"
-                               circle
-                               @click.stop="SeeAllClick(index)"></el-button>
-        </div>
-      </el-header>
-              <DataRoomTypeTable :ref="`data-room-table`"
-                                 :view-key="viewKey"
-                                 :node-type="item.nodeType"
-                                 :items="item.items"
-                                 :collums="item.cols">
-              </DataRoomTypeTable>
-            </div>
+          <div v-for="(item, index) in items"
+               :key="item.nodeType"
+               :name="item.nodeType">
+            <el-header>
+              <div style="float: right">
+
+                <el-button icon="el-icon-download"
+                           circle
+                           @click.stop="exportData(index)">
+                </el-button>
+                <el-button icon="el-icon-view"
+                           circle
+                           @click.stop="SeeAllClick(index)"></el-button>
+              </div>
+            </el-header>
+            <DataRoomTypeTable :ref="`data-room-table`"
+                               :view-key="viewKey"
+                               :node-type="item.nodeType"
+                               :items="item.items"
+                               :collums="item.cols">
+            </DataRoomTypeTable>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </el-row>
-    <div  v-else class="spinal-space-spacecon_container-container">
-      <div
-           class="spacecon_container">
-    <room-data
-                   :node-id="nodeId"></room-data>
-           </div>
+    <div v-else
+         class="spinal-space-spacecon_container-container">
+      <div class="spacecon_container">
+        <room-data :node-id="nodeId"></room-data>
+      </div>
     </div>
   </div>
 </template>
@@ -83,11 +75,17 @@ import TabManager from "../../compoments/tabManager/tabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
 import RoomData from "./components/RoomData.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
-import './DataRoomEventHandler';
+import "./DataRoomEventHandler";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileSystem } from 'spinal-core-connectorjs_type';
+import { FileSystem } from "spinal-core-connectorjs_type";
 export default {
-  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager, "room-data": RoomData, CategoryAttribute },
+  components: {
+    SpinalBreadcrumb,
+    DataRoomTypeTable,
+    TabManager,
+    "room-data": RoomData,
+    CategoryAttribute
+  },
   data() {
     return {
       currentView: null,
@@ -110,7 +108,7 @@ export default {
           },
           optional: false,
         },*/
-      ],
+      ]
     };
   },
   async mounted() {
@@ -177,13 +175,17 @@ export default {
         },
       ]*/
       if (this.items[0].nodeType === "BIMObject") {
-        this.display = true
+        this.display = true;
         const idNode = localStorage.getItem("nodeId");
         this.nodeId = idNode;
       }
     },
     changeView(item) {
-      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
+      ViewManager.getInstance(this.viewKey).push(
+        item.name,
+        item.serverId,
+        item.nodeId
+      );
     },
     exportData(index) {
       this.$refs["data-room-table"][index].exportToExcel();
@@ -214,7 +216,6 @@ export default {
 </style>
 
 <style scoped>
-
 .data-room-tabs {
   margin: 5px auto;
   height: calc(100% - 55px);
@@ -230,8 +231,7 @@ export default {
 .data-room-collapse-bar-title {
   flex-grow: 1;
 }
-<<<<<<< HEAD
-.spacecon .spacecon_container {
+<<<<<<< HEAD .spacecon .spacecon_container {
   border-radius: 4px;
 }
 .spinal-space-spacecon_container-container {
