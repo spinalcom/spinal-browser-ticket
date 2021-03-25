@@ -187,7 +187,6 @@ export default {
 <style scoped>
 .spacecon {
   direction: ltr;
-  margin: 5px 5px 5px 5px;
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -237,6 +236,7 @@ export default {
   display: flex;
 }
 .root {
+  border-radius: 5px;
   margin: 10px auto;
 }
 </style>

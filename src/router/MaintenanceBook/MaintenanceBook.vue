@@ -23,14 +23,10 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
-      <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    </el-header>
-    <el-main>
-      <tab-manager :tabsprop="tabs" />
-    </el-main>
-  </el-container>
+  <div class="ticket-center">
+    <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
+    <tab-manager class="tab-manager" :tabsprop="tabs" />
+  </div>
 </template>
 
 <script>
@@ -80,3 +76,17 @@ export default {
   methods: {},
 };
 </script>
+
+<style scoped>
+
+.ticket-center {
+  overflow: hidden;
+}
+
+.tab-manager {
+  margin: 10px 0;
+  height: calc(100% - 55px);
+  border-radius: 5px;
+}
+
+</style>

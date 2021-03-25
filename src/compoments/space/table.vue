@@ -212,7 +212,6 @@ export default {
 .spacecon {
   width: 100%;
   height: 100%;
-  padding: 5px 5px 5px 5px;
   overflow: hidden;
 }
 
