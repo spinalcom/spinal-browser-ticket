@@ -112,8 +112,6 @@ export class ViewerUtils {
    */
   isolateObjects(lstByModel) {
     if (!this.viewer) return;
-    console.log(lstByModel);
-    
     // @ts-ignore
     for (const key in spinal.SpinalForgeViewer.viewerManager.models) {
       let found = false;
