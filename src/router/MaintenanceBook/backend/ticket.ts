@@ -58,6 +58,7 @@ export default class BackEndTicket {
 
   async init(graph) {
     // this.ticketContext = await graph.getContext(TICKET_CONTEXT_NAME);
+    this.contexts = [];
     const children = await graph.getChildren();
     for (const context of children) {
       if (context.info.type.get() === "SpinalSystemServiceTicket") {

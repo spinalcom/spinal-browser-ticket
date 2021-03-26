@@ -23,40 +23,42 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="spl-height-control">
-    <div class="spl-button-bar">
-      <el-button class="spl-el-button"
-                 icon="el-icon-aim"
-                 circle
-                 @click.stop="isolateAll()">
-      </el-button>
-      <el-button class="spl-el-button"
-                 icon="el-icon-picture-outline-round"
-                 circle
-                 @click.stop="SeeAll()">
-      </el-button>
-      <el-button class="spl-el-button"
-                 icon="el-icon-download"
-                 circle
-                 @click.stop="exportToExcel()">
-      </el-button>
-    </div>
-    <div v-if="Properties.items !== false" class="spl-height-control">
-      <node-table :ref="'Explorer-table'"
-                  :view-key="Properties.viewKey"
-                  :items="itemsComputed"
-                  :columns="cols">
-      </node-table>
-    </div>
+  <div v-if="Properties.items !== false">
+    <el-container>
+      <el-header>
+        <div style="float: right">
+          <el-button
+            icon="el-icon-download"
+            circle
+            @click.stop="exportToExcel()"
+          >
+          </el-button>
+          <el-button
+            icon="el-icon-picture-outline-round"
+            circle
+            @click.stop="SeeAll()"
+          >
+          </el-button>
+          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
+          </el-button>
+          <el-button icon="el-icon-view" circle @click.stop="ShowAll()">
+          </el-button>
+        </div>
+      </el-header>
+        <node-table
+          :ref="'Explorer-table'"
+          :view-key="Properties.viewKey"
+          :items="list.items"
+          :columns="list.cols"
+        >
+        </node-table>
+    </el-container>
   </div>
 </template>
 
 <script>
 import { ViewManager } from "../../../services/ViewManager/ViewManager";
 // import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from "../backend/EquipmentBack";
-import BackendInitializer from "../../../services/BackendInitializer";
-import { EventBus } from "../../../services/event";
 import "../../../services/EventHandler";
 
 import NodeTable from "./NodeTable.vue";
@@ -72,25 +74,20 @@ export default {
           return "danger";
         }
         return "success";
-      }
-    }
+      },
+    },
   },
   data() {
     return {
       items: false,
       contextServId: 0,
-      currentView: null
+      currentView: null,
+      list: [],
     };
   },
-  computed: {
-    itemsComputed() {
-      if (this.Properties && this.Properties.items && this.Properties.items.items) return this.Properties.items.items
-      return []
-    },
-    cols() {
-      if (this.Properties && this.Properties.cols) return this.Properties.cols
-      return []
-    }
+  created: function () {
+    console.log(this.Properties);
+    this.list = this.Properties.items[0];
   },
   methods: {
     changeView(item) {
@@ -113,20 +110,7 @@ export default {
     },
     async debug(what) {
       console.debug("Debugging", what);
-    }
-  }
+    },
+  },
 };
 </script>
-
-<style scoped>
-
-.spl-el-button {
-  margin: 0 0 0 10px;
-}
-
-.spl-button-bar {
-  display: flex;
-  flex-direction: row-reverse;
-  padding: 5px 5px 5px 5px;
-}
-</style>

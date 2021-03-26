@@ -71,7 +71,7 @@ export default {
   height: 40px;
   justify-content: space-between;
   flex-wrap: nowrap;
-  margin: 10px 10px 5px 5px;
+  margin: 5px 10px 5px 10px;
   border-radius: 4px;
   align-items: center;
   background-color: white;

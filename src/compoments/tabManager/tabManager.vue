@@ -23,18 +23,20 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs type="border-card"
+  <el-tabs class="tab-manager-tabs"
+           type="border-card"
            :value="activetab"
            @tab-remove="removeTab">
     <el-tab-pane v-for="tab in opentabs"
                  :key="tab.name"
                  :label="tab.name"
                  :name="tab.name"
-                 :closable="true">
+                 :closable="false"
+                 class="tab-manager-pane">
       <component :is="tab.content"
                  :Properties="tab.props"></component>
     </el-tab-pane>
-    <el-tab-pane :disabled="true">
+    <!--<el-tab-pane :disabled="true">
       <span slot="label">
         <el-dropdown trigger="click"
                      @command="addTab">
@@ -53,7 +55,7 @@ with this file. If not, see
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-    </el-tab-pane>
+    </el-tab-pane>-->
   </el-tabs>
 </template>
 
@@ -117,4 +119,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.tab-manager-tabs .el-tabs__content {
+  height: calc(100% - 38px);
+}
+
+.tab-manager-pane {
+  height: 100%;
+}
+</style>

@@ -53,7 +53,7 @@ with this file. If not, see
 <script>
 import { getDefaultLanguage, loadLanguageAsync } from "./../../services/i18n";
 import drawer from "../drawer/drawer.vue";
-import spinalimg from "../../assets/imgs/spinalcom-logo.png";
+import spinalimg from "../../assets/imgs/spinaltwin_logo_fond_phto_RVB.png";
 export default {
   name: "spinal-header",
   components: { drawer },

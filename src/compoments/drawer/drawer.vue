@@ -43,7 +43,7 @@ with this file. If not, see
       <a href="http://spinalcom.com/"
          target="_blank">
         <img class="spinalcore-poweredby-image"
-             src="../../assets/imgs/spinalcore-poweredby-yellow.png" />
+             src="../../assets/imgs/spinaltwin_logo_fond_phto_RVB.png" />
       </a>
     </div>
 

@@ -23,80 +23,61 @@ with this file. If not, see
 -->
 
 <template>
-   <div class="spacecon">
-      <div class="spinal-space-header">
-         <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
-            <el-breadcrumb
-               class="breadcrumb-style"
-               separator="/"
-            >
-               <el-breadcrumb-item>
-                  <a @click="ResetBreadCrumb()">Heatmap Center</a>
-               </el-breadcrumb-item>
-               <el-breadcrumb-item
-                  v-for="(breadcrumb, index) in breadcrumbs"
-                  :key="index"
-               >
-                  <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
-               </el-breadcrumb-item>
-            </el-breadcrumb>
-         </div>
-
-         <el-button
-            icon="el-icon-s-grid"
-            circle
-            @click="openDrawer"
-         ></el-button>
-      </div>
-      <!-- Si on a pas encore choisi de catégorie -->
-      <div
-         v-if="selectCategorie == null"
-         class="root"
-      >
-
-         <!-- Si on a pas encore choisi de contexte -->
-         <tableau-context
-            v-if="contextSelected == null"
-            :context-lst="contextLst"
-            @select="SelectContext"
-         >
-         </tableau-context>
-
-         <!-- Si on a choisi un contexte -->
-         <tableau-category
-            v-else
-            :context-selected="contextSelected"
-            @seeGroups="SelectCategorie"
-         >
-         </tableau-category>
+  <div class="spacecon">
+    <div class="spinal-space-header">
+      <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
+        <el-breadcrumb class="breadcrumb-style"
+                       separator="/">
+          <el-breadcrumb-item>
+            <a @click="ResetBreadCrumb()">Heatmap Center</a>
+          </el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
+                              :key="index">
+            <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
+          </el-breadcrumb-item>
+        </el-breadcrumb>
       </div>
 
-      <!-- Si on a choisi une catégorie  -->
-         <groupLstVue
-            v-if="selectCategorie != null && profilSelected==null && groupSelected ==null"
-            ref="categoryListe"
-            :select-categorie="selectCategorie"
-            @selectgroup="SelectGroup"
-         ></groupLstVue>
+      <el-button icon="el-icon-s-grid"
+                 circle
+                 @click="openDrawer"></el-button>
+    </div>
+    <!-- Si on a pas encore choisi de catégorie -->
+    <div v-if="selectCategorie == null"
+         class="root">
 
-         <profilLstVue v-if="groupSelected != null && profilSelected ==null"
-                      :profils="groupSelected.profils"
-                      :color="groupSelected.color"
-                      @selectprofil="SelectProfil">
-         </profilLstVue>
+      <!-- Si on a pas encore choisi de contexte -->
+      <tableau-context v-if="contextSelected == null"
+                       :context-lst="contextLst"
+                       @select="SelectContext">
+      </tableau-context>
 
+      <!-- Si on a choisi un contexte -->
+      <tableau-category v-else
+                        :context-selected="contextSelected"
+                        @seeGroups="SelectCategorie">
+      </tableau-category>
+    </div>
 
+    <!-- Si on a choisi une catégorie  -->
+    <groupLstVue v-if="selectCategorie != null && profilSelected==null && groupSelected ==null"
+                 ref="categoryListe"
+                 :select-categorie="selectCategorie"
+                 @selectgroup="SelectGroup"></groupLstVue>
 
-      <heatmap-vue
-         class="heatmapContainer"
-         v-if="profilSelected!=null"
-         :profil="profilSelected"
-         
-      >
+    <profilLstVue v-if="groupSelected != null && profilSelected ==null"
+                  :profils="groupSelected.profils"
+                  :color="groupSelected.color"
+                  @selectprofil="SelectProfil">
+    </profilLstVue>
 
-      </heatmap-vue>
+    <heatmap-vue class="heatmapContainer"
+                 v-if="profilSelected!=null"
+                 :profil="profilSelected">
 
-   </div>
+    </heatmap-vue>
+
+  </div>
 </template>
 
 <script>
@@ -110,155 +91,157 @@ import { EventBus } from "../../services/event";
 import HeatmapVue from "./component/heatmapVue.vue";
 
 export default {
-   components: {profilLstVue, groupLstVue, tableauContext, tableauCategory, HeatmapVue },
-   props: [],
-   data() {
-      return {
-         contextLst: [],
-         breadcrumbs: [],
-         selectCategorie: null,
-         contextSelected: null,
-         profilSelected: null,
-         groupSelected: null
-         
-      };
-   },
-   async mounted() {
-      this.profilSelected = null;
-      this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts
+  components: {
+    profilLstVue,
+    groupLstVue,
+    tableauContext,
+    tableauCategory,
+    HeatmapVue
+  },
+  props: [],
+  data() {
+    return {
+      contextLst: [],
+      breadcrumbs: [],
+      selectCategorie: null,
+      contextSelected: null,
+      profilSelected: null,
+      groupSelected: null
+    };
+  },
+  async mounted() {
+    this.profilSelected = null;
+    this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts
 
-      EventBus.$on("sidebar-selected-item", (item) => {
-         spinalBackEnd.heatmapBack
-            .getDataFilterItem(item)
-            .then((result) => {
-               console.log("resuuuuuuuultat____", result);
-               this.contextLst = result;
+    EventBus.$on("sidebar-selected-item", item => {
+      spinalBackEnd.heatmapBack
+        .getDataFilterItem(item)
+        .then(result => {
+          console.log("resuuuuuuuultat____", result);
+          this.contextLst = result;
 
-               if (this.contextSelected) {
-                  for (const context of this.contextLst) {
-                     if (this.contextSelected.id === context.id) {
-                        const selectCategorie = this.selectCategorie;
-                        this.SelectContext(context);
-                        if (selectCategorie) {
-                           for (const cat of this.contextSelected.categories) {
-                              if (selectCategorie.id === cat.id) {
-                                 this.onclick(cat);
-                              }
-                           }
-                        }
-                        break;
-                     }
+          if (this.contextSelected) {
+            for (const context of this.contextLst) {
+              if (this.contextSelected.id === context.id) {
+                const selectCategorie = this.selectCategorie;
+                this.SelectContext(context);
+                if (selectCategorie) {
+                  for (const cat of this.contextSelected.categories) {
+                    if (selectCategorie.id === cat.id) {
+                      this.onclick(cat);
+                    }
                   }
-               }
-            })
-            .catch((err) => {
-               console.error(err);
-            });
-      });
+                }
+                break;
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });
 
-      EventBus.$on("sidebar-homeSelect", (item) => {
-         console.log("sidebar-homeSelect", item);
-      });
-   },
-   methods: {
-      ResetBreadCrumb() {
-         this.profilSelected = null;
-         this.selectCategorie = null;
-         this.contextSelected = null;
-         this.groupSelected= null;
-         this.breadcrumbs = [];
-      },
-      
+    EventBus.$on("sidebar-homeSelect", item => {
+      console.log("sidebar-homeSelect", item);
+    });
+  },
+  methods: {
+    ResetBreadCrumb() {
+      this.profilSelected = null;
+      this.selectCategorie = null;
+      this.contextSelected = null;
+      this.groupSelected = null;
+      this.breadcrumbs = [];
+    },
 
     addbreadcrumb(resultat) {
       console.log("appelle de add breadcrubm");
       this.breadcrumbs = [...this.breadcrumbs, resultat];
     },
-    
-   //choix d'un context (niveau 1)
-      SelectContext(context) {
-         this.breadcrumbs = [];
-         this.selectCategorie = null;
-         this.profilSelected = null;
-         this.groupSelected=null;
-         this.contextSelected = context;
 
-         const obj = {
+    //choix d'un context (niveau 1)
+    SelectContext(context) {
+      this.breadcrumbs = [];
+      this.selectCategorie = null;
+      this.profilSelected = null;
+      this.groupSelected = null;
+      this.contextSelected = context;
+
+      const obj = {
         name: context.name,
         click: () => {
           this.SelectContext(context);
         }
       };
-         this.breadcrumbs = [...this.breadcrumbs, obj];
-         this.contextSelected = context;
-    },   
-    
-      //choix d'une catégorie (niveau 2)
-      SelectCategorie(categorie) {
-         this.groupSelected=null;
-         this.profilSelected = null;
-         this.selectCategorie = categorie;
+      this.breadcrumbs = [...this.breadcrumbs, obj];
+      this.contextSelected = context;
+    },
 
-         const categorieIndex = 1;
-         this.breadcrumbs.splice(categorieIndex);
+    //choix d'une catégorie (niveau 2)
+    SelectCategorie(categorie) {
+      this.groupSelected = null;
+      this.profilSelected = null;
+      this.selectCategorie = categorie;
 
-         this.breadcrumbs = [
-            ...this.breadcrumbs,
-            {
-               name: categorie.name,
-               click: () => {
-                  this.SelectCategorie(categorie);
-                  //this.$refs.categoryListe.resetRoomSelected();
-               },
-            },
-         ]; 
-      },
+      const categorieIndex = 1;
+      this.breadcrumbs.splice(categorieIndex);
 
-      //choix d'une catégorie (niveau 3)
-      SelectGroup(group){
-         //on enregistre le groupe choisi
-         this.groupSelected = { profils: group.rooms, color: group.color }
-         this.breadcrumbs = [
-            ...this.breadcrumbs,
-            {
-               name: group.name,
-               click: () => {
-                  this.profilSelected= null;
-                  this.groupSelected=null;
-                  this.breadcrumbs.splice(2);
-                  this.SelectGroup(group);
-               },
-            },
-         ]; 
-         
-      },
+      this.breadcrumbs = [
+        ...this.breadcrumbs,
+        {
+          name: categorie.name,
+          click: () => {
+            this.SelectCategorie(categorie);
+            //this.$refs.categoryListe.resetRoomSelected();
+          }
+        }
+      ];
+    },
 
-      //choix d'un profil (niveau 4)
-      SelectProfil(profil){
-         this.profilSelected=profil;
-         this.breadcrumbs = [
-            ...this.breadcrumbs,
-            {
-               name: profil.name,
-               click: () => {
-                  this.profilSelected=null;
-                  this.breadcrumbs.splice(3);
-                  this.SelectProfil(profil);
-               },
-            },
-         ]; 
-      },
+    //choix d'une catégorie (niveau 3)
+    SelectGroup(group) {
+      //on enregistre le groupe choisi
+      this.groupSelected = { profils: group.rooms, color: group.color };
+      this.breadcrumbs = [
+        ...this.breadcrumbs,
+        {
+          name: group.name,
+          click: () => {
+            this.profilSelected = null;
+            this.groupSelected = null;
+            this.breadcrumbs.splice(2);
+            this.SelectGroup(group);
+          }
+        }
+      ];
+    },
 
-      addbreadcrumb(resultat) {
-         console.log("appelle de add breadcrubm");
-         this.breadcrumbs = [...this.breadcrumbs, resultat];
-      },
+    //choix d'un profil (niveau 4)
+    SelectProfil(profil) {
+      this.profilSelected = profil;
+      this.breadcrumbs = [
+        ...this.breadcrumbs,
+        {
+          name: profil.name,
+          click: () => {
+            this.profilSelected = null;
+            this.breadcrumbs.splice(3);
+            this.SelectProfil(profil);
+          }
+        }
+      ];
+    },
 
-      
-      openDrawer() {
-         EventBus.$emit("open-drawer");
-      },
-   },
+    addbreadcrumb(resultat) {
+      console.log("appelle de add breadcrubm");
+      this.breadcrumbs = [...this.breadcrumbs, resultat];
+    },
+
+    openDrawer() {
+      EventBus.$emit("open-drawer");
+    }
+  }
 };
 </script>
 
@@ -266,7 +249,6 @@ export default {
 .spacecon {
   width: 100%;
   height: 100%;
-  /* overflow: hidden; */
   padding: 0 5px;
 }
 /* .card-content {
@@ -281,12 +263,13 @@ export default {
    text-align: center;
 } */
 .breadcrumb-style {
-  width: 100%;
-  font-size: 1.2em;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   flex-wrap: nowrap;
-  padding: 0 5px 0 5px;
+  margin: 5px 10px 5px 10px;
+  border-radius: 4px;
+  align-items: center;
+  background-color: white;
 }
 
 /* .boutton-barre {
@@ -299,7 +282,6 @@ export default {
 } */
 .spinal-space-header {
   display: flex;
-  height: 43px;
   justify-content: space-between;
   align-items: center;
   border-radius: 4px;

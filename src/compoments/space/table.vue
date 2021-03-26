@@ -166,6 +166,7 @@ export default {
     },
 
     addbreadcrumb(resultat) {
+      console.log(resultat);
       console.log("appelle de add breadcrubm");
       if (typeof resultat.roomNodeId !== "undefined") {
         this.roomNodeId = resultat.roomNodeId;
@@ -217,8 +218,7 @@ export default {
 
 .spinal-space-header-container {
   background-color: #fdfdfd;
-  height: 48px;
-  padding: 7px 5px 5px 5px;
+  padding: 5px 20px 5px 20px;
 }
 .spinal-space-header-breadcrum-container {
   width: calc(100% - 43px);
@@ -229,11 +229,24 @@ export default {
   display: flex;
 }
 .spacecon .breadcrumb-style {
-  width: 100%;
+  /* width: 100%;
+  font-size: 1.2em;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  padding: 0 5px 0 5px;
+  padding: 0 5px 0 5px; */
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  border-radius: 4px;
+  align-items: center;
+  background-color: white;
+}
+
+.breadcrumb-item {
+  font-size: 20px;
+  margin: 10px 0 10px 10px;
 }
 
 .spacecon .spacecon_container {
@@ -242,14 +255,13 @@ export default {
 }
 .spinal-space-spacecon_container-container {
   width: 100%;
-  height: calc(100% - 48px);
   padding: 5px 10px 10px 5px;
   background-color: #fdfdfd;
+  height: calc(100% - 50px);
 }
 
 .spinal-space-header {
   display: flex;
-  height: 43px;
   justify-content: space-between;
   align-items: center;
   border-radius: 4px;

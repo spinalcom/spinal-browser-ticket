@@ -128,6 +128,7 @@ export default {
     },
 
     SelectContext(context) {
+      console.log(context)
       this.$emit("select", context);
     },
     async SeeAll() {
