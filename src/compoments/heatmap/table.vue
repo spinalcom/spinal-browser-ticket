@@ -31,7 +31,7 @@ with this file. If not, see
                separator="/"
             >
                <el-breadcrumb-item>
-                  <a @click="onclick(null)">Heatmap Center</a>
+                  <a @click="ResetBreadCrumb()">Heatmap Center</a>
                </el-breadcrumb-item>
                <el-breadcrumb-item
                   v-for="(breadcrumb, index) in breadcrumbs"
@@ -56,7 +56,7 @@ with this file. If not, see
 
          <!-- Si on a pas encore choisi de contexte -->
          <tableau-context
-            v-if="contextSelected === null"
+            v-if="contextSelected == null"
             :context-lst="contextLst"
             @select="SelectContext"
          >
@@ -66,24 +66,32 @@ with this file. If not, see
          <tableau-category
             v-else
             :context-selected="contextSelected"
-            @seeGroups="onclick"
+            @seeGroups="SelectCategorie"
          >
          </tableau-category>
       </div>
 
       <!-- Si on a choisi une catégorie  -->
-      <div v-if="selectCategorie != null && profilSelected==null">
          <groupLstVue
+            v-if="selectCategorie != null && profilSelected==null && groupSelected ==null"
             ref="categoryListe"
             :select-categorie="selectCategorie"
-            @addbreadcrumb="addbreadcrumb"
+            @selectgroup="SelectGroup"
          ></groupLstVue>
-      </div>
+
+         <profilLstVue v-if="groupSelected != null && profilSelected ==null"
+                      :profils="groupSelected.profils"
+                      :color="groupSelected.color"
+                      @selectprofil="SelectProfil">
+         </profilLstVue>
+
+
 
       <heatmap-vue
          class="heatmapContainer"
          v-if="profilSelected!=null"
          :profil="profilSelected"
+         
       >
 
       </heatmap-vue>
@@ -94,6 +102,7 @@ with this file. If not, see
 <script>
 import { spinalBackEnd } from "../../services/spinalBackend";
 import groupLstVue from "./component/groupLstVue";
+import profilLstVue from "./component/profilLstVue";
 import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
 
@@ -101,15 +110,17 @@ import { EventBus } from "../../services/event";
 import HeatmapVue from "./component/heatmapVue.vue";
 
 export default {
-   components: { groupLstVue, tableauContext, tableauCategory, HeatmapVue },
+   components: {profilLstVue, groupLstVue, tableauContext, tableauCategory, HeatmapVue },
    props: [],
    data() {
       return {
          contextLst: [],
-         selectCategorie: null,
          breadcrumbs: [],
+         selectCategorie: null,
          contextSelected: null,
          profilSelected: null,
+         groupSelected: null
+         
       };
    },
    async mounted() {
@@ -150,38 +161,19 @@ export default {
       });
    },
    methods: {
-      onclick(categorie) {
+      ResetBreadCrumb() {
          this.profilSelected = null;
-         this.selectCategorie = categorie;
-         if (categorie) {
-            const categorieIndex = 1;
-            this.breadcrumbs.splice(categorieIndex);
-
-            this.breadcrumbs = [
-               ...this.breadcrumbs,
-               {
-                  name: categorie.name,
-                  click: () => {
-                     this.onclick(categorie);
-                     this.$refs.categoryListe.resetRoomSelected();
-                  },
-               },
-            ];
-         } else {
-            this.contextSelected = null;
-            this.breadcrumbs = [];
-         }
+         this.selectCategorie = null;
+         this.contextSelected = null;
+         this.groupSelected= null;
+         this.breadcrumbs = [];
       },
-
-      addbreadcrumb(resultat) {
-         console.log("appelle de add breadcrubm");
-         this.breadcrumbs = [...this.breadcrumbs, resultat];
-      },
-
+      //choix d'un context (niveau 1)
       SelectContext(context) {
          this.breadcrumbs = [];
          this.selectCategorie = null;
          this.profilSelected = null;
+         this.groupSelected=null;
          this.contextSelected = context;
 
          const obj = {
@@ -194,6 +186,68 @@ export default {
          this.breadcrumbs = [...this.breadcrumbs, obj];
          this.contextSelected = context;
       },
+      //choix d'une catégorie (niveau 2)
+      SelectCategorie(categorie) {
+         this.groupSelected=null;
+         this.profilSelected = null;
+         this.selectCategorie = categorie;
+
+         const categorieIndex = 1;
+         this.breadcrumbs.splice(categorieIndex);
+
+         this.breadcrumbs = [
+            ...this.breadcrumbs,
+            {
+               name: categorie.name,
+               click: () => {
+                  this.SelectCategorie(categorie);
+                  //this.$refs.categoryListe.resetRoomSelected();
+               },
+            },
+         ]; 
+      },
+
+      //choix d'une catégorie (niveau 3)
+      SelectGroup(group){
+         //on enregistre le groupe choisi
+         this.groupSelected = { profils: group.rooms, color: group.color }
+         this.breadcrumbs = [
+            ...this.breadcrumbs,
+            {
+               name: group.name,
+               click: () => {
+                  this.profilSelected= null;
+                  this.groupSelected=null;
+                  this.breadcrumbs.splice(2);
+                  this.SelectGroup(group);
+               },
+            },
+         ]; 
+         
+      },
+
+      //choix d'un profil (niveau 4)
+      SelectProfil(profil){
+         this.profilSelected=profil;
+         this.breadcrumbs = [
+            ...this.breadcrumbs,
+            {
+               name: profil.name,
+               click: () => {
+                  this.profilSelected=null;
+                  this.breadcrumbs.splice(3);
+                  this.SelectProfil(profil);
+               },
+            },
+         ]; 
+      },
+
+      addbreadcrumb(resultat) {
+         console.log("appelle de add breadcrubm");
+         this.breadcrumbs = [...this.breadcrumbs, resultat];
+      },
+
+      
       openDrawer() {
          EventBus.$emit("open-drawer");
       },

@@ -1,10 +1,8 @@
 <template>
 
    <div class="_heatmapContainer spaceL-top">
-      <div class="name"> {{profil.name}} </div>
-
       <div class="buttons">
-         <div class="btn space-top btn-size space-right">
+         <div class="btn space-top btn-size space-right center-div">
             <i
                @click="decreaseIndex()"
                class="arrow left"
@@ -91,12 +89,10 @@ export default {
             {
                title: "Profil info",
                content: profilInfoComponent,
-               image: require("./img2.jpg"),
             },
             // {
             //    title: "Chart",
             //    content: chartComponent,
-            //    image: require("./img.jpg"),
             // },
          ],
       };
@@ -292,68 +288,10 @@ export default {
    /* background-color: red; */
 }
 
-/* 
-.arrow {
-   border: solid black;
-   border-width: 0 3px 3px 0;
-   display: inline-block;
-   padding: 3px;
+.center-div {
+     margin: 0 auto;
+     width: 100px; 
 }
-
-.right {
-   transform: rotate(-45deg);
-   -webkit-transform: rotate(-45deg);
-}
-
-.left {
-   transform: rotate(135deg);
-   -webkit-transform: rotate(135deg);
-}
-
-.btn-size {
-   width: 45%;
-}
-
-.spaceL-top {
-   margin-top: 60px;
-}
-.space-top {
-   margin-top: 20px;
-}
-.space-right {
-   margin-right: 50px;
-}
-
-.panel-color {
-   background-color: #ffffff;
-}
-
-.btn {
-   display: inline-block;
-   padding: 20px 12px;
-   margin-bottom: 0;
-   font-size: 14px;
-   font-weight: 400;
-   line-height: 1.42857143;
-   text-align: center;
-   white-space: nowrap;
-   vertical-align: middle;
-   -ms-touch-action: manipulation;
-   touch-action: manipulation;
-   cursor: pointer;
-   -webkit-user-select: none;
-   -moz-user-select: none;
-   -ms-user-select: none;
-   user-select: none;
-   background-image: none;
-   border: 1px solid transparent;
-   border-radius: 4px;
-   text-decoration: none;
-
-   color: #333;
-   background-color: #fff;
-   border-color: #ccc;
-} */
 </style>
 
 

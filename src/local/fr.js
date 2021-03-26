@@ -56,7 +56,7 @@ export default {
   "HeatmapCenter.Groupe": "Groupe",
   "HeatmapCenter.Nb_groupes": "Groupes",
   "HeatmapCenter.Nb_pieces": "Pièces",
-  "HeatmapCenter.Nb_profils": "Profiles",
+  "HeatmapCenter.Nb_profils": "Profils",
   "HeatmapCenter.lst_profils": "Liste des profiles",
   "HeatmapCenter.Surface": "Surface(M²)",
   "HeatmapCenter.Groupes":"Groupes",

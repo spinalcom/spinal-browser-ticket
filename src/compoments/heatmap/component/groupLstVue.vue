@@ -61,10 +61,10 @@ with this file. If not, see
                            :label="$t('HeatmapCenter.Nb_profils')"
                            align="center">
           </el-table-column>
-          <el-table-column :label="$t('HeatmapCenter.lst_profils')"
+          <el-table-column width="65"
                            align="center">
             <template slot-scope="scope">
-              <el-button @click="seeRoomTable(scope.row)"
+              <el-button @click="SelectGroup(scope.row)"
                          icon="el-icon-arrow-right"
                          circle></el-button>
             </template>
@@ -72,7 +72,7 @@ with this file. If not, see
         </el-table>
 
         <!-- Si on a déjà selectionné un groupe , on affiche la liste des profiles -->
-        <div v-else>
+        <!-- <div v-else>
           <profilLstVue
                       :profils="groupSelected.profils"
                       :color="groupSelected.color"
@@ -80,9 +80,7 @@ with this file. If not, see
                       @profilSelectEvent="profilSelectEvent">
          </profilLstVue>
         
-        </div>
-
-
+        </div> -->
       </el-tab-pane>
     </el-tabs>
 
@@ -165,18 +163,35 @@ export default {
       console.log("expoooooooooooort", this.data);
     },
 
-    seeRoomTable(profilData) {
-      this.groupSelected = { profils: profilData.rooms, color: profilData.color };
+    //Selecting a group
+    seeProfilsTable(profilData) {
+      this.groupSelected = { profils: profilData.rooms, color: profilData.color }
       this.$emit("addbreadcrumb", {
         name: profilData.name,
         click: () => {
+          this.$parent.breadcrumbs.slice(1);
+          this.groupSelected=null;
+          this.$parent.profilSelected=null;
           
         }
       });
     },
+
+    SelectGroup(group){
+      this.$emit("selectgroup",group);
+    },
+
+    //Selecting a profil
     profilSelectEvent (value) {
-      //console.log("Event recieved : ",value);
+      console.log("Event recieved : ",value);
       this.$parent.profilSelected=value;
+      this.$emit("addbreadcrumb", {
+        name: value.name,
+        click: () => {
+          
+        }
+      });
+      
     },
     resetgroupSelected() {
       this.groupSelected = null;
@@ -248,7 +263,7 @@ export default {
   },
   beforeDestroy() {},
   async mounted() {
-    console.log("tttttttttt", this.data);
+    //console.log("tttttttttt", this.data);
     this.groupSelected = null;
   }
 };
