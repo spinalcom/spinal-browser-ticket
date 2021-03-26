@@ -168,7 +168,14 @@ export default {
          this.groupSelected= null;
          this.breadcrumbs = [];
       },
-      //choix d'un context (niveau 1)
+      
+
+    addbreadcrumb(resultat) {
+      console.log("appelle de add breadcrubm");
+      this.breadcrumbs = [...this.breadcrumbs, resultat];
+    },
+    
+   //choix d'un context (niveau 1)
       SelectContext(context) {
          this.breadcrumbs = [];
          this.selectCategorie = null;
@@ -177,15 +184,15 @@ export default {
          this.contextSelected = context;
 
          const obj = {
-            name: context.name,
-            click: () => {
-               this.SelectContext(context);
-            },
-         };
-
+        name: context.name,
+        click: () => {
+          this.SelectContext(context);
+        }
+      };
          this.breadcrumbs = [...this.breadcrumbs, obj];
          this.contextSelected = context;
-      },
+    },   
+    
       //choix d'une catégorie (niveau 2)
       SelectCategorie(categorie) {
          this.groupSelected=null;
@@ -257,10 +264,10 @@ export default {
 
 <style scoped>
 .spacecon {
-   width: 100%;
-   height: 100%;
-   /* overflow: hidden; */
-   padding: 0 10px;
+  width: 100%;
+  height: 100%;
+  /* overflow: hidden; */
+  padding: 0 5px;
 }
 /* .card-content {
    display: flex;
@@ -274,12 +281,12 @@ export default {
    text-align: center;
 } */
 .breadcrumb-style {
-   width: 100%;
-   font-size: 1.2em;
-   display: flex;
-   align-items: center;
-   flex-wrap: nowrap;
-   padding: 0 5px 0 5px;
+  width: 100%;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 0 5px 0 5px;
 }
 
 /* .boutton-barre {
@@ -291,24 +298,25 @@ export default {
    margin-bottom: 10px;
 } */
 .spinal-space-header {
-   display: flex;
-   height: 43px;
-   justify-content: space-between;
-   align-items: center;
-   border-radius: 4px;
-   background: white;
+  display: flex;
+  height: 43px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  background: white;
+  margin: 5px 0;
 }
 .spinal-space-header-breadcrum-container {
-   width: calc(100% - 43px);
-   overflow-x: auto;
-   overflow-y: hidden;
-   white-space: nowrap;
-   height: 100%;
-   display: flex;
+  width: calc(100% - 43px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
 }
 
 .heatmapContainer {
-   width: 100%;
-   height: calc(100% - 43px);
+  width: 100%;
+  height: calc(100% - 43px);
 }
 </style>
