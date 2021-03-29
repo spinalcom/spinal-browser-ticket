@@ -14,7 +14,7 @@
             ></i>
          </div>
 
-         <!-- <div class="btn space-top btn-size"> <i class="arrow left"></i> Unité de temps <i class="arrow right"></i></div> -->
+         
       </div>
 
       <vueper-slides
@@ -23,22 +23,6 @@
          prevent-y-scroll
          class="space-top"
       >
-         <!-- <vueper-slides
-         :slide-ratio="1 / 2"
-         fixed-height="500px"
-         :dragging-distance="70"
-         prevent-y-scroll
-         class="space-top"
-      > -->
-
-         <!-- <vueper-slide
-            class="heigth"
-            v-for="(slide, i) in slides"
-            :key="i"
-            :title="slide.title"
-            :content="slide.content"
-            :image="slide.image"
-         /> -->
 
          <vueper-slide
             class="heigth"
@@ -72,7 +56,6 @@ import chartComponent from "./carrousel-component/chart_component.vue";
 
 const backendService = spinalBackEnd.heatmapBack;
 
-// import { spinalControlPointService } from "spinal-env-viewer-plugin-control-endpoint-service";
 
 export default {
    props: ["profil"],
@@ -82,17 +65,17 @@ export default {
          variableSelected: undefined,
          endpoints: [],
          details: [],
-         //variables:["Variable 1","Variable 2", "Variable 3"],
          variables: [],
          index: undefined,
          slides: [
             {
                title: "Profil info",
-               content: profilInfoComponent,
+               content: profilInfoComponent
             },
             // {
             //    title: "Chart",
             //    content: chartComponent,
+            //    image: require("./img.jpg"),
             // },
          ],
       };
@@ -292,6 +275,7 @@ export default {
      margin: 0 auto;
      width: 100px; 
 }
+
 </style>
 
 

@@ -1,6 +1,5 @@
 <template>
    <div class="colors">
-
       <div
          class="boxContainer"
          v-for="(g,index) in gradients"
