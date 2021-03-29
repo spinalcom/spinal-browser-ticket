@@ -25,8 +25,18 @@ with this file. If not, see
 <template>
   <div v-if="Properties.items !== false">
     <el-container>
-      <el-header>
-        {{ $t(`node-type.${Properties.items.nodeType}`) }}
+      <el-header style="height: 10%">
+        <div style="float: left; margin-right: 10px">
+          <el-button
+            icon="el-icon-arrow-left"
+            circle
+            @click.stop="popView()"
+          >
+          </el-button>
+        </div>
+        <div style="float: left; margin-top: 10px">
+          {{ $t(`node-type.${Properties.items.nodeType}`) }}
+        </div>
         <div style="float: right">
           <el-button
             icon="el-icon-download"
@@ -83,9 +93,6 @@ export default {
   },
   data() {
     return {
-      items: false,
-      contextServId: 0,
-      currentView: null,
     };
   },
   methods: {
@@ -94,6 +101,9 @@ export default {
         item.name,
         item.serverId
       );
+    },
+    popView() {
+      ViewManager.getInstance(this.Properties.viewKey).pop()
     },
     SeeAll() {
       this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);

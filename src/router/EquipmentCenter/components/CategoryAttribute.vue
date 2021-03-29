@@ -23,10 +23,26 @@ with this file. If not, see
 -->
 
 <template>
-  <div v-if="items !== false">
+  <div v-if="Properties.item !== false">
     <el-container>
       <el-header>
-        {{ $t(`node-type.${items.nodeType}`) }}
+        <!-- {{ $t(`node-type.${Properties.item}`) }} -->
+        <div style="float: right">
+          <el-button
+            icon="el-icon-download"
+            circle
+            @click.stop="exportToExcel()"
+          >
+          </el-button>
+          <el-button
+            icon="el-icon-picture-outline-round"
+            circle
+            @click.stop="SeeAll()"
+          >
+          </el-button>
+          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
+          </el-button>
+        </div>
       </el-header>
       <el-main>
       </el-main>
@@ -37,71 +53,52 @@ with this file. If not, see
 <script>
 import { ViewManager } from "../../../services/ViewManager/ViewManager";
 // import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from '../backend/EquipmentBack'
+import { EquipmentBack } from "../backend/EquipmentBack";
+import BackendInitializer from "../../../services/BackendInitializer";
+import { EventBus } from "../../../services/event";
+import "../../../services/EventHandler";
 
-
+import NodeTable from "./NodeTable.vue";
 export default {
-  name: "CategoryAttribute",
-  components: {  },
-  props : {
-    Properties:
-    {
+  name: "Explorer",
+  components: { NodeTable },
+  props: {
+    Properties: {
       required: true,
       type: Object,
-      validator: function (value)
-      {
-        if (value.viewKey == "")
-        {
-          return('danger')
+      validator: function(value) {
+        if (value.viewKey == "") {
+          return "danger";
         }
-        return('success')
-      }
-    }
+        return "success";
+      },
+    },
   },
   data() {
     return {
-      items: false,
-      contextServId: 0,
-      currentView: null,
     };
   },
-  async mounted()
-  {
-    // Get the ViewManager instance for the TicketCenter viewKey and initializes it
-    await ViewManager.getInstance(this.Properties.viewKey).viewSubscribe(this.onViewChange.bind(this), 0);
-  },
   methods: {
-    async onViewChange(view)
-    {
-      let mapItems = [];
-      if (view.serverId === 0) {
-        this.contextServId = 0;
-        mapItems = await EquipmentBack.getInstance().getContexts();
-      } else {
-        if (this.contextServId === 0) {
-          this.contextServId = view.serverId;
-        }
-        mapItems = await EquipmentBack.getInstance().getItems(
-          view.serverId,
-          this.contextServId
-        );
-      }
-      for (const [nodeType, items] of mapItems) {
-        const cols = new Set()
-        for (const item of items) {
-          if (item.children) {
-            for (const [childTypes] of item.children) {
-              cols.add(childTypes)
-            }
-          }
-        }
-        this.items = {nodeType, items, cols: Array.from(cols)};
-      }
-      this.currentView = view;
+    changeView(item) {
+      ViewManager.getInstance(this.Properties.viewKey).push(
+        item.name,
+        item.serverId
+      );
     },
-    async debug(what)
-    {
-      console.log("Debugging", what);
+    SeeAll() {
+      this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
+    },
+    isolateAll() {
+      this.$refs["Explorer-table"].isolateAll(this.Properties.view.serverId);
+    },
+    exportToExcel() {
+      this.$refs["Explorer-table"].exportToExcel();
+    },
+    ShowAll() {
+      this.$refs["Explorer-table"].ShowAll();
+    },
+    async debug(what) {
+      console.debug("Debugging", what);
     },
   },
 };

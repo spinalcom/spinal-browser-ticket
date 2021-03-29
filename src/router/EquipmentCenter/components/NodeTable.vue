@@ -58,8 +58,20 @@ with this file. If not, see
                     circle
                     @click="onSelectItem(scope.row)"></el-button>
       </div>
-    <!-- </el-table-column>
-    <el-table-column label=""
+    </el-table-column>
+
+    <el-table-column v-if="haveObjects"
+                      label=""
+                      width="65"
+                      align="center">
+      <div slot-scope="scope">
+        <el-button v-if="scope.row.haveChild"
+                    icon="el-icon-arrow-right"
+                    circle
+                    @click="onSelectItem(scope.row)"></el-button>
+      </div>
+    </el-table-column>
+    <!-- <el-table-column label=""
                       width="65"
                       align="center">
       <div slot-scope="scope">
@@ -91,6 +103,7 @@ export default {
       loading: true,
       loadingArea: true,
       haveChildren: false,
+      haveObjects: false,
     };
   },
   watch: {
@@ -151,6 +164,16 @@ export default {
         };
         if (resItem.color) colorUsed.push(resItem.color);
         if (item.children) {
+          for (const [childTypes, childItems] of item.children) {
+            resItem[childTypes] = childItems.length;
+            resItem.haveChild = true;
+            haveChild = true;
+          }
+        }
+        else {
+          console.debug(FileSystem._objects[item.serverId].children.PtrLst)
+        }
+        if (item.children && false) {
           for (const [childTypes, childItems] of item.children) {
             resItem[childTypes] = childItems.length;
             resItem.haveChild = true;
