@@ -30,11 +30,11 @@ with this file. If not, see
                  :key="tab.name"
                  :label="tab.name"
                  :name="tab.name"
-                 :closable="true">
+                 :closable="false">
       <component :is="tab.content"
                  :Properties="tab.props"></component>
     </el-tab-pane>
-    <el-tab-pane :disabled="true">
+    <!-- <el-tab-pane :disabled="true">
       <span slot="label">
         <el-dropdown trigger="click"
                      @command="addTab">
@@ -53,7 +53,7 @@ with this file. If not, see
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-    </el-tab-pane>
+    </el-tab-pane> -->
   </el-tabs>
 </template>
 
@@ -92,7 +92,7 @@ export default {
         content: target.content,
         props: target.props
       });
-      this.activetab = target.name;
+      // this.activetab = target.name;
     },
     removeTab(targetName) {
       let tmptabs = this.opentabs;

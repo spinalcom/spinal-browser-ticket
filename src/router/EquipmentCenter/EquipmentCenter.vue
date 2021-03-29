@@ -25,7 +25,7 @@ with this file. If not, see
 <template>
   <div class="equipment-center">
     <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    <tab-manager class="tab-manager" :tabsprop="tabs" />
+    <tab-manager ref="tab-manager" class="tab-manager" :tabsprop="tabs" />
     <!-- <explorer :Properties="tabs[0].props"></explorer> -->
   </div>
 </template>
@@ -123,18 +123,26 @@ export default {
       //   },
       // ]
       this.tabs.length = 1;
+      this.tabs[0].props.name = this.currentView.nodeType;
       this.tabs[0].props.items = this.items;
       this.tabs[0].props.view = this.currentView;
+      console.debug(this.items.nodeType)
       if (this.items.nodeType === "BIMObject") {
-        this.tabs.push({
+        this.$refs["tab-manager"].addTab({
           name: "Category Attribute",
           content: CategoryAttribute,
           props: {
             viewKey: VIEW_KEY,
+            item: false,
           },
           optional: false,
         });
+        console.debug(this.items)
+      } else {
+        console.debug(this.items)
+        this.$refs["tab-manager"].removeTab("Category Attribute");
       }
+      console.debug(this.tabs)
     },
   },
 };
