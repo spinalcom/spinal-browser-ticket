@@ -19,11 +19,13 @@
                :style="'background-color: ' + color"
                @click="togglePicker"
             ></div>
-            <chrome-picker
+            <sketch-picker
                class="colorSelect"
                v-model="color"
                v-if="display"
                @input="updateColor"
+               
+               
             />
          </div>
       </div>
@@ -31,11 +33,13 @@
 </template>
 
 <script>
-import { Chrome } from "vue-color";
+import { Chrome, Sketch } from "vue-color";
 
 export default {
    name: "configComponent",
-   components: { "chrome-picker": Chrome },
+   components: { "chrome-picker": Chrome ,
+                  "sketch-picker" : Sketch
+   },
    props: { config: {}, name: {}, disabled: {}, hideInput: {} },
    data() {
       return {
@@ -88,9 +92,7 @@ export default {
    flex-direction: column;
    align-items: center;
    justify-content: center;
-   /* border: 1px solid green; */
-   /* background-color: red; */
-   /* height: 100%; */
+
 }
 
 .config .config_cont {
@@ -122,5 +124,6 @@ export default {
 
 .config .config_cont .color .colorSelect {
    width: 100%;
+   
 }
 </style>

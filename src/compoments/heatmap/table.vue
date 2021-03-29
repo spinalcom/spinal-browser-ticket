@@ -44,7 +44,7 @@ with this file. If not, see
     </div>
     <!-- Si on a pas encore choisi de catégorie -->
     <div v-if="selectCategorie == null"
-         class="root">
+         class="root" style="margin-top:11px;">
 
       <!-- Si on a pas encore choisi de contexte -->
       <tableau-context v-if="contextSelected == null"
@@ -63,17 +63,21 @@ with this file. If not, see
     <groupLstVue v-if="selectCategorie != null && profilSelected==null && groupSelected ==null"
                  ref="categoryListe"
                  :select-categorie="selectCategorie"
-                 @selectgroup="SelectGroup"></groupLstVue>
+                 @selectgroup="SelectGroup"
+                 style="margin-top:11px;">
+    </groupLstVue>
 
     <profilLstVue v-if="groupSelected != null && profilSelected ==null"
                   :profils="groupSelected.profils"
                   :color="groupSelected.color"
-                  @selectprofil="SelectProfil">
+                  @selectprofil="SelectProfil"
+                  style="margin-top:11px;">
     </profilLstVue>
 
     <heatmap-vue class="heatmapContainer"
                  v-if="profilSelected!=null"
-                 :profil="profilSelected">
+                 :profil="profilSelected"
+                 style="margin-top:11px;">
 
     </heatmap-vue>
 
