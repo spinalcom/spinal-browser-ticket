@@ -23,10 +23,11 @@ with this file. If not, see
 -->
 
 <template>
+<div>
   <el-table v-loading="loading"
             :data="data"
             border
-            style="width: 100%"
+            style="width: 100%; height: 400px; overflow: auto;"
             :header-cell-style="{'background-color': '#f0f2f5'}"
             @row-click="selectInView"
             @row-dblclick="SeeEvent">
@@ -81,6 +82,7 @@ with this file. If not, see
       </div>
     </el-table-column> -->
   </el-table>
+</div>
 </template>
 
 <script>
@@ -256,4 +258,5 @@ export default {
   left: 0;
   top: 0;
 }
+
 </style>

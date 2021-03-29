@@ -24,76 +24,56 @@ with this file. If not, see
 
 <template>
   <div class="notesContainer">
-    <el-container id="myList"
-                  class="messages md-scrollbar">
-      <ul class="div_messages">
-        <message-component v-for="(note,index) in notesDisplayList"
-                           :key="index"
-                           :date="note.date"
-                           :username="note.username"
-                           :message="note.message"
-                           :type="note.type"
-                           :file="note.file"
-                           :viewPoint="note.viewPoint"></message-component>
-      </ul>
-
-    </el-container>
-
     <div class="form">
+
+      <el-container id="myList"
+                    class="messages md-scrollbar">
+        <ul class="div_messages">
+          <message-component v-for="(note,index) in notesDisplayList"
+                             :key="index"
+                             :date="note.date"
+                             :username="note.username"
+                             :message="note.message"
+                             :type="note.type"
+                             :file="note.file"
+                             :viewPoint="note.viewPoint"></message-component>
+        </ul>
+
+      </el-container>
+
       <form @submit.prevent="addNote"
             class="noteForm">
 
-        <!-- <div class="icons">
-          <md-button class="icons md-icon-button md-raised md-primary"
-                     @click="addPJ"
-                     :title="'Add Attachment'">
-            <md-icon>attach_file</md-icon>
-          </md-button>
-
-          <md-button class="icons md-icon-button md-raised md-primary"
-                     @click="TakeScreenShot"
-                     :title="'Take a screenshot'">
-            <md-icon>add_a_photo</md-icon>
-          </md-button>
-
-          <md-button class="icons md-icon-button md-raised md-primary"
-                     @click="saveViewPoint"
-                     :title="'save point of view'">
-            <md-icon>near_me</md-icon>
-          </md-button>
-        </div> -->
-
-        <!-- <md-speed-dial class="icons"
-                       md-direction="top">
-          <md-speed-dial-target class="md-fab md-mini md-primary">
-            <md-icon class="md-morph-initial">menu</md-icon>
-            <md-icon class="md-morph-final">close</md-icon>
-          </md-speed-dial-target>
-
-          <md-speed-dial-content> -->
-        <div>
-
-          <el-button type="primary"
-                     @click="saveViewPoint"
-                     :title="'save point of view'"
-                     icon="el-icon-position">
+        <el-dropdown class="dropdown-class">
+          <el-button type="primary">
+            Actions<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
+          <el-dropdown-menu class="dropdown-menu-class"
+                            slot="dropdown">
+            <el-dropdown-item>
+              <el-button type="primary"
+                         @click="saveViewPoint"
+                         :title="'save point of view'"
+                         icon="el-icon-position">
+              </el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button type="primary"
+                         @click="TakeScreenShot"
+                         :title="'Take a screenshot'"
+                         icon="el-icon-camera-solid">
+              </el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button type="primary"
+                         @click="addPJ"
+                         :title="'Add Attachment'"
+                         icon="el-icon-paperclip">
+              </el-button>
+            </el-dropdown-item>
 
-          <el-button type="primary"
-                     @click="TakeScreenShot"
-                     :title="'Take a screenshot'"
-                     icon="el-icon-camera-solid">
-          </el-button>
-
-          <el-button type="primary"
-                     @click="addPJ"
-                     :title="'Add Attachment'"
-                     icon="el-icon-paperclip">
-          </el-button>
-        </div>
-
-        <!-- </md-speed-dial-content>
-        </md-speed-dial> -->
+          </el-dropdown-menu>
+        </el-dropdown>
 
         <div class="messageForm">
           <el-container class="pjDiv md-scrollbar"
@@ -120,6 +100,7 @@ with this file. If not, see
         </div>
 
       </form>
+
     </div>
   </div>
 </template>
@@ -463,18 +444,36 @@ export default {
 .notesContainer {
   width: 100%;
   height: 100%;
+  /* background-color: red; */
   display: flex;
   flex-direction: column;
   margin: auto;
 }
 
-.notesContainer .messages {
+.notesContainer .form {
   width: 100%;
-  height: 80%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.notesContainer .form .messages {
+  width: 100%;
+  height: 90%;
   background: transparent;
   overflow: hidden;
   overflow-y: auto;
   padding: 0;
+}
+
+.notesContainer .form .noteForm {
+  width: 100%;
+  height: 10%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
 .div_messages {
@@ -483,23 +482,9 @@ export default {
   margin: auto;
 }
 
-.notesContainer .form {
-  width: 100%;
-  height: 20%;
-}
-
-.notesContainer .form .noteForm {
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-}
-
 .notesContainer .form .noteForm .icons {
   flex: 0 0 50px;
   display: flex;
-  /* align-items: flex-end; */
   align-self: flex-end;
   border-radius: 20%;
   padding-left: 5px;
@@ -523,15 +508,23 @@ export default {
 }
 
 .notesContainer .form .noteForm .messageForm .myField {
-  /* flex: 1 1 auto; */
   margin: 0px !important;
   min-height: unset !important;
-  /* height: calc(100% - 50px); */
 }
 
 .notesContainer .form .noteForm .sendBtn {
   flex: 1 1 15%;
   display: flex;
   align-items: flex-end;
+}
+.dropdown-class {
+  flex: 1 1 15%;
+  align-items: flex-end;
+}
+.dropdown-menu-class {
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 </style>

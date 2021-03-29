@@ -24,46 +24,38 @@ with this file. If not, see
 
 <template>
   <div v-if="Properties.items !== false">
-    <el-container>
-      <el-header style="height: 10%">
-        <div style="float: left; margin-right: 10px">
-          <el-button
-            icon="el-icon-arrow-left"
-            circle
-            @click.stop="popView()"
-          >
-          </el-button>
-        </div>
-        <div style="float: left; margin-top: 10px">
-          {{ $t(`node-type.${Properties.items.nodeType}`) }}
-        </div>
-        <div style="float: right">
-          <el-button
-            icon="el-icon-download"
-            circle
-            @click.stop="exportToExcel()"
-          >
-          </el-button>
-          <el-button
-            icon="el-icon-picture-outline-round"
-            circle
-            @click.stop="SeeAll()"
-          >
-          </el-button>
-          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
-          </el-button>
-        </div>
-      </el-header>
-      <el-main>
-        <node-table
-          :ref="'Explorer-table'"
-          :view-key="Properties.viewKey"
-          :items="Properties.items.items"
-          :columns="Properties.items.cols"
+    <el-button v-show="(Properties.view.server_id != 0)" class="spl-el-button" style="float: left"
+          icon="el-icon-arrow-left"
+          circle
+          @click.stop="popView()"
         >
-        </node-table>
-      </el-main>
-    </el-container>
+    </el-button>
+    <div class="spl-button-bar">
+      <el-button class="spl-el-button"
+        icon="el-icon-aim" circle
+        @click.stop="isolateAll()"
+      >
+      </el-button>
+      <el-button class="spl-el-button"
+        icon="el-icon-picture-outline-round" circle
+        @click.stop="SeeAll()"
+      >
+      </el-button>
+      <el-button class="spl-el-button"
+        icon="el-icon-download" circle
+        @click.stop="exportToExcel()"
+      >
+      </el-button>
+    </div>
+    <div class="spl-table">
+      <node-table
+        :ref="'Explorer-table'"
+        :view-key="Properties.viewKey"
+        :items="Properties.items.items"
+        :columns="Properties.items.cols"
+      >
+      </node-table>
+    </div>
   </div>
 </template>
 
@@ -123,3 +115,20 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.spl-table {
+  padding: 5px 5px 5px 5px;
+  overflow-y: unset auto;
+}
+
+.spl-el-button {
+  margin: 0 0 0 10px;
+}
+
+.spl-button-bar {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 5px 5px 5px;
+}
+</style>
