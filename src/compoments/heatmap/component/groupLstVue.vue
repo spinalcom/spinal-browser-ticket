@@ -70,17 +70,6 @@ with this file. If not, see
             </template>
           </el-table-column>
         </el-table>
-
-        <!-- Si on a déjà selectionné un groupe , on affiche la liste des profiles -->
-        <!-- <div v-else>
-          <profilLstVue
-                      :profils="groupSelected.profils"
-                      :color="groupSelected.color"
-                      @seeEvent="SeeEvent"
-                      @profilSelectEvent="profilSelectEvent">
-         </profilLstVue>
-        
-        </div> -->
       </el-tab-pane>
     </el-tabs>
 
@@ -90,8 +79,6 @@ with this file. If not, see
 <script>
 import profilLstVue from "./profilLstVue";
 import SpinalBackend from "../../../services/spinalBackend";
-import ChartsPiece from "./ChartsPiece";
-import ChartsEsp from "./ChartsEsp";
 import { EventBus } from "../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
@@ -107,7 +94,7 @@ export default {
       groupSelected: null
     };
   },
-  components: { ChartsPiece, ChartsEsp, profilLstVue },
+  components: { profilLstVue },
   props: ["selectCategorie"],
   methods: {
     getColor(color) {

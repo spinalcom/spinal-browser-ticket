@@ -6,7 +6,7 @@
          <el-input-number
             class="input"
             size="mini"
-            v-if="!isBool()"
+            v-if="!hideInput"
             :disabled="disabled"
             v-model="config.value"
             @change="handleChange"
@@ -36,7 +36,7 @@ import { Chrome } from "vue-color";
 export default {
    name: "configComponent",
    components: { "chrome-picker": Chrome },
-   props: { config: {}, name: {}, disabled: {} },
+   props: { config: {}, name: {}, disabled: {}, hideInput: {} },
    data() {
       return {
          display: false,
@@ -72,6 +72,11 @@ export default {
       getName() {
          if (this.isBool()) return this.config.value ? "True" : "False";
          return this.name;
+      },
+   },
+   watch: {
+      config() {
+         this.color = this.config.color;
       },
    },
 };
