@@ -5,33 +5,11 @@
          v-if="variableSelected"
       >
          <div class="header">
-            <config-component
-               class="header-item"
-               v-if="variableSelected.config.min"
-               :config="variableSelected.config.min"
-               :name="'Min'"
+            <color-config
+               :variableSelected="variableSelected"
                @updateAverage="updateAverage"
                @colorUpdated="sendEvent"
-            ></config-component>
-
-            <config-component
-               class="header-item"
-               v-if="variableSelected.config.average"
-               :config="variableSelected.config.average"
-               :disabled="true"
-               :name="'Average'"
-               @updateAverage="updateAverage"
-               @colorUpdated="sendEvent"
-            ></config-component>
-
-            <config-component
-               class="header-item"
-               v-if="variableSelected.config.max"
-               :config="variableSelected.config.max"
-               :name="'Max'"
-               @updateAverage="updateAverage"
-               @colorUpdated="sendEvent"
-            ></config-component>
+            ></color-config>
          </div>
 
          <div class="endpointValues">
@@ -53,13 +31,13 @@
 </template>
 
 <script>
-import ConfigComponent from "./sub-components/config-component.vue";
+import ColorConfig from "./sub-components/color-config.vue";
 import ItemsLinkedComponent from "./sub-components/items-linked-component.vue";
 
 export default {
    name: "ProfilInfoComponent",
    props: { variableSelected: {}, profil: {} },
-   components: { ConfigComponent, ItemsLinkedComponent },
+   components: { ColorConfig, ItemsLinkedComponent },
    data() {
       return {};
    },
@@ -104,13 +82,7 @@ export default {
 .info_container .content .header {
    width: 100%;
    height: 90px;
-   display: flex;
-   justify-content: space-between;
    /* border: 1px solid red; */
-}
-
-.info_container .content .header .header-item {
-   flex: 1;
 }
 
 .info_container .content .endpointValues {

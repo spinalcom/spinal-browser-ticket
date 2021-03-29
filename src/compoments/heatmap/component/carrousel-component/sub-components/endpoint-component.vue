@@ -46,11 +46,14 @@ export default {
 
    filters: {
       filterValue(value) {
-         if (value) {
-            const isNumber = !isNaN(value);
-            if (isNumber) return value.toFixed(2);
-            value.toString().toUpperCase();
+         if (typeof value !== "undefined") {
+            const isBoolean = typeof value === "boolean";
+            if (isBoolean) return value.toString().toUpperCase();
+            if (value.toString().trim().length === 0) return "NULL";
+            return value.toFixed(2);
          }
+
+         return "NULL";
       },
    },
 

@@ -1,6 +1,5 @@
 <template>
    <div class="chart_container">
-
    </div>
 </template>
 
