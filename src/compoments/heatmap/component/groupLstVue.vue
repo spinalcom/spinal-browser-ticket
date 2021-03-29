@@ -46,8 +46,8 @@ with this file. If not, see
                   class="tab"
                   border
                   style="width: 100%"
-                  :header-cell-style='{"background-color": "#f0f2f5"}'
-                  @row-click="SeeEvent">
+                  :header-cell-style='{"background-color": "#f0f2f5"}'>
+                  <!-- @row-click="SeeEvent"> -->
           <el-table-column :label="$t('HeatmapCenter.Groupe')">
             <template slot-scope="scope">
               <div>
