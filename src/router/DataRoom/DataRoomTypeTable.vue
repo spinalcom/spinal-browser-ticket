@@ -30,7 +30,7 @@ with this file. If not, see
             :header-cell-style="{'background-color': '#f0f2f5'}"
             @row-click="selectInView"
             @row-dblclick="SeeEvent">
-    <el-table-column :label="$t('data-room.Name')">
+    <el-table-column :label="$t('DataRoom.Name')">
       <template slot-scope="scope">
         <div>
           <div v-if="scope.row.color"
@@ -42,10 +42,10 @@ with this file. If not, see
     </el-table-column>
     <el-table-column v-if="haveArea"
                      align="center"
-                     :label="$t(`data-room.Area`)">
+                     :label="$t(`DataRoom.Area`)">
       <template slot-scope="scope">
         <div v-loading="loadingArea">
-          {{ roundNumber(scope.row.area) }}
+          {{ roundNumber(scope.row.area) }} m²
         </div>
       </template>
     </el-table-column>
@@ -53,7 +53,7 @@ with this file. If not, see
     <el-table-column v-for="collum in collums"
                      :key="collum"
                      align="center"
-                     :label="$t(`data-room.${collum}`)">
+                     :label="$t(`DataRoom.${collum}`)">
       <template slot-scope="scope">
         {{ collumValue(scope.row, collum) }}
       </template>

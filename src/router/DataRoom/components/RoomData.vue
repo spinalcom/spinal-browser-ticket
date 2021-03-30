@@ -29,14 +29,35 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Équipements /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Équipements">
+    <el-tab-pane :label="$t('DataRoom.Equipment')">
+      <el-row>
+        <div style="float: right">
+          <el-button
+            icon="el-icon-download"
+            circle
+            @click.stop="exportToExcel()"
+          >
+          </el-button>
+          <el-button
+            icon="el-icon-picture-outline-round"
+            circle
+            @click.stop="SeeAll()"
+          >
+          </el-button>
+          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
+          </el-button>
+          <el-button icon="el-icon-view" circle @click.stop="ShowAll()">
+          </el-button>
+        </div>
+      </el-row>
+      <br>
       <el-table :data="equipement"
                 border
                 style="width: 100%"
                 :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
                 :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
         <el-table-column prop="name"
-                         :label="$t('SpaceManagement.Nom')">
+                         :label="$t('DataRoom.Name')">
         </el-table-column>
         <el-table-column align="center"
                          width="150">
@@ -51,7 +72,7 @@ with this file. If not, see
        ////////////////////////////////// TICKET /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
     <el-tab-pane class="pane-ticket"
-                 label="Tickets">
+                 :label="$t('DataRoom.Ticket')">
       <div class="barre">
         <ticket-create v-bind:nodeId="nodeId"
                        @reload="updateticket"></ticket-create>
@@ -66,23 +87,23 @@ with this file. If not, see
                 :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
                 :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
         <el-table-column prop="name"
-                         :label="$t('SpaceManagement.Nom')"
+                         :label="$t('DataRoom.Name')"
                          width="180">
         </el-table-column>
 
         <el-table-column prop="priority"
-                         label="Priorités"
+                         :label="$t('DataRoom.Priority')"
                          align="center">
         </el-table-column>
 
-        <el-table-column label="utilisateur"
+        <el-table-column :label="$t('DataRoom.User')"
                          align="center">
           <template slot-scope="scope">
             <!-- {{ scope.row.user.name }} -->
           </template>
         </el-table-column>
 
-        <el-table-column label="Date de création"
+        <el-table-column :label="$t('DataRoom.Note')"
                          align="center">
           <template slot-scope="scope">
             {{ scope.row.creationDate | formatDate }}
@@ -94,7 +115,7 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// DOCUMENTATION /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Documentation">
+    <el-tab-pane :label="$t('DataRoom.Documentation')">
       <div class="barre">
 
         <document-create v-bind:nodeId="nodeId"
@@ -110,7 +131,7 @@ with this file. If not, see
                 style="width: 100%"
                 :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
                 :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-        <el-table-column :label="$t('SpaceManagement.Nom')">
+        <el-table-column :label="$t('DataRoom.Name')">
           <template slot-scope="scope">
             {{ scope.row.name.get() }}
           </template>
@@ -133,7 +154,7 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Notes">
+    <el-tab-pane :label="$t('DataRoom.Note')">
       <el-container>
         <message-component :node-info="nodeInfo"></message-component>
       </el-container>
@@ -142,13 +163,14 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Calendrier /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Calendrier">
+    <el-tab-pane :label="$t('DataRoom.Calendar')">
       <div class="barre">
+        <ticket-create v-bind:nodeId="nodeId"
+                       @reload="updateticket"></ticket-create>
+
         <header-bar :header="ticketHeader"
                     :content="ticketContent"
                     :data="ticketData"></header-bar>
-        <ticket-create v-bind:nodeId="nodeId"
-                       @reload="updateticket"></ticket-create>
       </div>
       <vueCal :events="calendrier"></vueCal>
 

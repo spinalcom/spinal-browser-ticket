@@ -56,7 +56,7 @@ with this file. If not, see
         </el-tab-pane>
       </el-tabs>
     </el-row>
-    <div  v-else class="spinal-space-spacecon_container-container">
+    <div style="margin: -5px;"  v-else class="spinal-space-spacecon_container-container">
       <div
            class="spacecon_container">
     <room-data
@@ -145,16 +145,16 @@ export default {
       }
       this.currentView = view;
       if (this.items[0].nodeType === "geographicContext") {
-        this.panel = "Contextes";
+        this.panel = this.$t('DataRoom.geographicContext');
       }
       if (this.items[0].nodeType === "geographicBuilding") {
-        this.panel = "Bâtiments";
+        this.panel = this.$t('DataRoom.geographicBuilding');
       }
       if (this.items[0].nodeType === "geographicFloor") {
-        this.panel = "Etages";
+        this.panel = this.$t('DataRoom.geographicFloor');
       }
       if (this.items[0].nodeType === "geographicRoom") {
-        this.panel = "Pièces";
+        this.panel = this.$t('DataRoom.geographicRoom');
       }
       /*this.tabs = [
         {

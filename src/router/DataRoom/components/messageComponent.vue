@@ -39,8 +39,7 @@ with this file. If not, see
 
     </el-container>
 
-    <br/>
-    <div class="form row">
+    <div class="form">
       <form @submit.prevent="addNote"
             class="noteForm">
 
@@ -72,24 +71,25 @@ with this file. If not, see
           </md-speed-dial-target>
 
           <md-speed-dial-content> -->
-        <div class="row col-lg-4" style="
-    padding-left: 30px;">
-
-          <el-button class="col-lg-1" type="primary"
+        <div class="row" style="margin-left: -10px;">
+          <el-button type="primary"
+          class="col-lg-2"
                      @click="saveViewPoint"
-                     :title="'Enregistrer un point de la vue'"
+                     :title="$t('DataRoom.PointView')"
                      icon="el-icon-position">
           </el-button>
 
-          <el-button class="col-lg-1" type="primary"
+          <el-button type="primary"
+          class="col-lg-2"
                      @click="TakeScreenShot"
-                     :title="`Prendre une capture d'écran`"
+                     :title="$t('DataRoom.ScreenShot')"
                      icon="el-icon-camera-solid">
           </el-button>
 
-          <el-button class="col-lg-1" type="primary"
+          <el-button type="primary"
+          class="col-lg-2"
                      @click="addPJ"
-                     :title="'Ajouter une pièce jointe'"
+                     :title="$t('DataRoom.PJ')"
                      icon="el-icon-paperclip">
           </el-button>
         </div>
@@ -97,7 +97,7 @@ with this file. If not, see
         <!-- </md-speed-dial-content>
         </md-speed-dial> -->
 
-        <div class="messageForm col-lg-6">
+        <div class="messageForm">
           <el-container class="pjDiv md-scrollbar"
                         v-if="messages.pj.length > 0">
 
@@ -113,7 +113,7 @@ with this file. If not, see
           </el-input>
         </div>
 
-        <div class="sendBtn col-lg-2">
+        <div class="sendBtn">
           <el-button type="primary"
                      @click.prevent="addNote"
                      icon="el-icon-s-promotion">
@@ -127,14 +127,11 @@ with this file. If not, see
 </template>
 
 <script>
-import { MESSAGE_TYPES } from "spinal-models-documentation";
-
 import {
   SpinalNode,
   SpinalGraphService
 } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
 
 import moment from "moment";
 import messageVue from "./message.vue";
@@ -533,7 +530,6 @@ export default {
 .notesContainer .form .noteForm .sendBtn {
   flex: 1 1 15%;
   display: flex;
-  max-width: initial;
   align-items: flex-end;
 }
 </style>
