@@ -35,6 +35,7 @@
     "spinal-env-viewer-plugin-control-endpoint-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-control-endpoint-service.git",
     "spinal-env-viewer-plugin-documentation": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation.git",
     "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
+    "spinal-env-viewer-plugin-event-emitter": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-event-emitter.git",
     "spinal-env-viewer-plugin-excel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-excel-manager-service.git",
     "spinal-env-viewer-plugin-forge": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-forge.git",
     "spinal-env-viewer-task-service": "git+https://github.com/spinalcom/spinal-env-viewer-task-service.git",
