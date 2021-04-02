@@ -221,7 +221,7 @@ export default {
   }
 
   .spinal-main-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
   .spinal-main-container-left {
     height: 50%;
