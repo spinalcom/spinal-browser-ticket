@@ -23,87 +23,73 @@ with this file. If not, see
 -->
 
 <template>
-  <el-row class="tableauContextRow">
-    <el-tabs class="tabsContainer"
+  <el-row class="spinal-space-tableau-row">
+    <el-tabs class="tabs-container"
              type="border-card">
-      <el-tab-pane label="Tableau">
-        <!-- <el-row class="barre">
-          <el-button class="boutton-barre"
-                     icon="el-icon-download"
-                     circle
-                     @click="exportData"></el-button>
-          <el-button class="boutton-barre"
-                     icon="el-icon-view"
-                     circle
-                     @click="SeeAll"></el-button>
-
-        </el-row> -->
-
+      <el-tab-pane label="Tableau" class="spinal-space-tab-container">
         <header-bar :header="getHeader()"
                     :content="getRow()"
                     :data="contextLst"></header-bar>
+        <div class="spinal-space-table-content spinal-scrollbar">
+          <el-table :data="contextLst"
+                    border
+                    style="width: 100%"
+                    :header-cell-style="{'background-color': '#f0f2f5'}">
+            <el-table-column :label="$t('SpaceManagement.Nom')">
+              <template slot-scope="scope">
+                <div>
+                  <div v-if="scope.row.color"
+                       class="spinal-table-cell-color"
+                       :style="getColor(scope.row.color)"></div>
+                  <div> {{ scope.row.name }} </div>
+                </div>
+              </template>
+            </el-table-column>
 
-        <el-table :data="contextLst"
-                  border
-                  style="width: 100%"
-                  :header-cell-style="{'background-color': '#f0f2f5'}">
-          <el-table-column :label="$t('SpaceManagement.Nom')">
-            <template slot-scope="scope">
-              <div>
-                <div v-if="scope.row.color"
-                     class="spinal-table-cell-color"
-                     :style="getColor(scope.row.color)"></div>
-                <div> {{ scope.row.name }} </div>
-              </div>
-            </template>
-          </el-table-column>
+            <el-table-column prop="categories.length"
+                             :label="$t('SpaceManagement.Categories')"
+                             align="center">
+            </el-table-column>
 
-          <el-table-column prop="categories.length"
-                           :label="$t('SpaceManagement.Categories')"
-                           align="center">
-          </el-table-column>
+            <el-table-column :label="$t('SpaceManagement.Groupe')"
+                             align="center">
+              <template slot-scope="scope">
+                {{ getContextGroup(scope.row) }}
+              </template>
+            </el-table-column>
 
-          <el-table-column :label="$t('SpaceManagement.Groupe')"
-                           align="center">
-            <template slot-scope="scope">
-              {{ getContextGroup(scope.row) }}
-            </template>
-          </el-table-column>
+            <el-table-column :label="$t('SpaceManagement.NombreTotalPiece')"
+                             align="center">
+              <template slot-scope="scope">
+                {{ getRoomsCount(scope.row) }}
+              </template>
+            </el-table-column>
 
-          <el-table-column :label="$t('SpaceManagement.NombreTotalPiece')"
-                           align="center">
-            <template slot-scope="scope">
-              {{ getRoomsCount(scope.row) }}
-            </template>
-          </el-table-column>
+            <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
+                             align="center">
+              <template slot-scope="scope">
+                {{ getSurfaceTotale(scope.row) }} m²
+              </template>
+            </el-table-column>
 
-          <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
-                           align="center">
-            <template slot-scope="scope">
-              {{ getSurfaceTotale(scope.row) }} m²
-            </template>
-          </el-table-column>
-
-          <el-table-column label=""
-                           width="65"
-                           align="center">
-            <template slot-scope="scope">
-              <el-button icon="el-icon-arrow-right"
-                         circle
-                         @click="SelectContext(scope.row)"></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column label=""
+                             width="65"
+                             align="center">
+              <template slot-scope="scope">
+                <el-button icon="el-icon-arrow-right"
+                           circle
+                           @click="SelectContext(scope.row)"></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </el-row>
-  <!-- </el-tabs></el-tab-pane> -->
 </template>
 
 <script>
 import SpinalBackend from "../../services/spinalBackend";
-// import fileSaver from "file-saver";
-
 import headerBar from "./component/headerBar.vue";
 
 export default {
@@ -187,51 +173,9 @@ export default {
           width: 10
         }
       ];
-      // if (this.roomSelected) {
-      //   return [
-      //     {
-      //       key: "name",
-      //       header: "name",
-      //       width: 10
-      //     },
-      //     {
-      //       key: "surface",
-      //       header: "Surface",
-      //       width: 10
-      //     }
-      //   ];
-      // } else {
-      //   return [
-      //     {
-      //       key: "name",
-      //       header: "name",
-      //       width: 10
-      //     },
-      //     {
-      //       key: "rooms",
-      //       header: "Nombre de pièces",
-      //       width: 10
-      //     },
-      //     {
-      //       key: "surface",
-      //       header: "Surface",
-      //       width: 10
-      //     }
-      //   ];
-      // }
     },
 
     getRow() {
-      // if (this.roomSelected) {
-      //   return this.roomSelected.rooms;
-      // } else {
-      //   return this.data.map(gitu => {
-      //     let excelRows = Object.assign({}, gitu);
-      //     excelRows.rooms = gitu.rooms.length;
-      //     return excelRows;
-      //   });
-      // }
-
       return this.contextLst.map(el => {
         return {
           name: el.name,
@@ -247,24 +191,6 @@ export default {
 </script>
 
 <style scoped>
-/* .tab {
-  padding: 0 -20 px 0 -10px;
-}*/
-/* .boutton-barre {
-  padding: 14px !important;
-} */
-
-.tableauContextRow {
-  width: 100%;
-  height: 100%;
-  background-color: yellow;
-}
-
-.tableauContextRow .tabsContainer {
-  width: 100%;
-  height: 100%;
-}
-
 .barre {
   display: flex;
   justify-content: flex-end;

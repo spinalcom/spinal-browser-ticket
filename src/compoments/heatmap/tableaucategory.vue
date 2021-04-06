@@ -79,7 +79,7 @@ with this file. If not, see
             </template>
           </el-table-column>
 
-          <el-table-column :label="$t('HeatmapCenter.GO')"
+          <el-table-column 
                            width="65"
                            align="center">
             <template slot-scope="scope">

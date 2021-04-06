@@ -68,7 +68,7 @@ EventBus.$on('view-color-all', async (items, zone) => {
 EventBus.$on('view-isolate-item', async (item) => {
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(item);
   viewerUtils.isolateObjects(lstByModel);
-  await viewerUtils.rotateTo('top');
+  await viewerUtils.rotateTo('front,top,right');
   viewerUtils.fitToView(lstByModel);
 });
 
@@ -79,14 +79,14 @@ EventBus.$on('view-show-all', () => {
 EventBus.$on('view-isolate-all', async (zone) => {
   const zoneLstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(zone);
   viewerUtils.isolateObjects(zoneLstByModel);
-  await viewerUtils.rotateTo('top');
+  await viewerUtils.rotateTo('front,top,right');
   viewerUtils.fitToView(zoneLstByModel);
 });
 
 EventBus.$on('view-focus-item', async (item) => {
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(item);
   viewerUtils.selectObjects(lstByModel);
-  await viewerUtils.rotateTo('top');
+  await viewerUtils.rotateTo('front,top,right');
   viewerUtils.fitToView(lstByModel);
 });
 
