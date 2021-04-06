@@ -5,11 +5,18 @@
          v-tooltip="name"
       >{{name}}</div>
 
+      
       <div
          class="value"
          v-tooltip="`${value} ${unit}`"
       >
          {{value | filterValue}} {{unit}}</div>
+
+         <el-button id='test' v-if="variableSelected.type=='Consigne' && typeof value === 'boolean'" 
+         v-on:click="flip()" class = "button" circle :style="{ 'background-color': getColor() }">
+
+
+         </el-button>
    </div>
 </template>
 
@@ -23,6 +30,7 @@ export default {
          unit: undefined,
          bindProcess: undefined,
          endpoint: undefined,
+
       };
    },
    mounted() {
@@ -41,7 +49,26 @@ export default {
                this.unit = this.endpoint.unit.get();
             });
          }
+         
       },
+
+      flip(){
+      
+         this.endpoint.currentValue.set(!this.endpoint.currentValue.get());
+
+      },
+      getColor(){
+         
+         if(this.endpoint.currentValue.get()){
+            return this.variableSelected.config.max.color;
+         }
+         else {
+            return this.variableSelected.config.min.color;
+         }
+      }
+
+
+   
    },
 
    filters: {
@@ -59,6 +86,7 @@ export default {
 
    watch: {
       variableSelected() {
+         
          if (this.endpoint && this.bindProcess)
             this.endpoint.currentValue.unbind(this.bindProcess);
 
@@ -94,16 +122,22 @@ export default {
    overflow: hidden;
    text-overflow: ellipsis;
    font-size: 15px;
-   font-weight: bold;
+   
 }
 
 .div__content .value {
    width: 100%;
-   height: calc(100% - 50px);
+   height: calc(100% - 60px);
    display: flex;
    justify-content: center;
    align-items: center;
-   color: #f68204;
+   color: #fab73a;
    font-size: 25px;
 }
+
+.div__content .button {
+   
+}
+
+
 </style>

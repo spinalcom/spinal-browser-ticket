@@ -33,7 +33,7 @@ export default {
       return {};
    },
    mounted() {
-      console.log(this.rooms);
+      //console.log(this.rooms);
    },
    methods: {},
 };
