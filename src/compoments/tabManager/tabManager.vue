@@ -64,17 +64,19 @@ export default {
   props: { tabsprop: Array },
   data() {
     return {
-      tabs: this.tabsprop,
       opentabs: [],
       activetab: this.tabsprop[0].name
     };
   },
   async mounted() {
-    for (const tab of this.tabs) {
+    for (const tab of this.tabsprop) {
       if (!tab.optional) {
         this.opentabs.push(tab);
       }
     }
+  },
+  computed: {
+    
   },
   methods: {
     hasTab(tabArray, tab) {
@@ -86,12 +88,14 @@ export default {
       return false;
     },
     addTab(target) {
-      this.opentabs.push({
-        title: target.name,
-        name: target.name,
-        content: target.content,
-        props: target.props
-      });
+      if (!this.opentabs.some(e => e.name == target.name)){
+        this.opentabs.push({
+          title: target.name,
+          name: target.name,
+          content: target.content,
+          props: target.props
+        });
+      }
       // this.activetab = target.name;
     },
     removeTab(targetName) {
