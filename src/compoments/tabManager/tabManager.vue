@@ -79,9 +79,9 @@ export default {
     
   },
   methods: {
-    hasTab(tabArray, tab) {
-      for (var idx = 0; idx < tabArray.length; idx += 1) {
-        if (tabArray[idx].name === tab.name) {
+    hasTab(tabname) {
+      for (var idx = 0; idx < this.opentabs.length; idx += 1) {
+        if (this.opentabs[idx].name === tabname) {
           return true;
         }
       }

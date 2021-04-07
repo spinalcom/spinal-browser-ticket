@@ -98,6 +98,12 @@ export default {
           view.serverId,
           this.contextServId
         );
+        // if (mapItems.size === 0)
+        // {
+        //   mapItems = await EquipmentBack.getInstance().getProperties(view.serverId);
+        // } else {
+        //   console.debug(mapItems)
+        // }
       }
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
@@ -111,6 +117,8 @@ export default {
         this.items = { nodeType, items, cols: Array.from(cols) };
       }
       this.currentView = view;
+      console.debug("items :", this.items)
+      console.debug("view :", this.currentView)
       // this.tabs = [
       //   {
       //     name: "Explorer",
@@ -126,7 +134,6 @@ export default {
       this.tabs[0].props.name = this.currentView.nodeType;
       this.tabs[0].props.items = this.items;
       this.tabs[0].props.view = this.currentView;
-      console.debug(this.items.nodeType)
       if (this.items.nodeType === "BIMObject") {
         this.$refs["tab-manager"].addTab({
           name: "Category Attribute",
@@ -137,12 +144,9 @@ export default {
           },
           optional: false,
         });
-        console.debug(this.items)
-      } else {
-        console.debug(this.items)
+      } else if (this.$refs['tab-manager'].hasTab("Category Attribute")) {
         this.$refs["tab-manager"].removeTab("Category Attribute");
       }
-      console.debug(this.tabs)
     },
   },
 };

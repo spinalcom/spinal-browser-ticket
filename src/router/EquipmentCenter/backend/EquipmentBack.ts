@@ -79,6 +79,7 @@ export class EquipmentBack {
     const node = <SpinalNode<any>>(FileSystem._objects[serverId]);
     const context = <SpinalContext<any>>(FileSystem._objects[contextServerId]);
     if (!node || !context) return Promise.resolve(new Map());
+    console.debug("getItem fallthrough")
     return this.getItemsInContext(node, context)
   }
 
@@ -124,6 +125,14 @@ export class EquipmentBack {
       }
     }
     if (giveSelf) return res;
+    if (typeof item.children !== "undefined")
+    {
+      console.debug("getItemsIncontext fallthrough")
+      return item.children
+    } else {
+      console.debug("getItemsIncontext Fail")
+      return new Map();
+    }
     return typeof item.children !== "undefined" ? item.children : new Map();
   }
 }

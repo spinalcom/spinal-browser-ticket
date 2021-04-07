@@ -146,6 +146,7 @@ export default {
       EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
+      console.debug("Pushing :", item);
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     debugNode(item) {
@@ -172,14 +173,22 @@ export default {
             haveChild = true;
           }
         }
-        else {
-          console.debug(FileSystem._objects[item.serverId].children.PtrLst)
-        }
-        if (item.children && false) {
-          for (const [childTypes, childItems] of item.children) {
-            resItem[childTypes] = childItems.length;
-            resItem.haveChild = true;
-            haveChild = true;
+        // else {
+        //   console.debug(FileSystem._objects[item.serverId].children.PtrLst)
+        // }
+        else if (FileSystem._objects[item.serverId] !== undefined) {
+          let thisnode = FileSystem._objects[item.serverId]
+          if (thisnode.children.PtrLst !== undefined) {
+            for (const name of thisnode.children.PtrLst._attribute_names){
+              resItem[name] = thisnode.children.PtrLst[name].length;
+              resItem.haveChild = true
+              this.haveObjects = true
+            }
+            // for (const [childTypes, childItems] of FileSystem._objects[item.serverId].children.PtrLst ) {
+            //   resItem[childTypes] = childItems.length;
+            //   resItem.haveChild = true;
+            //   haveObjects = true;
+            // }
           }
         }
         res.push(resItem);
