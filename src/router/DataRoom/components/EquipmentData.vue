@@ -23,59 +23,15 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs  v-if="display === true" class="tabsContainer"
+  <el-tabs class="tabsContainer"
            type="border-card">
-
-    <!-- ///////////////////////////////////////////////////////////////////////////////////-
-       ////////////////////////////////// Équipements /////////////////////////////////////
-     ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane :label="$t('DataRoom.Equipment')">
-      <el-row>
-        <div style="float: right">
-
-          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
-          </el-button>
-          <el-button
-            icon="el-icon-download"
-            circle
-            @click="exportToExcel()"
-          >
-          </el-button>
-          <el-button
-            icon="el-icon-picture-outline-round"
-            circle
-            @click.stop="SeeAll()"
-          >
-          </el-button>
-          <!--<el-button icon="el-icon-view" circle @click.stop="ShowAll()">
-          </el-button>-->
-        </div>
-      </el-row>
-      <br>
-      <el-table :data="equipement"
-                border
-                style="width: 100%"
-                :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-        <el-table-column prop="name"
-                         :label="$t('DataRoom.Name')">
-        </el-table-column>
-        <el-table-column align="center"
-                         width="150">
-          <template slot-scope="scope">
-            <el-button icon="el-icon-arrow-right"
-            @click="SelectEquipment(scope.row)"
-                       circle></el-button>
-          </template>
-        </el-table-column>
-    </el-tab-pane>
-
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// TICKET /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane :label="$t('DataRoom.Ticket')">
+    <el-tab-pane class="pane-ticket"
+                 :label="$t('DataRoom.Ticket')">
       <div class="barre">
-        <div>
+       <div>
 
         <ticket-create v-bind:nodeId="nodeId"
                        @reload="updateticket"></ticket-create>
@@ -144,16 +100,16 @@ with this file. If not, see
         </el-table-column>
 
         <el-table-column label="Actions"
-                         width="100"
+                         width="200"
                          align="center">
           <template slot-scope="scope">
-            <el-button
+            <el-button v
                        icon="el-icon-download"
                        circle
                        @click="exportFichier(scope.row)"></el-button>
                        <el-button 
                         type="danger"
-                       icon="el-icon-download"
+                       icon="el-icon-delete"
                        circle
                        @click="deleteFichier(scope.row)"></el-button>
           </template>
@@ -187,20 +143,14 @@ with this file. If not, see
 
     </el-tab-pane>
   </el-tabs>
-
-<!--<equipment-data v-else
-                   :node-id="equipmentId"></equipment-data>-->
 </template>
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { spinalBackEnd } from "../../../services/spinalBackend";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import messageComponent from "./messageComponent.vue";
-import EquipmentData from "./EquipmentData.vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { SpinalEventService } from "spinal-env-viewer-task-service";
@@ -211,7 +161,6 @@ import documentcreateVue from "./documentcreate.vue";
 export default {
   components: {
     "message-component": messageComponent,
-    "equipment-data": EquipmentData,
     VueCal,
     "ticket-create": ticketcreate,
     "header-bar": headerBarVue,
@@ -224,16 +173,9 @@ export default {
         1}/${newDate.getFullYear()}`;
     }
   },
-  props: {
-    nodeId: String,
-    collums: { required: false, type: Array, default: () => [] },
-    viewKey: { require: true, type: String, default: "" }
-  },
+  props: ["nodeId"],
   data() {
     return {
-      display: true,
-      equipmentId: null,
-      items: [],
       tickets: [],
       documents: [],
       ticketHeader: [],
@@ -252,7 +194,6 @@ export default {
     }
   },
   async mounted() {
-
     this.calendrier = await SpinalEventService.getEvents(this.nodeId).then(
       rest => {
         return rest.map(el => {
@@ -294,7 +235,8 @@ export default {
      * ajouter une condition dans headerBar.vue pour regler ce probleme
      */
     this.ticketData = this.tickets.map(el => {
-      el.rooms = [salle];
+        console.log(el)
+      // el.rooms = [salle];
       return el;
     });
 
@@ -309,21 +251,6 @@ export default {
   },
   beforeDestroy() {},
   methods: {
-    /*addbreadcrumb(resultat) {
-      console.log(resultat);
-      console.log("appelle de add breadcrubm");
-      if (typeof resultat.roomNodeId !== "undefined") {
-        this.roomNodeId = resultat.roomNodeId;
-      }
-      this.breadcrumbs = [...this.breadcrumbs, resultat];
-    },
-    removeAndAddBreadcrumb(data) {
-      console.log(data);
-      this.roomNodeId = null;
-      this.breadcrumbs.splice(data.index);
-
-      this.breadcrumbs = [...this.breadcrumbs, data.item];
-    },*/
     exportFichier(file) {
       if (file._info.model_type.get() != "Directory") {
         file._ptr.load(path => {
@@ -362,13 +289,6 @@ export default {
         this.nodeId
       );
     },
-    SelectEquipment(equipment) {
-      console.log(equipment)
-      localStorage.setItem("equipmentId", equipment.id);
-      console.log(localStorage.getItem("equipmentId"));
-      ViewManager.getInstance("Data room").push(equipment.name, equipment.dbid);
-      //this.$emit("select", context);
-    },
     getDocuments() {
       return FileExplorer.getDirectory(
         SpinalGraphService.getRealNode(this.nodeId)
@@ -383,31 +303,7 @@ export default {
     },
     async updateDocument() {
       this.documents = await this.getDocuments();
-    },
-    async SeeAll() {
-      let listes = this.data.map(el => this.getSalles(el));
-      listes = listes.flat(10);
-      const promises = listes.map(async element => {
-        const allBimObjects = await this.getAllBimObjects(element.id);
-        return {
-          id: element.id,
-          ids: allBimObjects,
-          color: element.color
-        };
-      });
-
-      const bims = await Promise.all(promises);
-      EventBus.$emit("seeAll", bims);
-    },
-    isolateAll(index) {
-      this.$refs["data-room-table"][index].isolateAll(this.Properties.view.serverId);
-    },
-    exportToExcel(index) {
-      this.$refs["data-room-table"][index].exportToExcel();
-    },
-    ShowAll() {
-      this.$refs["Explorer-table"].ShowAll();
-    },
+    }
   }
 };
 </script>

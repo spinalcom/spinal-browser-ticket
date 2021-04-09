@@ -64,7 +64,7 @@ with this file. If not, see
                      width="65"
                      align="center">
       <template slot-scope="scope">
-        <el-button v-if="scope.row.haveChild"
+        <el-button 
                    icon="el-icon-arrow-right"
                    circle
                    @click="onSelectItem(scope.row)"></el-button>
@@ -125,7 +125,7 @@ export default {
       return false;
     },
     onSelectItem(item) {
-      localStorage.setItem("nodeId", item.nodeId);
+      localStorage.setItem("roomId", item.nodeId);
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
     },
     update() {
@@ -243,6 +243,10 @@ export default {
         server_id: item.serverId,
         color: item.color
       });
+    },
+    isolateAll(zone)
+    {
+      EventBus.$emit("data-room-isolate-all", { server_id: zone });
     },
     SeeAll(zone) {
 
