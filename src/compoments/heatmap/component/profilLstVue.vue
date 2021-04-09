@@ -24,9 +24,24 @@ with this file. If not, see
 
 
 <template>
+<el-row>
+    <el-tabs type="border-card">
+      <!-- Onglet Tableau -->
+      <el-tab-pane label="Tableau">
+        <el-row class="barre">
+          <el-button class="boutton-barre"
+                     icon="el-icon-download"
+                     circle
+                     ></el-button>
+          <el-button class="boutton-barre"
+                     icon="el-icon-view"
+                     circle
+                     ></el-button>
+
+        </el-row> 
     <!-- On récupère la data à partir de props -->
     <el-table 
-              :data="profils"
+              :data="profils" 
               class="tab"
               border
               style="width: 100%"
@@ -38,16 +53,19 @@ with this file. If not, see
                        align="center">
       </el-table-column>
 
-      <el-table-column 
-          label="GO"
-          align="center">
+      <el-table-column width="65"
+                       align="center">
           <template slot-scope="scope">
-              <el-button v-on:click="seeHeatmap(scope.row)"
+              <el-button v-on:click="SelectProfil(scope.row)"
                          icon="el-icon-arrow-right"
                          circle></el-button>
           </template>
       </el-table-column>
     </el-table>
+    </el-tab-pane>
+    </el-tabs>
+
+  </el-row>
 
 </template>
 
@@ -66,6 +84,9 @@ export default {
     },
     seeHeatmap:function(info){
       this.$emit('profilSelectEvent', info);
+    },
+    SelectProfil(profil){
+      this.$emit("selectprofil",profil)
     }
   },
 
@@ -79,3 +100,30 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.butcen {
+  text-align: center;
+  padding-top: 100px;
+}
+
+.boutton-barre {
+  padding: 14px !important;
+}
+.barre {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.el-icon-download {
+  width: 30px;
+}
+
+.spinal-table-cell-color {
+  height: 100%;
+  width: 5px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+</style>

@@ -24,7 +24,7 @@ with this file. If not, see
 
 <template>
   <div class="data-room">
-    <div class="data-room-breadcrumb-container" style="margin: 10px;">
+    <div class="data-room-breadcrumb-container">
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
@@ -322,7 +322,11 @@ export default {
       
     },
     changeView(item) {
-      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
+      ViewManager.getInstance(this.viewKey).push(
+        item.name,
+        item.serverId,
+        item.nodeId
+      );
     },
     exportData(index) {
       this.$refs["data-room-table"][index].exportToExcel();
@@ -427,19 +431,47 @@ export default {
 .data-room-barre {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 10px;
   background-color: #f5f7fa;
 }
 /* .data-room .el-icon-download {
   width: 15px;
 } */
 
-.data-room .el-collapse-item__header {
-  direction: rtl;
+.data-room {
+  direction: ltr;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.data-room-data-tabs .el-tabs__content {
+  height: calc(100% - 37px);
 }
 </style>
 
 <style scoped>
+.data-room-data-pane,
+.data-room-data-pane > div {
+  height: 100%;
+}
+.data-room-data-table {
+  height: calc(100% - 60px);
+  overflow: auto;
+}
+.data-room-breadcrumb-container {
+  margin: 0 10px 10px 10px;
+}
+.data-room-data-container {
+  height: calc(100% - 65px);
+}
+.data-room-data-tabs {
+  height: 100%;
+}
+.data-room-tabs {
+  margin: 5px auto;
+  height: calc(100% - 55px);
+  overflow: auto;
+  border-radius: 5px;
+}
+
 .data-room-collapse-bar {
   direction: ltr;
   display: flex;
@@ -447,8 +479,6 @@ export default {
 }
 .data-room-collapse-bar-title {
   flex-grow: 1;
-}
-.spacecon .spacecon_container {
   border-radius: 4px;
 }
 .spinal-space-spacecon_container-container {

@@ -23,39 +23,31 @@ with this file. If not, see
 -->
 
 <template>
-  <div v-if="Properties.items !== false">
-    <el-container>
-      <el-header>
-        {{ $t(`node-type.${Properties.items.nodeType}`) }}
-        <div style="float: right">
-          <el-button
-            icon="el-icon-download"
-            circle
-            @click.stop="exportToExcel()"
-          >
-          </el-button>
-          <el-button
-            icon="el-icon-picture-outline-round"
-            circle
-            @click.stop="SeeAll()"
-          >
-          </el-button>
-          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
-          </el-button>
-          <el-button icon="el-icon-view" circle @click.stop="ShowAll()">
-          </el-button>
-        </div>
-      </el-header>
-      <el-main>
-        <node-table
-          :ref="'Explorer-table'"
-          :view-key="Properties.viewKey"
-          :items="Properties.items.items"
-          :columns="Properties.items.cols"
-        >
-        </node-table>
-      </el-main>
-    </el-container>
+  <div class="spl-height-control">
+    <div class="spl-button-bar">
+      <el-button class="spl-el-button"
+                 icon="el-icon-aim"
+                 circle
+                 @click.stop="isolateAll()">
+      </el-button>
+      <el-button class="spl-el-button"
+                 icon="el-icon-picture-outline-round"
+                 circle
+                 @click.stop="SeeAll()">
+      </el-button>
+      <el-button class="spl-el-button"
+                 icon="el-icon-download"
+                 circle
+                 @click.stop="exportToExcel()">
+      </el-button>
+    </div>
+    <div v-if="Properties.items !== false" class="spl-height-control">
+      <node-table :ref="'Explorer-table'"
+                  :view-key="Properties.viewKey"
+                  :items="itemsComputed"
+                  :columns="cols">
+      </node-table>
+    </div>
   </div>
 </template>
 
@@ -80,15 +72,25 @@ export default {
           return "danger";
         }
         return "success";
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       items: false,
       contextServId: 0,
-      currentView: null,
+      currentView: null
     };
+  },
+  computed: {
+    itemsComputed() {
+      if (this.Properties && this.Properties.items && this.Properties.items.items) return this.Properties.items.items
+      return []
+    },
+    cols() {
+      if (this.Properties && this.Properties.cols) return this.Properties.cols
+      return []
+    }
   },
   methods: {
     changeView(item) {
@@ -111,7 +113,20 @@ export default {
     },
     async debug(what) {
       console.debug("Debugging", what);
-    },
-  },
+    }
+  }
 };
 </script>
+
+<style scoped>
+
+.spl-el-button {
+  margin: 0 0 0 10px;
+}
+
+.spl-button-bar {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 5px 5px 5px;
+}
+</style>

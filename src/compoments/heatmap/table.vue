@@ -29,7 +29,7 @@ with this file. If not, see
         <el-breadcrumb class="breadcrumb-style"
                        separator="/">
           <el-breadcrumb-item>
-            <a @click="onclick(null)">Heatmap Center</a>
+            <a @click="ResetBreadCrumb()">Heatmap Center</a>
           </el-breadcrumb-item>
           <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
                               :key="index">
@@ -44,10 +44,10 @@ with this file. If not, see
     </div>
     <!-- Si on a pas encore choisi de catégorie -->
     <div v-if="selectCategorie == null"
-         class="root">
+         class="root" style="margin-top:11px;">
 
       <!-- Si on a pas encore choisi de contexte -->
-      <tableau-context v-if="contextSelected === null"
+      <tableau-context v-if="contextSelected == null"
                        :context-lst="contextLst"
                        @select="SelectContext">
       </tableau-context>
@@ -55,19 +55,29 @@ with this file. If not, see
       <!-- Si on a choisi un contexte -->
       <tableau-category v-else
                         :context-selected="contextSelected"
-                        @seeGroups="onclick">
+                        @seeGroups="SelectCategorie">
       </tableau-category>
     </div>
 
     <!-- Si on a choisi une catégorie  -->
-    <div v-if="selectCategorie != null && profilSelected==null">
-      <groupLstVue ref="categoryListe"
-                   :select-categorie="selectCategorie"
-                   @addbreadcrumb="addbreadcrumb"></groupLstVue>
-    </div>
+    <groupLstVue v-if="selectCategorie != null && profilSelected==null && groupSelected ==null"
+                 ref="categoryListe"
+                 :select-categorie="selectCategorie"
+                 @selectgroup="SelectGroup"
+                 style="margin-top:11px;">
+    </groupLstVue>
 
-    <heatmap-vue v-if="profilSelected!=null"
-                 :profil="profilSelected">
+    <profilLstVue v-if="groupSelected != null && profilSelected ==null"
+                  :profils="groupSelected.profils"
+                  :color="groupSelected.color"
+                  @selectprofil="SelectProfil"
+                  style="margin-top:11px;">
+    </profilLstVue>
+
+    <heatmap-vue class="heatmapContainer"
+                 v-if="profilSelected!=null"
+                 :profil="profilSelected"
+                 style="margin-top:11px;">
 
     </heatmap-vue>
 
@@ -77,6 +87,7 @@ with this file. If not, see
 <script>
 import { spinalBackEnd } from "../../services/spinalBackend";
 import groupLstVue from "./component/groupLstVue";
+import profilLstVue from "./component/profilLstVue";
 import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
 
@@ -84,15 +95,22 @@ import { EventBus } from "../../services/event";
 import HeatmapVue from "./component/heatmapVue.vue";
 
 export default {
-  components: { groupLstVue, tableauContext, tableauCategory, HeatmapVue },
+  components: {
+    profilLstVue,
+    groupLstVue,
+    tableauContext,
+    tableauCategory,
+    HeatmapVue
+  },
   props: [],
   data() {
     return {
       contextLst: [],
-      selectCategorie: null,
       breadcrumbs: [],
+      selectCategorie: null,
       contextSelected: null,
-      profilSelected: null
+      profilSelected: null,
+      groupSelected: null
     };
   },
   async mounted() {
@@ -133,27 +151,12 @@ export default {
     });
   },
   methods: {
-    onclick(categorie) {
+    ResetBreadCrumb() {
       this.profilSelected = null;
-      this.selectCategorie = categorie;
-      if (categorie) {
-        const categorieIndex = 1;
-        this.breadcrumbs.splice(categorieIndex);
-
-        this.breadcrumbs = [
-          ...this.breadcrumbs,
-          {
-            name: categorie.name,
-            click: () => {
-              this.onclick(categorie);
-              this.$refs.categoryListe.resetRoomSelected();
-            }
-          }
-        ];
-      } else {
-        this.contextSelected = null;
-        this.breadcrumbs = [];
-      }
+      this.selectCategorie = null;
+      this.contextSelected = null;
+      this.groupSelected = null;
+      this.breadcrumbs = [];
     },
 
     addbreadcrumb(resultat) {
@@ -161,10 +164,12 @@ export default {
       this.breadcrumbs = [...this.breadcrumbs, resultat];
     },
 
+    //choix d'un context (niveau 1)
     SelectContext(context) {
       this.breadcrumbs = [];
       this.selectCategorie = null;
       this.profilSelected = null;
+      this.groupSelected = null;
       this.contextSelected = context;
 
       const obj = {
@@ -173,10 +178,70 @@ export default {
           this.SelectContext(context);
         }
       };
-
       this.breadcrumbs = [...this.breadcrumbs, obj];
       this.contextSelected = context;
     },
+
+    //choix d'une catégorie (niveau 2)
+    SelectCategorie(categorie) {
+      this.groupSelected = null;
+      this.profilSelected = null;
+      this.selectCategorie = categorie;
+
+      const categorieIndex = 1;
+      this.breadcrumbs.splice(categorieIndex);
+
+      this.breadcrumbs = [
+        ...this.breadcrumbs,
+        {
+          name: categorie.name,
+          click: () => {
+            this.SelectCategorie(categorie);
+            //this.$refs.categoryListe.resetRoomSelected();
+          }
+        }
+      ];
+    },
+
+    //choix d'une catégorie (niveau 3)
+    SelectGroup(group) {
+      //on enregistre le groupe choisi
+      this.groupSelected = { profils: group.rooms, color: group.color };
+      this.breadcrumbs = [
+        ...this.breadcrumbs,
+        {
+          name: group.name,
+          click: () => {
+            this.profilSelected = null;
+            this.groupSelected = null;
+            this.breadcrumbs.splice(2);
+            this.SelectGroup(group);
+          }
+        }
+      ];
+    },
+
+    //choix d'un profil (niveau 4)
+    SelectProfil(profil) {
+      this.profilSelected = profil;
+      this.breadcrumbs = [
+        ...this.breadcrumbs,
+        {
+          name: profil.name,
+          click: () => {
+            this.profilSelected = null;
+            this.breadcrumbs.splice(3);
+            this.SelectProfil(profil);
+          }
+        }
+      ];
+    },
+
+    addbreadcrumb(resultat) {
+      console.log("appelle de add breadcrubm");
+      this.breadcrumbs = [...this.breadcrumbs, resultat];
+    },
+
     openDrawer() {
       EventBus.$emit("open-drawer");
     }
@@ -187,43 +252,45 @@ export default {
 <style scoped>
 .spacecon {
   width: 100%;
-  padding: 0 10px;
+  height: 100%;
+  padding: 0 5px;
 }
-.card-content {
-  display: flex;
-  flex-direction: column;
+/* .card-content {
+   display: flex;
+   flex-direction: column;
 }
 .card-content > * {
-  margin-left: 0;
-  margin-top: 10px;
-}
-.clearfix {
-  text-align: center;
-}
+   margin-left: 0;
+   margin-top: 10px;
+} */
+/* .clearfix {
+   text-align: center;
+} */
 .breadcrumb-style {
-  width: 100%;
-  font-size: 1.2em;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   flex-wrap: nowrap;
-  padding: 0 5px 0 5px;
+  margin: 5px 10px 5px 10px;
+  border-radius: 4px;
+  align-items: center;
+  background-color: white;
 }
 
-.boutton-barre {
-  padding: 14px !important;
-}
-.barre {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-}
+/* .boutton-barre {
+   padding: 14px !important;
+} */
+/* .barre {
+   display: flex;
+   justify-content: flex-end;
+   margin-bottom: 10px;
+} */
 .spinal-space-header {
   display: flex;
-  height: 43px;
   justify-content: space-between;
   align-items: center;
   border-radius: 4px;
   background: white;
+  margin: 5px 0;
 }
 .spinal-space-header-breadcrum-container {
   width: calc(100% - 43px);
@@ -232,5 +299,10 @@ export default {
   white-space: nowrap;
   height: 100%;
   display: flex;
+}
+
+.heatmapContainer {
+  width: 100%;
+  height: calc(100% - 43px);
 }
 </style>
