@@ -25,7 +25,7 @@ with this file. If not, see
 <template>
   <div class="notesContainer">
     <div class="form">
-      <el-container id="myList" class="messages md-scrollbar">
+      <el-container id="myList">
         <ul class="div_messages">
           <message-component
             v-for="(note, index) in notesDisplayList"
@@ -112,9 +112,6 @@ with this file. If not, see
 </template>
 
 <script>
-import viewerComponent from "../../mainContent/viewer/viewer.vue";
-import { MESSAGE_TYPES } from "spinal-models-documentation";
-
 import {
   SpinalNode,
   SpinalGraphService,
@@ -359,7 +356,6 @@ export default {
       if (model && dbid) {
         return new Promise((resolve) => {
           model.getProperties(dbid, async (res) => {
-            console.log(res.name);
             resolve(res.name);
           });
         });
@@ -450,7 +446,6 @@ export default {
 .notesContainer {
   width: 100%;
   height: 100%;
-  /* background-color: red; */
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -532,5 +527,27 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+#myList {
+  overflow: auto;
+  height: 741px;
+}
+#myList::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+#myList::-webkit-scrollbar {
+  width: 12px;
+  background-color: #f5f5f5;
+}
+
+#myList::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgb(201, 196, 196);
 }
 </style>

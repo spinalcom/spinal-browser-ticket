@@ -46,7 +46,7 @@
     "velocity-animate": "^1.5.2",
     "vue": "^2.6.12",
     "vue-apexcharts": "^1.5.3",
-    "vue-cal": "^3.10.0",
+    "vue-cal": "^3.10.1",
     "vue-hot-reload-api": "^2.3.4",
     "vue-i18n": "^8.22.1",
     "vue-plotly": "^1.0.1",

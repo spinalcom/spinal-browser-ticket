@@ -1,5 +1,5 @@
 <!--
-Copyright 2021 SpinalCom - www.spinalcom.com
+Copyright 2020 SpinalCom - www.spinalcom.com
 
 This file is part of SpinalCore.
 
@@ -21,47 +21,42 @@ You should have received a copy of the license along
 with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
+
 <template>
-  <el-container>
-    <el-main>
-      <tab-manager :tabsprop="tabs" />
-    </el-main>
-  </el-container>
+  <div class="content">
+    <div class="md-caption">{{file.name}}</div>
+    <div class="md-caption delete"
+         @click="remove">X</div>
+  </div>
 </template>
 
 <script>
-// Script & tools
-// import { ViewManager } from "../../services/ViewManager/ViewManager";
-
-// Generic components
-import TabManager from "../../../compoments/tabManager/tabManager";
-
-// Specific components
-import Data from "./data";
-import Documentation from "./documentation";
-
-// Component exports
 export default {
-  name: "TicketData",
-  components: {
-    TabManager,
-  },
+  name: "attachment",
+  props: ["file"],
   data() {
-    return {
-      tabs: [
-        {
-          name: "Data",
-          content: Data,
-          optional: false,
-        },
-        {
-          name: "Documentation",
-          content: Documentation,
-          optional: false,
-        },
-      ],
-    };
+    return {};
   },
-  methods: {},
+  methods: {
+    remove() {
+      this.$emit("remove", this.file);
+    }
+  }
 };
 </script>
+
+<style scoped>
+.content {
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
+}
+
+.content .delete {
+  margin-right: 30px;
+}
+
+.content .delete:hover {
+  cursor: pointer;
+}
+</style>
