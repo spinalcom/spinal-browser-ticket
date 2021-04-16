@@ -4,6 +4,7 @@
          class="content"
          v-if="variableSelected"
       >
+      
          <div class="header">
             <color-config
                :variableSelected="variableSelected"
@@ -11,7 +12,7 @@
                @colorUpdated="sendEvent"
             ></color-config>
          </div>
-
+         
          <div class="endpointValues">
             <items-linked-component
                v-if="profil"
@@ -61,7 +62,7 @@ export default {
    },
    watch: {
       variableSelected() {
-         // console.log("variableSelected changed", this.variableSelected.config);
+         // console.log("variableSelected changed", this.variableSelected);
       },
    },
 };

@@ -172,7 +172,7 @@ export default {
       ) {
          this.variables = this.profil.endpointsProfils;
          this.index = 0;
-         //  this.variableSelected = this.profil.endpointsProfils[0];
+         
       }
       // let profil = await spinalControlPointService.getElementLinked(
       //    this.profil.id
@@ -185,7 +185,6 @@ export default {
       // res.forEach((element) => {
       //    this.variables.push(element.name._data);
       // });
-      // console.log(this.variables);
    },
 
    watch: {

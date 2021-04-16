@@ -65,7 +65,7 @@ export default {
       openEvent() {
          EventBus.$on("seeHeatMap", async (option) => {
             this.seeLegend = true;
-            console.log(option);
+            //console.log("heatmap-legends/ ",option);
             this.gradients = option.gradients;
             this.endpoints = option.endpoints;
             this.profil = option.profil;
