@@ -1,19 +1,15 @@
 <!--
 Copyright 2020 SpinalCom - www.spinalcom.com
-
 This file is part of SpinalCore.
-
 Please read all of the following terms and conditions
 of the Free Software license Agreement ("Agreement")
 carefully.
-
 This Agreement is a legally binding contract between
 the Licensee (as defined below) and SpinalCom that
 sets forth the terms and conditions that govern your
 use of the Program. By installing and/or using the
 Program, you agree to abide by all the terms and
 conditions stated or referenced herein.
-
 If you do not agree to abide by these terms and
 conditions, do not demonstrate your acceptance and do
 not install or use the Program.
@@ -25,7 +21,7 @@ with this file. If not, see
 <template>
   <div class="equipment-center">
     <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    <tab-manager ref="tab-manager" class="tab-manager" :tabsprop="tabs" />
+    <tab-manager class="tab-manager" :tabsprop="tabs" />
     <!-- <explorer :Properties="tabs[0].props"></explorer> -->
   </div>
 </template>
@@ -35,19 +31,14 @@ with this file. If not, see
 import { ViewManager } from "../../services/ViewManager/ViewManager";
 import { EquipmentBack } from "./backend/EquipmentBack";
 import BackendInitializer from "../../services/BackendInitializer";
-
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/tabManager/tabManager.vue";
-
 // Specific components
 import Explorer from "./components/Explorer.vue";
 import Visualizer from "./components/Visualizer.vue";
-
 import CategoryAttribute from "./components/CategoryAttribute.vue";
-
 const VIEW_KEY = "Equipment Center";
-
 // Component exports
 export default {
   name: "EquipmentCenter",
@@ -123,41 +114,36 @@ export default {
       //   },
       // ]
       this.tabs.length = 1;
-      this.tabs[0].props.name = this.currentView.nodeType;
       this.tabs[0].props.items = this.items;
       this.tabs[0].props.view = this.currentView;
-      console.debug(this.items.nodeType)
       if (this.items.nodeType === "BIMObject") {
-        this.$refs["tab-manager"].addTab({
+        this.tabs.push({
           name: "Category Attribute",
           content: CategoryAttribute,
           props: {
             viewKey: VIEW_KEY,
-            item: false,
           },
           optional: false,
         });
-        console.debug(this.items)
-      } else {
-        console.debug(this.items)
-        this.$refs["tab-manager"].removeTab("Category Attribute");
       }
-      console.debug(this.tabs)
     },
   },
 };
 </script>
 
 <style scoped>
-
 .equipment-center {
   overflow: hidden;
 }
-
 .tab-manager {
   margin: 10px 10px 10px 0px;
   height: calc(100% - 65px);
   border-radius: 5px;
 }
+</style>
 
+<style>
+.spl-height-control {
+  height: 100%;
+}
 </style>
