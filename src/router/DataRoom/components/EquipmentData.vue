@@ -30,19 +30,28 @@ with this file. If not, see
      ////////////////////////////////////////////////////////////////////////////////////////-->
     <el-tab-pane class="pane-ticket"
                  :label="$t('DataRoom.Ticket')">
-      <div class="barre">
-       <div>
+
+<div class="row">
+        <div class="col-lg-9">
+                 <el-button class="spl-el-button" style="float: left; margin-right: 10px;"
+          icon="el-icon-arrow-left"
+          circle
+          @click.stop="popView()"
+        ></el-button>
 
         <ticket-create v-bind:nodeId="nodeId"
                        @reload="updateticket"></ticket-create>
         </div>
+
+      <div class="col-lg-3 barre">
+        <div></div>
         <div>
         <header-bar :header="ticketHeader"
                     :content="ticketContent"
                     :data="ticketData"></header-bar>
         </div>
-
       </div>
+</div>
       <el-table :data="tickets"
                 border
                 style="width: 100%"
@@ -147,6 +156,7 @@ with this file. If not, see
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
+import { ViewManager } from "../../../services/ViewManager/ViewManager";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
@@ -289,6 +299,9 @@ export default {
         this.nodeId
       );
     },
+    popView() {
+      ViewManager.getInstance("Data room").pop();
+    },
     getDocuments() {
       return FileExplorer.getDirectory(
         SpinalGraphService.getRealNode(this.nodeId)
@@ -334,5 +347,8 @@ export default {
 .barre {
   display: flex;
   justify-content: space-between;
+}
+.spl-el-button {
+  margin: 0 0 0 -10px;
 }
 </style>

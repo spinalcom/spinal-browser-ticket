@@ -28,13 +28,19 @@ with this file. If not, see
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
     </div>
-    <el-row v-if="display === false">
+    <el-row v-if="display === false" style="margin-top: 12px;">
       <el-tabs type="border-card">
         <el-tab-pane :label="panel">
             <div v-for="(item, index) in items"
                               :key="item.nodeType"
                               :name="item.nodeType">
                               <el-header>
+                                <el-button v-show="(item.serverId != 0)" class="spl-el-button" style="float: left"
+          icon="el-icon-arrow-left"
+          circle
+          @click.stop="popView(index)"
+        >
+    </el-button>
         <div style="float: right">
           <el-button circle
         icon="el-icon-aim"
@@ -115,9 +121,9 @@ with this file. If not, see
 
         <document-create v-bind:nodeId="item.nodeId"
                          @reload="updateDocument"></document-create>
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
+        <header-bar :header="documentHeader"
+                    :content="documentContent"
+                    :data="documentData"></header-bar>
 
       </div>
 
@@ -133,13 +139,18 @@ with this file. If not, see
         </el-table-column>
 
         <el-table-column label="Actions"
-                         width="100"
+                         width="200"
                          align="center">
           <template slot-scope="scope">
             <el-button v
                        icon="el-icon-download"
                        circle
                        @click="exportData(scope.row)"></el-button>
+                       <el-button 
+                        type="danger"
+                       icon="el-icon-delete"
+                       circle
+                       @click="deleteFichier(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -158,7 +169,7 @@ with this file. If not, see
       >
      <div>
 
-        <ticket-create v-bind:nodeId="nodeId"
+        <ticket-create v-bind:nodeId="item.nodeId"
                        @reload="updateticket"></ticket-create>
         </div>
                        <div>
@@ -173,7 +184,7 @@ with this file. If not, see
     </el-tab-pane>
       </el-tabs>
     </el-row>
-    <div style="margin: -5px;"  v-else class="spinal-space-spacecon_container-container">
+    <div style="margin: -3px;"  v-else class="spinal-space-spacecon_container-container">
       <div
            class="spacecon_container">
     <room-data v-if="roomId"
@@ -229,6 +240,9 @@ export default {
       tickets: [],
       nodeInfo: {},
       documents: [],
+      documentHeader: [],
+      documentData: [],
+      documentContent: [],
       ticketHeader: [],
       ticketData: [],
       ticketContent: [],
@@ -328,6 +342,9 @@ export default {
         item.nodeId
       );
     },
+    popView(index) {
+      this.$refs["data-room-table"][index].popView();
+    },
     exportData(index) {
       this.$refs["data-room-table"][index].exportToExcel();
     },
@@ -414,6 +431,17 @@ export default {
         return el;
       });
       this.documents = await this.getDocuments();
+      this.documentHeader = [
+        { key: "name", header: "name", width: 15 },
+      ];
+
+      this.documentContent = this.documents.map(el => ({
+        name: el.name._data,
+      }));
+      this.documentData = this.documents.map(el => {
+        console.log(el);
+        return el.name._data;
+      });
       this.nodeInfo = {
         selectedNode: SpinalGraphService.getRealNode(this.items[0].nodeId)
       };
@@ -440,7 +468,6 @@ export default {
 .data-room {
   direction: ltr;
   overflow-x: auto;
-  overflow-y: hidden;
 }
 .data-room-data-tabs .el-tabs__content {
   height: calc(100% - 37px);
@@ -487,5 +514,8 @@ export default {
   padding: 5px 10px 10px 5px;
   background-color: #fdfdfd;
   overflow: auto;
+}
+.spl-el-button {
+  margin: 0 0 0 -20px;
 }
 </style>

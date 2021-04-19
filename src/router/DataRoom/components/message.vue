@@ -76,8 +76,7 @@ with this file. If not, see
         </div>
       </div>
 
-      <br/>
-      <actions-btn class="message_actions pull-right"
+      <actions-btn class="message_actions"
                    :hover="hover"
                    @download="download"
                    @restoreState="restoreState"
@@ -226,13 +225,17 @@ li.clearfix {
 }
 
 .message_actions {
+  width: 100%;
   height: 40px;
   display: flex;
-  float: right;
   border-radius: 7px 7px 0 0;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: center;
+  position: absolute;
   bottom: 0px;
   left: 0px;
+  padding: 10px;
+  background-color: #424242;
 }
 
 .message {

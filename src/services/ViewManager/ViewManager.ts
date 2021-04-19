@@ -61,6 +61,13 @@ export class ViewManager {
     if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
   }
 
+  pop() {
+    this.breadcrumb.pop();
+    const view = this.breadcrumb[this.breadcrumb.length - 1];
+    this.onChangeFct.forEach(fct => {fct(view)})
+    if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
+  }
+
   breacrumbSubscribe(fct: ViewManagerBreacrumbSubscribeFct) {
     this.breacrumbSubscribeFct = fct;
   }

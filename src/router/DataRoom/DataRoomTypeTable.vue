@@ -25,6 +25,7 @@ with this file. If not, see
 
   <el-table v-loading="loading"
             :data="data"
+            class="spl-table"
             border
             style="width: 100%"
             :header-cell-style="{'background-color': '#f0f2f5'}"
@@ -127,6 +128,9 @@ export default {
     onSelectItem(item) {
       localStorage.setItem("roomId", item.nodeId);
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
+    },
+    popView() {
+      ViewManager.getInstance(this.viewKey).pop();
     },
     update() {
       this.loading = true;
@@ -266,5 +270,8 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
+}
+.spl-table {
+  overflow-y: unset auto;
 }
 </style>

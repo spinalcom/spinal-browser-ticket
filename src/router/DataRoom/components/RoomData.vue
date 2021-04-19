@@ -31,6 +31,11 @@ with this file. If not, see
      ////////////////////////////////////////////////////////////////////////////////////////-->
     <el-tab-pane :label="$t('DataRoom.Equipment')">
       <el-row>
+        <el-button class="spl-el-button" style="float: left"
+          icon="el-icon-arrow-left"
+          circle
+          @click.stop="popView()"
+        ></el-button>
         <div style="float: right">
 
           <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
@@ -165,7 +170,8 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane :label="$t('DataRoom.Note')">
+    <el-tab-pane class="spinal-space-tab-container tab-class"
+    :label="$t('DataRoom.Note')">
       <el-container>
         <message-component :node-info="nodeInfo"></message-component>
       </el-container>
@@ -369,6 +375,9 @@ export default {
       ViewManager.getInstance("Data room").push(equipment.name, equipment.dbid);
       //this.$emit("select", context);
     },
+    popView() {
+      ViewManager.getInstance("Data room").pop();
+    },
     getDocuments() {
       return FileExplorer.getDirectory(
         SpinalGraphService.getRealNode(this.nodeId)
@@ -427,12 +436,16 @@ export default {
   position: relative;
   height: calc(100% - 20px);
 }
+.container-class,
+.tab-class {
+  height: 100%;
+}
 </style>
 
 <style>
 .tabsContainer .el-tabs__content {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
 }
 
 .barre {
@@ -440,3 +453,5 @@ export default {
   justify-content: space-between;
 }
 </style>
+
+
