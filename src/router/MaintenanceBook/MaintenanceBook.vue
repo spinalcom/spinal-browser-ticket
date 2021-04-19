@@ -25,7 +25,8 @@ with this file. If not, see
 <template>
   <div class="ticket-center">
     <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    <tab-manager class="tab-manager" :tabsprop="tabs" />
+    <tab-manager class="tab-manager"
+                 :tabsprop="tabs" />
   </div>
 </template>
 
@@ -48,7 +49,7 @@ export default {
   name: "TicketCenter",
   components: {
     SpinalBreadcrumb,
-    TabManager,
+    TabManager
   },
   data() {
     return {
@@ -58,35 +59,40 @@ export default {
           name: "Explorer",
           content: Explorer,
           props: {
-            viewKey: VIEW_KEY,
+            viewKey: VIEW_KEY
           },
-          optional: false,
+          optional: false
         },
         {
           name: "Visualizer",
           content: Visualizer,
           props: {
-            viewKey: VIEW_KEY,
+            viewKey: VIEW_KEY
           },
-          optional: false,
-        },
-      ],
+          optional: false
+        }
+      ]
     };
   },
-  methods: {},
+  methods: {}
 };
 </script>
 
 <style scoped>
-
 .ticket-center {
-  overflow: hidden;
-}
-
-.tab-manager {
-  margin: 10px 0;
-  height: calc(100% - 55px);
+  margin: 5px 5px 5px 0px;
+  height: calc(100% - 20px);
   border-radius: 5px;
 }
 
+.tab-manager {
+  margin: 5px 0;
+  height: calc(100% - 55px);
+  border-radius: 5px;
+}
+</style>
+<style>
+.ticket-center .tab-manager-tabs .el-tabs__content {
+  overflow: auto;
+}
 </style>

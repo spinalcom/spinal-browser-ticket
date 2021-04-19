@@ -27,13 +27,23 @@ export default {
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
   "error.returntodrive.title": "Error",
-  "data-room.geographicContext": "Contexts", // Could be generic
-  "data-room.geographicBuilding": "Buildings", // Could be generic
-  "data-room.geographicFloor": "Floors", // Could be generic
-  "data-room.geographicRoom": "Rooms", // Could be generic
-  "data-room.BIMObject": "Objects", // Could be generic
-  "data-room.Area": "Area",
-  "data-room.Name": "Name",
+  "DataRoom.geographicContext": "Contextes", // Could be generic
+  "DataRoom.geographicBuilding": "Bâtiments", // Could be generic
+  "DataRoom.geographicFloor": "Etages", // Could be generic
+  "DataRoom.geographicRoom": "Locaux", // Could be generic
+  "DataRoom.BIMObject": "Objets", // Could be generic
+  "DataRoom.Area": "Surface",
+  "DataRoom.Name": "Nom",
+  "DataRoom.Ticket": "Tickets",
+  "DataRoom.Note": "Notes",
+  "DataRoom.Documentation": "Documentation",
+  "DataRoom.Calendar": "Calendrier",
+  "DataRoom.Equipment": "Equipements",
+  "DataRoom.User": "Utilisateurs",
+  "DataRoom.Priority": "Priorités",
+  "DataRoom.ScreenShot": "Make a screen shot",
+  "DataRoom.PointView": "Save one point of view",
+  "DataRoom.PJ": "Add attachments",
   "node-type.context" : "Contexts",
   "node-type.groupingCategory" : "Categories",
   "node-type.BIMObjectGroupContext" : "BIM objects groups contexts",

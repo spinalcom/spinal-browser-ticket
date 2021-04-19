@@ -161,7 +161,7 @@ export default {
   transition: 200ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .spinal-main-container.have-abs-viewer {
-  flex-direction: column-reverse;
+  /* flex-direction: column-reverse; */
 }
 
 .spinal-main-container.have-abs-viewer .spinal-main-container-left {
@@ -170,6 +170,7 @@ export default {
 }
 .spinal-main-container.have-abs-viewer .spinal-other-container {
   width: 100%;
+  flex-grow: 1;
 }
 
 .spinal-other-container > div {
@@ -221,7 +222,7 @@ export default {
   }
 
   .spinal-main-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
   .spinal-main-container-left {
     height: 50%;
@@ -297,7 +298,7 @@ export default {
   position: absolute;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   left: calc(100% - var(--minimized-viewer-width) - 8px);
-  top: calc(100% - var(--minimized-viewer-height) - 58px);
+  top: calc(100% - var(--minimized-viewer-height) - 8px);
 }
 
 .viewer-container-mini.hideViewer .viewer-content {

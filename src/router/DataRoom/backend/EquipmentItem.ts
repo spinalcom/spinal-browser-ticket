@@ -1,19 +1,19 @@
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -33,24 +33,17 @@ import {
   REFERENCE_RELATION,
   EQUIPMENT_RELATION,
 
-  SPATIAL_CONTEXT_TYPE,
-  SITE_TYPE,
-  BUILDING_TYPE,
-  FLOOR_TYPE,
-  ZONE_TYPE,
-  ROOM_TYPE,
   EQUIPMENT_TYPE
-} from "../../constants";
-export class DataRoomItem {
+} from "../../../constants";
+
+export class EquipmentItem {
   name: string;
   serverId: number;
-  nodeId: string;
-  children?: Map<string, DataRoomItem[]>;
+  children?: Map<string, EquipmentItem[]>;
 
-  constructor(name: string, serverId: number, nodeId: string) {
+  constructor(name: string, serverId: number) {
     this.name = name
     this.serverId = serverId
-    this.nodeId = nodeId
   }
 
   getType(): string {
@@ -58,6 +51,7 @@ export class DataRoomItem {
     if (!node || !node.info.type) return "";
     return node.info.type.get();
   }
+
   getId(): string {
     const node = FileSystem._objects[this.serverId];
     if (!node || !node.info.id) return "";
@@ -77,15 +71,6 @@ export class DataRoomItem {
     else node.info.color.set(color);
   }
 
-  isLocationType(): boolean {
-    const type = this.getType();
-    return (
-      type === SPATIAL_CONTEXT_TYPE || type === SITE_TYPE ||
-      type === BUILDING_TYPE || type === FLOOR_TYPE ||
-      type === ROOM_TYPE || type === ZONE_TYPE
-    )
-  }
-
   async getBimObjects() {
     const node = <SpinalNode<any>>(FileSystem._objects[this.serverId]);
     const tmp = await node.find([
@@ -96,7 +81,6 @@ export class DataRoomItem {
       ROOM_RELATION,
       REFERENCE_RELATION,
       EQUIPMENT_RELATION,
-      "hasReferenceObject.ROOM"
     ], (item) => {
       return (item.info.type && item.info.type.get() === EQUIPMENT_TYPE)
     })
@@ -117,41 +101,8 @@ export class DataRoomItem {
       return arr;
     }, [])
   }
-  private async getAttrByKey(key) {
-    const node = FileSystem._objects[this.serverId];
-    if (node && node instanceof SpinalNode) {
-      const cats = await node.getChildren("hasCategoryAttributes");
-      for (const cat of cats) {
-        const attrLst = await cat.getElement();
-        for (let idx = 0; idx < attrLst.length; idx++) {
-          const attr = attrLst[idx];
-          if (attr.label.get() === key) {
-            return attr;
-          }
-        }
-      }
-    }
-  }
 
-  async getArea() {
-    const node = FileSystem._objects[this.serverId];
-    if (node && node.getType().get() === ROOM_TYPE) {
-      const areaAttr = await this.getAttrByKey('area');
-      if (!areaAttr) return 0;
-      return parseFloat(areaAttr.value.get());
-    }
-    if (typeof this.children === "undefined") return 0;
-    const prom = [];
-    for (const [, arrayItem] of this.children) {
-      for (const item of arrayItem) {
-        prom.push(item.getArea());
-      }
-    }
-    return Promise.all(prom)
-      .then((resArr) => resArr.reduce((prev, curr) => prev + curr, 0));
-  }
-
-  addChildrenInItem(allItems: Map<number, DataRoomItem>, node: SpinalNode<any>): void {
+  addChildrenInItem(allItems: Map<number, EquipmentItem>, node: SpinalNode<any>): void {
     if (typeof this.children === "undefined") {
       Object.assign(this, { children: new Map() })
     }
@@ -160,20 +111,19 @@ export class DataRoomItem {
       this.children.set(nodeType, [])
     }
     const arr = this.children.get(nodeType)
-    const child = DataRoomItem.getItemFromMap(allItems, node);
+    const child = EquipmentItem.getItemFromMap(allItems, node);
     arr.push(child);
   }
 
-  static getItemFromMap(allItems: Map<number, DataRoomItem>, node: SpinalNode<any>)
-    : DataRoomItem {
+  static getItemFromMap(allItems: Map<number, EquipmentItem>, node: SpinalNode<any>)
+    : EquipmentItem {
     const server_id: number = node._server_id
     if (allItems.has(server_id)) {
       return allItems.get(server_id)
     }
-    const item: DataRoomItem = new DataRoomItem(node.info.name.get(), server_id, node.info.id.get())
+    const item: EquipmentItem = new EquipmentItem(node.info.name.get(), server_id)
     allItems.set(server_id, item);
     return item
   }
-
 }
 

@@ -22,6 +22,7 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 <template>
+
   <el-table v-loading="loading"
             :data="data"
             border
@@ -29,7 +30,7 @@ with this file. If not, see
             :header-cell-style="{'background-color': '#f0f2f5'}"
             @row-click="selectInView"
             @row-dblclick="SeeEvent">
-    <el-table-column :label="$t('data-room.Name')">
+    <el-table-column :label="$t('DataRoom.Name')">
       <template slot-scope="scope">
         <div>
           <div v-if="scope.row.color"
@@ -41,10 +42,10 @@ with this file. If not, see
     </el-table-column>
     <el-table-column v-if="haveArea"
                      align="center"
-                     :label="$t(`data-room.Area`)">
+                     :label="$t(`DataRoom.Area`)">
       <template slot-scope="scope">
         <div v-loading="loadingArea">
-          {{ roundNumber(scope.row.area) }}
+          {{ roundNumber(scope.row.area) }} m²
         </div>
       </template>
     </el-table-column>
@@ -52,7 +53,7 @@ with this file. If not, see
     <el-table-column v-for="collum in collums"
                      :key="collum"
                      align="center"
-                     :label="$t(`data-room.${collum}`)">
+                     :label="$t(`DataRoom.${collum}`)">
       <template slot-scope="scope">
         {{ collumValue(scope.row, collum) }}
       </template>
@@ -124,7 +125,8 @@ export default {
       return false;
     },
     onSelectItem(item) {
-      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+      localStorage.setItem("nodeId", item.nodeId);
+      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
     },
     update() {
       this.loading = true;
@@ -137,6 +139,7 @@ export default {
       for (const item of this.items) {
         const resItem = {
           name: item.name,
+          nodeId: item.nodeId,
           serverId: item.serverId,
           haveChild: false,
           color: item.getColor(),
@@ -242,6 +245,7 @@ export default {
       });
     },
     SeeAll(zone) {
+
       let items = this.data.map(item => {
         return { server_id: item.serverId, color: item.color };
       });

@@ -46,8 +46,8 @@ with this file. If not, see
                   class="tab"
                   border
                   style="width: 100%"
-                  :header-cell-style='{"background-color": "#f0f2f5"}'
-                  @row-click="SeeEvent">
+                  :header-cell-style='{"background-color": "#f0f2f5"}'>
+                  <!-- @row-click="SeeEvent"> -->
           <el-table-column :label="$t('HeatmapCenter.Groupe')">
             <template slot-scope="scope">
               <div>
@@ -61,28 +61,15 @@ with this file. If not, see
                            :label="$t('HeatmapCenter.Nb_profils')"
                            align="center">
           </el-table-column>
-          <el-table-column :label="$t('HeatmapCenter.lst_profils')"
+          <el-table-column width="65"
                            align="center">
             <template slot-scope="scope">
-              <el-button @click="seeRoomTable(scope.row)"
+              <el-button @click="SelectGroup(scope.row)"
                          icon="el-icon-arrow-right"
                          circle></el-button>
             </template>
           </el-table-column>
         </el-table>
-
-        <!-- Si on a déjà selectionné un groupe , on affiche la liste des profiles -->
-        <div v-else>
-          <profilLstVue
-                      :profils="groupSelected.profils"
-                      :color="groupSelected.color"
-                      @seeEvent="SeeEvent"
-                      @profilSelectEvent="profilSelectEvent">
-         </profilLstVue>
-        
-        </div>
-
-
       </el-tab-pane>
     </el-tabs>
 
@@ -92,8 +79,6 @@ with this file. If not, see
 <script>
 import profilLstVue from "./profilLstVue";
 import SpinalBackend from "../../../services/spinalBackend";
-import ChartsPiece from "./ChartsPiece";
-import ChartsEsp from "./ChartsEsp";
 import { EventBus } from "../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
@@ -109,7 +94,7 @@ export default {
       groupSelected: null
     };
   },
-  components: { ChartsPiece, ChartsEsp, profilLstVue },
+  components: { profilLstVue },
   props: ["selectCategorie"],
   methods: {
     getColor(color) {
@@ -165,18 +150,35 @@ export default {
       console.log("expoooooooooooort", this.data);
     },
 
-    seeRoomTable(profilData) {
-      this.groupSelected = { profils: profilData.rooms, color: profilData.color };
+    //Selecting a group
+    seeProfilsTable(profilData) {
+      this.groupSelected = { profils: profilData.rooms, color: profilData.color }
       this.$emit("addbreadcrumb", {
         name: profilData.name,
         click: () => {
+          this.$parent.breadcrumbs.slice(1);
+          this.groupSelected=null;
+          this.$parent.profilSelected=null;
           
         }
       });
     },
+
+    SelectGroup(group){
+      this.$emit("selectgroup",group);
+    },
+
+    //Selecting a profil
     profilSelectEvent (value) {
-      //console.log("Event recieved : ",value);
+      console.log("Event recieved : ",value);
       this.$parent.profilSelected=value;
+      this.$emit("addbreadcrumb", {
+        name: value.name,
+        click: () => {
+          
+        }
+      });
+      
     },
     resetgroupSelected() {
       this.groupSelected = null;
@@ -248,7 +250,7 @@ export default {
   },
   beforeDestroy() {},
   async mounted() {
-    console.log("tttttttttt", this.data);
+    //console.log("tttttttttt", this.data);
     this.groupSelected = null;
   }
 };

@@ -147,3 +147,9 @@ export default {
   height: 100%;
 }
 </style>
+
+<style>
+.spl-height-control {
+  height: 100%;
+}
+</style>
