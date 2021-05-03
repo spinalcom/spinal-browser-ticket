@@ -149,7 +149,7 @@ with this file. If not, see
         </el-table-column>
 
         <el-table-column label="Actions"
-                         width="100"
+                         width="200"
                          align="center">
           <template slot-scope="scope">
             <el-button
@@ -158,7 +158,7 @@ with this file. If not, see
                        @click="exportFichier(scope.row)"></el-button>
                        <el-button 
                         type="danger"
-                       icon="el-icon-download"
+                       icon="el-icon-delete"
                        circle
                        @click="deleteFichier(scope.row)"></el-button>
           </template>
@@ -189,7 +189,10 @@ with this file. If not, see
         </div>
       </div>
         <br>
-      <vueCal :events="calendrier"></vueCal>
+      <div class="spinal-space-table-content spinal-scrollbar">
+
+          <vueCal :events="calendrier"></vueCal>
+        </div>
 
     </el-tab-pane>
   </el-tabs>

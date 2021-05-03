@@ -179,7 +179,10 @@ with this file. If not, see
                        </div>
 
       </div>
-      <vueCal :events="calendrier"></vueCal>
+      <div class="spinal-space-table-content spinal-scrollbar">
+
+          <vueCal :events="calendrier"></vueCal>
+        </div>
 
     </el-tab-pane>
       </el-tabs>
