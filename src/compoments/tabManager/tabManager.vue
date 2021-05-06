@@ -26,7 +26,7 @@ with this file. If not, see
   <el-tabs type="border-card"
            :value="activetab"
            @tab-remove="removeTab">
-    <el-tab-pane v-for="tab in opentabs"
+    <el-tab-pane v-for="tab in tabsprop"
                  :key="tab.name"
                  :label="tab.name"
                  :name="tab.name"
@@ -46,7 +46,7 @@ with this file. If not, see
             <el-dropdown-item v-for="tab in tabs"
                               :key="tab.name"
                               :command="tab">
-              <div v-if="!hasTab(opentabs, tab)">
+              <div v-if="!hasTab(tabsprop, tab)">
                 {{ tab.name }}
               </div>
             </el-dropdown-item>
@@ -64,32 +64,37 @@ export default {
   props: { tabsprop: Array },
   data() {
     return {
-      opentabs: [],
       activetab: this.tabsprop[0].name
     };
   },
   async mounted() {
-    for (const tab of this.tabsprop) {
-      if (!tab.optional) {
-        this.opentabs.push(tab);
-      }
-    }
   },
-  computed: {
-    
+  watch: {
+    tabsprop:
+    {
+      handler(oldTabs, newTabs)
+      {
+        if (typeof newTabs !== "undefined" && !newTabs.some(tab => {tab.name == this.activeTab}))
+        {
+          this.activetab = newTabs[0].name;
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   methods: {
     hasTab(tabname) {
-      for (var idx = 0; idx < this.opentabs.length; idx += 1) {
-        if (this.opentabs[idx].name === tabname) {
+      for (var idx = 0; idx < this.tabsprop.length; idx += 1) {
+        if (this.tabsprop[idx].name === tabname) {
           return true;
         }
       }
       return false;
     },
     addTab(target) {
-      if (!this.opentabs.some(e => e.name == target.name)){
-        this.opentabs.push({
+      if (!this.tabsprop.some(e => e.name == target.name)){
+        this.tabsprop.push({
           title: target.name,
           name: target.name,
           content: target.content,
@@ -99,7 +104,7 @@ export default {
       // this.activetab = target.name;
     },
     removeTab(targetName) {
-      let tmptabs = this.opentabs;
+      let tmptabs = this.tabsprop;
       let activeName = this.activetab;
       if (activeName === targetName) {
         tmptabs.forEach((tab, index) => {
@@ -112,7 +117,7 @@ export default {
         });
       }
       this.activetab = activeName;
-      this.opentabs = tmptabs.filter(tab => tab.name !== targetName);
+      this.tabsprop = tmptabs.filter(tab => tab.name !== targetName);
     },
     debug(active) {
       console.log(active);

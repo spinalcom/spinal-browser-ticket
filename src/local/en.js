@@ -39,6 +39,8 @@ export default {
   "node-type.BIMObjectGroupContext" : "BIM objects groups contexts",
   "node-type.BIMObjectGroup" : "BIM Object Groups",
   "node-type.BIMObject" : " BIM Objects",
+  "node-type.hasFiles": "Documentation",
+  "node-type.hasCategoryAttributes": "Attributes",
   "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",
   "SpaceManagement.Categories": "Categories",

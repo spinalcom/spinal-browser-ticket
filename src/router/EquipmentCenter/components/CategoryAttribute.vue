@@ -23,31 +23,28 @@ with this file. If not, see
 -->
 
 <template>
-  <div v-if="Properties.item !== false">
-    <el-container>
-      <el-header>
-        <!-- {{ $t(`node-type.${Properties.item}`) }} -->
-        <div style="float: right">
-          <el-button
-            icon="el-icon-download"
-            circle
-            @click.stop="exportToExcel()"
-          >
-          </el-button>
-          <el-button
-            icon="el-icon-picture-outline-round"
-            circle
-            @click.stop="SeeAll()"
-          >
-          </el-button>
-          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
-          </el-button>
-        </div>
-      </el-header>
-      <el-main>
-      </el-main>
-    </el-container>
-  </div>
+  <el-container>
+    <!-- <el-header>
+      <el-button
+        icon="el-icon-picture-outline-round"
+        circle
+        @click.stop="debug(Categories)"
+      >
+      </el-button>
+    </el-header> -->
+    <el-main v-if="Categories !== false">
+      <el-collapse v-for="category in Categories" :key="category.nameCat">
+        <el-collapse-item :title="category.name" :name="category.name">
+          <el-table :data="category.attributes">
+            <el-table-column label="Name" prop="label">
+            </el-table-column>
+            <el-table-column label="Value" prop="value">
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+      </el-collapse>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -56,6 +53,8 @@ import { ViewManager } from "../../../services/ViewManager/ViewManager";
 import { EquipmentBack } from "../backend/EquipmentBack";
 import BackendInitializer from "../../../services/BackendInitializer";
 import { EventBus } from "../../../services/event";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
+import { FileSystem } from 'spinal-core-connectorjs_type'
 import "../../../services/EventHandler";
 
 import NodeTable from "./NodeTable.vue";
@@ -76,26 +75,84 @@ export default {
   },
   data() {
     return {
+      ctxNode: false,
+      Categories: false,
     };
   },
+  watch:
+  {
+    Properties:
+    {
+      handler: async function(oldProp, newProp)
+      {
+        if (newProp.view.serverId != 0)
+        {
+          // console.debug("start");
+          // this.ctxNode = FileSystem._objects[newProp.view.serverId];
+          // let Categories = await serviceDocumentation.getCategory(this.ctxNode);
+          // this.Categories = [];
+          // for(const category of Categories)
+          // {
+          //   let attributes = await serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat);
+          //   let attrs = [];
+          //   for (const attribute of attributes)
+          //   {
+          //     attrs.push({
+          //       label: attribute.label._data,
+          //       value: attribute.value._data
+          //       });
+          //   }
+          //   let cat = {
+          //     name: category.nameCat,
+          //     attributes: attrs
+          //   }
+          //   this.Categories.push(cat);
+          // }
+          // console.debug("Wait ...", this.Categories);
+          // console.debug("end");
+          console.debug("start");
+          this.ctxNode = await FileSystem._objects[newProp.view.serverId];
+          console.debug("File system :", FileSystem)
+          serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
+            console.debug("test");
+            this.Categories = [];
+            for(const category of Categories)
+            {
+              serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat).then((attributes) =>
+              {
+                let attrs = [];
+                for (const attribute of attributes)
+                {
+                  attrs.push({
+                    label: attribute.label._data,
+                    value: attribute.value._data
+                    });
+                }
+                let cat = {
+                  name: category.nameCat,
+                  attributes: attrs
+                }
+                this.Categories.push(cat);
+              })
+            }
+          })
+          console.debug("Wait ...", this.Categories);
+          console.debug("end");
+        }
+      },
+      deep: true,
+      // immediate: true,
+    }
+  },
   methods: {
-    changeView(item) {
-      ViewManager.getInstance(this.Properties.viewKey).push(
-        item.name,
-        item.serverId
-      );
-    },
-    SeeAll() {
-      this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
-    },
-    isolateAll() {
-      this.$refs["Explorer-table"].isolateAll(this.Properties.view.serverId);
-    },
     exportToExcel() {
       this.$refs["Explorer-table"].exportToExcel();
     },
-    ShowAll() {
-      this.$refs["Explorer-table"].ShowAll();
+    async getAttributes(category)
+    {
+      let result = await serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat);
+      console.debug("result : ", result[0]["value"])
+      return result;
     },
     async debug(what) {
       console.debug("Debugging", what);

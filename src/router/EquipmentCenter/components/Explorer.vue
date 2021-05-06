@@ -24,7 +24,7 @@ with this file. If not, see
 
 <template>
   <div v-if="Properties.items !== false">
-    <el-button v-show="(Properties.view.serverId != 0)" class="spl-el-button" style="float: left"
+    <!-- <el-button v-show="(Properties.view.serverId != 0)" class="spl-el-button" style="float: left"
           icon="el-icon-arrow-left"
           circle
           @click.stop="popView()"
@@ -46,7 +46,7 @@ with this file. If not, see
         @click.stop="exportToExcel()"
       >
       </el-button>
-    </div>
+    </div> -->
     <div class="spl-table">
       <node-table
         :ref="'Explorer-table'"

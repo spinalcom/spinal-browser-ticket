@@ -78,7 +78,7 @@ with this file. If not, see
       <div slot-scope="scope">
         <el-button icon="el-icon-arrow-down"
                     circle
-                    @click="debugNode(scope.row)"></el-button>
+                    @click="debug(scope.row)"></el-button>
       </div>
     </el-table-column> -->
   </el-table>
@@ -146,11 +146,10 @@ export default {
       EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
-      console.debug("Pushing :", item);
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
-    debugNode(item) {
-      console.log(item)
+    debug(item) {
+      console.debug("what the...", this.$t["node-type.hasCategoryAttributes"])
     },
     update() {
       this.loading = true;
