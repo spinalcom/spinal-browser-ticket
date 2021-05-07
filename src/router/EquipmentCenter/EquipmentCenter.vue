@@ -59,6 +59,8 @@ import { ViewManager } from "../../services/ViewManager/ViewManager";
 import { EquipmentBack } from "./backend/EquipmentBack";
 import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
@@ -96,7 +98,7 @@ export default {
           },
         },
         {
-          name: this.$t("node-type.hasCategoryAttributes"),
+          name: this.$t("spinal-twin.hasCategoryAttributes"),
           content: CategoryAttribute,
           props: {
             viewKey: VIEW_KEY,
@@ -122,7 +124,6 @@ export default {
       if (view.serverId === 0) {
         this.contextServId = 0;
         mapItems = await EquipmentBack.getInstance().getContexts();
-
         // this.tabs[1].props.item = await EquipmentBack.getInstance().getContextsAttributes();
       } else {
         if (this.contextServId === 0) {
@@ -159,20 +160,79 @@ export default {
       ViewManager.getInstance(this.viewKey).pop()
     },
     isolateAll() {
-      for (const item of this.items.items)
-      {
-        EventBus.$emit("view-isolate-item", { server_id: item.serverId });
-      };
+      // let list = this.items.items.map(item => {
+      //   return { server_id: item.serverId };
+      // });
+      // console.debug("list : ", list)
+      // EventBus.$emit("view-isolate-list", list);
+      EventBus.$emit("view-isolate-all", { server_id: this.currentView.serverId });
+    },
+    formatData(){
+      const res = [];
+      for (const item of this.items.items) {
+        const resItem = {
+          name: item.name,
+          serverId: item.serverId,
+          haveChild: false,
+          color: item.getColor(),
+        };
+        if (item.children) {
+          for (const [childTypes, childItems] of item.children) {
+            resItem[childTypes] = childItems.length;
+            resItem.haveChild = true;
+          }
+        }
+        else if (FileSystem._objects[item.serverId] !== undefined) {
+          let thisnode = FileSystem._objects[item.serverId]
+          if (thisnode.children.PtrLst !== undefined) {
+            for (const name of thisnode.children.PtrLst._attribute_names){
+              resItem[name] = thisnode.children.PtrLst[name].length;
+              resItem.haveChild = true
+            }
+          }
+        }
+        res.push(resItem);
+      }
+      return res
     },
     exportToExcel() {
-      // console.debug(this.tabs[0].content.components.NodeTable.methods.exportToExcel());
-      // this.$children['Explorer'].exportToExcel();
+      let headers = [
+        {
+          key: "name",
+          header: this.$t("name"),
+          width: 20
+        },
+      ];
+      for (const column of this.items.cols) {
+        headers.push({
+          key: column,
+          header: this.$t(column),
+          width: 10
+        });
+      }
+      let excelData = [
+        {
+          name: "Tableau",
+          author: "",
+          data: [
+            {
+              name: "Tableau",
+              header: headers,
+              rows: this.formatData()
+            }
+          ]
+        }
+      ];
+      excelManager.export(excelData).then(reponse => {
+        fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
+      });
     },
     SeeAll() {
       let items = this.items.items.map(item => {
         console.debug("item : ", item.serverId, item.getColor())
         return { server_id: item.serverId, color: item.getColor() };
       });
+      console.debug("items : ", items)
       EventBus.$emit("view-color-all", items, { server_id: this.currentView.serverId });
     },
     ShowAll() {
