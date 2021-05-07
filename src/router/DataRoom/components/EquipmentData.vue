@@ -91,9 +91,9 @@ with this file. If not, see
 
         <document-create v-bind:nodeId="nodeId"
                          @reload="updateDocument"></document-create>
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
+        <header-bar :header="documentHeader"
+                    :content="documentContent"
+                    :data="documentData"></header-bar>
 
       </div>
 
@@ -120,7 +120,7 @@ with this file. If not, see
                         type="danger"
                        icon="el-icon-delete"
                        circle
-                       @click="deleteFichier(scope.row)"></el-button>
+                       @click="deleteFichier(scope.$index)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -140,19 +140,9 @@ with this file. If not, see
        ////////////////////////////////// Calendrier /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
     <el-tab-pane :label="$t('DataRoom.Calendar')">
-      <div class="barre">
-        <div>
-
-        <ticket-create v-bind:nodeId="nodeId"
-                       @reload="updateticket"></ticket-create>
-        </div>
+        <div class="barre">
+        <Calendar :nodeId="nodeId"></Calendar>
       </div>
-        <br>
-      <div class="spinal-space-table-content spinal-scrollbar">
-
-          <vueCal :events="calendrier"></vueCal>
-        </div>
-
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -164,6 +154,7 @@ import { serviceTicketPersonalized } from "spinal-service-ticket";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import messageComponent from "./messageComponent.vue";
+import Calendar from "./Calendar.vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { SpinalEventService } from "spinal-env-viewer-task-service";
@@ -177,7 +168,8 @@ export default {
     VueCal,
     "ticket-create": ticketcreate,
     "header-bar": headerBarVue,
-    "document-create": documentcreateVue
+    "document-create": documentcreateVue,
+    "Calendar": Calendar
   },
   filters: {
     formatDate: function(date) {
@@ -191,6 +183,9 @@ export default {
     return {
       tickets: [],
       documents: [],
+      documentHeader: [],
+      documentData: [],
+      documentContent: [],
       ticketHeader: [],
       ticketData: [],
       ticketContent: [],
@@ -254,6 +249,17 @@ export default {
     });
 
     this.documents = await this.getDocuments();
+    this.documentHeader = [
+        { key: "name", header: "name", width: 15 },
+      ];
+
+      this.documentContent = this.documents.map(el => ({
+        name: el.name._data,
+      }));
+      this.documentData = this.documents.map(el => {
+        console.log(el);
+        return el.name._data;
+      });
     let varEquipement = await SpinalGraphService.getChildren(
       this.nodeId,
       GeographicContext.constants.EQUIPMENT_RELATION
@@ -304,6 +310,16 @@ export default {
     },
     popView() {
       ViewManager.getInstance("Data room").pop();
+    },
+    async deleteFichier(index) {
+      if (confirm("Delete Document !")) {
+        return FileExplorer.getDirectory(
+        SpinalGraphService.getRealNode(this.nodeId)
+      ).then(directory => {
+        directory.splice(index, 1);
+         this.updateDocument();
+        });
+      }
     },
     getDocuments() {
       return FileExplorer.getDirectory(

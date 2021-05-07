@@ -150,7 +150,7 @@ with this file. If not, see
                         type="danger"
                        icon="el-icon-delete"
                        circle
-                       @click="deleteFichier(scope.row)"></el-button>
+                       @click="deleteFichier(scope.$index)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -167,22 +167,7 @@ with this file. If not, see
                               :key="item.nodeType"
                               :name="item.nodeType"
       >
-     <div>
-
-        <ticket-create v-bind:nodeId="item.nodeId"
-                       @reload="updateticket"></ticket-create>
-        </div>
-                       <div>
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
-                       </div>
-
-      </div>
-      <div class="spinal-space-table-content spinal-scrollbar">
-
-          <vueCal :events="calendrier"></vueCal>
-        </div>
+      <Calendar :nodeId="item.nodeId"></Calendar>
 
     </el-tab-pane>
       </el-tabs>
@@ -215,6 +200,7 @@ import CategoryAttribute from "./components/CategoryAttribute.vue";
 import './DataRoomEventHandler';
 import ticketcreate from "./components/ticketcreate";
 import headerBarVue from "./components/headerBar.vue";
+import Calendar from "./components/Calendar.vue";
 import documentcreateVue from "./components/documentcreate.vue";
 import messageComponent from "./components/messageComponent.vue";
 import VueCal from "vue-cal";
@@ -230,6 +216,7 @@ export default {
   "header-bar": headerBarVue,
   "document-create": documentcreateVue,
   "message-component": messageComponent,
+  "Calendar": Calendar,
   VueCal },
   data() {
     return {
@@ -374,6 +361,16 @@ export default {
         }
         return res;
       });
+    },
+    async deleteFichier(index) {
+      if (confirm("Delete Document !")) {
+        return FileExplorer.getDirectory(
+        SpinalGraphService.getRealNode(this.items[0].nodeId)
+      ).then(directory => {
+        directory.splice(index, 1);
+         this.updateDocument();
+        });
+      }
     },
     async updateDocument() {
       this.documents = await this.getDocuments();
