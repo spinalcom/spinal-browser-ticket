@@ -149,7 +149,7 @@ export default {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     debug(item) {
-      console.debug("what the...", this.$t["node-type.hasCategoryAttributes"])
+      console.debug(item)
     },
     update() {
       this.loading = true;
