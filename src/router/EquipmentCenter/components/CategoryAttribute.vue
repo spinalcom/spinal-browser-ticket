@@ -26,7 +26,8 @@ with this file. If not, see
   <el-container>
     <!-- <el-header>
       <el-button
-        icon="el-icon-picture-outline-round"
+        icon="el-icon-plus"
+        style="float: right"
         circle
         @click.stop="debug(Categories)"
       >
@@ -34,13 +35,22 @@ with this file. If not, see
     </el-header> -->
     <el-main v-if="Categories !== false">
       <el-collapse v-for="category in Categories" :key="category.nameCat">
-        <el-collapse-item :title="category.name" :name="category.name">
+        <el-collapse-item :name="category.name">
+        <template slot="title">
+        {{ category.name }}
+        </template>
           <el-table :data="category.attributes">
             <el-table-column label="Name" prop="label">
             </el-table-column>
             <el-table-column label="Value" prop="value">
             </el-table-column>
           </el-table>
+        <!-- <el-button
+          icon="el-icon-plus"
+          style="margin-right:50px"
+          circle
+          @click.native="addAttribute(category)"
+        ></el-button> -->
         </el-collapse-item>
       </el-collapse>
     </el-main>
@@ -153,6 +163,10 @@ export default {
       let result = await serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat);
       console.debug("result : ", result[0]["value"])
       return result;
+    },
+    async addAttribute(category){
+      console.debug(category)
+      await serviceDocumentation.addAttributeByCategoryName(this.ctxNode, category.nameCat, "newAttribute", "newValue", "", "");
     },
     async debug(what) {
       console.debug("Debugging", what);
