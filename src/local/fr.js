@@ -42,6 +42,8 @@ export default {
   "node-type.BIMObject" : "Objets BIM",
   "node-type.hasFiles": "Documentation",
   "node-type.hasCategoryAttributes": "Attributs",
+  "spinal-twin.hasCategoryAttributes": "Attributs",
+  "spinal-twin.Explorer": "Explorateur",
   "explorer.Name": "Nom",
   "SpaceManagement.Nom": "Nom",
   "SpaceManagement.Categories": "Categories",
