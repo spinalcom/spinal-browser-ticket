@@ -28,13 +28,25 @@ export default {
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
   "error.returntodrive.title": "Erreur",
-  "data-room.geographicContext": "Contextes", // Could be generic
-  "data-room.geographicBuilding": "Bâtiments", // Could be generic
-  "data-room.geographicFloor": "Etages", // Could be generic
-  "data-room.geographicRoom": "Locaux", // Could be generic
-  "data-room.BIMObject": "Objets", // Could be generic
-  "data-room.Area": "Surface",
-  "data-room.Name": "Nom",
+  "DataRoom.geographicContext": "Contextes", // Could be generic
+  "DataRoom.geographicBuilding": "Bâtiments", // Could be generic
+  "DataRoom.geographicFloor": "Etages", // Could be generic
+  "DataRoom.geographicRoom": "Locaux", // Could be generic
+  "DataRoom.BIMObject": "Objets", // Could be generic
+  "DataRoom.Area": "Surface",
+  "DataRoom.Name": "Nom",
+  "DataRoom.Ticket": "Tickets",
+  "DataRoom.Note": "Notes",
+  "DataRoom.Documentation": "Documentation",
+  "DataRoom.Calendar": "Calendrier",
+  "DataRoom.Equipment": "Equipements",
+  "DataRoom.User": "Utilisateurs",
+  "DataRoom.Priority": "Priorités",
+  "DataRoom.ScreenShot": "Faire une capture d'écran",
+  "DataRoom.PointView": "Enregistrer un point de la vue",
+  "DataRoom.PJ": "Joindre un fichier",
+
+  
   "node-type.context" : "Contextes",
   "node-type.groupingCategory" : "Catégories",
   "node-type.BIMObjectGroupContext" : "Contextes de groupes d'objets BIM",
@@ -60,7 +72,7 @@ export default {
   "HeatmapCenter.Groupe": "Groupe",
   "HeatmapCenter.Nb_groupes": "Groupes",
   "HeatmapCenter.Nb_pieces": "Pièces",
-  "HeatmapCenter.Nb_profils": "Profiles",
+  "HeatmapCenter.Nb_profils": "Profils",
   "HeatmapCenter.lst_profils": "Liste des profiles",
   "HeatmapCenter.Surface": "Surface(M²)",
   "HeatmapCenter.Groupes":"Groupes",

@@ -21,56 +21,27 @@ You should have received a copy of the license along
 with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
+
 <template>
   <div>
-    <div ref="charts">
-
-    </div>
+    dss
   </div>
 </template>
 
 <script>
+import SpinalBackend from "../../services/spinalBackend";
+
 export default {
   data() {
     return {
-      data: [
-        {
-          values: [],
-          labels: [],
-          marker: {
-            colors: []
-          },
-          textinfo: "value",
-          type: "pie"
-        }
-      ]
+      contextLst: []
     };
   },
   components: {},
-  props: ["entreprise"],
-  methods: {
-    updateEntreprise() {
-      this.data[0].values = [];
-      this.data[0].labels = [];
-      this.data[0].marker.colors = [];
-      for (let i = 0; i < this.entreprise.length; i++) {
-        const oneEntreprise = this.entreprise[i];
-        this.data[0].labels.push(oneEntreprise.name);
-        this.data[0].values.push(oneEntreprise.surface);
-        this.data[0].marker.colors.push(oneEntreprise.color);
-      }
-      Plotly.redraw(this.$refs.charts, this.data);
-    }
-  },
-  mounted() {
-    Plotly.newPlot(this.$refs.charts, this.data);
-    this.updateEntreprise();
-  },
-  watch: {
-    entreprise: function() {
-      this.updateEntreprise();
-    }
-  },
+  props: [],
+  methods: {},
+  async mounted() {},
+  watch: {},
   beforeDestroy() {}
 };
 </script>

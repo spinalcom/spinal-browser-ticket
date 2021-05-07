@@ -93,6 +93,7 @@ export default {
   watch: {
     contextSelected() {
       this.categories = this.contextSelected.categories;
+      console.log(this.categories);
     }
   },
   async mounted() {

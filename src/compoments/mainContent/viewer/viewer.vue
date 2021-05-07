@@ -25,6 +25,7 @@ with this file. If not, see
 <template>
   <div id="autodesk_forge_viewer"
        class="viewerContainer">
+    <heatmap-legend></heatmap-legend>
   </div>
 </template>
 
@@ -36,9 +37,15 @@ import { EventBus } from "../../../services/event";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { DISABLE_VIEWER } from "../../../constants";
 
+import HeatmapLegendContainer from "../../heatmap/heatmap-legends/container.vue";
+
 import "spinal-env-viewer-plugin-forge";
 export default {
   name: "AppViewer",
+  props: ["isMinimized"],
+  components: {
+    "heatmap-legend": HeatmapLegendContainer
+  },
   data() {
     this.elementColored = new Map();
     return {
@@ -48,9 +55,9 @@ export default {
       materials: {}
     };
   },
-
   mounted() {
     EventBus.$on("see", data => {
+      console.log("on see", data);
       this.isoLate(data.ids);
       this.restoreAllColor();
       this.colorsRooms(data.ids, data.color, data.id);
@@ -69,9 +76,7 @@ export default {
         this.isoLate(ids);
       }
     });
-
     return this.createViewer();
-
   },
   methods: {
     handleMinized(toShowUI) {
@@ -154,17 +159,41 @@ export default {
       this.viewer.impl.invalidate(true, true, true);
     },
 
-    isoLate(roomsList) {
-      let dbIds = roomsList.map(el => el.dbid);
-      if (roomsList.length === 0) {
-        this.viewer.isolate(dbIds, this.viewer.model);
-      } else {
-        let model = window.spinal.BimObjectService.getModelByBimfile(
-          roomsList[0].bimFileId
-        );
-
-        this.viewer.isolate(dbIds, model);
+    pushToModel(targetArray, ids, model) {
+      for (const obj of targetArray) {
+        if (obj.model === model) {
+          for (const id of ids) {
+            obj.selection.add(id);
+          }
+          return;
+        }
       }
+
+      const idSet = new Set();
+      for (const id of ids) {
+        idSet.add(id);
+      }
+      targetArray.push({
+        model,
+        selection: (idSet)
+      });
+    },
+
+    convertForIsolate(roomLst) {
+      const data = [];
+      for (const room of roomLst) {
+        let model = window.spinal.BimObjectService.getModelByBimfile(
+          room.bimFileId
+        );
+        this.pushToModel(data, [room.dbid], model);
+      }
+      return data.map(it => {
+        return {model: it.model, selection : Array.from(it.selection)}
+      });
+    },
+
+    isoLate(roomsList) {
+      viewerUtils.isolateObjects(this.convertForIsolate(roomsList));
     },
 
     convertHewToRGB(hex) {
@@ -191,6 +220,52 @@ export default {
       return true;
     }
   }
+  // =======
+  //           );
+  //         }
+  //       }
+  //       this.elementColored.clear();
+  //       this.viewer.impl.invalidate(true, true, true);
+  //     },
+
+  //     isoLate(roomsList) {
+  //       let dbIds = roomsList.map(el => el.dbid);
+  //       if (roomsList.length === 0) {
+  //         this.viewer.isolate(dbIds, this.viewer.model);
+  //       } else {
+  //         let model = window.spinal.BimObjectService.getModelByBimfile(
+  //           roomsList[0].bimFileId
+  //         );
+
+  //         this.viewer.isolate(dbIds, model);
+  //       }
+  //     },
+
+  //     convertHewToRGB(hex) {
+  //       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  //       return result
+  //         ? {
+  //             r: parseInt(result[1], 16),
+  //             g: parseInt(result[2], 16),
+  //             b: parseInt(result[3], 16)
+  //           }
+  //         : null;
+  //     },
+
+  //     elementIsColored(elementCol) {
+  //       return this.elementColored.get(elementCol) != undefined;
+  //     },
+
+  //     allElementAreColored(allElement) {
+  //       for (const element of allElement) {
+  //         if (!this.elementIsColored(element.id)) {
+  //           return false;
+  //         }
+  //       }
+  //       return true;
+  //     }
+  //   }
+  // >>>>>>> master
 };
 </script>
 

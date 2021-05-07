@@ -1,19 +1,15 @@
 <!--
 Copyright 2020 SpinalCom - www.spinalcom.com
-
 This file is part of SpinalCore.
-
 Please read all of the following terms and conditions
 of the Free Software license Agreement ("Agreement")
 carefully.
-
 This Agreement is a legally binding contract between
 the Licensee (as defined below) and SpinalCom that
 sets forth the terms and conditions that govern your
 use of the Program. By installing and/or using the
 Program, you agree to abide by all the terms and
 conditions stated or referenced herein.
-
 If you do not agree to abide by these terms and
 conditions, do not demonstrate your acceptance and do
 not install or use the Program.
@@ -23,36 +19,36 @@ with this file. If not, see
 -->
 
 <template>
-  <div v-if="Properties.items !== false">
-    <!-- <el-button v-show="(Properties.view.serverId != 0)" class="spl-el-button" style="float: left"
-          icon="el-icon-arrow-left"
-          circle
-          @click.stop="popView()"
-        >
-    </el-button>
-    <div class="spl-button-bar">
-      <el-button class="spl-el-button"
-        icon="el-icon-aim" circle
+  <div class="spl-height-control">
+    <!-- <div class="spl-button-bar">
+      <el-button
+        class="spl-el-button"
+        icon="el-icon-aim"
+        circle
         @click.stop="isolateAll()"
       >
       </el-button>
-      <el-button class="spl-el-button"
-        icon="el-icon-picture-outline-round" circle
+      <el-button
+        class="spl-el-button"
+        icon="el-icon-picture-outline-round"
+        circle
         @click.stop="SeeAll()"
       >
       </el-button>
-      <el-button class="spl-el-button"
-        icon="el-icon-download" circle
+      <el-button
+        class="spl-el-button"
+        icon="el-icon-download"
+        circle
         @click.stop="exportToExcel()"
       >
       </el-button>
     </div> -->
-    <div class="spl-table">
+    <div v-if="Properties.items !== false" class="spl-height-control">
       <node-table
         :ref="'Explorer-table'"
         :view-key="Properties.viewKey"
-        :items="Properties.items.items"
-        :columns="Properties.items.cols"
+        :items="itemsComputed"
+        :columns="cols"
       >
       </node-table>
     </div>
@@ -66,7 +62,6 @@ import { EquipmentBack } from "../backend/EquipmentBack";
 import BackendInitializer from "../../../services/BackendInitializer";
 import { EventBus } from "../../../services/event";
 import "../../../services/EventHandler";
-
 import NodeTable from "./NodeTable.vue";
 export default {
   name: "Explorer",
@@ -85,7 +80,25 @@ export default {
   },
   data() {
     return {
+      items: false,
+      contextServId: 0,
+      currentView: null,
     };
+  },
+  computed: {
+    itemsComputed() {
+      if (
+        this.Properties &&
+        this.Properties.items &&
+        this.Properties.items.items
+      )
+        return this.Properties.items.items;
+      return [];
+    },
+    cols() {
+      if (this.Properties && this.Properties.cols) return this.Properties.cols;
+      return [];
+    },
   },
   methods: {
     changeView(item) {
@@ -93,9 +106,6 @@ export default {
         item.name,
         item.serverId
       );
-    },
-    popView() {
-      ViewManager.getInstance(this.Properties.viewKey).pop()
     },
     SeeAll() {
       this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
@@ -117,15 +127,9 @@ export default {
 </script>
 
 <style scoped>
-.spl-table {
-  padding: 5px 5px 5px 5px;
-  overflow-y: unset auto;
-}
-
 .spl-el-button {
   margin: 0 0 0 10px;
 }
-
 .spl-button-bar {
   display: flex;
   flex-direction: row-reverse;

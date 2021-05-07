@@ -40,13 +40,12 @@ export default class BackEndDataRoom {
   constructor() {
   }
   async init(graph: SpinalGraph<any>) {
-    const children = await graph.getChildren();
+    const children = await graph.getChildren("hasContext");
     for (const context of children) {
       if (context.info.type.get() === SPATIAL_CONTEXT_TYPE) {
         this.contexts.push(context);
       }
     }
-
     this.initDefer.resolve(this.contexts);
   }
 

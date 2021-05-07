@@ -24,7 +24,6 @@ with this file. If not, see
 
 <template>
   <el-table
-    v-if="ticketView == true"
     v-loading="loading"
     :data="data"
     border
@@ -52,15 +51,35 @@ with this file. If not, see
     >
       <div slot-scope="scope">{{ columnValue(scope.row, column) }}</div>
     </el-table-column>
-    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <el-table-column
       align="center"
       :label="$t(`TicketNumber`)"
-      v-if="haveChildren"
+      v-if="
+        haveChildren &&
+          this.items[0].type !== 'SpinalSystemServiceTicketTypeStep'
+      "
     >
       <div slot-scope="scope">{{ ticketNumber(scope.row) }}</div>
     </el-table-column>
+    <!-- +++++++++++++++++++++++++++++++++++++ -->
+    <el-table-column
+      :label="$t(`User`)"
+      align="center"
+      v-if="this.items[0].type === 'SpinalSystemServiceTicketTypeTicket'"
+    >
+      <div slot-scope="scope">{{ UserTicket(scope.row) }}</div>
+    </el-table-column>
+    <!-- +++++++++++++++++++++++++++++++++++++ -->
+    <!-- +++++++++++++++++++++++++++++++++++++ -->
+    <el-table-column
+      :label="$t(`Date of Creation`)"
+      align="center"
+      v-if="this.items[0].type === 'SpinalSystemServiceTicketTypeTicket'"
+    >
+      <div slot-scope="scope">{{ CreationDate(scope.row) }}</div>
+    </el-table-column>
+    <!-- +++++++++++++++++++++++++++++++++++++ -->
 
     <el-table-column v-if="haveChildren" label="" width="65" align="center">
       <div slot-scope="scope">
@@ -72,6 +91,7 @@ with this file. If not, see
         ></el-button>
       </div>
     </el-table-column>
+
     <el-table-column
       v-if="haveChildren === false"
       label=""
@@ -80,8 +100,10 @@ with this file. If not, see
     >
       <div slot-scope="scope">
         <el-button
-          icon="el-icon-s-operation"
+          title="Details Ticket"
+          icon="el-icon-arrow-right"
           circle
+          align="center"
           @click="detailsTicket(scope.row)"
         ></el-button>
       </div>
@@ -95,6 +117,9 @@ import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
 import { EventBus } from "../backend/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import { FileSystem } from "spinal-core-connectorjs_type";
+import moment from "moment";
+import TicketDetails from "./TicketDetails";
 
 export default {
   name: "NodeTable",
@@ -108,9 +133,8 @@ export default {
     return {
       data: [],
       loading: true,
-      loadingArea: true,
       haveChildren: false,
-      ticketView: true,
+      ticketSelected: undefined,
     };
   },
   watch: {
@@ -119,14 +143,9 @@ export default {
     },
   },
   mounted() {
-    this.ticketView = true;
     this.update();
   },
   methods: {
-    explorerTest() {
-      if (condition) {
-      }
-    },
     selectInView(item) {
       EventBus.$emit("view-select-item", {
         server_id: item.serverId,
@@ -134,7 +153,7 @@ export default {
       });
     },
     SeeEvent(item) {
-      EventBus.$emit("view-color-item", {
+      EventBus.$emit("view-isolate-item", {
         server_id: item.serverId,
         color: item.color,
       });
@@ -146,14 +165,19 @@ export default {
 
       EventBus.$emit("view-color-all", items, { server_id: zone });
     },
+    ShowAll() {
+      EventBus.$emit("view-show-all");
+    },
+    isolateAll(zone) {
+      EventBus.$emit("view-isolate-all", { server_id: zone });
+    },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     detailsTicket(item) {
-      // EventBus.$emit("detailsTicket", item);
-      // this.ticketView = false;
-      console.log("columns", this.columns[0]);
-      return "hello";
+      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+      this.ticketSelected = item.serverId;
+      this.$emit("update", this.ticketSelected);
     },
     explorerDetailsTab() {
       for (const column of this.columns) {
@@ -233,6 +257,30 @@ export default {
       for (const _item of this.items) {
         if (_item.name === item.name) {
           return _item.allTickets;
+        }
+      }
+    },
+    CreationDate(item) {
+      for (const _item of this.items) {
+        if (_item.serverId === item.serverId) {
+          var realNode = FileSystem._objects[item.serverId];
+          if (
+            realNode.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+          ) {
+            return moment(realNode.info.creationDate.get()).fromNow();
+          }
+        }
+      }
+    },
+    UserTicket(item) {
+      for (const _item of this.items) {
+        if (_item.serverId === item.serverId) {
+          var realNode = FileSystem._objects[item.serverId];
+          if (
+            realNode.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+          ) {
+            return realNode.info.user.name;
+          }
         }
       }
     },

@@ -26,28 +26,48 @@ with this file. If not, see
   <el-container>
     <div v-for="(item, idx) in items" :key="idx" style="width: 100%">
       <el-header>
-        <!-- {{ $t(`${item.nodeType}`) }} -->
         <div style="float: right">
           <el-button
+            title="Export Table"
             icon="el-icon-download"
             circle
             @click.stop="exportToExcel(idx)"
           >
           </el-button>
-          <el-button icon="el-icon-view" circle @click.stop="SeeAll(idx)">
+
+          <!-- <el-button icon="el-icon-view" circle @click.stop="SeeAll(idx)">
+          </el-button> -->
+
+          <el-button
+            title="Color Items "
+            icon="el-icon-picture-outline-round"
+            circle
+            @click.stop="SeeAll(idx)"
+          >
+          </el-button>
+          <el-button
+            title="Isolate Items"
+            icon="el-icon-aim"
+            circle
+            @click.stop="isolateAll(idx)"
+          >
           </el-button>
         </div>
       </el-header>
       <el-main>
         <NodeTable
+          v-if="ticketView"
           :ref="`Explorer-table`"
           :view-key="Properties.viewKey"
           :items="item.items"
           :columns="item.cols"
+          @update="updateTicketSelected"
         >
         </NodeTable>
       </el-main>
     </div>
+
+    <TicketDetails v-if="!ticketView" :nodeId="ticketSelected"> </TicketDetails>
   </el-container>
 </template>
 
@@ -57,11 +77,12 @@ import BackEndTicket from "../backend/ticket";
 import BackendInitializer from "../../../services/BackendInitializer";
 import NodeTable from "./NodeTable.vue";
 import "../backend/EventHandler";
-import TicketData from "../componentsTicketData/ticketdata";
+import TicketDetails from "./TicketDetails";
+import { EventBus } from "../backend/event";
 
 export default {
   name: "Explorer",
-  components: { NodeTable, TicketData },
+  components: { NodeTable, TicketDetails },
   props: {
     Properties: {
       required: true,
@@ -79,7 +100,10 @@ export default {
       items: [],
       contextServId: 0,
       currentView: null,
-      testdata: true,
+      IsEquipement: false,
+      ticketDetails: false,
+      ticketView: true,
+      ticketSelected: undefined,
     };
   },
   async mounted() {
@@ -94,13 +118,17 @@ export default {
       0
     );
   },
+  watch: {
+    items() {},
+  },
   methods: {
-    testData() {
-      // EventBus.$on("detailsTicket", async (item) => {
-      //   console.log("pioupiou", item);
-      // });
+    updateTicketSelected(ticketSelected) {
+      this.ticketSelected = ticketSelected;
+      this.ticketView = false;
     },
+
     async onViewChange(view) {
+      this.ticketView = true;
       let mapItems;
 
       if (view.serverId === 0) {
@@ -138,12 +166,36 @@ export default {
     SeeAll(index) {
       this.$refs["Explorer-table"][index].SeeAll(this.currentView.serverId);
     },
+    isolateAll(index) {
+      this.$refs["Explorer-table"][index].isolateAll(this.currentView.serverId);
+    },
     exportToExcel(index) {
       this.$refs["Explorer-table"][index].exportToExcel();
     },
+
     async debug() {
       console.debug("");
     },
   },
 };
 </script>
+<style>
+.tooltip::before {
+  background-color: white;
+  border: 1px solid #888;
+  border-radius: 2px;
+  color: #444;
+  content: attr(data-title);
+  display: none;
+  font-family: sans-serif;
+  font-size: 14px;
+  padding: 2px 5px;
+  position: absolute;
+  top: 20px;
+  left: 5px;
+  z-index: 1;
+}
+.tooltip:hover::before {
+  display: block;
+}
+</style>
