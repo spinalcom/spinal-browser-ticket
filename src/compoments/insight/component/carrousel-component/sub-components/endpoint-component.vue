@@ -1,6 +1,11 @@
 <template>
-   <div class="div__content">
+   <div class="div__content"
+   @click="onMouseOver">
+      <div class="relative">
+      <div class="div__rectangle" :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
 
+      </div>
+      </div>
       <div
          class="name"
          v-tooltip="name"
@@ -11,14 +16,15 @@
          class="value"
          v-tooltip="`${value} ${unit}`"
       >
-         {{value | filterValue}} {{unit}}</div>
+         {{value | filterValue}} {{unit}}
+      </div>
 
          <el-button v-if="displayBoolButton" 
-         v-on:click="flip()" class = "button" circle :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
+         v-on:click="flip()" class="margin-left custom-icon circled-button" circle icon="el-icon-refresh">
          </el-button>
 
          <el-button v-if="this.variableSelected.type=='Consigne' && this.variableSelected.dataType !='Boolean'" 
-         v-on:click="openModal()" class = "button" circle :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
+         v-on:click="openModal()" class="margin-left custom-icon circled-button" circle icon="el-icon-setting">
          </el-button>
 
 
@@ -39,6 +45,7 @@
 import { spinalBackEnd } from "../../../../../services/spinalBackend";
 const backendService = spinalBackEnd.heatmapBack;
 import valueConfig from "./value-config";
+import { EventBus } from "../../../../../services/event";
 
 
 
@@ -46,7 +53,7 @@ import valueConfig from "./value-config";
 export default {
    components: { valueConfig},
    name: "endpoint-component",
-   props: { name: {}, endpoints: {}, variableSelected: {} },
+   props: { name: {}, endpoints: {}, variableSelected: {}, room:{} },
    data() {
       return {
          value: undefined,
@@ -92,8 +99,6 @@ export default {
    
 
       getColor(endpointValue, config) {
-         //console.log("END POINT ", endpointValue);
-         //console.log("config ",config);
          if (config.enumeration) {
             return backendService.getEnumColor(
                endpointValue,
@@ -121,8 +126,10 @@ export default {
       openModal() {
       this.isModalVisible=!this.isModalVisible;
       },
-
-
+      onMouseOver(){
+         //console.log(this.room);
+         //EventBus.$emit('view-show-all');
+      }
    
    },
    computed:{
@@ -131,13 +138,17 @@ export default {
 
    filters: {
       filterValue(value) {
-         if (typeof value !== "undefined") {
+         if (typeof value == "string" && value != "") {
+            return value;
+            }
+         else if (typeof value !== "undefined") {
             const isBoolean = typeof value === "boolean";
             if (isBoolean) return value.toString().toUpperCase();
             if (value.toString().trim().length === 0) return "NULL";
+            
             return value.toFixed(2);
          }
-
+         else
          return "NULL";
       },
    },
@@ -193,9 +204,41 @@ export default {
    font-size: 25px;
 }
 
-.div__content .button {
+.div__rectangle{
+   position: absolute;
+   top:-6px;
+   left:-6px;
+   width:10px;
+   height: 100px;
+}
+
+.fixed{
+   position: fixed;
+}
+
+.relative{
+   position :relative;
+}
+
+.margin-left{
+   margin-left: 45%;
+}
+
+.circled-button{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 20px;
+   width: 20px;
+   border: white;
    
+}
+.circled-button:hover{
+   background-color: white;
 }
 
 
+.custom-icon {
+   font-size: 20px;
+}
 </style>

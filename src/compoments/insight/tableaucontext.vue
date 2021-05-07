@@ -48,28 +48,41 @@ with this file. If not, see
 
 <template>
   <el-row>
+    
     <el-tabs type="border-card">
 
       <el-tab-pane label="Tableau">
 
+        
+
         <header-bar :header="getHeader()"
                     :content="getRow()"
-                    :data="categories"></header-bar>
+                    :data="contextLst"></header-bar>
 
-        <el-table :data="categories"
+        <el-table :data="contextLst"
                   border
                   style="width: 100%"
-                  :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
-                  :header-cell-style='{"background-color": "#f0f2f5"}'>
-
-          <el-table-column prop="name"
-                           :label="$t('HeatmapCenter.Categories')"
-                           width="180">
+                  :header-cell-style="{'background-color': '#f0f2f5'}">
+          <el-table-column :min-width="200" :label="$t('HeatmapCenter.Contextes')">
+            <template slot-scope="scope" >
+                <div v-if="scope.row.color"
+                     class="spinal-table-cell-color"
+                     :style="getColor(scope.row.color)"></div>
+                <div> {{ scope.row.name }}</div>
+            </template>
           </el-table-column>
 
-          <el-table-column prop="groups.length"
-                           :label="$t('HeatmapCenter.Nb_groupes')"
+          <el-table-column prop="categories.length"
+                           :label="$t('HeatmapCenter.Categories')"
                            align="center">
+                           
+          </el-table-column>
+
+          <el-table-column :label="$t('HeatmapCenter.Nb_groupes')"
+                           align="center">
+            <template slot-scope="scope">
+              {{getContextGroup(scope.row)}}
+            </template>
           </el-table-column>
 
           <el-table-column :label="$t('HeatmapCenter.Nb_profils')"
@@ -83,43 +96,63 @@ with this file. If not, see
                            width="65"
                            align="center">
             <template slot-scope="scope">
-              <el-button 
-                         icon="el-icon-arrow-right"
+              <el-button icon="el-icon-arrow-right"
                          circle
-                         @click="seeGroups(scope.row)"></el-button>
+                         @click="SelectContext(scope.row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
+
 </template>
 
 <script>
 import SpinalBackend from "../../services/spinalBackend";
-import headerBarVue from "./component/headerBar.vue";
+
+import headerBar from "./component/headerBar.vue";
 
 export default {
   data() {
-    return {
-      categories: []
-    };
+    return {};
   },
   components: {
-    "header-bar": headerBarVue
+    "header-bar": headerBar
   },
-  props: ["contextSelected"],
+  props: ["contextLst"],
   methods: {
-    getRoomsCount(category) {
-      return SpinalBackend.heatmapBack.getCategoriesRoomCount(category);
+    getColor(color) {
+      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
     },
-
-    getSurfaceTotale(category) {
-      const surfaceTotal = SpinalBackend.heatmapBack.getCategoriesSurface(
-        category
-      );
+    getRoomsCount(context) {
+      return SpinalBackend.heatmapBack.getContextRoomCount(context);
+    },
+    getSurfaceTotale(context) {
+      const surfaceTotal = SpinalBackend.heatmapBack.getContextSurface(context);
       return Math.round(surfaceTotal * 100) / 100;
     },
+    getContextGroup(context) {
+      let count = 0;
+      for (const category of context.categories) {
+        count += category.groups.length;
+      }
 
-    seeGroups(category) {
-      this.$emit("seeGroups", category);
+      return count;
+    },
+
+    SelectContext(context) {
+      this.$emit("select", context);
+    },
+    async SeeAll() {
+      let promises = this.data.map(async el => {
+        return {
+          id: el.id,
+          ids: await this.getAllBimObjects(el.id),
+          color: el.color
+        };
+      });
+
+      let allBimObjects = await Promise.all(promises);
+
+      EventBus.$emit("seeAll", allBimObjects);
     },
 
     getHeader() {
@@ -127,6 +160,11 @@ export default {
         {
           key: "name",
           header: "name",
+          width: 10
+        },
+        {
+          key: "categories",
+          header: "Categories",
           width: 10
         },
         {
@@ -145,26 +183,26 @@ export default {
           width: 10
         }
       ];
+      
     },
 
     getRow() {
-     
-      return this.categories.map(el => {
+
+      return this.contextLst.map(el => {
         return {
           name: el.name,
-          groups: el.groups.length,
+          categories: el.categories.length,
+          groups: this.getContextGroup(el),
           rooms: this.getRoomsCount(el),
           surface: this.getSurfaceTotale(el)
         };
       });
     }
   },
-  async mounted() {
-    this.categories = this.contextSelected.categories;
-  },
+  async mounted() {},
   watch: {
-    contextSelected() {
-      this.categories = this.contextSelected.categories;
+    contextLst() {
+      console.log("context", this.contextLst);
     }
   },
   beforeDestroy() {}
@@ -172,6 +210,9 @@ export default {
 </script>
 
 <style scoped>
+.tab {
+  padding: 0 -20 px 0 -10px;
+}
 .boutton-barre {
   padding: 14px !important;
 }
@@ -180,7 +221,7 @@ export default {
   justify-content: flex-end;
   margin-bottom: 10px;
 }
-.el-icon-download {
-  width: 30px;
-}
+
+
 </style>
+
