@@ -35,6 +35,7 @@ export default {
    mounted() {
       console.log("colorElement");
       this.colorElement();
+      //console.log("PROFIL ",this.profil);
    },
 
    beforeDestroy() {

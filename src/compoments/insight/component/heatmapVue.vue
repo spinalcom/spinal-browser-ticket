@@ -2,6 +2,11 @@
 
    <div class="_heatmapContainer spaceL-top">
       <div class="buttons">
+         <el-button class="boutton-barre"
+               icon="el-icon-arrow-left"
+               circle
+               style ="position: fixed; z-index: 1;"
+               @click="goBack()"></el-button>
          <div class="btn space-top btn-size space-right center-div">
             <i
                @click="decreaseIndex()"
@@ -163,6 +168,10 @@ export default {
 
          return Promise.all(promises);
       },
+
+      goBack(){
+      this.$emit("goBackProfil");
+      },
    },
 
    mounted() {
@@ -273,6 +282,12 @@ export default {
 .center-div {
      margin: 0 auto;
      width: 100px; 
+
+
+}
+
+.boutton-barre {
+  padding: 14px !important;
 }
 
 </style>
