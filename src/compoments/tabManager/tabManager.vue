@@ -23,28 +23,23 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs class="tab-manager-tabs"
-           type="border-card"
-           :value="activetab"
-           @tab-remove="removeTab">
-    <el-tab-pane v-for="tab in opentabs"
-                 :key="tab.name"
-                 :label="tab.name"
-                 :name="tab.name"
-<<<<<<< HEAD
-                 :closable="false">
-      <component :is="tab.content"
-                 :Properties="tab.props"></component>
+  <el-tabs
+    class="tab-manager-tabs"
+    type="border-card"
+    :value="activetab"
+    @tab-remove="removeTab"
+  >
+    <el-tab-pane
+      v-for="tab in opentabs"
+      :key="tab.name"
+      :label="tab.name"
+      :name="tab.name"
+      :closable="false"
+    >
+      <component :is="tab.content" :Properties="tab.props"></component>
     </el-tab-pane>
     <!-- <el-tab-pane :disabled="true">
-=======
-                 :closable="false"
-                 class="tab-manager-pane">
-      <component :is="tab.content"
-                 :Properties="tab.props"></component>
-    </el-tab-pane>
-    <!--<el-tab-pane :disabled="true">
->>>>>>> a0c91e46b92f5c3cfa51cc298f9a3ea7d54f2623
+
       <span slot="label">
         <el-dropdown trigger="click"
                      @command="addTab">
@@ -63,11 +58,8 @@ with this file. If not, see
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-<<<<<<< HEAD
-    </el-tab-pane> -->
-=======
+
     </el-tab-pane>-->
->>>>>>> a0c91e46b92f5c3cfa51cc298f9a3ea7d54f2623
   </el-tabs>
 </template>
 
@@ -79,7 +71,7 @@ export default {
   data() {
     return {
       opentabs: [],
-      activetab: this.tabsprop[0].name
+      activetab: this.tabsprop[0].name,
     };
   },
   async mounted() {
@@ -89,9 +81,7 @@ export default {
       }
     }
   },
-  computed: {
-    
-  },
+  computed: {},
   methods: {
     hasTab(tabArray, tab) {
       for (var idx = 0; idx < tabArray.length; idx += 1) {
@@ -102,12 +92,12 @@ export default {
       return false;
     },
     addTab(target) {
-      if (!this.opentabs.some(e => e.name == target.name)){
+      if (!this.opentabs.some((e) => e.name == target.name)) {
         this.opentabs.push({
           title: target.name,
           name: target.name,
           content: target.content,
-          props: target.props
+          props: target.props,
         });
       }
       // this.activetab = target.name;
@@ -126,12 +116,12 @@ export default {
         });
       }
       this.activetab = activeName;
-      this.opentabs = tmptabs.filter(tab => tab.name !== targetName);
+      this.opentabs = tmptabs.filter((tab) => tab.name !== targetName);
     },
     debug(active) {
       console.log(active);
-    }
-  }
+    },
+  },
 };
 </script>
 
