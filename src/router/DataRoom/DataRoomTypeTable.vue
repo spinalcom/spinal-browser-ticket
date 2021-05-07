@@ -127,6 +127,7 @@ export default {
     },
     onSelectItem(item) {
       localStorage.setItem("roomId", item.nodeId);
+      localStorage.setItem("roomServerId", item.serverId);
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
     },
     popView() {
@@ -237,6 +238,7 @@ export default {
       });
     },
     selectInView(item) {
+       console.log(item)
       EventBus.$emit("data-room-select-item", {
         server_id: item.serverId,
         color: item.color

@@ -100,6 +100,7 @@ export default {
   props: ["header", "content", "data"],
   methods: {
     exportData() {
+      console.log(this.content)
       let excelData = [
         {
           name: "Tableau",

@@ -290,6 +290,7 @@ export default {
       }
       this.currentView = view;
       if (this.items[0]) {
+        console.log(this.items);
         if (this.items[0].nodeType === "geographicContext") {
           this.panel = this.$t('DataRoom.geographicContext');
         }
@@ -319,7 +320,6 @@ export default {
         this.addTabs = false;
         this.roomId = null
         const equipment = localStorage.getItem("equipmentId");
-        console.log(equipment)
         this.equipmentId = equipment;
       }
       
@@ -350,7 +350,6 @@ export default {
       );
     },
     getDocuments() {
-      console.log(this.items)
       return FileExplorer.getDirectory(
         SpinalGraphService.getRealNode(this.items[0].nodeId)
       ).then(directory => {
@@ -417,7 +416,6 @@ export default {
         user: el.user ? el.user.name : "unknow",
         creationDate: this._formatDate(el.creationDate)
       }));
-      console.log(this.ticketContent);
 
       const salle = SpinalGraphService.getInfo(this.items[0].nodeId).get();
 
@@ -426,7 +424,6 @@ export default {
        * ajouter une condition dans headerBar.vue pour regler ce probleme
        */
       this.ticketData = this.tickets.map(el => {
-          console.log(el)
         // el.rooms = [salle];
         return el;
       });
@@ -439,7 +436,6 @@ export default {
         name: el.name._data,
       }));
       this.documentData = this.documents.map(el => {
-        console.log(el);
         return el.name._data;
       });
       this.nodeInfo = {

@@ -37,13 +37,12 @@ with this file. If not, see
           @click.stop="popView()"
         ></el-button>
         <div style="float: right">
-
-          <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
+         <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
           </el-button>
           <el-button
             icon="el-icon-download"
             circle
-            @click="exportToExcel()"
+            @click="exportToExcel"
           >
           </el-button>
           <el-button
@@ -52,8 +51,6 @@ with this file. If not, see
             @click.stop="SeeAll()"
           >
           </el-button>
-          <!--<el-button icon="el-icon-view" circle @click.stop="ShowAll()">
-          </el-button>-->
         </div>
       </el-row>
       <br>
@@ -61,9 +58,19 @@ with this file. If not, see
                 border
                 style="width: 100%"
                 :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
+                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}"
+                @row-click="selectInView"
+                @row-dblclick="SeeEvent">
         <el-table-column prop="name"
                          :label="$t('DataRoom.Name')">
+                         <template slot-scope="scope">
+                      <div>
+                        <div v-if="scope.row.color"
+                            class="spinal-table-cell-color"
+                            :style="getColor(scope.row.color)"></div>
+                        <div> {{ scope.row.name }} </div>
+                      </div>
+                    </template>
         </el-table-column>
         <el-table-column align="center"
                          width="150">
@@ -208,6 +215,9 @@ import GeographicContext from "spinal-env-viewer-context-geographic-service";
 import ticketcreate from "./ticketcreate.vue";
 import headerBarVue from "./headerBar.vue";
 import documentcreateVue from "./documentcreate.vue";
+import { EventBus } from "../../../services/event";
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
 export default {
   components: {
     "message-component": messageComponent,
@@ -245,7 +255,10 @@ export default {
       ticketContent: [],
       nodeInfo: { selectedNode: SpinalGraphService.getRealNode(this.nodeId) },
       calendrier: [],
-      equipement: []
+      equipement: [],
+      equipmentHeader: [],
+      equipmentData: [],
+      equipmentContent: [],
     };
   },
   watch: {
@@ -321,6 +334,18 @@ export default {
     this.equipement = varEquipement.map(item => {
       return item.get();
     });
+    console.log(this.equipement);
+
+    this.equipmentHeader = [
+        { key: "name", header: "name", width: 15 },
+      ];
+
+      this.equipmentContent = this.equipement.map(el => ({
+        name: el.name,
+      }));
+      this.equipmentData = this.equipement.map(el => {
+        return el.name;
+      });
   },
   beforeDestroy() {},
   methods: {
@@ -377,6 +402,20 @@ export default {
         this.nodeId
       );
     },
+    selectInView(item) {
+      const serverId = localStorage.getItem("roomServerId");
+      EventBus.$emit("data-room-select-item", {
+        server_id: serverId,
+        color: item.color
+      });
+    },
+    SeeEvent(item) {
+      const serverId = localStorage.getItem("roomServerId");
+      EventBus.$emit("data-room-color-item", {
+        server_id: serverId,
+        color: item.color
+      });
+    },
     SelectEquipment(equipment) {
       console.log(equipment)
       localStorage.setItem("equipmentId", equipment.id);
@@ -397,6 +436,9 @@ export default {
         });
       }
     },
+    getColor(color) {
+      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+    },
     getDocuments() {
       return FileExplorer.getDirectory(
         SpinalGraphService.getRealNode(this.nodeId)
@@ -412,26 +454,28 @@ export default {
     async updateDocument() {
       this.documents = await this.getDocuments();
     },
-    async SeeAll() {
-      let listes = this.data.map(el => this.getSalles(el));
-      listes = listes.flat(10);
-      const promises = listes.map(async element => {
-        const allBimObjects = await this.getAllBimObjects(element.id);
-        return {
-          id: element.id,
-          ids: allBimObjects,
-          color: element.color
-        };
-      });
-
-      const bims = await Promise.all(promises);
-      EventBus.$emit("seeAll", bims);
-    },
     isolateAll(index) {
       this.$refs["data-room-table"][index].isolateAll(this.Properties.view.serverId);
     },
-    exportToExcel(index) {
-      this.$refs["data-room-table"][index].exportToExcel();
+    exportToExcel() {
+      console.log(this.content)
+      let excelData = [
+        {
+          name: "Tableau",
+          author: "",
+          data: [
+            {
+              name: "Tableau",
+              header: this.equipmentHeader,
+              rows: this.equipmentContent
+            }
+          ]
+        }
+      ];
+      excelManager.export(excelData).then(reponse => {
+        fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
+      });
+      // console.log("expoooooooooooort", this.data);
     },
     ShowAll() {
       this.$refs["Explorer-table"].ShowAll();
@@ -466,7 +510,13 @@ export default {
   width: 100%;
   height: calc(100% - 50px);
 }
-
+.spinal-table-cell-color {
+  height: 100%;
+  width: 5px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 .barre {
   display: flex;
   justify-content: space-between;
