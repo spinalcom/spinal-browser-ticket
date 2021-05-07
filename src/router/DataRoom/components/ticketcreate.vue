@@ -24,7 +24,8 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-button icon="el-icon-circle-plus-outline"
+    <el-button type="primary"
+    icon="el-icon-circle-plus-outline"
                circle
                @click="dialogFormVisible = true">
     </el-button>
@@ -37,7 +38,7 @@ with this file. If not, see
      ////////////////////////////////////////////////////////////////////////////////////////-->
       <div class="radio-cas">
         <el-cascader-panel v-on:change="cascaderSelection"
-                           :props="props"></el-cascader-panel>
+                           :props="prop"></el-cascader-panel>
       </div>
       <br>
 
@@ -68,6 +69,8 @@ with this file. If not, see
                    @click="confirmTicket">Confirmer</el-button>
       </div>
     </div>
+
+  <br>
   </div>
 </template>
 
@@ -82,7 +85,7 @@ export default {
       dialogFormVisible: false,
       isFormDisable: true,
       form: { description: "", priority: 0 },
-      props: {
+      prop: {
         lazy: true,
         async lazyLoad(node, resolve) {
           if (node.level === 0) {
@@ -95,6 +98,7 @@ export default {
             const processLst = await serviceTicketPersonalized.getAllProcess(
               node.data.value
             );
+            console.log(processLst);
             const res = processLst.map(itm => {
               return {
                 value: itm.id.get(),
@@ -102,6 +106,7 @@ export default {
                 leaf: false
               };
             });
+            console.log(res);
             resolve(res);
           } else {
             const CommonIncidentLst = await serviceTicketPersonalized.getCommonIncident(
@@ -140,6 +145,7 @@ export default {
       const commonName = SpinalGraphService.getInfo(this.ticketCommonId);
       this.form.name = commonName && commonName.name.get();
 
+console.log(this.form, this.ticketContextId, this.ticketProcessId)
       serviceTicketPersonalized
         .addTicket(
           this.form,
@@ -160,7 +166,6 @@ export default {
 
 <style scoped>
 .div-dialog {
-  position: absolute;
   background: white;
   z-index: 1;
   width: 100%;
