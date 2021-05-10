@@ -1,19 +1,15 @@
 <!--
 Copyright 2020 SpinalCom - www.spinalcom.com
-
 This file is part of SpinalCore.
-
 Please read all of the following terms and conditions
 of the Free Software license Agreement ("Agreement")
 carefully.
-
 This Agreement is a legally binding contract between
 the Licensee (as defined below) and SpinalCom that
 sets forth the terms and conditions that govern your
 use of the Program. By installing and/or using the
 Program, you agree to abide by all the terms and
 conditions stated or referenced herein.
-
 If you do not agree to abide by these terms and
 conditions, do not demonstrate your acceptance and do
 not install or use the Program.
@@ -31,20 +27,11 @@ with this file. If not, see
                  :key="tab.name"
                  :label="tab.name"
                  :name="tab.name"
-<<<<<<< HEAD
                  :closable="false">
       <component :is="tab.content"
                  :Properties="tab.props"></component>
     </el-tab-pane>
     <!-- <el-tab-pane :disabled="true">
-=======
-                 :closable="false"
-                 class="tab-manager-pane">
-      <component :is="tab.content"
-                 :Properties="tab.props"></component>
-    </el-tab-pane>
-    <!--<el-tab-pane :disabled="true">
->>>>>>> a0c91e46b92f5c3cfa51cc298f9a3ea7d54f2623
       <span slot="label">
         <el-dropdown trigger="click"
                      @command="addTab">
@@ -63,11 +50,7 @@ with this file. If not, see
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-<<<<<<< HEAD
     </el-tab-pane> -->
-=======
-    </el-tab-pane>-->
->>>>>>> a0c91e46b92f5c3cfa51cc298f9a3ea7d54f2623
   </el-tabs>
 </template>
 
@@ -144,7 +127,6 @@ export default {
 .tab-manager-tabs .el-tabs__content {
   height: calc(100% - 38px);
 }
-
 .tab-manager-pane {
   height: 100%;
 }
