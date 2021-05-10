@@ -31,20 +31,11 @@ with this file. If not, see
                  :key="tab.name"
                  :label="tab.name"
                  :name="tab.name"
-<<<<<<< HEAD
                  :closable="false">
       <component :is="tab.content"
                  :Properties="tab.props"></component>
     </el-tab-pane>
     <!-- <el-tab-pane :disabled="true">
-=======
-                 :closable="false"
-                 class="tab-manager-pane">
-      <component :is="tab.content"
-                 :Properties="tab.props"></component>
-    </el-tab-pane>
-    <!--<el-tab-pane :disabled="true">
->>>>>>> a0c91e46b92f5c3cfa51cc298f9a3ea7d54f2623
       <span slot="label">
         <el-dropdown trigger="click"
                      @command="addTab">
@@ -63,11 +54,7 @@ with this file. If not, see
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-<<<<<<< HEAD
     </el-tab-pane> -->
-=======
-    </el-tab-pane>-->
->>>>>>> a0c91e46b92f5c3cfa51cc298f9a3ea7d54f2623
   </el-tabs>
 </template>
 
