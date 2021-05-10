@@ -21,11 +21,9 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-
 import { EventBus } from "./event";
 import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
 import BackEndTicket from "../backend/ticket";
-
 
 var lastColorZone = null;
 var lastColorItem = null;
@@ -45,16 +43,12 @@ EventBus.$on('view-color-item', async (item) => {
     for (const { selection, model } of lstByModel) {
       viewerUtils.colorThemingItems(model, item.color, selection);
     }
-    viewerUtils.isolateObjects(lstByModel);
-    await viewerUtils.rotateTo('top');
-    viewerUtils.fitToView(lstByModel);
+    // viewerUtils.isolateObjects(lstByModel);
+    // await viewerUtils.rotateTo('top');
+    // viewerUtils.fitToView(lstByModel);
   }
 });
 
-EventBus.$on('view-select-item', async (item) => {
-  const lstByModel = await backEndTicket.getLstByModel(item);
-  viewerUtils.selectObjects(lstByModel);
-});
 
 EventBus.$on('view-color-all', async (items, zone) => {
   if (lastColorItem || (lastColorZone &&
@@ -66,18 +60,45 @@ EventBus.$on('view-color-all', async (items, zone) => {
     viewerUtils.restoreColorThemingItems()
     lastColorZone = zone
     lastColorItem = null
-
     for (const item of items) {
       const lstByModel = await backEndTicket.getLstByModel(item, true);
-      console.log("--------------", lstByModel);
-
       for (const { selection, model } of lstByModel) {
         viewerUtils.colorThemingItems(model, item.color, selection);
       }
     }
-    const zoneLstByModel = await backEndTicket.getLstByModel(zone);
-    viewerUtils.isolateObjects(zoneLstByModel);
-    await viewerUtils.rotateTo('top');
-    viewerUtils.fitToView(zoneLstByModel);
+    // const zoneLstByModel = await backEndTicket.getLstByModel(zone);
+    // viewerUtils.isolateObjects(zoneLstByModel);
+    // await viewerUtils.rotateTo('top');
+    // viewerUtils.fitToView(zoneLstByModel);
   }
+});
+
+EventBus.$on('view-isolate-item', async (item) => {
+  const lstByModel = await backEndTicket.getLstByModel(item);
+  viewerUtils.isolateObjects(lstByModel);
+  await viewerUtils.rotateTo('top');
+  viewerUtils.fitToView(lstByModel);
+});
+
+EventBus.$on('view-show-all', () => {
+  viewerUtils.showAll()
+});
+
+EventBus.$on('view-isolate-all', async (zone) => {
+  const zoneLstByModel = await backEndTicket.getLstByModel(zone);
+  viewerUtils.isolateObjects(zoneLstByModel);
+  await viewerUtils.rotateTo('top');
+  viewerUtils.fitToView(zoneLstByModel);
+});
+
+EventBus.$on('view-focus-item', async (item) => {
+  const lstByModel = await backEndTicket.getLstByModel(item);
+  viewerUtils.selectObjects(lstByModel);
+  await viewerUtils.rotateTo('top');
+  viewerUtils.fitToView(lstByModel);
+});
+
+EventBus.$on('view-select-item', async (item) => {
+  const lstByModel = await backEndTicket.getLstByModel(item);
+  viewerUtils.selectObjects(lstByModel);
 });

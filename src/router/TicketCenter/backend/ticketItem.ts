@@ -119,7 +119,6 @@ export class TicketItem {
   }
 
   addChildrenInItem(allItems: Map<number, TicketItem>, node: SpinalNode<any>): void {
-    // console.log("test from back", allItems);
 
     if (typeof this.children === "undefined") {
       Object.assign(this, { children: new Map() })

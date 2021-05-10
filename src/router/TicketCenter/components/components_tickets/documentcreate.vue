@@ -24,12 +24,15 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-button type="primary"
-    icon="el-icon-circle-plus-outline"
-               circle
-               @click="addPJ">
+    <el-button
+      title="Add Document"
+      plain
+      type="primary"
+      icon="el-icon-circle-plus-outline"
+      circle
+      @click="addPJ"
+    >
     </el-button>
-
   </div>
 </template>
 
@@ -41,9 +44,10 @@ export default {
   data() {
     return {
       contextLst: [],
-      documents: []
+      documents: [],
     };
   },
+  name: "documentCreate",
   components: {},
   props: ["nodeId"],
   methods: {
@@ -55,14 +59,14 @@ export default {
       input.click();
       input.addEventListener(
         "change",
-        event => {
+        (event) => {
           const files = event.target.files;
           let filelist = [];
           for (const file of files) {
             filelist.push(file);
           }
           // filelist.push(...this.messages.pj);
-          const sizes = filelist.map(el => el.size);
+          const sizes = filelist.map((el) => el.size);
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
@@ -71,22 +75,20 @@ export default {
             return;
           }
           // this.messages.pj = filelist;
-          console.log(filelist);
           FileExplorer.addFileUpload(this.documents, filelist);
           this.$emit("reload");
         },
         false
       );
-    }
+    },
   },
   async mounted() {
     this.documents = await FileExplorer.createDirectory(
-      SpinalGraphService.getRealNode(this.nodeId)
+      FileSystem._objects[this.nodeId]
     );
   },
 
   watch: {},
-  beforeDestroy() {}
+  beforeDestroy() {},
 };
 </script>
-

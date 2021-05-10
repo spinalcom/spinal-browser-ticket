@@ -1,5 +1,5 @@
 <!--
-Copyright 2020 SpinalCom - www.spinalcom.com
+Copyright 2021 SpinalCom - www.spinalcom.com
 
 This file is part of SpinalCore.
 
@@ -65,7 +65,7 @@ with this file. If not, see
       <div slot-scope="scope">
         <el-button icon="el-icon-arrow-down"
                     circle
-                    @click="debugNode(scope.row)"></el-button>
+                    @click="debug(scope.row)"></el-button>
       </div>
     </el-table-column> -->
   </el-table>
@@ -77,7 +77,6 @@ import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
 import { EventBus } from "../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
-
 export default {
   name: "NodeTable",
   props: {
@@ -129,15 +128,14 @@ export default {
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
-    debugNode(item) {
-      console.log(item);
+    debug(item) {
+      console.debug(item)
     },
     update() {
       this.loading = true;
       const res = [];
       const colorUsed = [];
       let haveChild = false;
-
       for (const item of this.items) {
         const resItem = {
           name: item.name,
@@ -151,6 +149,24 @@ export default {
             resItem[childTypes] = childItems.length;
             resItem.haveChild = true;
             haveChild = true;
+          }
+        }
+        // else {
+        //   console.debug(FileSystem._objects[item.serverId].children.PtrLst)
+        // }
+        else if (FileSystem._objects[item.serverId] !== undefined) {
+          let thisnode = FileSystem._objects[item.serverId]
+          if (thisnode.children.PtrLst !== undefined) {
+            for (const name of thisnode.children.PtrLst._attribute_names){
+              resItem[name] = thisnode.children.PtrLst[name].length;
+              resItem.haveChild = true
+              this.haveObjects = true
+            }
+            // for (const [childTypes, childItems] of FileSystem._objects[item.serverId].children.PtrLst ) {
+            //   resItem[childTypes] = childItems.length;
+            //   resItem.haveChild = true;
+            //   haveObjects = true;
+            // }
           }
         }
         res.push(resItem);
@@ -229,7 +245,6 @@ export default {
   left: 0;
   top: 0;
 }
-
 .spl-table {
   height: 85%;
   overflow: auto;

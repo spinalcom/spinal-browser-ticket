@@ -140,9 +140,6 @@ export default class BackEndTicket {
 
   async getLstByModel(item, addRoomRef = false) {
     const node = this.getNodeFromItem(item);
-    // console.log("-+--+--", node);
-    // console.log("++++++++++++++++++++", SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
-
     const relations = [SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
       SPINAL_TICKET_SERVICE_TICKET_SECTION_RELATION_NAME,
       SPINAL_TICKET_SERVICE_PROCESS_RELATION_NAME,
@@ -200,6 +197,22 @@ export default class BackEndTicket {
     };
     array.push(obj);
     return obj;
+  }
+  async IsEquipement(items) {
+    for (const Oitems of items) {
+      for (const item of Oitems.items) {
+        if (item.type === "SpinalSystemServiceTicketTypeTicket") {
+          const TicketRealNode = FileSystem._objects[item.serverId];
+          const EquipementRealNode = await spinalIO.loadPtr(
+            TicketRealNode.info.elementSelected
+          );
+          if (EquipementRealNode.getType().get() === "BIMObject") {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 }
 

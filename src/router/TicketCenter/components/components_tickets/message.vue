@@ -1,15 +1,19 @@
 <!--
 Copyright 2020 SpinalCom - www.spinalcom.com
+
 This file is part of SpinalCore.
+
 Please read all of the following terms and conditions
 of the Free Software license Agreement ("Agreement")
 carefully.
+
 This Agreement is a legally binding contract between
 the Licensee (as defined below) and SpinalCom that
 sets forth the terms and conditions that govern your
 use of the Program. By installing and/or using the
 Program, you agree to abide by all the terms and
 conditions stated or referenced herein.
+
 If you do not agree to abide by these terms and
 conditions, do not demonstrate your acceptance and do
 not install or use the Program.
@@ -94,6 +98,7 @@ with this file. If not, see
 <script>
 import { MESSAGE_TYPES } from "spinal-models-documentation";
 import actionBtnVue from "./actionsBtn.vue";
+
 export default {
   name: "message",
   props: {
@@ -131,38 +136,49 @@ export default {
         });
       }
     },
+
     download() {
       var element = document.createElement("a");
       element.setAttribute("href", "/sceen/_?u=" + this.image);
       element.setAttribute("download", this.info.name.get());
       element.click();
     },
+
     restoreState() {
       const viewer = window.spinal.SpinalForgeViewer.viewerManager.viewer;
+
       if (Object.keys(this.viewPoint).length === 0) return;
+
       const viewStateString = this.viewPoint.viewState.get();
       const objectStateString = this.viewPoint.objectState.get();
+
       const viewState = JSON.parse(viewStateString);
       const objectState = JSON.parse(objectStateString);
+
       viewer.restoreState(viewState);
+
       this.selection(viewer, objectState.selected);
       this.isolate(viewer, objectState.isolated);
     },
+
     isolate(viewer, items) {
       const bimObjectService = window.spinal.BimObjectService;
       items.map((el) => {
         const bimFileId =
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
+
         viewer.impl.visibilityManager.isolate(el.ids, model);
       });
     },
+
     selection(viewer, items) {
       const bimObjectService = window.spinal.BimObjectService;
       items.map((el) => {
         const bimFileId =
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
+
         model.selector.setSelection(el.selection, model, "selectOnly");
       });
     },
@@ -175,22 +191,27 @@ li.clearfix {
   padding-bottom: 5px;
   list-style: none;
 }
+
 *,
 *:before,
 *:after {
   box-sizing: border-box;
 }
+
 .message-data {
   margin-bottom: 10px;
 }
+
 .message-data-time {
   color: lighten(#92959e, 8%);
   padding-left: 6px;
 }
+
 .message-data-name {
   color: rgb(95, 95, 95);
   text-transform: capitalize;
 }
+
 .message_actions {
   width: 100%;
   height: 40px;
@@ -204,6 +225,7 @@ li.clearfix {
   padding: 10px;
   background-color: #424242;
 }
+
 .message {
   color: #000000;
   padding: 10px 10px 5px 10px;
@@ -214,6 +236,7 @@ li.clearfix {
   width: 100%;
   position: relative;
   min-height: 30px;
+
   &:after {
     bottom: 100%;
     left: 7%;
@@ -228,33 +251,42 @@ li.clearfix {
     margin-left: -10px;
   }
 }
+
 .message:hover {
   cursor: pointer;
 }
+
 .my-message {
   background: #86bb71;
 }
+
 .other-message {
   background: #ecf1f6;
+
   &:after {
     border-bottom-color: #ecf1f6;
     left: 93%;
   }
 }
+
 .me {
   margin-right: 3px;
   font-size: 10px;
   color: #ecf1f6;
 }
+
 .align-left {
   text-align: left;
 }
+
 .align-right {
   text-align: right;
 }
+
 .float-right {
   float: right;
 }
+
 .clearfix:after {
   visibility: hidden;
   display: block;

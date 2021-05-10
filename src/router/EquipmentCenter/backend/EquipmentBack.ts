@@ -30,6 +30,7 @@ import {
 import { EquipmentItem } from "./EquipmentItem"
 import { SpinalGraph, SpinalContext, SpinalNode } from "spinal-env-viewer-graph-service";
 import { FileSystem } from 'spinal-core-connectorjs_type'
+// import { AttributeService } from "spinal-env-viewer-plugin-documentation-service/src/Models/AttributeService"
 
 type mapEquipmentItem = Map<string, EquipmentItem[]>
 
@@ -52,7 +53,6 @@ export class EquipmentBack {
     this.contexts = []
     const children = await graph.getChildren();
     for (const context of children) {
-
       if (context.info.type.get() === "BIMObjectGroupContext") {
         this.contexts.push(context);
       }
@@ -124,6 +124,12 @@ export class EquipmentBack {
       }
     }
     if (giveSelf) return res;
+    if (typeof item.children !== "undefined")
+    {
+      return item.children
+    } else {
+      return new Map();
+    }
     return typeof item.children !== "undefined" ? item.children : new Map();
   }
 }
