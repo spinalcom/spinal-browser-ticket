@@ -20,7 +20,7 @@ with this file. If not, see
 
 <template>
   <div class="spl-height-control">
-    <div class="spl-button-bar">
+    <!-- <div class="spl-button-bar">
       <el-button
         class="spl-el-button"
         icon="el-icon-aim"
@@ -42,7 +42,7 @@ with this file. If not, see
         @click.stop="exportToExcel()"
       >
       </el-button>
-    </div>
+    </div> -->
     <div v-if="Properties.items !== false" class="spl-height-control">
       <node-table
         :ref="'Explorer-table'"

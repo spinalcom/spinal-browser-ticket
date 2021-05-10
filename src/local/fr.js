@@ -52,6 +52,10 @@ export default {
   "node-type.BIMObjectGroupContext" : "Contextes de groupes d'objets BIM",
   "node-type.BIMObjectGroup" : "Groupes d'objets BIM",
   "node-type.BIMObject" : "Objets BIM",
+  "node-type.hasFiles": "Documentation",
+  "node-type.hasCategoryAttributes": "Attributs",
+  "spinal-twin.hasCategoryAttributes": "Attributs",
+  "spinal-twin.Explorer": "Explorateur",
   "explorer.Name": "Nom",
   "SpaceManagement.Nom": "Nom",
   "SpaceManagement.Categories": "Categories",
@@ -78,14 +82,4 @@ export default {
   "HeatmapCenter.Heatmap_bool": "Afficher Heatmap",
   "HeatmapCenter.Courbe_bool": "Afficher courbe",
   "HeatmapCenter.GO": "Go"
-
-
-
-
-
-
-
-
-
-
 };

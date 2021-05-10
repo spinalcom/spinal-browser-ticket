@@ -49,6 +49,10 @@ export default {
   "node-type.BIMObjectGroupContext" : "BIM objects groups contexts",
   "node-type.BIMObjectGroup" : "BIM Object Groups",
   "node-type.BIMObject" : " BIM Objects",
+  "node-type.hasFiles": "Documentation",
+  "node-type.hasCategoryAttributes": "Attributes", // TODO replace references for spinal-twin
+  "spinal-twin.hasCategoryAttributes": "Attributes",
+  "spinal-twin.Explorer": "Explorer",
   "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",
   "SpaceManagement.Categories": "Categories",

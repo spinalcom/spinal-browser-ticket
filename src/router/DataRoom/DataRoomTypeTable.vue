@@ -25,6 +25,7 @@ with this file. If not, see
 
   <el-table v-loading="loading"
             :data="data"
+            class="spl-table"
             border
             style="width: 100%"
             :header-cell-style="{'background-color': '#f0f2f5'}"
@@ -64,7 +65,7 @@ with this file. If not, see
                      width="65"
                      align="center">
       <template slot-scope="scope">
-        <el-button v-if="scope.row.haveChild"
+        <el-button 
                    icon="el-icon-arrow-right"
                    circle
                    @click="onSelectItem(scope.row)"></el-button>
@@ -125,8 +126,12 @@ export default {
       return false;
     },
     onSelectItem(item) {
-      localStorage.setItem("nodeId", item.nodeId);
+      localStorage.setItem("roomId", item.nodeId);
+      localStorage.setItem("roomServerId", item.serverId);
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId, item.nodeId);
+    },
+    popView() {
+      ViewManager.getInstance(this.viewKey).pop();
     },
     update() {
       this.loading = true;
@@ -233,6 +238,7 @@ export default {
       });
     },
     selectInView(item) {
+       console.log(item)
       EventBus.$emit("data-room-select-item", {
         server_id: item.serverId,
         color: item.color
@@ -243,6 +249,10 @@ export default {
         server_id: item.serverId,
         color: item.color
       });
+    },
+    isolateAll(zone)
+    {
+      EventBus.$emit("data-room-isolate-all", { server_id: zone });
     },
     SeeAll(zone) {
 
@@ -262,5 +272,8 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
+}
+.spl-table {
+  overflow-y: unset auto;
 }
 </style>

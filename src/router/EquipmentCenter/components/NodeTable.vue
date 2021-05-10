@@ -65,7 +65,7 @@ with this file. If not, see
       <div slot-scope="scope">
         <el-button icon="el-icon-arrow-down"
                     circle
-                    @click="debugNode(scope.row)"></el-button>
+                    @click="debug(scope.row)"></el-button>
       </div>
     </el-table-column> -->
   </el-table>
@@ -128,8 +128,8 @@ export default {
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
-    debugNode(item) {
-      console.log(item);
+    debug(item) {
+      console.debug(item)
     },
     update() {
       this.loading = true;
@@ -149,6 +149,24 @@ export default {
             resItem[childTypes] = childItems.length;
             resItem.haveChild = true;
             haveChild = true;
+          }
+        }
+        // else {
+        //   console.debug(FileSystem._objects[item.serverId].children.PtrLst)
+        // }
+        else if (FileSystem._objects[item.serverId] !== undefined) {
+          let thisnode = FileSystem._objects[item.serverId]
+          if (thisnode.children.PtrLst !== undefined) {
+            for (const name of thisnode.children.PtrLst._attribute_names){
+              resItem[name] = thisnode.children.PtrLst[name].length;
+              resItem.haveChild = true
+              this.haveObjects = true
+            }
+            // for (const [childTypes, childItems] of FileSystem._objects[item.serverId].children.PtrLst ) {
+            //   resItem[childTypes] = childItems.length;
+            //   resItem.haveChild = true;
+            //   haveObjects = true;
+            // }
           }
         }
         res.push(resItem);

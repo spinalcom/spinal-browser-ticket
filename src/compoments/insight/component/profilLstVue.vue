@@ -28,6 +28,13 @@ with this file. If not, see
     <el-tabs type="border-card">
       <!-- Onglet Tableau -->
       <el-tab-pane label="Tableau">
+
+        <el-button class="boutton-barre"
+               icon="el-icon-arrow-left"
+               circle
+               style ="position: fixed; z-index: 1;"
+               @click="goBack()"></el-button>
+
         <el-row class="barre">
           <el-button class="boutton-barre"
                      icon="el-icon-download"
@@ -81,6 +88,9 @@ export default {
   methods: {
     SeeEvent(data) {
       this.$emit("seeEvent", { ...data, color: this.color });
+    },
+    goBack(){
+      this.$emit("goBackGroup");
     },
     seeHeatmap:function(info){
       this.$emit('profilSelectEvent', info);

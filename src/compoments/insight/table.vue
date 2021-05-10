@@ -29,7 +29,7 @@ with this file. If not, see
         <el-breadcrumb class="breadcrumb-style"
                        separator="/">
           <el-breadcrumb-item>
-            <a @click="ResetBreadCrumb()">Heatmap Center</a>
+            <a @click="ResetBreadCrumb()">Insight Center</a>
           </el-breadcrumb-item>
           <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
                               :key="index">
@@ -37,7 +37,7 @@ with this file. If not, see
           </el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-
+      
       <el-button icon="el-icon-s-grid"
                  circle
                  @click="openDrawer"></el-button>
@@ -55,7 +55,8 @@ with this file. If not, see
       <!-- Si on a choisi un contexte -->
       <tableau-category v-else
                         :context-selected="contextSelected"
-                        @seeGroups="SelectCategorie">
+                        @seeGroups="SelectCategorie"
+                        @reset="ResetBreadCrumb">
       </tableau-category>
     </div>
 
@@ -64,6 +65,7 @@ with this file. If not, see
                  ref="categoryListe"
                  :select-categorie="selectCategorie"
                  @selectgroup="SelectGroup"
+                 @goBackCategory="BackToCategory"
                  style="margin-top:11px;">
     </groupLstVue>
 
@@ -71,12 +73,14 @@ with this file. If not, see
                   :profils="groupSelected.profils"
                   :color="groupSelected.color"
                   @selectprofil="SelectProfil"
+                  @goBackGroup="BackToGroup"
                   style="margin-top:11px;">
     </profilLstVue>
 
     <heatmap-vue class="heatmapContainer"
                  v-if="profilSelected!=null"
                  :profil="profilSelected"
+                 @goBackProfil="BackToProfil"
                  style="margin-top:11px;">
 
     </heatmap-vue>
@@ -206,7 +210,8 @@ export default {
     //choix d'une catégorie (niveau 3)
     SelectGroup(group) {
       //on enregistre le groupe choisi
-      this.groupSelected = { profils: group.rooms, color: group.color };
+      this.profilSelected=null;
+      this.groupSelected = { name :group.name ,profils: group.rooms, color: group.color, rooms:group.rooms };
       this.breadcrumbs = [
         ...this.breadcrumbs,
         {
@@ -235,6 +240,21 @@ export default {
           }
         }
       ];
+    },
+
+    BackToCategory(){
+      this.SelectContext(this.contextSelected);
+    },
+
+    BackToGroup(){
+      this.profilSelected=null;
+      this.groupSelected=null;
+      this.SelectCategorie(this.selectCategorie);
+    },
+
+    BackToProfil(){
+      this.SelectGroup(this.groupSelected);
+      this.breadcrumbs.splice(3);
     },
 
     addbreadcrumb(resultat) {

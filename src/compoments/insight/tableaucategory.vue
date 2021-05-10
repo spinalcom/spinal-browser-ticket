@@ -52,34 +52,31 @@ with this file. If not, see
 
       <el-tab-pane label="Tableau">
 
+        <el-button class="boutton-barre"
+               icon="el-icon-arrow-left"
+               circle
+               style ="position: fixed; z-index: 1;"
+               @click="goBack()"></el-button>
+
+
         <header-bar :header="getHeader()"
                     :content="getRow()"
-                    :data="contextLst"></header-bar>
+                    :data="categories"></header-bar>
 
-        <el-table :data="contextLst"
+        <el-table :data="categories"
                   border
                   style="width: 100%"
-                  :header-cell-style="{'background-color': '#f0f2f5'}">
-          <el-table-column :min-width="200" :label="$t('HeatmapCenter.Contextes')">
-            <template slot-scope="scope" >
-                <div v-if="scope.row.color"
-                     class="spinal-table-cell-color"
-                     :style="getColor(scope.row.color)"></div>
-                <div> {{ scope.row.name }}</div>
-            </template>
-          </el-table-column>
+                  :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
+                  :header-cell-style='{"background-color": "#f0f2f5"}'>
 
-          <el-table-column prop="categories.length"
+          <el-table-column prop="name"
                            :label="$t('HeatmapCenter.Categories')"
-                           align="center">
-                           
+                           width="180">
           </el-table-column>
 
-          <el-table-column :label="$t('HeatmapCenter.Nb_groupes')"
+          <el-table-column prop="groups.length"
+                           :label="$t('HeatmapCenter.Nb_groupes')"
                            align="center">
-            <template slot-scope="scope">
-              {{getContextGroup(scope.row)}}
-            </template>
           </el-table-column>
 
           <el-table-column :label="$t('HeatmapCenter.Nb_profils')"
@@ -93,75 +90,56 @@ with this file. If not, see
                            width="65"
                            align="center">
             <template slot-scope="scope">
-              <el-button icon="el-icon-arrow-right"
+              <el-button 
+                         icon="el-icon-arrow-right"
                          circle
-                         @click="SelectContext(scope.row)"></el-button>
+                         @click="seeGroups(scope.row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
-
 </template>
 
 <script>
 import SpinalBackend from "../../services/spinalBackend";
-
-import headerBar from "./component/headerBar.vue";
+import headerBarVue from "./component/headerBar.vue";
 
 export default {
   data() {
-    return {};
+    return {
+      categories: []
+    };
   },
   components: {
-    "header-bar": headerBar
+    "header-bar": headerBarVue
   },
-  props: ["contextLst"],
+  props: ["contextSelected"],
   methods: {
-    getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+    getRoomsCount(category) {
+      return SpinalBackend.heatmapBack.getCategoriesRoomCount(category);
     },
-    getRoomsCount(context) {
-      return SpinalBackend.heatmapBack.getContextRoomCount(context);
-    },
-    getSurfaceTotale(context) {
-      const surfaceTotal = SpinalBackend.heatmapBack.getContextSurface(context);
+
+    getSurfaceTotale(category) {
+      const surfaceTotal = SpinalBackend.heatmapBack.getCategoriesSurface(
+        category
+      );
       return Math.round(surfaceTotal * 100) / 100;
     },
-    getContextGroup(context) {
-      let count = 0;
-      for (const category of context.categories) {
-        count += category.groups.length;
-      }
 
-      return count;
+    seeGroups(category) {
+      this.$emit("seeGroups", category);
     },
 
-    SelectContext(context) {
-      this.$emit("select", context);
+    goBack(){
+      this.$emit("reset");
     },
-    async SeeAll() {
-      let promises = this.data.map(async el => {
-        return {
-          id: el.id,
-          ids: await this.getAllBimObjects(el.id),
-          color: el.color
-        };
-      });
 
-      let allBimObjects = await Promise.all(promises);
 
-      EventBus.$emit("seeAll", allBimObjects);
-    },
 
     getHeader() {
       return [
         {
           key: "name",
           header: "name",
-          width: 10
-        },
-        {
-          key: "categories",
-          header: "Categories",
           width: 10
         },
         {
@@ -180,26 +158,26 @@ export default {
           width: 10
         }
       ];
-      
     },
 
     getRow() {
-
-      return this.contextLst.map(el => {
+     
+      return this.categories.map(el => {
         return {
           name: el.name,
-          categories: el.categories.length,
-          groups: this.getContextGroup(el),
+          groups: el.groups.length,
           rooms: this.getRoomsCount(el),
           surface: this.getSurfaceTotale(el)
         };
       });
     }
   },
-  async mounted() {},
+  async mounted() {
+    this.categories = this.contextSelected.categories;
+  },
   watch: {
-    contextLst() {
-      console.log("context", this.contextLst);
+    contextSelected() {
+      this.categories = this.contextSelected.categories;
     }
   },
   beforeDestroy() {}
@@ -207,9 +185,6 @@ export default {
 </script>
 
 <style scoped>
-.tab {
-  padding: 0 -20 px 0 -10px;
-}
 .boutton-barre {
   padding: 14px !important;
 }
@@ -221,6 +196,4 @@ export default {
 .el-icon-download {
   width: 30px;
 }
-
 </style>
-
