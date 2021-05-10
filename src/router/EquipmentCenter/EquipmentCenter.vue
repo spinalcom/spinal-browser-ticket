@@ -72,7 +72,6 @@ export default {
   components: {
     SpinalBreadcrumb,
     TabManager,
-    Explorer,
   },
   data() {
     return {
@@ -140,13 +139,17 @@ export default {
         this.items = { nodeType, items, cols: Array.from(cols) };
       }
       this.currentView = view;
-      this.tabs[0].name = this.$t(`node-type.${this.items.nodeType}`);
-      this.tabs[1].name = this.$t("node-type.hasCategoryAttributes");
+      updateNames();
       this.tabs[0].props.items = this.items;
       for (let tab of this.tabs)
       {
         tab.props.view = this.currentView;
       }
+    },
+    updateNames()
+    {
+      this.tabs[0].name = this.$t(`node-type.${this.items.nodeType}`);
+      this.tabs[1].name = this.$t("node-type.hasCategoryAttributes");
     },
     popView() {
       ViewManager.getInstance(this.viewKey).pop()
@@ -243,9 +246,7 @@ export default {
   height: calc(100% - 65px);
   border-radius: 5px;
 }
-</style>
 
-<style>
 .spl-height-control {
   height: 100%;
 }
