@@ -399,7 +399,9 @@ export default {
 .table-hover td {
   text-align: center;
 }
-
+.buttons {
+  padding-bottom: 40px;
+}
 .button3 {
   width: 50%;
   display: inline-block;

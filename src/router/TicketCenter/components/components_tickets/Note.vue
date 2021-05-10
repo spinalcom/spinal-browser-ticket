@@ -24,8 +24,33 @@ with this file. If not, see
 <template>
   <el-container class="container-class ">
     <div class="view">
-      <div class="btn-note">
-        <div class="viewer-btn"><viewerBtn></viewerBtn></div>
+      <div class="buttons">
+        <div class="viewer-btn" :nodeId="nodeId">
+          <div class="bouttons">
+            <el-button
+              title="Export Table"
+              icon="el-icon-download"
+              circle
+              @click.stop="exportToExcel()"
+            >
+            </el-button>
+
+            <el-button
+              title="Color Items "
+              icon="el-icon-picture-outline-round"
+              circle
+              @click.stop="SeeAll()"
+            >
+            </el-button>
+            <el-button
+              title="Isolate Items"
+              icon="el-icon-aim"
+              circle
+              @click.stop="isoItem()"
+            >
+            </el-button>
+          </div>
+        </div>
       </div>
       <div class="note">
         <message-component :nodeInfo="nodeInfo"></message-component>
@@ -94,5 +119,8 @@ ul {
 .tabsContainer .el-tabs__content {
   width: 100%;
   height: calc(100% - 50px);
+}
+.buttons {
+  padding-bottom: 40px;
 }
 </style>
