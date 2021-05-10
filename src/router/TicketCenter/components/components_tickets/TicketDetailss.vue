@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 <template>
   <el-container>
-    <div class="ticet-view">
+    <div class="ticket-view">
       <div class="buttons">
         <div class="viewer-btn" :nodeId="nodeId">
           <div class="bouttons">
@@ -354,14 +354,11 @@ export default {
 </style>
 
 <style>
-ul {
-  list-style-type: none;
-}
 .tabsContainer .el-tabs__content {
   width: 100%;
   height: calc(100% - 50px);
 }
-.ticet-view {
+.ticket-view {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -383,11 +380,26 @@ ul {
   width: 100%;
   height: 100%;
   box-shadow: 0px 0px 10px #c5c5c5a8;
+  font-size: 14px;
+  color: #606266;
 }
 .bouttons {
   float: right;
   padding-bottom: 5px;
 }
+.table-hover tr {
+  border: 1px solid #c7c7c7;
+}
+.table-hover th {
+  padding: 14px;
+  border: 1px solid #c7c7c7;
+  width: 20%;
+  background-color: #f0f2f5;
+}
+.table-hover td {
+  text-align: center;
+}
+
 .button3 {
   width: 50%;
   display: inline-block;

@@ -1,19 +1,15 @@
 <!--
 Copyright 2020 SpinalCom - www.spinalcom.com
-
 This file is part of SpinalCore.
-
 Please read all of the following terms and conditions
 of the Free Software license Agreement ("Agreement")
 carefully.
-
 This Agreement is a legally binding contract between
 the Licensee (as defined below) and SpinalCom that
 sets forth the terms and conditions that govern your
 use of the Program. By installing and/or using the
 Program, you agree to abide by all the terms and
 conditions stated or referenced herein.
-
 If you do not agree to abide by these terms and
 conditions, do not demonstrate your acceptance and do
 not install or use the Program.
@@ -30,7 +26,7 @@ with this file. If not, see
     @tab-remove="removeTab"
   >
     <el-tab-pane
-      v-for="tab in opentabs"
+      v-for="tab in tabsprop"
       :key="tab.name"
       :label="tab.name"
       :name="tab.name"
@@ -39,7 +35,6 @@ with this file. If not, see
       <component :is="tab.content" :Properties="tab.props"></component>
     </el-tab-pane>
     <!-- <el-tab-pane :disabled="true">
-
       <span slot="label">
         <el-dropdown trigger="click"
                      @command="addTab">
@@ -51,15 +46,14 @@ with this file. If not, see
             <el-dropdown-item v-for="tab in tabs"
                               :key="tab.name"
                               :command="tab">
-              <div v-if="!hasTab(opentabs, tab)">
+              <div v-if="!hasTab(tabsprop, tab)">
                 {{ tab.name }}
               </div>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-
-    </el-tab-pane>-->
+    </el-tab-pane> -->
   </el-tabs>
 </template>
 
@@ -70,30 +64,38 @@ export default {
   props: { tabsprop: Array },
   data() {
     return {
-      opentabs: [],
       activetab: this.tabsprop[0].name,
     };
   },
-  async mounted() {
-    for (const tab of this.tabsprop) {
-      if (!tab.optional) {
-        this.opentabs.push(tab);
-      }
-    }
+  async mounted() {},
+  watch: {
+    tabsprop: {
+      handler(oldTabs, newTabs) {
+        if (
+          typeof newTabs !== "undefined" &&
+          !newTabs.some((tab) => {
+            tab.name == this.activeTab;
+          })
+        ) {
+          this.activetab = newTabs[0].name;
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   },
-  computed: {},
   methods: {
-    hasTab(tabArray, tab) {
-      for (var idx = 0; idx < tabArray.length; idx += 1) {
-        if (tabArray[idx].name === tab.name) {
+    hasTab(tabname) {
+      for (var idx = 0; idx < this.tabsprop.length; idx += 1) {
+        if (this.tabsprop[idx].name === tabname) {
           return true;
         }
       }
       return false;
     },
     addTab(target) {
-      if (!this.opentabs.some((e) => e.name == target.name)) {
-        this.opentabs.push({
+      if (!this.tabsprop.some((e) => e.name == target.name)) {
+        this.tabsprop.push({
           title: target.name,
           name: target.name,
           content: target.content,
@@ -103,7 +105,7 @@ export default {
       // this.activetab = target.name;
     },
     removeTab(targetName) {
-      let tmptabs = this.opentabs;
+      let tmptabs = this.tabsprop;
       let activeName = this.activetab;
       if (activeName === targetName) {
         tmptabs.forEach((tab, index) => {
@@ -116,7 +118,7 @@ export default {
         });
       }
       this.activetab = activeName;
-      this.opentabs = tmptabs.filter((tab) => tab.name !== targetName);
+      this.tabsprop = tmptabs.filter((tab) => tab.name !== targetName);
     },
     debug(active) {
       console.log(active);
@@ -129,7 +131,6 @@ export default {
 .tab-manager-tabs .el-tabs__content {
   height: calc(100% - 38px);
 }
-
 .tab-manager-pane {
   height: 100%;
 }
