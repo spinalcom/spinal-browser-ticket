@@ -23,25 +23,60 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs class="tabsContainer"
+  <el-tabs  v-if="display === true" class="tabsContainer"
            type="border-card">
 
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Équipements /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Équipements">
+    <el-tab-pane :label="$t('DataRoom.Equipment')">
+      <el-row>
+        <el-button class="spl-el-button" style="float: left"
+          icon="el-icon-arrow-left"
+          circle
+          @click.stop="popView()"
+        ></el-button>
+        <div style="float: right">
+         <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
+          </el-button>
+          <el-button
+            icon="el-icon-download"
+            circle
+            @click="exportToExcel"
+          >
+          </el-button>
+          <el-button
+            icon="el-icon-picture-outline-round"
+            circle
+            @click.stop="SeeAll()"
+          >
+          </el-button>
+        </div>
+      </el-row>
+      <br>
       <el-table :data="equipement"
                 border
                 style="width: 100%"
                 :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
+                :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}"
+                @row-click="selectInView"
+                @row-dblclick="SeeEvent">
         <el-table-column prop="name"
-                         :label="$t('SpaceManagement.Nom')">
+                         :label="$t('DataRoom.Name')">
+                         <template slot-scope="scope">
+                      <div>
+                        <div v-if="scope.row.color"
+                            class="spinal-table-cell-color"
+                            :style="getColor(scope.row.color)"></div>
+                        <div> {{ scope.row.name }} </div>
+                      </div>
+                    </template>
         </el-table-column>
         <el-table-column align="center"
                          width="150">
-          <template>
+          <template slot-scope="scope">
             <el-button icon="el-icon-arrow-right"
+            @click="SelectEquipment(scope.row)"
                        circle></el-button>
           </template>
         </el-table-column>
@@ -50,14 +85,18 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// TICKET /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane class="pane-ticket"
-                 label="Tickets">
+    <el-tab-pane :label="$t('DataRoom.Ticket')">
       <div class="barre">
+        <div>
+
         <ticket-create v-bind:nodeId="nodeId"
                        @reload="updateticket"></ticket-create>
+        </div>
+        <div>
         <header-bar :header="ticketHeader"
                     :content="ticketContent"
                     :data="ticketData"></header-bar>
+        </div>
 
       </div>
       <el-table :data="tickets"
@@ -66,23 +105,23 @@ with this file. If not, see
                 :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
                 :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
         <el-table-column prop="name"
-                         :label="$t('SpaceManagement.Nom')"
+                         :label="$t('DataRoom.Name')"
                          width="180">
         </el-table-column>
 
         <el-table-column prop="priority"
-                         label="Priorités"
+                         :label="$t('DataRoom.Priority')"
                          align="center">
         </el-table-column>
 
-        <el-table-column label="utilisateur"
+        <el-table-column :label="$t('DataRoom.User')"
                          align="center">
           <template slot-scope="scope">
             <!-- {{ scope.row.user.name }} -->
           </template>
         </el-table-column>
 
-        <el-table-column label="Date de création"
+        <el-table-column :label="$t('DataRoom.Note')"
                          align="center">
           <template slot-scope="scope">
             {{ scope.row.creationDate | formatDate }}
@@ -94,14 +133,14 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// DOCUMENTATION /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Documentation">
+    <el-tab-pane :label="$t('DataRoom.Documentation')">
       <div class="barre">
 
         <document-create v-bind:nodeId="nodeId"
                          @reload="updateDocument"></document-create>
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
+        <header-bar :header="documentHeader"
+                    :content="documentContent"
+                    :data="documentData"></header-bar>
 
       </div>
 
@@ -110,20 +149,25 @@ with this file. If not, see
                 style="width: 100%"
                 :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
                 :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-        <el-table-column :label="$t('SpaceManagement.Nom')">
+        <el-table-column :label="$t('DataRoom.Name')">
           <template slot-scope="scope">
             {{ scope.row.name.get() }}
           </template>
         </el-table-column>
 
-        <el-table-column label=""
-                         width="70"
+        <el-table-column label="Actions"
+                         width="200"
                          align="center">
           <template slot-scope="scope">
-            <el-button v
+            <el-button
                        icon="el-icon-download"
                        circle
                        @click="exportFichier(scope.row)"></el-button>
+                       <el-button 
+                        type="danger"
+                       icon="el-icon-delete"
+                       circle
+                       @click="deleteFichier(scope.$index)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -133,7 +177,8 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Notes">
+    <el-tab-pane class="spinal-space-tab-container tab-class"
+    :label="$t('DataRoom.Note')">
       <el-container>
         <message-component :node-info="nodeInfo"></message-component>
       </el-container>
@@ -142,26 +187,27 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Calendrier /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane label="Calendrier">
+    <el-tab-pane :label="$t('DataRoom.Calendar')">
       <div class="barre">
-        <header-bar :header="ticketHeader"
-                    :content="ticketContent"
-                    :data="ticketData"></header-bar>
-        <ticket-create v-bind:nodeId="nodeId"
-                       @reload="updateticket"></ticket-create>
+        <Calendar :nodeId="nodeId"></Calendar>
       </div>
-      <vueCal :events="calendrier"></vueCal>
-
     </el-tab-pane>
   </el-tabs>
+
+<!--<equipment-data v-else
+                   :node-id="equipmentId"></equipment-data>-->
 </template>
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
+import { ViewManager } from "../../../services/ViewManager/ViewManager";
+import { spinalBackEnd } from "../../../services/spinalBackend";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import messageComponent from "./messageComponent.vue";
+import EquipmentData from "./EquipmentData.vue";
+import Calendar from "./Calendar.vue";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { SpinalEventService } from "spinal-env-viewer-task-service";
@@ -169,13 +215,18 @@ import GeographicContext from "spinal-env-viewer-context-geographic-service";
 import ticketcreate from "./ticketcreate.vue";
 import headerBarVue from "./headerBar.vue";
 import documentcreateVue from "./documentcreate.vue";
+import { EventBus } from "../../../services/event";
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
 export default {
   components: {
     "message-component": messageComponent,
+    "equipment-data": EquipmentData,
     VueCal,
     "ticket-create": ticketcreate,
     "header-bar": headerBarVue,
-    "document-create": documentcreateVue
+    "document-create": documentcreateVue,
+    "Calendar": Calendar
   },
   filters: {
     formatDate: function(date) {
@@ -184,17 +235,30 @@ export default {
         1}/${newDate.getFullYear()}`;
     }
   },
-  props: ["nodeId"],
+  props: {
+    nodeId: String,
+    collums: { required: false, type: Array, default: () => [] },
+    viewKey: { require: true, type: String, default: "" }
+  },
   data() {
     return {
+      display: true,
+      equipmentId: null,
+      items: [],
       tickets: [],
       documents: [],
+      documentHeader: [],
+      documentData: [],
+      documentContent: [],
       ticketHeader: [],
       ticketData: [],
       ticketContent: [],
       nodeInfo: { selectedNode: SpinalGraphService.getRealNode(this.nodeId) },
       calendrier: [],
-      equipement: []
+      equipement: [],
+      equipmentHeader: [],
+      equipmentData: [],
+      equipmentContent: [],
     };
   },
   watch: {
@@ -205,6 +269,7 @@ export default {
     }
   },
   async mounted() {
+
     this.calendrier = await SpinalEventService.getEvents(this.nodeId).then(
       rest => {
         return rest.map(el => {
@@ -251,6 +316,17 @@ export default {
     });
 
     this.documents = await this.getDocuments();
+    this.documentHeader = [
+        { key: "name", header: "name", width: 15 },
+      ];
+
+      this.documentContent = this.documents.map(el => ({
+        name: el.name._data,
+      }));
+      this.documentData = this.documents.map(el => {
+        console.log(el);
+        return el.name._data;
+      });
     let varEquipement = await SpinalGraphService.getChildren(
       this.nodeId,
       GeographicContext.constants.EQUIPMENT_RELATION
@@ -258,9 +334,36 @@ export default {
     this.equipement = varEquipement.map(item => {
       return item.get();
     });
+    console.log(this.equipement);
+
+    this.equipmentHeader = [
+        { key: "name", header: "name", width: 15 },
+      ];
+
+      this.equipmentContent = this.equipement.map(el => ({
+        name: el.name,
+      }));
+      this.equipmentData = this.equipement.map(el => {
+        return el.name;
+      });
   },
   beforeDestroy() {},
   methods: {
+    /*addbreadcrumb(resultat) {
+      console.log(resultat);
+      console.log("appelle de add breadcrubm");
+      if (typeof resultat.roomNodeId !== "undefined") {
+        this.roomNodeId = resultat.roomNodeId;
+      }
+      this.breadcrumbs = [...this.breadcrumbs, resultat];
+    },
+    removeAndAddBreadcrumb(data) {
+      console.log(data);
+      this.roomNodeId = null;
+      this.breadcrumbs.splice(data.index);
+
+      this.breadcrumbs = [...this.breadcrumbs, data.item];
+    },*/
     exportFichier(file) {
       if (file._info.model_type.get() != "Directory") {
         file._ptr.load(path => {
@@ -299,6 +402,43 @@ export default {
         this.nodeId
       );
     },
+    selectInView(item) {
+      const serverId = localStorage.getItem("roomServerId");
+      EventBus.$emit("data-room-select-item", {
+        server_id: serverId,
+        color: item.color
+      });
+    },
+    SeeEvent(item) {
+      const serverId = localStorage.getItem("roomServerId");
+      EventBus.$emit("data-room-color-item", {
+        server_id: serverId,
+        color: item.color
+      });
+    },
+    SelectEquipment(equipment) {
+      console.log(equipment)
+      localStorage.setItem("equipmentId", equipment.id);
+      console.log(localStorage.getItem("equipmentId"));
+      ViewManager.getInstance("Data room").push(equipment.name, equipment.dbid);
+      //this.$emit("select", context);
+    },
+    popView() {
+      ViewManager.getInstance("Data room").pop();
+    },
+    async deleteFichier(index) {
+      if (confirm("Delete Document !")) {
+        return FileExplorer.getDirectory(
+        SpinalGraphService.getRealNode(this.nodeId)
+      ).then(directory => {
+        directory.splice(index, 1);
+         this.updateDocument();
+        });
+      }
+    },
+    getColor(color) {
+      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+    },
     getDocuments() {
       return FileExplorer.getDirectory(
         SpinalGraphService.getRealNode(this.nodeId)
@@ -313,7 +453,33 @@ export default {
     },
     async updateDocument() {
       this.documents = await this.getDocuments();
-    }
+    },
+    isolateAll(index) {
+      this.$refs["data-room-table"][index].isolateAll(this.Properties.view.serverId);
+    },
+    exportToExcel() {
+      console.log(this.content)
+      let excelData = [
+        {
+          name: "Tableau",
+          author: "",
+          data: [
+            {
+              name: "Tableau",
+              header: this.equipmentHeader,
+              rows: this.equipmentContent
+            }
+          ]
+        }
+      ];
+      excelManager.export(excelData).then(reponse => {
+        fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
+      });
+      // console.log("expoooooooooooort", this.data);
+    },
+    ShowAll() {
+      this.$refs["Explorer-table"].ShowAll();
+    },
   }
 };
 </script>
@@ -333,16 +499,28 @@ export default {
   position: relative;
   height: calc(100% - 20px);
 }
+.container-class,
+.tab-class {
+  height: 100%;
+}
 </style>
 
 <style>
 .tabsContainer .el-tabs__content {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
 }
-
+.spinal-table-cell-color {
+  height: 100%;
+  width: 5px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 .barre {
   display: flex;
   justify-content: space-between;
 }
 </style>
+
+

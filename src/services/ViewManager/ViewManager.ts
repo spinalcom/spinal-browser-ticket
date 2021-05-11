@@ -61,13 +61,22 @@ export class ViewManager {
     if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
   }
 
+  pop() {
+    this.breadcrumb.pop();
+    const view = this.breadcrumb[this.breadcrumb.length - 1];
+    this.onChangeFct.forEach(fct => {fct(view)})
+    if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
+  }
+
   breacrumbSubscribe(fct: ViewManagerBreacrumbSubscribeFct) {
     this.breacrumbSubscribeFct = fct;
   }
   viewSubscribe(changeFct: ViewManagerOnChangeFct, serverId) {
     const view = { name: this.viewKey, serverId }
-    this.onChangeFct.push(changeFct)
-    this.onChangeFct.forEach(fct => {fct(view)})
+    if (!this.onChangeFct.includes(changeFct))
+      this.onChangeFct.push(changeFct)
+    changeFct(view);
+    // this.onChangeFct.forEach(fct => {fct(view)})
   }
 
  move(serverId: number) {

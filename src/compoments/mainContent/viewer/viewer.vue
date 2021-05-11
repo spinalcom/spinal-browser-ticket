@@ -37,7 +37,7 @@ import { EventBus } from "../../../services/event";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { DISABLE_VIEWER } from "../../../constants";
 
-import HeatmapLegendContainer from "../../heatmap/heatmap-legends/container.vue";
+import HeatmapLegendContainer from "../../insight/heatmap-legends/container.vue";
 
 import "spinal-env-viewer-plugin-forge";
 export default {

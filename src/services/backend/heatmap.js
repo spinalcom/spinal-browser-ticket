@@ -368,7 +368,14 @@ export default class Heatmap {
   }
 
   convertColorToVector(argColor) {
-    const color = argColor[0] === "#" ? argColor : `#${argColor}`;
+
+    let color = "";
+    if (argColor) {
+      color = argColor[0] === "#" ? argColor : `#${argColor}`;
+    }
+
+    if (color.trim().length == 0) return new THREE.Vector4(1, 0, 0, 0);
+
     const rgbColor = this._convertHexToRGB(color);
 
     return rgbColor

@@ -146,8 +146,7 @@ with this file. If not, see
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-tab-pane class="spinal-space-tab-container"
-                   class="tab-class"
+      <el-tab-pane class="spinal-space-tab-container tab-class"
                    label="Notes">
         <el-container class="container-class">
           <message-component :node-info="nodeInfo"></message-component>
