@@ -24,8 +24,8 @@
 
 import "babel-polyfill";
 import Vue from "vue";
-  // @ts-ignore
-  import App from "./app.vue";
+// @ts-ignore
+import App from "./app.vue";
 import ElementUI from 'element-ui';
 import VTooltip from 'v-tooltip';
 import { i18n } from "./services/i18n";
@@ -35,12 +35,15 @@ import { router } from './router/router';
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VueMaterial from 'vue-material'
+import 'vue-material/dist/vue-material.min.css'
+import 'vue-material/dist/theme/default.css'
 
 import Ripple from 'vue-ripple-directive'
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './app.css';
-import  './compoments/sidebar/eventSideBar'
+import './compoments/sidebar/eventSideBar'
 
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts)
@@ -52,7 +55,9 @@ Vue.directive('ripple', Ripple);
 
 Vue.use(ElementUI);
 Vue.use(VTooltip);
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue);
+Vue.use(VueMaterial);
+
 spinalBackend.init();
 BackendInitializer.getInstance().init();
 
