@@ -1,19 +1,15 @@
 <!--
 Copyright 2020 SpinalCom - www.spinalcom.com
-
 This file is part of SpinalCore.
-
 Please read all of the following terms and conditions
 of the Free Software license Agreement ("Agreement")
 carefully.
-
 This Agreement is a legally binding contract between
 the Licensee (as defined below) and SpinalCom that
 sets forth the terms and conditions that govern your
 use of the Program. By installing and/or using the
 Program, you agree to abide by all the terms and
 conditions stated or referenced herein.
-
 If you do not agree to abide by these terms and
 conditions, do not demonstrate your acceptance and do
 not install or use the Program.
@@ -23,17 +19,20 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs class="tab-manager-tabs"
-           type="border-card"
-           :value="activetab"
-           @tab-remove="removeTab">
-    <el-tab-pane v-for="tab in tabsprop"
-                 :key="tab.name"
-                 :label="tab.name"
-                 :name="tab.name"
-                 :closable="false">
-      <component :is="tab.content"
-                 :Properties="tab.props"></component>
+  <el-tabs
+    class="tab-manager-tabs"
+    type="border-card"
+    :value="activetab"
+    @tab-remove="removeTab"
+  >
+    <el-tab-pane
+      v-for="tab in tabsprop"
+      :key="tab.name"
+      :label="tab.name"
+      :name="tab.name"
+      :closable="false"
+    >
+      <component :is="tab.content" :Properties="tab.props"></component>
     </el-tab-pane>
     <!-- <el-tab-pane :disabled="true">
       <span slot="label">
@@ -65,18 +64,19 @@ export default {
   props: { tabsprop: Array },
   data() {
     return {
-      activetab: this.tabsprop[0].name
+      activetab: this.tabsprop[0].name,
     };
   },
-  async mounted() {
-  },
+  async mounted() {},
   watch: {
-    tabsprop:
-    {
-      handler(oldTabs, newTabs)
-      {
-        if (typeof newTabs !== "undefined" && !newTabs.some(tab => {tab.name == this.activeTab}))
-        {
+    tabsprop: {
+      handler(oldTabs, newTabs) {
+        if (
+          typeof newTabs !== "undefined" &&
+          !newTabs.some((tab) => {
+            tab.name == this.activeTab;
+          })
+        ) {
           this.activetab = newTabs[0].name;
         }
       },
@@ -94,12 +94,12 @@ export default {
       return false;
     },
     addTab(target) {
-      if (!this.tabsprop.some(e => e.name == target.name)){
+      if (!this.tabsprop.some((e) => e.name == target.name)) {
         this.tabsprop.push({
           title: target.name,
           name: target.name,
           content: target.content,
-          props: target.props
+          props: target.props,
         });
       }
       // this.activetab = target.name;
@@ -118,12 +118,12 @@ export default {
         });
       }
       this.activetab = activeName;
-      this.tabsprop = tmptabs.filter(tab => tab.name !== targetName);
+      this.tabsprop = tmptabs.filter((tab) => tab.name !== targetName);
     },
     debug(active) {
       console.log(active);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -131,7 +131,6 @@ export default {
 .tab-manager-tabs .el-tabs__content {
   height: calc(100% - 38px);
 }
-
 .tab-manager-pane {
   height: 100%;
 }

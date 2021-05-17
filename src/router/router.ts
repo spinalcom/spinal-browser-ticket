@@ -29,7 +29,7 @@ Vue.use(VueRouter);
 
 const AppList = () => import('./AppList/AppList.vue');
 const TicketCenter = () => import('./TicketCenter/TicketCenter.vue');
-const HeatmapCenter = () => import('./HeatmapCenter/HeatmapCenter.vue');
+const InsightCenter = () => import('./InsightCenter/InsightCenter.vue');
 const SpaceCenter = () => import('./Space Center/spacecenter.vue');
 const SpaceCenterGestion = () => import('../compoments/space/component/categoryLstVue.vue');
 const DataRoom = () => import("./DataRoom/DataRoom.vue")
@@ -39,7 +39,7 @@ export const routes = [
   { path: '/AppList', name: 'App List', component: AppList },
   { path: '/DataRoom', name: 'Data Room', component: DataRoom },
   { path: '/TicketCenter', name: 'Ticket Center', component: TicketCenter },
-  { path: '/HeatmapCenter', name: 'Heatmap Center', component: HeatmapCenter },
+  { path: '/InsightCenter', name: 'Insight Center', component: InsightCenter },
   { path: '/Spacecenter', name: 'Space Center', component: SpaceCenter },
   { path: '/EquipmentCenter', name: 'Equipment Center', component: EquipmentCenter },
 ];

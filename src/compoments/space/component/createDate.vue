@@ -1,4 +1,28 @@
 <!--
+Copyright 2021 SpinalCom - www.spinalcom.com
+
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
+<!--
 Copyright 2020 SpinalCom - www.spinalcom.com
 
 This file is part of SpinalCore.
@@ -33,7 +57,7 @@ with this file. If not, see
          title="Adresse d'expédition"
          v-if="dialogFormVisible">
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
-        ////////////////////////////////// Tableau Categorie Ticket /////////////////////////////////////
+        ////////////////////////////////// Tableau Categorie calendrier /////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////////////-->
       <div class="radio-cas">
         <el-cascader-panel v-on:change="cascaderSelection"
@@ -42,31 +66,52 @@ with this file. If not, see
       <br>
 
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
-        ////////////////////////////////// Formulaire tickey /////////////////////////////////////
+        ////////////////////////////////// Formulaire calendrier /////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////////////-->
       <el-form :disabled="isFormDisable"
                ref="form"
                :model="form"
                label-width="120px">
-        <el-form-item label="Resources">
-          <el-radio-group v-model="form.priority">
-            <el-radio label="0">Occasionally</el-radio>
-            <el-radio label="1">Normal</el-radio>
-            <el-radio label="2">Urgent</el-radio>
-          </el-radio-group>
+
+        <el-form-item label="Name">
+          <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="Activity form">
-          <el-input type="textarea"
-                    v-model="form.description"></el-input>
+
+        <el-form-item label="Start date">
+          <div class="block">
+            <span class="demonstration"></span>
+            <el-date-picker v-model="form.value1"
+                            type="datetime"
+                            placeholder="Select date and time">
+            </el-date-picker>
+          </div>
         </el-form-item>
+
+        <el-form-item label="End date">
+          <div class="block">
+            <span class="demonstration"></span>
+            <el-date-picker v-model="form.value2"
+                            type="datetime"
+                            placeholder="Select date and time">
+            </el-date-picker>
+          </div>
+        </el-form-item>
+
+        <el-form-item class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">Annuler</el-button>
+
+          <el-button type="primary"
+                     @click="confirmDate">Confirmer</el-button>
+        </el-form-item>
+
       </el-form>
 
-      <div slot="footer"
+      <!-- <div slot="footer"
            class="dialog-footer">
         <el-button @click="dialogFormVisible = false">Annuler</el-button>
         <el-button type="primary"
-                   @click="confirmTicket">Confirmer</el-button>
-      </div>
+                   @click="confirmDate">Confirmer</el-button>
+      </div> -->
     </div>
   </div>
 </template>
@@ -74,6 +119,8 @@ with this file. If not, see
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
+import { SpinalEventService } from "spinal-env-viewer-task-service";
+
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 
 export default {
@@ -81,18 +128,35 @@ export default {
     return {
       dialogFormVisible: false,
       isFormDisable: true,
-      form: { description: "", priority: 0 },
+      form: {
+        name: "",
+        value1: "",
+        value2: ""
+      },
+      EventInterface: {
+        contextId: "",
+        groupId: "",
+        categoryId: "",
+        nodeId: this.nodeId,
+        startDate: "",
+        endDate: "",
+        name: ""
+      },
       props: {
         lazy: true,
         async lazyLoad(node, resolve) {
           if (node.level === 0) {
-            const contextList = await serviceTicketPersonalized.getContexts();
+            const contextList = await SpinalEventService.getEventContexts();
             const res = contextList.map(itm => {
-              return { value: itm.id, label: itm.name, leaf: false };
+              return {
+                value: itm.id.get(),
+                label: itm.name.get(),
+                leaf: false
+              };
             });
             resolve(res);
           } else if (node.level === 1) {
-            const processLst = await serviceTicketPersonalized.getAllProcess(
+            const processLst = await SpinalEventService.getEventsCategories(
               node.data.value
             );
             const res = processLst.map(itm => {
@@ -104,11 +168,11 @@ export default {
             });
             resolve(res);
           } else {
-            const CommonIncidentLst = await serviceTicketPersonalized.getCommonIncident(
+            const CommonIncidentLst = await SpinalEventService.getEventsGroups(
               node.data.value
             );
             const res = CommonIncidentLst.map(itm => {
-              return { value: itm.id, label: itm.name, leaf: true };
+              return { value: itm.id.get(), label: itm.name.get(), leaf: true };
             });
             resolve(res);
           }
@@ -130,26 +194,29 @@ export default {
   props: ["nodeId"],
   methods: {
     cascaderSelection(value) {
-      this.ticketContextId = value[0];
-      this.ticketProcessId = value[1];
-      this.ticketCommonId = value[2];
+      this.EventInterface.contextId = value[0];
+      this.EventInterface.categoryId = value[1];
+      this.EventInterface.groupId = value[2];
       this.isFormDisable = false;
     },
-    confirmTicket() {
-      this.dialogFormVisible = false;
-      const commonName = SpinalGraphService.getInfo(this.ticketCommonId);
-      this.form.name = commonName && commonName.name.get();
 
-      serviceTicketPersonalized
-        .addTicket(
-          this.form,
-          this.ticketProcessId,
-          this.ticketContextId,
-          this.nodeId
-        )
-        .then(() => {
-          this.$emit("reload");
-        });
+    confirmDate() {
+      this.dialogFormVisible = false;
+      this.EventInterface.startDate = new Date(this.form.value1).getTime();
+      this.EventInterface.endDate = new Date(this.form.value2).getTime();
+      this.EventInterface.name = this.form.name;
+      console.log("EventInterface", this.EventInterface);
+      SpinalEventService.createEvent(
+        this.EventInterface.contextId,
+        this.EventInterface.groupId,
+        this.nodeId,
+        this.EventInterface,
+        {}
+      ).then(result => {
+        console.log("result", result);
+
+        this.$emit("reload");
+      });
     }
   },
   async mounted() {},

@@ -31,7 +31,7 @@ with this file. If not, see
 </template>
 
 <script>
-import Table from "../../compoments/heatmap/table.vue";
+import Table from "../../compoments/insight/table.vue";
 
 export default {
   components : {
