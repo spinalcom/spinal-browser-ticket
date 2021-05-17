@@ -67,7 +67,6 @@ export default {
    mounted() {
       this.updateEndpoint(); 
       this.updateDisplay();
-      //console.log(this.variableSelected);
    },
 
    methods: {
