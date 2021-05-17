@@ -23,15 +23,15 @@ with this file. If not, see
     class="tab-manager-tabs"
     type="border-card"
     :value="activetab"
-    @tab-remove="removeTab"
   >
     <el-tab-pane
       v-for="tab in tabsprop"
-      :key="tab.name"
-      :label="tab.name"
-      :name="tab.name"
+      :key="$t(tab.name)"
+      :label="$t(tab.name)"
+      :name="$t(tab.name)"
       :closable="false"
     >
+      {{ updateActive() }}
       <component :is="tab.content" :Properties="tab.props"></component>
     </el-tab-pane>
     <!-- <el-tab-pane :disabled="true">
@@ -64,20 +64,22 @@ export default {
   props: { tabsprop: Array },
   data() {
     return {
-      activetab: this.tabsprop[0].name,
+      activetab: this.$t(this.tabsprop[0].name),
     };
   },
-  async mounted() {},
+  async mounted() {
+    this.activetab = this.$t(this.tabsprop[0].name)
+  },
   watch: {
     tabsprop: {
       handler(oldTabs, newTabs) {
         if (
           typeof newTabs !== "undefined" &&
-          !newTabs.some((tab) => {
-            tab.name == this.activeTab;
+          !oldTabs.some((tab) => {
+            this.$t(tab.name) == this.activeTab;
           })
         ) {
-          this.activetab = newTabs[0].name;
+          this.activetab = this.$t(newTabs[0].name);
         }
       },
       deep: true,
@@ -85,40 +87,8 @@ export default {
     },
   },
   methods: {
-    hasTab(tabname) {
-      for (var idx = 0; idx < this.tabsprop.length; idx += 1) {
-        if (this.tabsprop[idx].name === tabname) {
-          return true;
-        }
-      }
-      return false;
-    },
-    addTab(target) {
-      if (!this.tabsprop.some((e) => e.name == target.name)) {
-        this.tabsprop.push({
-          title: target.name,
-          name: target.name,
-          content: target.content,
-          props: target.props,
-        });
-      }
-      // this.activetab = target.name;
-    },
-    removeTab(targetName) {
-      let tmptabs = this.tabsprop;
-      let activeName = this.activetab;
-      if (activeName === targetName) {
-        tmptabs.forEach((tab, index) => {
-          if (tab.name === targetName) {
-            let nextTab = tmptabs[index + 1] || tmptabs[index - 1];
-            if (nextTab) {
-              activeName = nextTab.name;
-            }
-          }
-        });
-      }
-      this.activetab = activeName;
-      this.tabsprop = tmptabs.filter((tab) => tab.name !== targetName);
+    updateActive() {
+      this.activetab = this.$t(this.tabsprop[0].name);
     },
     debug(active) {
       console.log(active);
