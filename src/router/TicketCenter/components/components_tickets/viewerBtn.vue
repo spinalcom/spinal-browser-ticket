@@ -65,6 +65,7 @@ export default {
   mounted() {},
   methods: {
     exportToExcel() {
+      console.log("hello");
       let headers = [
         {
           key: "name",
@@ -72,29 +73,29 @@ export default {
           width: 20,
         },
       ];
-      for (const column of this.columns) {
-        headers.push({
-          key: column,
-          header: this.$t(column),
-          width: 10,
-        });
-      }
-      let excelData = [
-        {
-          name: "Tableau",
-          author: "",
-          data: [
-            {
-              name: "Tableau",
-              header: headers,
-              rows: this.data,
-            },
-          ],
-        },
-      ];
-      excelManager.export(excelData).then((reponse) => {
-        fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
-      });
+      // for (const column of this.columns) {
+      //   headers.push({
+      //     key: column,
+      //     header: this.$t(column),
+      //     width: 10,
+      //   });
+      // }
+      // let excelData = [
+      //   {
+      //     name: "Tableau",
+      //     author: "",
+      //     data: [
+      //       {
+      //         name: "Tableau",
+      //         header: headers,
+      //         rows: this.data,
+      //       },
+      //     ],
+      //   },
+      // ];
+      // excelManager.export(excelData).then((reponse) => {
+      //   fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
+      // });
     },
   },
   watch: {},

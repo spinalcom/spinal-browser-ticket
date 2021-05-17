@@ -159,17 +159,57 @@ with this file. If not, see
       <el-tab-pane class="spinal-space-tab-container"
                    label="Calendrier">
         <div class="barre">
-          <div></div>
-          <!-- PLACEHOLDER DIV DELETE IT AFTER YOU CREATE THE BUTTON -->
-          <!-- <ticket-create v-bind:nodeId="nodeId"
-                         @reload="updateticket"></ticket-create> -->
+          <create-date v-bind:nodeId="nodeId"
+                       @reload="updateDate"></create-date>
           <header-bar :header="ticketHeader"
                       :content="ticketContent"
                       :data="ticketData"></header-bar>
         </div>
+
         <div class="spinal-space-table-content spinal-scrollbar">
 
-          <vueCal :events="calendrier"></vueCal>
+          <vueCal :events="calendrier"
+                  :on-event-click="onEventClick"
+                  v-if="!showDialog"></vueCal>
+
+          <el-form v-if="showDialog"
+                   ref="form"
+                   :model="form"
+                   label-width="120px">
+
+            <el-form-item label="Name">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+
+            <el-form-item label="Start date">
+              <div class="block">
+                <span class="demonstration"></span>
+                <el-date-picker v-model="form.value1"
+                                type="datetime"
+                                placeholder="Select date and time">
+                </el-date-picker>
+              </div>
+            </el-form-item>
+
+            <el-form-item label="End date">
+              <div class="block">
+                <span class="demonstration"></span>
+                <el-date-picker v-model="form.value2"
+                                type="datetime"
+                                placeholder="Select date and time">
+                </el-date-picker>
+              </div>
+            </el-form-item>
+            <!-- slot="footer" -->
+            <el-form-item class="dialog-footer">
+              <el-button @click="showDialog = false">Annuler</el-button>
+              <el-button type="danger"
+                         @click="deleteDate">Supprimer</el-button>
+              <el-button type="primary"
+                         @click="confirmDate">Confirmer</el-button>
+            </el-form-item>
+          </el-form>
+
         </div>
 
       </el-tab-pane>
@@ -190,13 +230,15 @@ import GeographicContext from "spinal-env-viewer-context-geographic-service";
 import ticketcreate from "./ticketcreate.vue";
 import headerBarVue from "./headerBar.vue";
 import documentcreateVue from "./documentcreate.vue";
+import createDate from "./createDate.vue";
 export default {
   components: {
     "message-component": messageComponent,
     VueCal,
     "ticket-create": ticketcreate,
     "header-bar": headerBarVue,
-    "document-create": documentcreateVue
+    "document-create": documentcreateVue,
+    "create-date": createDate
   },
   filters: {
     formatDate: function(date) {
@@ -215,7 +257,20 @@ export default {
       ticketContent: [],
       nodeInfo: { selectedNode: SpinalGraphService.getRealNode(this.nodeId) },
       calendrier: [],
-      equipement: []
+      equipement: [],
+      selectedEvent: {},
+      showDialog: false,
+      form: {
+        name: "",
+        value1: "",
+        value2: ""
+      },
+      EventInterface: {
+        nodeId: this.nodeId,
+        startDate: "",
+        endDate: "",
+        name: ""
+      }
     };
   },
   watch: {
@@ -226,21 +281,22 @@ export default {
     }
   },
   async mounted() {
-    this.calendrier = await SpinalEventService.getEvents(this.nodeId).then(
-      rest => {
-        return rest.map(el => {
-          const event = el.get();
-          return {
-            title: event.name,
-            start: this._formatDate(event.startDate),
-            end: this._formatDate(event.endDate),
-            class: event.groupId
-            // backgroundColor : group && group.color
-          };
-        });
-      }
-    );
-    console.log("caaaaaaalendrier________", this.nodeId, this.calendrier);
+    // this.calendrier = await SpinalEventService.getEvents(this.nodeId).then(
+    //   rest => {
+    //     return rest.map(el => {
+    //       const event = el.get();
+    //       return {
+    //         title: event.name,
+    //         start: this._formatDate(event.startDate),
+    //         end: this._formatDate(event.endDate),
+    //         class: event.id
+    //         // backgroundColor : group && group.color
+    //       };
+    //     });
+    //   }
+    // );
+    // console.log("caaaaaaalendrier________", this.nodeId, this.calendrier);
+    this.calendrier = await this.getEvents();
 
     this.tickets = await serviceTicketPersonalized.getTicketsFromNode(
       this.nodeId
@@ -310,11 +366,11 @@ export default {
         // check recursive directory & create a ZIP
       }
     },
-    _formatDate(argDate) {
-      let date = new Date(argDate);
-      return `${date.getFullYear()}-${date.getMonth() +
-        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
-    },
+    // _formatDate(argDate) {
+    //   let date = new Date(argDate);
+    //   return `${date.getFullYear()}-${date.getMonth() +
+    //     1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+    // },
     async updateticket() {
       this.tickets = await serviceTicketPersonalized.getTicketsFromNode(
         this.nodeId
@@ -334,6 +390,68 @@ export default {
     },
     async updateDocument() {
       this.documents = await this.getDocuments();
+    },
+    async getEvents() {
+      const events = await SpinalEventService.getEvents(this.nodeId);
+      const promises = events.map(el => this._formatEvent(el.get()));
+      return Promise.all(promises);
+    },
+    _formatEvent(event) {
+      event.title = event.name;
+      event.start = this._formatDate(event.startDate);
+      event.end = this._formatDate(event.endDate);
+      event.class = event.id;
+
+      // event.deletable = true;
+      // event.titleEditable = false;
+      // event.textColor = "#ffffff";
+
+      delete event.startDate;
+      delete event.endDate;
+      return event;
+    },
+
+    _formatDate(argDate) {
+      let date = new Date(argDate);
+      return `${date.getFullYear()}-${date.getMonth() +
+        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+    },
+
+    async updateDate() {
+      this.calendrier = await this.getEvents(this.nodeId);
+    },
+    onEventClick(event, e) {
+      this.selectedEvent = event;
+      console.log("idEventSelectid", this.selectedEvent.class, this.nodeId);
+      this.showDialog = true;
+
+      // Prevent navigating to narrower view (default vue-cal behavior).
+      e.stopPropagation();
+    },
+    confirmDate() {
+      console.log("inside confirm date");
+      this.showDialog = false;
+      this.EventInterface.startDate = new Date(this.form.value1).getTime();
+      this.EventInterface.endDate = new Date(this.form.value2).getTime();
+      this.EventInterface.name = this.form.name;
+      console.log("llllkkkkkkkkkkk", this.form);
+      console.log("this.selectedEvent", this.selectedEvent);
+      SpinalEventService.updateEvent(
+        this.selectedEvent.class,
+        this.EventInterface
+      ).then(async result => {
+        // console.log("result", result);
+
+        // this.$emit("reload");
+        this.calendrier = await this.getEvents();
+      });
+    },
+    async deleteDate() {
+      console.log("lllllllllllllllllkk", this.selectedEvent.class);
+      await SpinalEventService.removeEvent(this.selectedEvent.class);
+
+      this.calendrier = await this.getEvents();
+      this.showDialog = false;
     }
   }
 };

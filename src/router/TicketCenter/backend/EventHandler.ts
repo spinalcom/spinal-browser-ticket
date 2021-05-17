@@ -30,6 +30,7 @@ var lastColorItem = null;
 var backEndTicket = BackEndTicket.getInstance()
 
 EventBus.$on('view-color-item', async (item) => {
+
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === item.server_id)) {
     lastColorItem = null
@@ -51,6 +52,10 @@ EventBus.$on('view-color-item', async (item) => {
 
 
 EventBus.$on('view-color-all', async (items, zone) => {
+  console.log("----items", items);
+  console.log("----zone", zone);
+
+
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === zone.server_id)) {
     lastColorItem = null

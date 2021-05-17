@@ -31,7 +31,32 @@ with this file. If not, see
             @reload="updateDocument"
           ></document-create>
         </div>
-        <div class="viewer-btn"><viewerBtn></viewerBtn></div>
+        <div class="viewer-btn" :nodeId="nodeId">
+          <div class="bouttons">
+            <el-button
+              title="Export Table"
+              icon="el-icon-download"
+              circle
+              @click.stop="exportToExcel()"
+            >
+            </el-button>
+
+            <el-button
+              title="Color Items "
+              icon="el-icon-picture-outline-round"
+              circle
+              @click.stop="SeeAll()"
+            >
+            </el-button>
+            <el-button
+              title="Isolate Items"
+              icon="el-icon-aim"
+              circle
+              @click.stop="isoItem()"
+            >
+            </el-button>
+          </div>
+        </div>
       </div>
       <div>
         <el-table
@@ -206,6 +231,7 @@ ul {
 .btn-doc {
   display: flex;
   flex-direction: row;
+  padding-bottom: 40px;
 }
 .add-doc {
   width: 20%;

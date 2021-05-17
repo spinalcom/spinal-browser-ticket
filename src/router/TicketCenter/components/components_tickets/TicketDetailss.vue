@@ -23,9 +23,34 @@ with this file. If not, see
 -->
 <template>
   <el-container>
-    <div class="ticet-view">
+    <div class="ticket-view">
       <div class="buttons">
-        <div class="viewer-btn"><viewerBtn class="viewerBtn"></viewerBtn></div>
+        <div class="viewer-btn" :nodeId="nodeId">
+          <div class="bouttons">
+            <el-button
+              title="Export Table"
+              icon="el-icon-download"
+              circle
+              @click.stop="exportToExcel()"
+            >
+            </el-button>
+
+            <el-button
+              title="Color Items "
+              icon="el-icon-picture-outline-round"
+              circle
+              @click.stop="SeeAll()"
+            >
+            </el-button>
+            <el-button
+              title="Isolate Items"
+              icon="el-icon-aim"
+              circle
+              @click.stop="isoItem()"
+            >
+            </el-button>
+          </div>
+        </div>
         <div class="perv-next">
           <el-button
             title="Pass Ticket To Previous Step"
@@ -78,6 +103,10 @@ with this file. If not, see
               <td>{{ CreationDate() }}</td>
             </tr>
             <tr>
+              <th>Description</th>
+              <td>{{ this.nodeInfo.selectedNode.info.description }}</td>
+            </tr>
+            <tr>
               <th>Room</th>
               <td>{{ this.Room_Ticket }}</td>
             </tr>
@@ -101,8 +130,10 @@ import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
 import { FileSystem } from "spinal-core-connectorjs_type";
+import { EventBus } from "../../backend/event";
 import viewerBtn from "./viewerBtn";
 import moment from "moment";
+import fileSaver from "file-saver";
 
 export default {
   name: "TicketDetailss",
@@ -224,7 +255,79 @@ export default {
         this.Building_Ticket = Building_Ticket.getName().get();
       }
     },
+    exportToExcel() {
+      let headers = [
+        {
+          key: "name",
+          header: this.$t("name"),
+          width: 20,
+        },
+      ];
+      // for (const column of this.columns) {
+      //   headers.push({
+      //     key: column,
+      //     header: this.$t(column),
+      //     width: 10,
+      //   });
+      // }
+      let excelData = [
+        {
+          name: "Ticket Details",
+          author: "",
+          data: [
+            {
+              name: "Ticket Details",
+              header: headers,
+              rows: deta,
+            },
+          ],
+        },
+      ];
+
+      let deta = [
+        { colA: "Hello", colB: "World" },
+        {
+          colA: "Multi-line",
+          /* Multi-line value: */
+          colB:
+            "This is a long paragraph\nwith multiple lines\nthat should show in a single cell.",
+        },
+        { colA: "Another", colB: "Regular cell" },
+      ];
+
+      excelManager.export(excelData).then((reponse) => {
+        fileSaver.saveAs(new Blob(reponse), `ticket_details.xlsx`);
+      });
+    },
+    isoItem() {
+      let item = {
+        server_id: this.nodeId,
+        color: "blue",
+      };
+      EventBus.$emit("view-isolate-item", item);
+    },
+    SeeItem() {
+      let item = {
+        server_id: this.nodeId,
+        color: "blue",
+      };
+      EventBus.$emit("view-color-item", item);
+    },
+    SeeAll() {
+      EventBus.$emit(
+        "view-color-all",
+        [{ server_id: this.nodeId, color: "blue" }],
+        { server_id: this.nodeId }
+      );
+    },
+    ShowAll() {
+      EventBus.$emit("view-show-all");
+    },
+    isolateAll(zone) {
+      EventBus.$emit("view-isolate-all", { server_id: zone });
+    },
   },
+
   beforeDestroy() {},
 };
 </script>
@@ -251,14 +354,11 @@ export default {
 </style>
 
 <style>
-ul {
-  list-style-type: none;
-}
 .tabsContainer .el-tabs__content {
   width: 100%;
   height: calc(100% - 50px);
 }
-.ticet-view {
+.ticket-view {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -280,6 +380,27 @@ ul {
   width: 100%;
   height: 100%;
   box-shadow: 0px 0px 10px #c5c5c5a8;
+  font-size: 14px;
+  color: #606266;
+}
+.bouttons {
+  float: right;
+  padding-bottom: 5px;
+}
+.table-hover tr {
+  border: 1px solid #c7c7c7;
+}
+.table-hover th {
+  padding: 14px;
+  border: 1px solid #c7c7c7;
+  width: 20%;
+  background-color: #f0f2f5;
+}
+.table-hover td {
+  text-align: center;
+}
+.buttons {
+  padding-bottom: 40px;
 }
 .button3 {
   width: 50%;

@@ -25,7 +25,32 @@ with this file. If not, see
   <el-container>
     <div class="view">
       <div class="btn-log">
-        <div class="viewer-btn" :nodeId="nodeId"><viewerBtn></viewerBtn></div>
+        <div class="viewer-btn" :nodeId="nodeId">
+          <div class="bouttons">
+            <el-button
+              title="Export Table"
+              icon="el-icon-download"
+              circle
+              @click.stop="exportToExcel()"
+            >
+            </el-button>
+
+            <el-button
+              title="Color Items "
+              icon="el-icon-picture-outline-round"
+              circle
+              @click.stop="SeeAll()"
+            >
+            </el-button>
+            <el-button
+              title="Isolate Items"
+              icon="el-icon-aim"
+              circle
+              @click.stop="isoItem()"
+            >
+            </el-button>
+          </div>
+        </div>
       </div>
       <div class="table">
         <el-table
@@ -184,5 +209,8 @@ ul {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: rgb(201, 196, 196);
+}
+.btn-log {
+  padding-bottom: 40px;
 }
 </style>
