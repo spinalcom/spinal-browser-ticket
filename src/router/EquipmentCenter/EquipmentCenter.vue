@@ -31,6 +31,7 @@ with this file. If not, see
       <el-button class="spl-el-button"
         icon="el-icon-aim" circle
         @click.stop="isolateAll()"
+        :disabled="!canIsolate"
       >
       </el-button>
       <el-button class="spl-el-button"
@@ -78,9 +79,10 @@ export default {
       viewKey: VIEW_KEY,
       items: false,
       currentView: false,
+      canIsolate: false,
       tabs: [
         {
-          name: "Explorer",
+          name: "node-type.context",
           content: Explorer,
           props: {
             viewKey: VIEW_KEY,
@@ -89,7 +91,7 @@ export default {
           },
         },
         {
-          name: this.$t("spinal-twin.hasCategoryAttributes"),
+          name: "spinal-twin.hasCategoryAttributes",
           content: CategoryAttribute,
           props: {
             viewKey: VIEW_KEY,
@@ -116,7 +118,9 @@ export default {
         this.contextServId = 0;
         mapItems = await EquipmentBack.getInstance().getContexts();
         // this.tabs[1].props.item = await EquipmentBack.getInstance().getContextsAttributes();
+        this.canIsolate = false;
       } else {
+        this.canIsolate = true;
         if (this.contextServId === 0) {
           this.contextServId = view.serverId;
         }
@@ -129,7 +133,6 @@ export default {
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
         for (const item of items) {
-          console.debug("item's children :", item.children)
           if (item.children) {
             for (const [childTypes] of item.children) {
               cols.add(childTypes);
@@ -139,8 +142,8 @@ export default {
         this.items = { nodeType, items, cols: Array.from(cols) };
       }
       this.currentView = view;
-      updateNames();
       this.tabs[0].props.items = this.items;
+      this.updateNames();
       for (let tab of this.tabs)
       {
         tab.props.view = this.currentView;
@@ -148,8 +151,8 @@ export default {
     },
     updateNames()
     {
-      this.tabs[0].name = this.$t(`node-type.${this.items.nodeType}`);
-      this.tabs[1].name = this.$t("node-type.hasCategoryAttributes");
+      this.tabs[0].name = `node-type.${this.items.nodeType}`;
+      this.tabs[1].name = "node-type.hasCategoryAttributes";
     },
     popView() {
       ViewManager.getInstance(this.viewKey).pop()
@@ -224,10 +227,8 @@ export default {
     },
     SeeAll() {
       let items = this.items.items.map(item => {
-        console.debug("item : ", item.serverId, item.getColor())
         return { server_id: item.serverId, color: item.getColor() };
       });
-      console.debug("items : ", items)
       EventBus.$emit("view-color-all", items, { server_id: this.currentView.serverId });
     },
     ShowAll() {
