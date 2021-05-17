@@ -36,21 +36,48 @@ with this file. If not, see
     <el-main v-if="Categories !== false">
       <el-collapse v-for="category in Categories" :key="category.nameCat">
         <el-collapse-item :name="category.name">
-        <template slot="title">
+        <h5 slot="title">
         {{ category.name }}
-        </template>
+        </h5>
           <el-table :data="category.attributes">
-            <el-table-column label="Name" prop="label">
+            <el-table-column label="Name">
+              <el-input
+                slot-scope="scope"
+                size="small"
+                v-model="scope.row.new_label"
+                :placeholder="scope.row.new_label"
+                :disabled="!scope.row.isEditing">
+              </el-input>
             </el-table-column>
-            <el-table-column label="Value" prop="value">
+            <el-table-column label="Value">
+              <el-input
+                slot-scope="scope"
+                size="small"
+                v-model="scope.row.new_value"
+                :placeholder="scope.row.new_value"
+                :disabled="!scope.row.isEditing">
+              </el-input>
+            </el-table-column>
+            <el-table-column label="Options">
+              <template slot-scope="scope">
+                <el-button
+                  icon="el-icon-minus"
+                  circle
+                  @click.native="delAttribute(category, scope.row.label)"
+                ></el-button>
+                <el-button
+                  icon="el-icon-edit"
+                  circle
+                  @click.native="editAttribute(category, scope.row)"
+                ></el-button>
+              <template>
             </el-table-column>
           </el-table>
-        <!-- <el-button
+        <el-button
           icon="el-icon-plus"
-          style="margin-right:50px"
           circle
           @click.native="addAttribute(category)"
-        ></el-button> -->
+        ></el-button>
         </el-collapse-item>
       </el-collapse>
     </el-main>
@@ -69,7 +96,7 @@ import "../../../services/EventHandler";
 
 import NodeTable from "./NodeTable.vue";
 export default {
-  name: "Explorer",
+  name: "Attributes",
   components: { NodeTable },
   props: {
     Properties: {
@@ -97,6 +124,7 @@ export default {
       {
         if (newProp.view.serverId != 0)
         {
+          await this.update(newProp.view.serverId);
           // console.debug("start");
           // this.ctxNode = FileSystem._objects[newProp.view.serverId];
           // let Categories = await serviceDocumentation.getCategory(this.ctxNode);
@@ -120,34 +148,10 @@ export default {
           // }
           // console.debug("Wait ...", this.Categories);
           // console.debug("end");
-          console.debug("start");
-          this.ctxNode = await FileSystem._objects[newProp.view.serverId];
-          console.debug("File system :", FileSystem)
-          serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
-            console.debug("test");
-            this.Categories = [];
-            for(const category of Categories)
-            {
-              serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat).then((attributes) =>
-              {
-                let attrs = [];
-                for (const attribute of attributes)
-                {
-                  attrs.push({
-                    label: attribute.label._data,
-                    value: attribute.value._data
-                    });
-                }
-                let cat = {
-                  name: category.nameCat,
-                  attributes: attrs
-                }
-                this.Categories.push(cat);
-              })
-            }
-          })
-          console.debug("Wait ...", this.Categories);
-          console.debug("end");
+        }
+        else
+        {
+          this.Categories = false;
         }
       },
       deep: true,
@@ -155,18 +159,70 @@ export default {
     }
   },
   methods: {
+    async update(id)
+    {
+      console.debug("start");
+      this.ctxNode = FileSystem._objects[id];
+      serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
+        this.Categories = [];
+        for(const category of Categories)
+        {
+          serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat).then((attributes) =>
+          {
+            let attrs = [];
+            for (const attribute of attributes)
+            {
+              attrs.push({
+                label: attribute.label._data,
+                value: attribute.value._data,
+                isEditing: false,
+                new_label: attribute.label._data,
+                new_value: attribute.value._data,
+                });
+            }
+            let cat = {
+              cat: category,
+              name: category.nameCat,
+              attributes: attrs
+            }
+            this.Categories.push(cat);
+          })
+        }
+      })
+      console.debug("Wait ...", this.Categories);
+      console.debug("end");
+    },
     exportToExcel() {
       this.$refs["Explorer-table"].exportToExcel();
     },
     async getAttributes(category)
     {
       let result = await serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat);
-      console.debug("result : ", result[0]["value"])
       return result;
     },
     async addAttribute(category){
-      console.debug(category)
-      await serviceDocumentation.addAttributeByCategoryName(this.ctxNode, category.nameCat, "newAttribute", "newValue", "", "");
+      await serviceDocumentation.addAttributeByCategoryName(this.ctxNode, category.name, "newAttribute", "newValue", "", "");
+      // await this.update(this.ctxNode._server_id);
+      category.attributes.push({
+                label: "newAttribute",
+                value: "newValue",
+                isEditing: false,
+                new_label: "newAttribute",
+                new_value: "newValue",
+                })
+    },
+    async delAttribute(category, attribute){
+      await serviceDocumentation.removeAttributesByLabel(category.cat.node, attribute)
+      category.attributes = category.attributes.filter(attr => !(attr.label == attribute))
+    },
+    async editAttribute(category, attribute){
+      if (!attribute.isEditing)
+      {
+        attribute.isEditing = true;
+        return;
+      }
+      await serviceDocumentation.setAttribute(this.ctxNode, attribute.label, attribute.value, attribute.new_label, attribute.new_value);
+      attribute.isEditing = false;
     },
     async debug(what) {
       console.debug("Debugging", what);
