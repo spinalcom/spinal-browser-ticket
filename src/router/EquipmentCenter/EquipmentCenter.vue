@@ -21,29 +21,53 @@ with this file. If not, see
 <template>
   <div class="equipment-center">
     <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    <el-button v-show="(currentView.serverId != 0)" class="spl-el-button" style="float: left"
-          icon="el-icon-arrow-left"
-          circle
-          @click.stop="popView()"
-        >
-    </el-button>
+    <el-tooltip content="Go back">
+      <el-button v-show="(currentView.serverId != 0)" class="spl-el-button" style="float: left"
+            icon="el-icon-arrow-left"
+            circle
+            @click.stop="popView()"
+          >
+      </el-button>
+    </el-tooltip>
     <div class="spl-button-bar">
-      <el-button class="spl-el-button"
-        icon="el-icon-aim" circle
-        @click.stop="isolateAll()"
-        :disabled="!canIsolate"
-      >
-      </el-button>
-      <el-button class="spl-el-button"
-        icon="el-icon-picture-outline-round" circle
-        @click.stop="SeeAll()"
-      >
-      </el-button>
-      <el-button class="spl-el-button"
-        icon="el-icon-download" circle
-        @click.stop="exportToExcel()"
-      >
-      </el-button>
+      <el-tooltip content="Isolate" :disabled="!canIsolate">
+        <el-button class="spl-el-button"
+          icon="el-icon-aim" circle
+          @click.stop="isolateAll()"
+          :disabled="!canIsolate"
+        >
+        </el-button>
+      </el-tooltip>
+      <el-tooltip content="Select" :disabled="!canIsolate">
+        <el-button class="spl-el-button"
+          icon="el-icon-location" circle
+          @click.stop="selectInView()"
+          :disabled="!canIsolate"
+        >
+        </el-button>
+      </el-tooltip>
+      <el-tooltip content="Zoom" :disabled="!canIsolate">
+        <el-button class="spl-el-button"
+          icon="el-icon-search" circle
+          @click.stop="isolateAll()"
+          :disabled="!canIsolate"
+        >
+        </el-button>
+      </el-tooltip>
+      <!-- <el-tooltip content="Color">
+        <el-button class="spl-el-button"
+          icon="el-icon-picture-outline-round" circle
+          @click.stop="Color()"
+        >
+        </el-button>
+      </el-tooltip>
+      <el-tooltip content="Export data to excel">
+        <el-button class="spl-el-button"
+          icon="el-icon-download" circle
+          @click.stop="exportToExcel()"
+        >
+        </el-button>
+      </el-tooltip> -->
     </div>
     <tab-manager ref="tab-manager" class="tab-manager" :tabsprop="tabs" />
     <!-- <explorer :Properties="tabs[0].props"></explorer> -->
@@ -165,6 +189,14 @@ export default {
       // EventBus.$emit("view-isolate-list", list);
       EventBus.$emit("view-isolate-all", { server_id: this.currentView.serverId });
     },
+    selectInView() {
+      // let list = this.items.items.map(item => {
+      //   return { server_id: item.serverId };
+      // });
+      // console.debug("list : ", list)
+      // EventBus.$emit("view-isolate-list", list);
+      EventBus.$emit("view-select-item", { server_id: this.currentView.serverId });
+    },
     formatData(){
       const res = [];
       for (const item of this.items.items) {
@@ -225,7 +257,7 @@ export default {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
-    SeeAll() {
+    Color() {
       let items = this.items.items.map(item => {
         return { server_id: item.serverId, color: item.getColor() };
       });
@@ -244,7 +276,7 @@ export default {
 }
 .tab-manager {
   margin: 10px 10px 10px 0px;
-  height: calc(100% - 65px);
+  height: 88%;
   border-radius: 5px;
 }
 
