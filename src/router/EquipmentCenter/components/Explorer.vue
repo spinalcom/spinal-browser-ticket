@@ -19,15 +19,15 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="spl-height-control">
-    <!-- <div class="spl-button-bar">
-      <el-button
+  <div>
+    <div class="spl-button-bar">
+      <!-- <el-button
         class="spl-el-button"
         icon="el-icon-aim"
         circle
         @click.stop="isolateAll()"
       >
-      </el-button>
+      </el-button> -->
       <el-button
         class="spl-el-button"
         icon="el-icon-picture-outline-round"
@@ -42,8 +42,8 @@ with this file. If not, see
         @click.stop="exportToExcel()"
       >
       </el-button>
-    </div> -->
-    <div v-if="Properties.items !== false" class="spl-height-control">
+    </div>
+    <div v-if="Properties.items !== false" style="height:100%">
       <node-table
         :ref="'Explorer-table'"
         :view-key="Properties.viewKey"
@@ -134,5 +134,9 @@ export default {
   display: flex;
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
+}
+
+.spinal-height-control {
+  height: auto;
 }
 </style>

@@ -26,7 +26,7 @@ with this file. If not, see
   <el-table v-loading="loading"
             :data="data"
             border
-            class="spl-table spl-height-control"
+            style="overflow: auto; height: 100%"
             :header-cell-style="{'background-color': '#f0f2f5'}"
             @row-click="selectInView"
             @row-dblclick="SeeEvent">
@@ -246,7 +246,10 @@ export default {
   top: 0;
 }
 .spl-table {
-  height: 85%;
+  height: 800px;
   overflow: auto;
+}
+.spinal-height-control {
+  height: 80%;
 }
 </style>
