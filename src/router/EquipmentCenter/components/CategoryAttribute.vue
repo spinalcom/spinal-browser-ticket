@@ -33,12 +33,19 @@ with this file. If not, see
       >
       </el-button>
     </el-header> -->
-    <el-main v-if="Categories !== false">
+    <el-main>
       <el-collapse v-for="category in Categories" :key="category.nameCat">
         <el-collapse-item :name="category.name">
-        <h5 slot="title">
+        <b slot="title">
+        <!-- <el-tooltip :content="`Remove category ${category}`">
+          <el-button
+            icon="el-icon-minus"
+            circle
+            @click.native="delCategory(category)"
+          ></el-button>
+        </el-tooltip> -->
         {{ category.name }}
-        </h5>
+        </b>
           <el-table :data="category.attributes">
             <el-table-column label="Name">
               <el-input
@@ -58,28 +65,42 @@ with this file. If not, see
                 :disabled="!scope.row.isEditing">
               </el-input>
             </el-table-column>
-            <el-table-column label="Options">
+            <el-table-column fixed="right" label="Options" width="120">
               <template slot-scope="scope">
-                <el-button
-                  icon="el-icon-minus"
-                  circle
-                  @click.native="delAttribute(category, scope.row.label)"
-                ></el-button>
-                <el-button
-                  icon="el-icon-edit"
-                  circle
-                  @click.native="editAttribute(category, scope.row)"
-                ></el-button>
+                <el-tooltip :content="`Remove attribute ${scope.row.label}`">
+                  <el-button
+                    icon="el-icon-minus"
+                    circle
+                    @click.native="delAttribute(category, scope.row.label)"
+                  ></el-button>
+                </el-tooltip>
+                <el-tooltip :content="`Edit attribute ${scope.row.label}`">
+                  <el-button
+                    icon="el-icon-edit"
+                    circle
+                    @click.native="editAttribute(category, scope.row)"
+                  ></el-button>
+                </el-tooltip>
               <template>
             </el-table-column>
           </el-table>
+          <el-tooltip :content="`Add attribute to ${category.name}`">
+            <el-button
+              icon="el-icon-plus"
+              circle
+              @click.native="addAttribute(category)"
+            ></el-button>
+          </el-tooltip>
+        </el-collapse-item>
+      </el-collapse>
+      <el-tooltip :content="`Add attribute category`">
         <el-button
           icon="el-icon-plus"
           circle
-          @click.native="addAttribute(category)"
+          :disabled="ctxNode == false"
+          @click.native="addCategory()"
         ></el-button>
-        </el-collapse-item>
-      </el-collapse>
+      </el-tooltip>
     </el-main>
   </el-container>
 </template>
@@ -152,6 +173,7 @@ export default {
         else
         {
           this.Categories = false;
+          this.ctxNode = false;
         }
       },
       deep: true,
@@ -183,7 +205,7 @@ export default {
             let cat = {
               cat: category,
               name: category.nameCat,
-              attributes: attrs
+              attributes: attrs,
             }
             this.Categories.push(cat);
           })
@@ -202,7 +224,6 @@ export default {
     },
     async addAttribute(category){
       await serviceDocumentation.addAttributeByCategoryName(this.ctxNode, category.name, "newAttribute", "newValue", "", "");
-      // await this.update(this.ctxNode._server_id);
       category.attributes.push({
                 label: "newAttribute",
                 value: "newValue",
@@ -211,9 +232,22 @@ export default {
                 new_value: "newValue",
                 })
     },
+    async addCategory(){
+      const category = await serviceDocumentation.addCategoryAttribute(this.ctxNode, "NewCategory");
+      this.Categories.push({
+          cat: category,
+          name: "NewCategory",
+          attributes: [],
+        })
+    },
     async delAttribute(category, attribute){
       await serviceDocumentation.removeAttributesByLabel(category.cat.node, attribute)
       category.attributes = category.attributes.filter(attr => !(attr.label == attribute))
+    },
+    async delCategory(category){
+      console.debug("wat ?", category)
+      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.name)
+      this.Categories = this.Categories.filter(cat => !(cat.label == category.name))
     },
     async editAttribute(category, attribute){
       if (!attribute.isEditing)
