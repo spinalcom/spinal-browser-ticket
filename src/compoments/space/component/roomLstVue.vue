@@ -85,6 +85,7 @@ export default {
   beforeDestroy() {},
   methods: {
     SeeEvent(data) {
+      console.log(data)
       this.$emit("seeEvent", { rooms: [data], color: this.color });
     },
     SeeAll() {

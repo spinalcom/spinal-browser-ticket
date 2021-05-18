@@ -6,7 +6,8 @@
                icon="el-icon-arrow-left"
                circle
                style ="position: fixed; z-index: 1;"
-               @click="goBack()"></el-button>
+               @click="goBack()">
+         </el-button>
          <div class="btn space-top btn-size space-right center-div">
             <i
                @click="decreaseIndex()"
@@ -235,7 +236,7 @@ export default {
 
 ._heatmapContainer .buttons {
    width: 100%;
-   height: 60px;
+   height: 100px;
    margin: 10px 0;
 }
 

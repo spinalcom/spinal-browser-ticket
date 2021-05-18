@@ -7,6 +7,7 @@
       <el-button v-if="variableSelected.type=='Consigne' && variableSelected.dataType =='Boolean'"
          v-on:click="ModifyAll(false)" class = "_buttonGlobal2" circle :style="{ 'background-color': getColor(false,this.variableSelected.config) }">
       </el-button>
+      <p v-if="variableSelected.type=='Consigne' && variableSelected.dataType =='Boolean'" class= "modifyAllValuesText"> Modify all Values </p>
       <el-button v-if="variableSelected.type=='Consigne' && variableSelected.dataType =='Boolean'"
          v-on:click="ModifyAll(true)" class = "_buttonGlobal2" circle :style="{ 'background-color': getColor(true,this.variableSelected.config) }">
       </el-button>
@@ -69,15 +70,15 @@ export default {
       this.isModalVisible=!this.isModalVisible;
       },
       ModifyAll(value){
-         if (value != undefined){
-            for (var room of this.rooms){   
-               var endpoints = room.endpoints;
-               var endpoint = endpoints.find(
-                  (el) => el.id.get() == this.variableSelected.id
-                  );
-               endpoint.currentValue.set(value);
-            }
-
+         if (value == undefined || !confirm("Are you sure you want to modify all values")){
+            return;
+         }
+         for (var room of this.rooms){   
+            var endpoints = room.endpoints;
+            var endpoint = endpoints.find(
+               (el) => el.id.get() == this.variableSelected.id
+               );
+            endpoint.currentValue.set(value);
          }
       },
       getColor(endpointValue, config) {
@@ -134,7 +135,7 @@ export default {
     margin-left: 40%;
     margin-right: 40%;
     height: 40px;
-    width: 20%;
+    width: 200px;
     padding: 10px;
 }
 
@@ -142,9 +143,15 @@ export default {
     
     justify-content: center;
     display: inline-block;
-    margin-left: 25%;
-    margin-right: 25%;
     padding: 10px;
+    height: 25px;
+    width:25px;
+}
+
+
+.modifyAllValuesText {
+   margin-left: 25%;
+   margin-right: 25%;
 }
 
 

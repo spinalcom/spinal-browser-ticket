@@ -70,10 +70,12 @@ export default {
 <style scoped>
 ._content {
    position:absolute;
+   top: 140px;
    border:1px solid black;
    width: 25%;
    height: 125px;
-   background-color: white;
+   
+   background-color: rgb(255, 255, 255);
    display: flex;
    justify-content: center;
    overflow: hidden;
