@@ -30,6 +30,7 @@ with this file. If not, see
       :label="$t(tab.name)"
       :name="$t(tab.name)"
       :closable="false"
+      style="height:100%"
     >
       {{ updateActive() }}
       <component :is="tab.content" :Properties="tab.props"></component>
@@ -99,7 +100,7 @@ export default {
 
 <style>
 .tab-manager-tabs .el-tabs__content {
-  height: calc(100% - 38px);
+  height: 95%;
 }
 .tab-manager-pane {
   height: 100%;
