@@ -24,47 +24,11 @@ with this file. If not, see
 
 <template>
   <div class="spinal-navbar-main-container spinal-scrollbar">
-    <!-- <el-collapse-transition>
-      <el-button v-if="!openMenu"
-                 class="bread-btn"
-                 :class="{'bread-btn-opened' : openMenu}"
-                 icon="el-icon-arrow-left"
-                 @click="openMenu = !openMenu">
-        <div class="bread">
-          <p v-if="building">
-            {{ building.name }}
-          </p>
-          <p v-if="selectedLevel">
-            /
-          </p>
-          <p v-if="selectedLevel">
-            {{ selectedLevel.name }}
-          </p>
-          <p v-if="selectedRoom">
-            /
-          </p>
-          <p v-if="selectedRoom">
-            {{ selectedRoom.name }}
-          </p>
-        </div>
-      </el-button>
-      <el-button v-else
-                 class="bread-btn bread-btn-opened"
-                 icon="el-icon-arrow-right"
-                 @click="openMenu = !openMenu">
-      </el-button>
-    </el-collapse-transition> -->
+
     <el-collapse-transition>
       <div v-if="openMenu"
            class="nav-list-selector-container">
-        <!-- <el-collapse-transition>
-          <navItem icon="el-icon-office-building"
-                   label="Building"
-                   :items="[building]"
-                   :select="building"
-                   @focusItem="focusItem"
-                   @onMouseOver="onMouseOver"></navItem>
-        </el-collapse-transition> -->
+
         <el-button class="button-icon-left-focus"
                    type="default"
                    icon="el-icon-office-building"
@@ -136,8 +100,10 @@ export default {
       else this.focusItem(this.selectedLevel);
     },
     focusItem(item) {
-      if (this.building === item) EventBus.$emit("sidebar-homeSelect");
-      else EventBus.$emit("sidebar-homeSelect", item);
+      if (this.building === item) {
+        this.selectedLevel = null;
+        EventBus.$emit("sidebar-homeSelect");
+      } else EventBus.$emit("sidebar-homeSelect", item);
     },
     onMouseOver(item) {
       EventBus.$emit("sidebar-mouseover-item", item);
