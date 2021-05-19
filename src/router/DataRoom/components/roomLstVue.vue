@@ -26,13 +26,12 @@ with this file. If not, see
 <template>
   <el-row>
     <!-- v-if="TabRoom === false" -->
-    <el-table
-      :data="rooms"
-      class="tab"
-      border
-      style="width: 100%"
-      :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}"
-      @row-click="SeeEvent">
+    <el-table :data="rooms"
+              class="tab"
+              border
+              style="width: 100%"
+              :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}"
+              @row-click="SeeEvent">
       <el-table-column prop="name"
                        label="Nom"
                        align="center">
@@ -42,7 +41,7 @@ with this file. If not, see
                        label="Surface"
                        align="center">
         <template slot-scope="scope">
-          {{ scope.row.surface }} m²
+          {{ scope.row.surface | roundSurface }} m²
         </template>
       </el-table-column>
       <el-table-column label=""
@@ -73,6 +72,11 @@ export default {
       TabRoom: false,
       nodeId: undefined
     };
+  },
+  filters: {
+    roundSurface(surface) {
+      return Math.round(surface * 100) / 100;
+    }
   },
   watch: {
     // roomSelected() {
