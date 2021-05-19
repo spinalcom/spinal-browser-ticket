@@ -238,11 +238,11 @@ export default {
       });
     },
     selectInView(item) {
-       console.log(item)
-      EventBus.$emit("data-room-select-item", {
-        server_id: item.serverId,
-        color: item.color
-      });
+        console.log(item)
+        EventBus.$emit("data-room-select-item", {
+          server_id: item.serverId,
+          color: item.color
+        });
     },
     SeeEvent(item) {
       EventBus.$emit("data-room-color-item", {
@@ -252,7 +252,7 @@ export default {
     },
     isolateAll(zone)
     {
-      EventBus.$emit("data-room-isolate-all", { server_id: zone });
+      EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     SeeAll(zone) {
 

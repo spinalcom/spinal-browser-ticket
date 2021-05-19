@@ -147,6 +147,7 @@ export class ViewerUtils {
 
   convertHewToRGB(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    console.log(result);
     return result
       ? {
         r: parseInt(result[1], 16),
@@ -158,8 +159,8 @@ export class ViewerUtils {
 
   colorThemingItems(model, color: string, dbIds: number[]) {
     this.elementColored.add({ model, dbIds });
+    console.log(color);
     const _color = this.convertHewToRGB(color);
-
     dbIds.forEach(dbId => {
       model.setThemingColor(
         dbId,
