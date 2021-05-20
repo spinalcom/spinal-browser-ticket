@@ -324,19 +324,15 @@ export default {
         name: el.name._data,
       }));
       this.documentData = this.documents.map(el => {
-        console.log(el);
         return el.name._data;
       });
     let varEquipement = await SpinalGraphService.getChildren(
       this.nodeId,
       GeographicContext.constants.EQUIPMENT_RELATION
     );
-    console.log(varEquipement);
     this.equipement = varEquipement.map(item => {
       return item.get();
     });
-    console.log("varequipment", this.equipement);
-
     this.equipmentHeader = [
         { key: "name", header: "name", width: 15 },
       ];
@@ -404,7 +400,6 @@ export default {
       );
     },
     selectInView(item) {
-      console.log(item);
       const serverId = localStorage.getItem("roomServerId");
       EventBus.$emit("data-room-select-item", {
         server_id: serverId,
@@ -419,9 +414,7 @@ export default {
       });
     },
     SelectEquipment(equipment) {
-      console.log(equipment)
       localStorage.setItem("equipmentId", equipment.id);
-      console.log(localStorage.getItem("equipmentId"));
       ViewManager.getInstance("Data room").push(equipment.name, equipment.dbid);
       //this.$emit("select", context);
     },

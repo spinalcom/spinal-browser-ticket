@@ -166,7 +166,6 @@ export default {
         }
         res.push(resItem);
       }
-
       this.updateColor(res, colorUsed);
       this.haveChildren = haveChild;
       this.data = res;
@@ -238,7 +237,6 @@ export default {
       });
     },
     selectInView(item) {
-        console.log(item)
         EventBus.$emit("data-room-select-item", {
           server_id: item.serverId,
           color: item.color

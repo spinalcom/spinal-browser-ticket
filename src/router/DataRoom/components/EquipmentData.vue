@@ -243,7 +243,6 @@ export default {
      * ajouter une condition dans headerBar.vue pour regler ce probleme
      */
     this.ticketData = this.tickets.map(el => {
-        console.log(el)
       // el.rooms = [salle];
       return el;
     });
@@ -257,7 +256,6 @@ export default {
         name: el.name._data,
       }));
       this.documentData = this.documents.map(el => {
-        console.log(el);
         return el.name._data;
       });
     let varEquipement = await SpinalGraphService.getChildren(

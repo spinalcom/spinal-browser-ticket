@@ -291,9 +291,11 @@ export default {
       this.currentView = view;
       if (this.items[0]) {
         if (this.items[0].nodeType === "geographicContext") {
+          this.addTabs = false;
           this.panel = this.$t('DataRoom.geographicContext');
         }
         if (this.items[0].nodeType === "geographicBuilding") {
+          this.addTabs = false;
           this.panel = this.$t('DataRoom.geographicBuilding');
         }
         if (this.items[0].nodeType === "geographicFloor") {
@@ -314,7 +316,13 @@ export default {
           const idNode = localStorage.getItem("roomId");
           this.roomId = idNode;
         }
-      } else {
+      } else if (this.panel === this.$t('DataRoom.geographicRoom')) {
+          this.display = true
+          this.addTabs = false;
+          this.equipmentId = null
+          const idNode = localStorage.getItem("roomId");
+          this.roomId = idNode;
+        } else {
         this.display = true
         this.addTabs = false;
         this.roomId = null
