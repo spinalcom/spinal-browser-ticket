@@ -209,6 +209,7 @@ export default {
    left:-6px;
    width:10px;
    height: 100px;
+
 }
 
 .fixed{
