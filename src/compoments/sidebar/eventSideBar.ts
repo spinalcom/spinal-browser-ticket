@@ -27,6 +27,7 @@ import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
 import { spinalBackEnd } from '../../services/spinalBackend';
 EventBus.$on('sidebar-selected-item', async (item) => {
 
+  await viewerUtils.waitInitialized();
   if (item) {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
@@ -35,20 +36,22 @@ EventBus.$on('sidebar-selected-item', async (item) => {
   }
 });
 EventBus.$on('sidebar-mouseover-item', async (item) => {
+  await viewerUtils.waitInitialized();
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
   viewerUtils.selectObjects(lstByModel);
 });
 EventBus.$on('sidebar-homeSelect', async (item) => {
+  viewerUtils.clearSelection()
   if (!item) {
     const face = 'front,top,right';
     await viewerUtils.waitInitialized();
     viewerUtils.showAll();
     await viewerUtils.rotateTo(face);
-    return viewerUtils.fitToView();
+    await viewerUtils.fitToView();
   } else {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
     await viewerUtils.rotateTo('front,top,right');
-    viewerUtils.fitToView(lstByModel);
+    await viewerUtils.fitToView(lstByModel);
   }
 });

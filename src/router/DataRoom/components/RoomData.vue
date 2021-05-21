@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs  v-if="display === true" class="tabsContainer"
+  <el-tabs v-if="display === true" class="tabsContainer"
            type="border-card">
 
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
@@ -37,7 +37,7 @@ with this file. If not, see
           @click.stop="popView()"
         ></el-button>
         <div style="float: right">
-         <el-button icon="el-icon-aim" circle @click.stop="isolateAll()">
+         <el-button icon="el-icon-aim" circle @click="isolateAll()">
           </el-button>
           <el-button
             icon="el-icon-download"
@@ -85,7 +85,7 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// TICKET /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane :label="$t('DataRoom.Ticket')">
+    <el-tab-pane class="spinal-space-tab-container tab-class" :label="$t('DataRoom.Ticket')">
       <div class="barre">
         <div>
 
@@ -177,7 +177,7 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane class="spinal-space-tab-container tab-class"
+    <el-tab-pane
     :label="$t('DataRoom.Note')">
       <el-container>
         <message-component :node-info="nodeInfo"></message-component>
@@ -187,7 +187,7 @@ with this file. If not, see
     <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Calendrier /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-    <el-tab-pane :label="$t('DataRoom.Calendar')">
+    <el-tab-pane class="spinal-space-tab-container tab-class" :label="$t('DataRoom.Calendar')">
       <div class="barre">
         <Calendar :nodeId="nodeId"></Calendar>
       </div>
@@ -324,7 +324,6 @@ export default {
         name: el.name._data,
       }));
       this.documentData = this.documents.map(el => {
-        console.log(el);
         return el.name._data;
       });
     let varEquipement = await SpinalGraphService.getChildren(
@@ -334,8 +333,6 @@ export default {
     this.equipement = varEquipement.map(item => {
       return item.get();
     });
-    console.log(this.equipement);
-
     this.equipmentHeader = [
         { key: "name", header: "name", width: 15 },
       ];
@@ -417,13 +414,12 @@ export default {
       });
     },
     SelectEquipment(equipment) {
-      console.log(equipment)
       localStorage.setItem("equipmentId", equipment.id);
-      console.log(localStorage.getItem("equipmentId"));
       ViewManager.getInstance("Data room").push(equipment.name, equipment.dbid);
       //this.$emit("select", context);
     },
     popView() {
+      localStorage.removeItem("roomServerId");
       ViewManager.getInstance("Data room").pop();
     },
     async deleteFichier(index) {
@@ -454,11 +450,19 @@ export default {
     async updateDocument() {
       this.documents = await this.getDocuments();
     },
-    isolateAll(index) {
-      this.$refs["data-room-table"][index].isolateAll(this.Properties.view.serverId);
+    isolateAll() {
+      const serverId = localStorage.getItem("roomServerId");
+      EventBus.$emit("view-isolate-all", { server_id: serverId});
+    },
+    SeeAll() {
+      const serverId = localStorage.getItem("roomServerId");
+      EventBus.$emit(
+        "data-room-color-all",
+        [{ server_id: serverId, color: "#008000" }],
+        { server_id: serverId }
+      );
     },
     exportToExcel() {
-      console.log(this.content)
       let excelData = [
         {
           name: "Tableau",
@@ -521,6 +525,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
 </style>
 
 

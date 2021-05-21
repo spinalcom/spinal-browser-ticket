@@ -161,7 +161,7 @@ export default {
   transition: 200ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .spinal-main-container.have-abs-viewer {
-  /* flex-direction: column-reverse; */
+  flex-direction: column;
 }
 
 .spinal-main-container.have-abs-viewer .spinal-main-container-left {

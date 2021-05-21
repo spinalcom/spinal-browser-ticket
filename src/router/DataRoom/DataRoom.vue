@@ -35,7 +35,7 @@ with this file. If not, see
                               :key="item.nodeType"
                               :name="item.nodeType">
                               <el-header>
-                                <el-button v-show="(item.serverId != 0)" class="spl-el-button" style="float: left"
+                                <el-button v-show="(item.serverId != 0)" v-if="item.nodeType != 'geographicContext'" class="spl-el-button" style="float: left"
           icon="el-icon-arrow-left"
           circle
           @click.stop="popView(index)"
@@ -290,11 +290,12 @@ export default {
       }
       this.currentView = view;
       if (this.items[0]) {
-        console.log(this.items);
         if (this.items[0].nodeType === "geographicContext") {
+          this.addTabs = false;
           this.panel = this.$t('DataRoom.geographicContext');
         }
         if (this.items[0].nodeType === "geographicBuilding") {
+          this.addTabs = false;
           this.panel = this.$t('DataRoom.geographicBuilding');
         }
         if (this.items[0].nodeType === "geographicFloor") {
@@ -303,6 +304,7 @@ export default {
           this.displayOtherTabs();
         }
         if (this.items[0].nodeType === "geographicRoom") {
+          localStorage.removeItem("roomServerId");
           this.panel = this.$t('DataRoom.geographicRoom');
           this.addTabs = true;
           this.displayOtherTabs();
@@ -312,10 +314,15 @@ export default {
           this.addTabs = false;
           this.equipmentId = null
           const idNode = localStorage.getItem("roomId");
-          console.log(idNode)
           this.roomId = idNode;
         }
-      } else {
+      } else if (this.panel === this.$t('DataRoom.geographicRoom')) {
+          this.display = true
+          this.addTabs = false;
+          this.equipmentId = null
+          const idNode = localStorage.getItem("roomId");
+          this.roomId = idNode;
+        } else {
         this.display = true
         this.addTabs = false;
         this.roomId = null
@@ -333,6 +340,7 @@ export default {
       );
     },
     popView(index) {
+      localStorage.removeItem("roomServerId");
       this.$refs["data-room-table"][index].popView();
     },
     exportData(index) {
@@ -513,5 +521,9 @@ export default {
 }
 .spl-el-button {
   margin: 0 0 0 -20px;
+}
+.tabsContainer .el-tabs__content {
+  width: 100%;
+  height: calc(100% - 50px);
 }
 </style>

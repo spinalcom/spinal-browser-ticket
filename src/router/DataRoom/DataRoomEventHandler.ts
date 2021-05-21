@@ -78,3 +78,48 @@ EventBus.$on('data-room-color-all', async (items, zone) => {
     viewerUtils.fitToView(zoneLstByModel);
   }
 });
+
+EventBus.$on('view-color-all', async (items, zone) => {
+
+  if (lastColorItem || (lastColorZone &&
+    lastColorZone.server_id === zone.server_id)) {
+    lastColorItem = null
+    lastColorZone = null
+    viewerUtils.restoreColorThemingItems()
+  } else {
+    viewerUtils.restoreColorThemingItems()
+    lastColorZone = zone
+    lastColorItem = null
+    for (const item of items) {
+      const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item, true);
+      for (const { selection, model } of lstByModel) {
+        viewerUtils.colorThemingItems(model, item.color, selection);
+      }
+    }
+  }
+});
+
+EventBus.$on('view-isolate-item', async (item) => {
+  const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
+  viewerUtils.isolateObjects(lstByModel);
+  await viewerUtils.rotateTo('top');
+  viewerUtils.fitToView(lstByModel);
+});
+
+EventBus.$on('view-show-all', () => {
+  viewerUtils.showAll()
+});
+
+EventBus.$on('view-isolate-all', async (zone) => {
+  const zoneLstByModel = await spinalBackEnd.spatialBack.getLstByModel(zone);
+  viewerUtils.isolateObjects(zoneLstByModel);
+  await viewerUtils.rotateTo('top');
+  viewerUtils.fitToView(zoneLstByModel);
+});
+
+EventBus.$on('view-focus-item', async (item) => {
+  const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
+  viewerUtils.selectObjects(lstByModel);
+  await viewerUtils.rotateTo('top');
+  viewerUtils.fitToView(lstByModel);
+});
