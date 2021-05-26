@@ -56,26 +56,26 @@ export default {
     };
   },
   mounted() {
-    EventBus.$on("see", data => {
-      console.log("on see", data);
-      this.isoLate(data.ids);
-      this.restoreAllColor();
-      this.colorsRooms(data.ids, data.color, data.id);
-    });
+    // EventBus.$on("see", data => {
+    //   console.log("on see", data);
+    //   this.isoLate(data.ids);
+    //   this.restoreAllColor();
+    //   this.colorsRooms(data.ids, data.color, data.id);
+    // });
 
-    EventBus.$on("seeAll", data => {
-      if (this.allElementAreColored(data)) {
-        this.restoreAllColor();
-      } else {
-        let ids = [];
-        this.restoreAllColor();
-        data.forEach(element => {
-          ids.push(...element.ids);
-          this.colorsRooms(element.ids, element.color, element.id);
-        });
-        this.isoLate(ids);
-      }
-    });
+    // EventBus.$on("seeAll", data => {
+    //   if (this.allElementAreColored(data)) {
+    //     this.restoreAllColor();
+    //   } else {
+    //     let ids = [];
+    //     this.restoreAllColor();
+    //     data.forEach(element => {
+    //       ids.push(...element.ids);
+    //       this.colorsRooms(element.ids, element.color, element.id);
+    //     });
+    //     this.isoLate(ids);
+    //   }
+    // });
     return this.createViewer();
   },
   methods: {
