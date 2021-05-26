@@ -50,6 +50,21 @@ export class ViewerUtils {
     this.initialized.resolve();
   }
 
+  waitLoadModels(viewer): Promise<void> {
+    let nbOfModels = Object.keys(spinal.SpinalForgeViewer.viewerManager.models).length
+    return new Promise((resolve) => {
+      const fn = (e) => {
+        nbOfModels -= 1;
+        if (nbOfModels <= 1) {
+          viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+          resolve();
+        }
+      }
+      viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+    })
+  }
+
+
   /**
    * @returns Promise<void>
    * @memberof ViewerUtils

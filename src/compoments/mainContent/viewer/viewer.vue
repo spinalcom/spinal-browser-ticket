@@ -106,6 +106,7 @@ export default {
         await window.spinal.SpinalForgeViewer.loadModelFromNode(
           scenes[0].info.id.get()
         );
+        await viewerUtils.waitLoadModels(this.viewer);
       }
       await spinalBackEnd.waitInit();
       // const scenes = await spinalBackEnd.viewerBack.getScenes();
@@ -175,7 +176,7 @@ export default {
       }
       targetArray.push({
         model,
-        selection: (idSet)
+        selection: idSet
       });
     },
 
@@ -188,7 +189,7 @@ export default {
         this.pushToModel(data, [room.dbid], model);
       }
       return data.map(it => {
-        return {model: it.model, selection : Array.from(it.selection)}
+        return { model: it.model, selection: Array.from(it.selection) };
       });
     },
 

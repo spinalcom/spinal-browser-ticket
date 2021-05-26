@@ -31,10 +31,11 @@ var lastColorItem = null;
 
 
 EventBus.$on('data-room-color-item', async (item) => {
+  viewerUtils.clearSelection()
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === item.server_id)) {
-      lastColorItem = null
-      lastColorZone = null
+    lastColorItem = null
+    lastColorZone = null
     viewerUtils.restoreColorThemingItems()
   } else {
     viewerUtils.restoreColorThemingItems()
@@ -44,7 +45,7 @@ EventBus.$on('data-room-color-item', async (item) => {
     for (const { selection, model } of lstByModel) {
       viewerUtils.colorThemingItems(model, item.color, selection);
     }
-  viewerUtils.isolateObjects(lstByModel);
+    viewerUtils.isolateObjects(lstByModel);
     await viewerUtils.rotateTo('top');
     viewerUtils.fitToView(lstByModel);
   }
@@ -57,10 +58,11 @@ EventBus.$on('data-room-select-item', async (item) => {
 });
 
 EventBus.$on('data-room-color-all', async (items, zone) => {
+  viewerUtils.clearSelection()
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === zone.server_id)) {
-      lastColorItem = null
-      lastColorZone = null
+    lastColorItem = null
+    lastColorZone = null
     viewerUtils.restoreColorThemingItems()
   } else {
     viewerUtils.restoreColorThemingItems()
@@ -80,7 +82,7 @@ EventBus.$on('data-room-color-all', async (items, zone) => {
 });
 
 EventBus.$on('view-color-all', async (items, zone) => {
-
+  viewerUtils.clearSelection()
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === zone.server_id)) {
     lastColorItem = null
@@ -100,17 +102,21 @@ EventBus.$on('view-color-all', async (items, zone) => {
 });
 
 EventBus.$on('view-isolate-item', async (item) => {
+  viewerUtils.clearSelection()
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
   viewerUtils.isolateObjects(lstByModel);
+  viewerUtils.clearSelection()
   await viewerUtils.rotateTo('top');
   viewerUtils.fitToView(lstByModel);
 });
 
 EventBus.$on('view-show-all', () => {
   viewerUtils.showAll()
+  viewerUtils.clearSelection()
 });
 
 EventBus.$on('view-isolate-all', async (zone) => {
+  viewerUtils.clearSelection()
   const zoneLstByModel = await spinalBackEnd.spatialBack.getLstByModel(zone);
   viewerUtils.isolateObjects(zoneLstByModel);
   await viewerUtils.rotateTo('top');
