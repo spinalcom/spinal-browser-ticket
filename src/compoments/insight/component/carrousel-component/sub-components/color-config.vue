@@ -35,6 +35,7 @@
          :name="item.name"
          :hideInput="hideInput"
          :disabled="item.disabled"
+         :style="{'z-index' : 1}"
          @updateAverage="updateAverage"
          @colorUpdated="sendEvent"
       ></config-component>
