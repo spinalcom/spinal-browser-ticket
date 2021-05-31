@@ -197,7 +197,6 @@ import DataRoomTypeTable from "./DataRoomTypeTable.vue";
 import RoomData from "./components/RoomData.vue";
 import EquipmentData from "./components/EquipmentData.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
-import './DataRoomEventHandler';
 import ticketcreate from "./components/ticketcreate";
 import headerBarVue from "./components/headerBar.vue";
 import Calendar from "./components/Calendar.vue";

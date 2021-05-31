@@ -56,26 +56,26 @@ export default {
     };
   },
   mounted() {
-    EventBus.$on("see", data => {
-      console.log("on see", data);
-      this.isoLate(data.ids);
-      this.restoreAllColor();
-      this.colorsRooms(data.ids, data.color, data.id);
-    });
+    // EventBus.$on("see", data => {
+    //   console.log("on see", data);
+    //   this.isoLate(data.ids);
+    //   this.restoreAllColor();
+    //   this.colorsRooms(data.ids, data.color, data.id);
+    // });
 
-    EventBus.$on("seeAll", data => {
-      if (this.allElementAreColored(data)) {
-        this.restoreAllColor();
-      } else {
-        let ids = [];
-        this.restoreAllColor();
-        data.forEach(element => {
-          ids.push(...element.ids);
-          this.colorsRooms(element.ids, element.color, element.id);
-        });
-        this.isoLate(ids);
-      }
-    });
+    // EventBus.$on("seeAll", data => {
+    //   if (this.allElementAreColored(data)) {
+    //     this.restoreAllColor();
+    //   } else {
+    //     let ids = [];
+    //     this.restoreAllColor();
+    //     data.forEach(element => {
+    //       ids.push(...element.ids);
+    //       this.colorsRooms(element.ids, element.color, element.id);
+    //     });
+    //     this.isoLate(ids);
+    //   }
+    // });
     return this.createViewer();
   },
   methods: {
@@ -106,6 +106,7 @@ export default {
         await window.spinal.SpinalForgeViewer.loadModelFromNode(
           scenes[0].info.id.get()
         );
+        await viewerUtils.waitLoadModels(this.viewer);
       }
       await spinalBackEnd.waitInit();
       // const scenes = await spinalBackEnd.viewerBack.getScenes();
@@ -175,7 +176,7 @@ export default {
       }
       targetArray.push({
         model,
-        selection: (idSet)
+        selection: idSet
       });
     },
 
@@ -188,7 +189,7 @@ export default {
         this.pushToModel(data, [room.dbid], model);
       }
       return data.map(it => {
-        return {model: it.model, selection : Array.from(it.selection)}
+        return { model: it.model, selection: Array.from(it.selection) };
       });
     },
 
