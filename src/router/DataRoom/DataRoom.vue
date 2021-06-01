@@ -225,7 +225,6 @@ import { spinalBackEnd } from "../../services/spinalBackend";
 import TabManager from "../../compoments/tabManager/tabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
-import './DataRoomEventHandler';
 import ticketcreate from "./components/ticketcreate";
 import headerBarVue from "./components/headerBar.vue";
 import Calendar from "./components/Calendar.vue";

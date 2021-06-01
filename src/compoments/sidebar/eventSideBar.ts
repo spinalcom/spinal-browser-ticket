@@ -25,26 +25,29 @@
 import { EventBus } from "../../services/event";
 import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
 import { spinalBackEnd } from '../../services/spinalBackend';
-EventBus.$on('sidebar-selected-item', async (item) => {
+var debounce = require('lodash.debounce');
 
+const sidebarMouseoverItemDebounce = debounce(sidebarMouseoverItem, 400);
+const sidebarSelectedItemDebounce = debounce(sidebarSelectedItem, 400);
+const sidebarHomeSelectDebounce = debounce(sidebarHomeSelect, 500);
+
+EventBus.$on('sidebar-selected-item', async (item) => {
   await viewerUtils.waitInitialized();
-  if (item) {
-    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
-    viewerUtils.isolateObjects(lstByModel);
-    await viewerUtils.rotateTo('top');
-    viewerUtils.fitToView(lstByModel);
-  }
+  return sidebarSelectedItemDebounce(item)
 });
 EventBus.$on('sidebar-mouseover-item', async (item) => {
   await viewerUtils.waitInitialized();
-  const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
-  viewerUtils.selectObjects(lstByModel);
+  return sidebarMouseoverItemDebounce(item);
 });
 EventBus.$on('sidebar-homeSelect', async (item) => {
+  await viewerUtils.waitInitialized();
+  return sidebarHomeSelectDebounce(item)
+});
+
+async function sidebarHomeSelect(item) {
   viewerUtils.clearSelection()
   if (!item) {
     const face = 'front,top,right';
-    await viewerUtils.waitInitialized();
     viewerUtils.showAll();
     await viewerUtils.rotateTo(face);
     await viewerUtils.fitToView();
@@ -54,4 +57,21 @@ EventBus.$on('sidebar-homeSelect', async (item) => {
     await viewerUtils.rotateTo('front,top,right');
     await viewerUtils.fitToView(lstByModel);
   }
-});
+  viewerUtils.clearSelection()
+}
+
+async function sidebarMouseoverItem(item) {
+  if (item) {
+    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
+    viewerUtils.selectObjects(lstByModel);
+  }
+}
+async function sidebarSelectedItem(item) {
+  if (item) {
+    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
+    viewerUtils.isolateObjects(lstByModel);
+    await viewerUtils.rotateTo('top');
+    viewerUtils.fitToView(lstByModel);
+  }
+
+}

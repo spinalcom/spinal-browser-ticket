@@ -67,7 +67,6 @@ export default {
    mounted() {
       this.updateEndpoint(); 
       this.updateDisplay();
-      //console.log(this.variableSelected);
    },
 
    methods: {
@@ -210,6 +209,7 @@ export default {
    left:-6px;
    width:10px;
    height: 100px;
+
 }
 
 .fixed{

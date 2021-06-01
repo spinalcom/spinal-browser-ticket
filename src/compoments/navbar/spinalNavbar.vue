@@ -102,6 +102,7 @@ export default {
     focusItem(item) {
       if (this.building === item) {
         this.selectedLevel = null;
+        this.selectedRoom = null;
         EventBus.$emit("sidebar-homeSelect");
       } else EventBus.$emit("sidebar-homeSelect", item);
     },

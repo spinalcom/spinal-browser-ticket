@@ -149,10 +149,6 @@ export default {
           console.error(err);
         });
     });
-
-    EventBus.$on("sidebar-homeSelect", item => {
-      console.log("sidebar-homeSelect", item);
-    });
   },
   methods: {
     ResetBreadCrumb() {
