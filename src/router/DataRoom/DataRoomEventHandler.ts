@@ -52,7 +52,6 @@ EventBus.$on('data-room-color-item', async (item) => {
 
 EventBus.$on('data-room-select-item', async (item) => {
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
-  console.log("lst", lstByModel)
   viewerUtils.selectObjects(lstByModel);
 });
 

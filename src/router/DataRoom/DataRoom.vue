@@ -167,7 +167,37 @@ with this file. If not, see
                               :key="item.nodeType"
                               :name="item.nodeType"
       >
-      <Calendar :nodeId="item.nodeId"></Calendar>
+      <Calendar :nodeId="item.nodeId"></Calendar> </div>
+      <div class="spinal-space-table-content spinal-scrollbar">
+
+        <vueCal class="calendar_container vuecal--full-height-delete"
+        ref="vuecal"
+        :time="true"
+        :dblclick-to-navigate="true"
+        events-count-on-year-view
+        events-on-month-view="short"
+        default-view="month"
+        active-view="month"
+        :editable-events="{
+          title: false,
+          drag: false,
+          resize: false,
+          delete: true,
+          create: false,
+        }"
+        :on-event-click="onEventClick"
+        :events="calendrier"></vueCal>
+
+        </div>
+
+        </el-tab-pane>
+    <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Attributes')">
+       <div class="barre"
+      v-for="(item, index) in items"
+                              :key="item.nodeType"
+                              :name="item.nodeType"
+      >
+      <category-attribute :Properties="attributes"></category-attribute>
 
     </el-tab-pane>
       </el-tabs>
@@ -175,13 +205,13 @@ with this file. If not, see
     <div style="margin: -3px;"  v-else class="spinal-space-spacecon_container-container">
       <div
            class="spacecon_container">
-    <room-data v-if="roomId"
-                   :node-id="roomId"></room-data>
+    <display-tabs v-if="roomId"
+                   :node-id="roomId" v-bind:IsRoom="true"></display-tabs>
            </div>
            <div
            class="spacecon_container">
-    <equipment-data v-if="equipmentId"
-                   :node-id="equipmentId"></equipment-data>
+    <display-tabs v-if="equipmentId"
+                   :node-id="equipmentId" v-bind:IsRoom="false"></display-tabs>
            </div>
     </div>
   </div>
@@ -194,8 +224,6 @@ const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
 import TabManager from "../../compoments/tabManager/tabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
-import RoomData from "./components/RoomData.vue";
-import EquipmentData from "./components/EquipmentData.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import './DataRoomEventHandler';
 import ticketcreate from "./components/ticketcreate";
@@ -209,15 +237,17 @@ import { FileSystem } from 'spinal-core-connectorjs_type';
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 import { SpinalEventService } from "spinal-env-viewer-task-service";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
+import DisplayTabs from './components/DisplayTabs.vue';
 export default {
-  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager,
-  "room-data": RoomData, "equipment-data": EquipmentData, CategoryAttribute,
+  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager, CategoryAttribute,
   "ticket-create": ticketcreate,
   "header-bar": headerBarVue,
   "document-create": documentcreateVue,
   "message-component": messageComponent,
   "Calendar": Calendar,
-  VueCal },
+  "display-tabs": DisplayTabs,
+  VueCal,
+    DisplayTabs },
   data() {
     return {
       currentView: null,
@@ -241,6 +271,10 @@ export default {
       dataEq: {},
       display: false,
       activeNames: [],
+      attributes: {
+        view: false,
+        viewKey: VIEWKEY_DATA_ROOM_CENTER
+      },
     };
   },
   filters: {
@@ -289,6 +323,7 @@ export default {
         this.activeNames.push(nodeType);
       }
       this.currentView = view;
+      this.attributes.view = this.currentView;
       if (this.items[0]) {
         if (this.items[0].nodeType === "geographicContext") {
           this.addTabs = false;
@@ -310,6 +345,7 @@ export default {
           this.displayOtherTabs();
         }
         if (this.items[0].nodeType === "BIMObject") {
+          this.panel = this.$t('DataRoom.Equipment');
           this.display = true
           this.addTabs = false;
           this.equipmentId = null
@@ -317,12 +353,14 @@ export default {
           this.roomId = idNode;
         }
       } else if (this.panel === this.$t('DataRoom.geographicRoom')) {
+          console.log(this.panel);
           this.display = true
           this.addTabs = false;
           this.equipmentId = null
           const idNode = localStorage.getItem("roomId");
           this.roomId = idNode;
         } else {
+          console.log("here2");
         this.display = true
         this.addTabs = false;
         this.roomId = null
@@ -386,6 +424,14 @@ export default {
       let date = new Date(argDate);
       return `${date.getFullYear()}-${date.getMonth() +
         1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+    },
+    onEventClick(event, e) {
+      this.selectedEvent = event;
+      console.log("idEventSelectid", this.selectedEvent.class, this.nodeId);
+      this.showDialog = true;
+
+      // Prevent navigating to narrower view (default vue-cal behavior).
+      e.stopPropagation();
     },
     async displayOtherTabs () {
       /***********

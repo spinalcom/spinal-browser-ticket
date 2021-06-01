@@ -175,23 +175,79 @@ export default {
       this.EventInterface.groupId = value[2];
       this.isFormDisable = false;
     },
+    async getEvents() {
+      const events = await SpinalEventService.getEvents(this.nodeId);
+      const promises = events.map(el => this._formatEvent(el.get()));
+      return Promise.all(promises);
+    },
+    _formatEvent(event) {
+      event.title = event.name;
+      event.start = this._formatDate(event.startDate);
+      event.end = this._formatDate(event.endDate);
+      event.class = event.id;
+
+      // event.deletable = true;
+      // event.titleEditable = false;
+      // event.textColor = "#ffffff";
+
+      delete event.startDate;
+      delete event.endDate;
+      return event;
+    },
+
+    _formatDate(argDate) {
+      let date = new Date(argDate);
+      return `${date.getFullYear()}-${date.getMonth() +
+        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+    },
+
+    async updateDate() {
+      this.calendrier = await this.getEvents(this.nodeId);
+    },
+    onEventClick(event, e) {
+      this.selectedEvent = event;
+      console.log("idEventSelectid", this.selectedEvent.class, this.nodeId);
+      this.showDialog = true;
+
+      // Prevent navigating to narrower view (default vue-cal behavior).
+      e.stopPropagation();
+    },
     confirmDate() {
-      this.dialogFormVisible = false;
+      console.log("inside confirm date");
+      this.showDialog = false;
       this.EventInterface.startDate = new Date(this.form.value1).getTime();
       this.EventInterface.endDate = new Date(this.form.value2).getTime();
       this.EventInterface.name = this.form.name;
-      console.log("EventInterface", this.EventInterface);
-      SpinalEventService.createEvent(
-        this.EventInterface.contextId,
-        this.EventInterface.groupId,
-        this.nodeInfo.selectedNode.getId().get(),
-        this.EventInterface,
-        {}
-      ).then((result) => {
-        console.log("result", result);
-        this.$emit("reload");
-      });
+      console.log("llllkkkkkkkkkkk", this.form);
+      console.log("this.selectedEvent", this.selectedEvent);
+      if (this.selectedEvent) {
+        SpinalEventService.updateEvent(
+          this.selectedEvent.class,
+          this.EventInterface
+        ).then(async result => {
+          this.calendrier = await this.getEvents();
+        });
+      } else {
+        SpinalEventService.createEvent(
+          this.EventInterface.contextId,
+          this.EventInterface.groupId,
+          this.nodeInfo.selectedNode.getId().get(),
+          this.EventInterface,
+          {}
+        ).then((async result => {
+          console.log("result", result);
+          this.$emit("reload");
+        })
+        );
+      }
     },
+    async deleteDate() {
+      console.log("lllllllllllllllllkk", this.selectedEvent.class);
+      await SpinalEventService.removeEvent(this.selectedEvent.class);
+
+      this.calendrier = await this.getEvents();
+      this.showDialog = false;
+    }
   },
   async mounted() {},
   watch: {},
