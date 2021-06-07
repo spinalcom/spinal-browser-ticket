@@ -28,6 +28,8 @@ with this file. If not, see
             border
             style="overflow: auto; height: 100%"
             :header-cell-style="{'background-color': '#f0f2f5'}"
+            show-summary
+            sum-text="Total"
             @row-click="selectInView"
             @row-dblclick="SeeEvent">
     <el-table-column :label="$t('explorer.Name')">
@@ -41,6 +43,7 @@ with this file. If not, see
 
     <el-table-column v-for="column in columns"
                      :key="column"
+                     :prop="column"
                      align="center"
                      :label="$t(`node-type.${column}`)">
       <div slot-scope="scope">
@@ -49,6 +52,7 @@ with this file. If not, see
     </el-table-column>
     <el-table-column v-if="haveChildren"
                      :label="$t('node-type.Sum')"
+                     prop="equipmentN"
                      align="center">
       <div slot-scope="scope">
         {{ scope.row.equipmentN }}
@@ -63,10 +67,21 @@ with this file. If not, see
         <el-button v-if="scope.row.haveChild"
                    icon="el-icon-arrow-right"
                    circle
+                   @click="onSelectGroup(scope.row)"></el-button>
+      </div>
+    </el-table-column>
+    <el-table-column v-else
+                     label=""
+                     width="65"
+                     align="center">
+      <div slot-scope="scope">
+        <el-button
+                   icon="el-icon-search"
+                   circle
                    @click="onSelectItem(scope.row)"></el-button>
       </div>
-    <!-- </el-table-column>
-    <el-table-column label=""
+    </el-table-column>
+    <!-- <el-table-column label=""
                       width="65"
                       align="center">
       <div slot-scope="scope">
@@ -134,6 +149,11 @@ export default {
       EventBus.$emit("view-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
+      if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= 5)
+        ViewManager.getInstance(this.viewKey).pop()
+      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+    },
+    onSelectGroup(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
     debug(item) {
