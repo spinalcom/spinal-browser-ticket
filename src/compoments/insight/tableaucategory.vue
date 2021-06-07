@@ -69,9 +69,12 @@ with this file. If not, see
                   :header-row-style='{"min-height" : "0px","height" : "50px", "padding" : "0px"}'
                   :header-cell-style='{"background-color": "#f0f2f5"}'>
 
-          <el-table-column prop="name"
+          <el-table-column 
                            :label="$t('HeatmapCenter.Categories')"
                            width="180">
+              <template slot-scope="scope">
+              <div class = "name"> {{ scope.row.name }}</div>
+            </template>
           </el-table-column>
 
           <el-table-column prop="groups.length"
@@ -195,5 +198,8 @@ export default {
 }
 .el-icon-download {
   width: 30px;
+}
+.name {
+  word-break: normal;
 }
 </style>
