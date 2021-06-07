@@ -1,11 +1,11 @@
 <template>
-   <div class="div__content"
-   @click="onMouseOver">
+   <div class="div__content">
       <div class="relative">
-      <div class="div__rectangle" :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
+         <div class="div__rectangle" :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
+         </div>
+         <el-button v-on:click="SeeEvent()" class="custom-icon circled-button position_right" circle icon="el-icon-view"></el-button>
+      </div>
 
-      </div>
-      </div>
       <div
          class="name"
          v-tooltip="name"
@@ -19,22 +19,21 @@
          {{value | filterValue}} {{unit}}
       </div>
 
-         <el-button v-if="displayBoolButton" 
-         v-on:click="flip()" class="margin-left custom-icon circled-button" circle icon="el-icon-refresh">
-         </el-button>
 
-         <el-button v-if="this.variableSelected.type=='Consigne' && this.variableSelected.dataType !='Boolean'" 
-         v-on:click="openModal()" class="margin-left custom-icon circled-button" circle icon="el-icon-setting">
-         </el-button>
+      <el-button v-if="displayBoolButton" 
+      v-on:click="flip()" class="margin-left custom-icon circled-button" circle icon="el-icon-refresh">
+      </el-button>
 
+      <el-button v-if="this.variableSelected.type=='Consigne' && this.variableSelected.dataType !='Boolean'" 
+      v-on:click="openModal()" class="margin-left custom-icon circled-button" circle icon="el-icon-setting">
+      </el-button>
 
-         <value-config v-if="isModalVisible"
-            :endpoint ="this.endpoint" :config="this.variableSelected.config" :dataType="this.variableSelected.dataType"
-            
-            >
-         </value-config>
-
+      
+      <value-config v-if="isModalVisible"
+         :endpoint ="this.endpoint" :config="this.variableSelected.config" :dataType="this.variableSelected.dataType"
          
+         >
+      </value-config>
 
 
    </div>
@@ -46,6 +45,7 @@ import { spinalBackEnd } from "../../../../../services/spinalBackend";
 const backendService = spinalBackEnd.heatmapBack;
 import valueConfig from "./value-config";
 import { EventBus } from "../../../../../services/event";
+import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 
 
 
@@ -67,6 +67,7 @@ export default {
    mounted() {
       this.updateEndpoint(); 
       this.updateDisplay();
+      //console.debug(this.room);
    },
 
    methods: {
@@ -95,7 +96,31 @@ export default {
          this.endpoint.currentValue.set(!this.endpoint.currentValue.get());
 
       },
-   
+      async SeeEvent() {
+         //console.log(this.room.id);
+         let data = { rooms: [this.room], color: "#000000" }
+         const allBimObjects = await this.getAllBimObjects(data);
+         console.log(allBimObjects);
+         EventBus.$emit("see", {
+         id: data.id,
+         ids: allBimObjects,
+         color: data.color
+         });
+      },
+
+      async getAllBimObjects(data) {
+         // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
+         const promises = data.rooms.map(el =>
+         groupManagerUtilities.getBimObjects(el.id)
+         );
+
+         const allBimObjects = await Promise.all(promises).then(result => {
+         result = result.flat(10);
+         return result;
+         });
+
+         return allBimObjects.map(el => el.get());
+      },
 
       getColor(endpointValue, config) {
          if (config.enumeration) {
@@ -183,13 +208,14 @@ export default {
 }
 
 .div__content .name {
-   width: 100%;
+   width: 90%;
    height: 30px;
    text-align: center;
    white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
    font-size: 15px;
+   margin-left: 10px;
    
 }
 
@@ -212,6 +238,13 @@ export default {
 
 }
 
+
+.position_right{
+   position: absolute;
+   top: 35%;
+   right : 0%
+}
+
 .fixed{
    position: fixed;
 }
@@ -231,6 +264,7 @@ export default {
    height: 20px;
    width: 20px;
    border: white;
+   z-index: 0;
    
 }
 .circled-button:hover{

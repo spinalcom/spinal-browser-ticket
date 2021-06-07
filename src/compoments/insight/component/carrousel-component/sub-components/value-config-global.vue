@@ -80,6 +80,7 @@ export default {
    justify-content: center;
    overflow: hidden;
    overflow-y: auto;
+   z-index: 1;
 }
 
 ._button {

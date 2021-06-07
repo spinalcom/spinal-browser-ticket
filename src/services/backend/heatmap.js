@@ -40,8 +40,6 @@ import { REFERENCE_OBJECT_RELATION_NAME, BIM_OBJECT_TYPE } from 'spinal-env-view
 import q from "q";
 
 
-// const spinalForgeViewer = new SpinalForgeViewer();
-
 export default class Heatmap {
 
   constructor() {
@@ -67,8 +65,9 @@ export default class Heatmap {
       return false;
 
     });
-
+  
     const Icontexts = contexts.map(el => this.Icontext(el));
+
     const res = await Promise.all(Icontexts);
     this.initDefer.resolve(res);
 
@@ -133,6 +132,7 @@ export default class Heatmap {
     return {
       name: context.info.name.get(),
       id: context.info.id.get(),
+      _server_id: context.info._server_id,
       categories: await Promise.all(arr)
     };
   }

@@ -68,7 +68,7 @@ with this file. If not, see
                 <div v-if="scope.row.color"
                      class="spinal-table-cell-color"
                      :style="getColor(scope.row.color)"></div>
-                <div> {{ scope.row.name }}</div>
+                <div class = "name"> {{ scope.row.name }}</div>
             </template>
           </el-table-column>
 
@@ -202,7 +202,7 @@ export default {
   async mounted() {},
   watch: {
     contextLst() {
-      console.log("context", this.contextLst);
+      //console.log("context", this.contextLst);
     }
   },
   beforeDestroy() {}
@@ -220,6 +220,10 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+}
+
+.name {
+  word-break: normal;
 }
 
 
