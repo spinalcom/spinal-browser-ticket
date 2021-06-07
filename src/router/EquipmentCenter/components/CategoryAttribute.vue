@@ -37,7 +37,9 @@ with this file. If not, see
                           v-on:blur.stop
                           v-on:change.stop
                           v-on:keypress.stop>
-            <editable :content.sync="category.name" :isEditing="category.isEditing"></editable>
+            <editable :content.sync="category.name" :isEditing="category.isEditing">
+              {{ category.name }}
+            </editable>
           </b>
           <el-tooltip :content="`Remove category ${category}`">
             <el-popconfirm
@@ -59,16 +61,29 @@ with this file. If not, see
           </el-tooltip>
           <el-table :data="category.attributes">
             <el-table-column label="Name">
-              <editable slot-scope="scope" :content.sync="scope.row.label" :isEditing="scope.row.isEditing"></editable>
+              <editable slot-scope="scope" :content.sync="scope.row.label" :isEditing="scope.row.isEditing">
+                <a v-if="scope.row.type == 'url'" :href="scope.row.value">
+                  {{ scope.row.label }}
+                </a>
+                <div v-else>
+                  {{ scope.row.label }}
+                </div>
+              </editable>
             </el-table-column>
             <el-table-column label="Value">
-              <editable slot-scope="scope" :content.sync="scope.row.value" :isEditing="scope.row.isEditing"></editable>
+              <editable slot-scope="scope" :content.sync="scope.row.value" :isEditing="scope.row.isEditing">
+                {{ scope.row.value }}
+              </editable>
             </el-table-column>
             <el-table-column label="Type">
-              <editable slot-scope="scope" :content.sync="scope.row.type" :isEditing="scope.row.isEditing"></editable>
+              <editable slot-scope="scope" :content.sync="scope.row.type" :isEditing="scope.row.isEditing">
+                {{ scope.row.type }}
+                </editable>
             </el-table-column>
             <el-table-column label="Unit">
-              <editable slot-scope="scope" :content.sync="scope.row.unit" :isEditing="scope.row.isEditing"></editable>
+              <editable slot-scope="scope" :content.sync="scope.row.unit" :isEditing="scope.row.isEditing">
+                {{ scope.row.unit }}
+                </editable>
             </el-table-column>
             <el-table-column fixed="right" label="Options" width="120">
               <template slot-scope="scope">
@@ -170,8 +185,8 @@ export default {
   methods: {
     async update(id)
     {
-      console.debug("start");
       this.ctxNode = FileSystem._objects[id];
+      console.debug("start");
       serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
         this.Categories = [];
         for(const category of Categories)
@@ -187,8 +202,6 @@ export default {
                 type: attribute.type._data,
                 unit: attribute.unit._data,
                 isEditing: false,
-                // new_label: attribute.label._data,
-                // new_value: attribute.value._data,
                 serverId: attribute._server_id,
               });
             }
