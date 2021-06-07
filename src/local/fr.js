@@ -40,6 +40,7 @@ export default {
   "DataRoom.Documentation": "Documentation",
   "DataRoom.Calendar": "Calendrier",
   "DataRoom.Equipment": "Equipements",
+  "DataRoom.Attributes": "Attributs",
   "DataRoom.User": "Utilisateurs",
   "DataRoom.Priority": "Priorités",
   "DataRoom.ScreenShot": "Faire une capture d'écran",

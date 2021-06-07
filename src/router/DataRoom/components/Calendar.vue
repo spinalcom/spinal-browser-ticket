@@ -28,7 +28,7 @@ with this file. If not, see
       <Create-Event v-bind:nodeId="nodeId" @reload="updateDate"></Create-Event>
     </div>
     <div class="spinal-space-table-content spinal-scrollbar">
-      <vueCal
+      <!--<vueCal
         class="calendar_container vuecal--full-height-delete"
         ref="vuecal"
         :time="true"
@@ -45,7 +45,7 @@ with this file. If not, see
           create: false,
         }"
         :events="calendrier"
-      ></vueCal>
+      ></vueCal>-->
     </div>
   </div>
 </template>
@@ -84,9 +84,7 @@ export default {
       return SpinalGraphService.getChildren(Id, ["hasEvent"]);
     },
     async updateDate() {
-      this.calendrier = await this.getEvents(
-        this.nodeInfo.selectedNode.getId().get()
-      );
+      this.calendrier = await this.getEvents(this.nodeId);
     },
     async loadCalendar() {
       this.calendrier = await SpinalEventService.getEvents(

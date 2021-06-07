@@ -50,6 +50,21 @@ export class ViewerUtils {
     this.initialized.resolve();
   }
 
+  waitLoadModels(viewer): Promise<void> {
+    let nbOfModels = Object.keys(spinal.SpinalForgeViewer.viewerManager.models).length
+    return new Promise((resolve) => {
+      const fn = (e) => {
+        nbOfModels -= 1;
+        if (nbOfModels <= 1) {
+          viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+          resolve();
+        }
+      }
+      viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+    })
+  }
+
+
   /**
    * @returns Promise<void>
    * @memberof ViewerUtils
@@ -147,6 +162,7 @@ export class ViewerUtils {
 
   convertHewToRGB(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    console.log(result);
     return result
       ? {
         r: parseInt(result[1], 16),
@@ -158,8 +174,8 @@ export class ViewerUtils {
 
   colorThemingItems(model, color: string, dbIds: number[]) {
     this.elementColored.add({ model, dbIds });
+    console.log(color);
     const _color = this.convertHewToRGB(color);
-
     dbIds.forEach(dbId => {
       model.setThemingColor(
         dbId,

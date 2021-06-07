@@ -25,30 +25,53 @@
 import { EventBus } from "../../services/event";
 import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
 import { spinalBackEnd } from '../../services/spinalBackend';
-EventBus.$on('sidebar-selected-item', async (item) => {
+var debounce = require('lodash.debounce');
 
+const sidebarMouseoverItemDebounce = debounce(sidebarMouseoverItem, 400);
+const sidebarSelectedItemDebounce = debounce(sidebarSelectedItem, 400);
+const sidebarHomeSelectDebounce = debounce(sidebarHomeSelect, 500);
+
+EventBus.$on('sidebar-selected-item', async (item) => {
+  await viewerUtils.waitInitialized();
+  return sidebarSelectedItemDebounce(item)
+});
+EventBus.$on('sidebar-mouseover-item', async (item) => {
+  await viewerUtils.waitInitialized();
+  return sidebarMouseoverItemDebounce(item);
+});
+EventBus.$on('sidebar-homeSelect', async (item) => {
+  await viewerUtils.waitInitialized();
+  return sidebarHomeSelectDebounce(item)
+});
+
+async function sidebarHomeSelect(item) {
+  viewerUtils.clearSelection()
+  if (!item) {
+    const face = 'front,top,right';
+    viewerUtils.showAll();
+    await viewerUtils.rotateTo(face);
+    await viewerUtils.fitToView();
+  } else {
+    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
+    viewerUtils.isolateObjects(lstByModel);
+    await viewerUtils.rotateTo('front,top,right');
+    await viewerUtils.fitToView(lstByModel);
+  }
+  viewerUtils.clearSelection()
+}
+
+async function sidebarMouseoverItem(item) {
+  if (item) {
+    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
+    viewerUtils.selectObjects(lstByModel);
+  }
+}
+async function sidebarSelectedItem(item) {
   if (item) {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
     await viewerUtils.rotateTo('top');
     viewerUtils.fitToView(lstByModel);
   }
-});
-EventBus.$on('sidebar-mouseover-item', async (item) => {
-  const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
-  viewerUtils.selectObjects(lstByModel);
-});
-EventBus.$on('sidebar-homeSelect', async (item) => {
-  if (!item) {
-    const face = 'front,top,right';
-    await viewerUtils.waitInitialized();
-    viewerUtils.showAll();
-    await viewerUtils.rotateTo(face);
-    return viewerUtils.fitToView();
-  } else {
-    const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
-    viewerUtils.isolateObjects(lstByModel);
-    await viewerUtils.rotateTo('front,top,right');
-    viewerUtils.fitToView(lstByModel);
-  }
-});
+
+}
