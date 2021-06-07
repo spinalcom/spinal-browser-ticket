@@ -24,7 +24,7 @@ with this file. If not, see
 
 <template>
   <div v-if="!(isEditing)">
-    {{ content }}
+    <slot></slot>
   </div>
   <el-input v-else
     size="small"
