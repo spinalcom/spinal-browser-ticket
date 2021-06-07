@@ -25,3 +25,4 @@
 import  './eventsHandler/DataRoom'
 import  './eventsHandler/GlobalData'
 import  './eventsHandler/Space'
+import  './eventsHandler/Insight'

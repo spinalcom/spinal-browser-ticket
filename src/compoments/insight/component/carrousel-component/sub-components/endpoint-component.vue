@@ -3,7 +3,24 @@
       <div class="relative">
          <div class="div__rectangle" :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
          </div>
-         <el-button v-on:click="SeeEvent()" class="custom-icon circled-button position_right" circle icon="el-icon-view"></el-button>
+         <el-tooltip content="Isolate" effect="light"
+             :open-delay="300"
+             placement="right">
+         <el-button v-on:click="isolate()" class="custom-icon circled-button position_right" circle icon="el-icon-location"></el-button>
+         </el-tooltip>
+
+
+         <el-tooltip content="Focus" effect="light"
+             :open-delay="300"
+             placement="right">
+         <el-button v-on:click="focus()" class="custom-icon circled-button position_right3" circle icon="el-icon-zoom-in"></el-button>
+         </el-tooltip>
+
+         <el-tooltip content="Select" effect="light"
+             :open-delay="300"
+             placement="right">
+         <el-button v-on:click="select()" class="custom-icon circled-button position_right2" circle icon="el-icon-view"></el-button>
+         </el-tooltip>
       </div>
 
       <div
@@ -62,6 +79,7 @@ export default {
          endpoint: undefined,
          displayBoolButton: undefined,
          isModalVisible: false,
+         isInsightIsolate: false,
       };
    },
    mounted() {
@@ -96,31 +114,6 @@ export default {
          this.endpoint.currentValue.set(!this.endpoint.currentValue.get());
 
       },
-      async SeeEvent() {
-         //console.log(this.room.id);
-         let data = { rooms: [this.room], color: "#000000" }
-         const allBimObjects = await this.getAllBimObjects(data);
-         console.log(allBimObjects);
-         EventBus.$emit("see", {
-         id: data.id,
-         ids: allBimObjects,
-         color: data.color
-         });
-      },
-
-      async getAllBimObjects(data) {
-         // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
-         const promises = data.rooms.map(el =>
-         groupManagerUtilities.getBimObjects(el.id)
-         );
-
-         const allBimObjects = await Promise.all(promises).then(result => {
-         result = result.flat(10);
-         return result;
-         });
-
-         return allBimObjects.map(el => el.get());
-      },
 
       getColor(endpointValue, config) {
          if (config.enumeration) {
@@ -146,6 +139,48 @@ export default {
 
          return colorHex;
       },
+
+      async focus() {
+         let data = { rooms: [this.room]}
+         const allBimObjects = await this.getAllBimObjects(data);
+         EventBus.$emit("insight-focus", {
+         id: data.id,
+         ids: allBimObjects,
+         });
+
+      },
+      async select() {
+         let data = { rooms: [this.room]}
+         const allBimObjects = await this.getAllBimObjects(data);
+         EventBus.$emit("insight-select", {
+         id: data.id,
+         ids: allBimObjects,
+         });
+      },
+      async isolate() {
+         let data = { rooms: [this.room]}
+         const allBimObjects = await this.getAllBimObjects(data);
+         EventBus.$emit("insight-isolate", {
+         id: data.id,
+         ids: allBimObjects,
+         });
+      },
+
+      async getAllBimObjects(data) {
+         // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
+         const promises = data.rooms.map(el =>
+         groupManagerUtilities.getBimObjects(el.id)
+         );
+
+         const allBimObjects = await Promise.all(promises).then(result => {
+         result = result.flat(10);
+         return result;
+         });
+
+         return allBimObjects.map(el => el.get());
+      },
+
+      
 
       openModal() {
       this.isModalVisible=!this.isModalVisible;
@@ -241,9 +276,22 @@ export default {
 
 .position_right{
    position: absolute;
-   top: 35%;
+   right : 0%;
+}
+
+.position_right3{
+   position: absolute;
+   top: 30px;
    right : 0%
 }
+
+.position_right2{
+   position: absolute;
+   top: 60px;
+   right : 0%
+}
+
+
 
 .fixed{
    position: fixed;
