@@ -74,5 +74,9 @@ EventBus.$on("insight-focus", async (data) => {
 });
 
 
+EventBus.$on("insight-clear-select", async (data) => {
+    viewerUtils.clearSelection();
+});
+
 
 

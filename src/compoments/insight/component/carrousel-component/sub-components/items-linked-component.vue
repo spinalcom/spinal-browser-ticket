@@ -34,6 +34,8 @@
          :endpoints="room.endpoints"
          :variableSelected="variableSelected"
          :room="room"
+         @select="onSelect"
+         @isolate="onIsolate"
       ></endpoint-component>
    </div>
 
@@ -49,6 +51,7 @@
 import { spinalBackEnd } from "../../../../../services/spinalBackend";
 import endpointComponent from "./endpoint-component.vue";
 import valueConfigGlobal from "./value-config-global.vue";
+import { EventBus } from "../../../../../services/event";
 const backendService = spinalBackEnd.heatmapBack;
 
 
@@ -62,7 +65,11 @@ export default {
    data() {
       return {
          isModalVisible: false,
+         isIsolate: false,
+         isSelect: false,
 
+         isolated: undefined,
+         selected: undefined
       };
    },
    mounted() {
@@ -108,6 +115,30 @@ export default {
 
          return colorHex;
       },
+
+      onIsolate(data){
+         if(this.isIsolate && data.id == this.isolated ){
+            EventBus.$emit("view-show-all");
+            this.isIsolate=false;
+         }
+         else{
+         EventBus.$emit("insight-isolate", data);
+         this.isIsolate=true;
+         }
+         this.isolated= data.id;
+      },
+
+      onSelect(data){
+         if(this.isSelect && data.id == this.selected ){
+            EventBus.$emit("insight-clear-select");
+            this.isSelect=false;
+         }
+         else{
+         EventBus.$emit("insight-select", data);
+         this.isSelect=true;
+         }
+         this.selected= data.id;
+      }
       
 
 

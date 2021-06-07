@@ -141,27 +141,38 @@ export default {
       },
 
       async focus() {
+         
          let data = { rooms: [this.room]}
          const allBimObjects = await this.getAllBimObjects(data);
          EventBus.$emit("insight-focus", {
          id: data.id,
          ids: allBimObjects,
          });
-
       },
       async select() {
          let data = { rooms: [this.room]}
          const allBimObjects = await this.getAllBimObjects(data);
-         EventBus.$emit("insight-select", {
-         id: data.id,
+
+         this.$emit('select',{
+         id: this.room.id,
          ids: allBimObjects,
          });
+         /*EventBus.$emit("insight-select", {
+         id: data.id,
+         ids: allBimObjects,
+         });*/
       },
       async isolate() {
+         
          let data = { rooms: [this.room]}
          const allBimObjects = await this.getAllBimObjects(data);
-         EventBus.$emit("insight-isolate", {
+         /*EventBus.$emit("insight-isolate", {
          id: data.id,
+         ids: allBimObjects,
+         });*/
+
+         this.$emit('isolate',{
+         id: this.room.id,
          ids: allBimObjects,
          });
       },
