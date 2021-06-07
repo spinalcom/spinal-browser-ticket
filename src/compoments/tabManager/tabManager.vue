@@ -30,7 +30,7 @@ with this file. If not, see
       :label="$t(tab.name)"
       :name="$t(tab.name)"
       :closable="false"
-      style="height:100%"
+      style="height:100%; overflow: auto"
     >
       {{ updateActive() }}
       <component :is="tab.content" :Properties="tab.props"></component>
