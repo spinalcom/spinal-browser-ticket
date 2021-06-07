@@ -52,6 +52,7 @@ export default {
   "node-type.BIMObject" : "Objets BIM",
   "node-type.hasFiles": "Documentation",
   "node-type.hasCategoryAttributes": "Attributs",
+  "node-type.Sum": "Nombre d'équipements",
   "spinal-twin.hasCategoryAttributes": "Attributs",
   "spinal-twin.Explorer": "Explorateur",
   "explorer.Name": "Nom",

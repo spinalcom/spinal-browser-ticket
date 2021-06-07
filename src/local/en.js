@@ -51,6 +51,7 @@ export default {
   "node-type.BIMObject" : " BIM Objects",
   "node-type.hasFiles": "Documentation",
   "node-type.hasCategoryAttributes": "Attributes", // TODO replace references for spinal-twin
+  "node-type.Sum": "Equipment number",
   "spinal-twin.hasCategoryAttributes": "Attributes",
   "spinal-twin.Explorer": "Explorer",
   "explorer.Name": "Name",

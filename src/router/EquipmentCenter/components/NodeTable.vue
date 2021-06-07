@@ -47,6 +47,13 @@ with this file. If not, see
         {{ columnValue(scope.row, column) }}
       </div>
     </el-table-column>
+    <el-table-column v-if="haveChildren"
+                     :label="$t('node-type.Sum')"
+                     align="center">
+      <div slot-scope="scope">
+        {{ scope.row.equipmentN }}
+      </div>
+    </el-table-column>
 
     <el-table-column v-if="haveChildren"
                      label=""
@@ -58,7 +65,7 @@ with this file. If not, see
                    circle
                    @click="onSelectItem(scope.row)"></el-button>
       </div>
-      <!-- </el-table-column>
+    <!-- </el-table-column>
     <el-table-column label=""
                       width="65"
                       align="center">
@@ -93,7 +100,8 @@ export default {
     };
   },
   watch: {
-    items() {
+    items()
+    {
       this.update();
     }
   },
@@ -131,7 +139,7 @@ export default {
     debug(item) {
       console.debug(item)
     },
-    update() {
+    async update() {
       this.loading = true;
       const res = [];
       const colorUsed = [];
@@ -141,7 +149,8 @@ export default {
           name: item.name,
           serverId: item.serverId,
           haveChild: false,
-          color: item.getColor()
+          color: item.getColor(),
+          equipmentN: await item.getEquipmentNumber(),
         };
         if (resItem.color) colorUsed.push(resItem.color);
         if (item.children) {
@@ -151,9 +160,6 @@ export default {
             haveChild = true;
           }
         }
-        // else {
-        //   console.debug(FileSystem._objects[item.serverId].children.PtrLst)
-        // }
         else if (FileSystem._objects[item.serverId] !== undefined) {
           let thisnode = FileSystem._objects[item.serverId]
           if (thisnode.children.PtrLst !== undefined) {
@@ -162,11 +168,6 @@ export default {
               resItem.haveChild = true
               this.haveObjects = true
             }
-            // for (const [childTypes, childItems] of FileSystem._objects[item.serverId].children.PtrLst ) {
-            //   resItem[childTypes] = childItems.length;
-            //   resItem.haveChild = true;
-            //   haveObjects = true;
-            // }
           }
         }
         res.push(resItem);

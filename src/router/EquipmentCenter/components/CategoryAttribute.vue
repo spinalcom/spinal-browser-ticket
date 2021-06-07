@@ -25,60 +25,69 @@ with this file. If not, see
 <template>
   <el-container>
     <!-- <el-header>
-      <el-button
-        icon="el-icon-plus"
-        style="float: right"
-        circle
-        @click.stop="debug(Categories)"
-      >
-      </el-button>
     </el-header> -->
     <el-main>
       <el-collapse v-for="category in Categories" :key="category.nameCat">
-        <el-collapse-item :name="category.name">
-        <b slot="title">
-        <!-- <el-tooltip :content="`Remove category ${category}`">
-          <el-button
-            icon="el-icon-minus"
-            circle
-            @click.native="delCategory(category)"
-          ></el-button>
-        </el-tooltip> -->
-        {{ category.name }}
-        </b>
+        <el-collapse-item>
+          <b slot="title" v-on:click.stop
+                          v-on:input.stop
+                          v-on:keyup.stop
+                          v-on:keydown.stop
+                          v-on:focus.stop
+                          v-on:blur.stop
+                          v-on:change.stop
+                          v-on:keypress.stop>
+            <editable :content.sync="category.name" :isEditing="category.isEditing"></editable>
+          </b>
+          <el-tooltip :content="`Remove category ${category}`">
+            <el-popconfirm
+              title="Are you sure to delete this?"
+              @confirm="delCategory(category)">
+              <el-button
+                slot="reference"
+                icon="el-icon-minus"
+                circle
+              ></el-button>
+            </el-popconfirm>
+          </el-tooltip>
+          <el-tooltip :content="`Edit category ${category}`">
+            <el-button
+              icon="el-icon-edit"
+              circle
+              @click.native="editCategory(category)"
+            ></el-button>
+          </el-tooltip>
           <el-table :data="category.attributes">
             <el-table-column label="Name">
-              <el-input
-                slot-scope="scope"
-                size="small"
-                v-model="scope.row.new_label"
-                :placeholder="scope.row.new_label"
-                :disabled="!scope.row.isEditing">
-              </el-input>
+              <editable slot-scope="scope" :content.sync="scope.row.label" :isEditing="scope.row.isEditing"></editable>
             </el-table-column>
             <el-table-column label="Value">
-              <el-input
-                slot-scope="scope"
-                size="small"
-                v-model="scope.row.new_value"
-                :placeholder="scope.row.new_value"
-                :disabled="!scope.row.isEditing">
-              </el-input>
+              <editable slot-scope="scope" :content.sync="scope.row.value" :isEditing="scope.row.isEditing"></editable>
+            </el-table-column>
+            <el-table-column label="Type">
+              <editable slot-scope="scope" :content.sync="scope.row.type" :isEditing="scope.row.isEditing"></editable>
+            </el-table-column>
+            <el-table-column label="Unit">
+              <editable slot-scope="scope" :content.sync="scope.row.unit" :isEditing="scope.row.isEditing"></editable>
             </el-table-column>
             <el-table-column fixed="right" label="Options" width="120">
               <template slot-scope="scope">
                 <el-tooltip :content="`Remove attribute ${scope.row.label}`">
-                  <el-button
-                    icon="el-icon-minus"
-                    circle
-                    @click.native="delAttribute(category, scope.row.label)"
-                  ></el-button>
+                  <el-popconfirm
+                    title="Are you sure to delete this?"
+                    @confirm="delAttribute(category, scope.row.serverId)">
+                    <el-button
+                      icon="el-icon-minus"
+                      circle
+                      slot="reference"
+                    ></el-button>
+                  </el-popconfirm>
                 </el-tooltip>
                 <el-tooltip :content="`Edit attribute ${scope.row.label}`">
                   <el-button
                     icon="el-icon-edit"
                     circle
-                    @click.native="editAttribute(category, scope.row)"
+                    @click.native="editAttribute(scope.row)"
                   ></el-button>
                 </el-tooltip>
               <template>
@@ -116,9 +125,11 @@ import { FileSystem } from 'spinal-core-connectorjs_type'
 import "../../../services/EventHandler";
 
 import NodeTable from "./NodeTable.vue";
+import Editable from "../../../compoments/Editable.vue";
+import { spinalIO } from '../../../services/spinalIO';
 export default {
   name: "Attributes",
-  components: { NodeTable },
+  components: { NodeTable, Editable },
   props: {
     Properties: {
       required: true,
@@ -146,29 +157,6 @@ export default {
         if (newProp.view.serverId != 0)
         {
           await this.update(newProp.view.serverId);
-          // console.debug("start");
-          // this.ctxNode = FileSystem._objects[newProp.view.serverId];
-          // let Categories = await serviceDocumentation.getCategory(this.ctxNode);
-          // this.Categories = [];
-          // for(const category of Categories)
-          // {
-          //   let attributes = await serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat);
-          //   let attrs = [];
-          //   for (const attribute of attributes)
-          //   {
-          //     attrs.push({
-          //       label: attribute.label._data,
-          //       value: attribute.value._data
-          //       });
-          //   }
-          //   let cat = {
-          //     name: category.nameCat,
-          //     attributes: attrs
-          //   }
-          //   this.Categories.push(cat);
-          // }
-          // console.debug("Wait ...", this.Categories);
-          // console.debug("end");
         }
         else
         {
@@ -177,7 +165,6 @@ export default {
         }
       },
       deep: true,
-      // immediate: true,
     }
   },
   methods: {
@@ -197,21 +184,24 @@ export default {
               attrs.push({
                 label: attribute.label._data,
                 value: attribute.value._data,
+                type: attribute.type._data,
+                unit: attribute.unit._data,
                 isEditing: false,
-                new_label: attribute.label._data,
-                new_value: attribute.value._data,
-                });
+                // new_label: attribute.label._data,
+                // new_value: attribute.value._data,
+                serverId: attribute._server_id,
+              });
             }
             let cat = {
               cat: category,
               name: category.nameCat,
               attributes: attrs,
+              isEditing: false,
             }
             this.Categories.push(cat);
           })
         }
       })
-      console.debug("Wait ...", this.Categories);
       console.debug("end");
     },
     exportToExcel() {
@@ -223,40 +213,51 @@ export default {
       return result;
     },
     async addAttribute(category){
-      await serviceDocumentation.addAttributeByCategoryName(this.ctxNode, category.name, "newAttribute", "newValue", "", "");
+      const node = await serviceDocumentation.addAttributeByCategory(this.ctxNode, category.cat, "newAttribute", "newValue", "newType", "newUnit");
+      await spinalIO.waitNodeReady(node);
       category.attributes.push({
-                label: "newAttribute",
-                value: "newValue",
-                isEditing: false,
-                new_label: "newAttribute",
-                new_value: "newValue",
-                })
+        label: "newAttribute",
+        value: "newValue",
+        type: "newType",
+        unit: "newUnit",
+        isEditing: false,
+        serverId: node._server_id,
+      })
     },
-    async addCategory(){
-      const category = await serviceDocumentation.addCategoryAttribute(this.ctxNode, "NewCategory");
-      this.Categories.push({
-          cat: category,
-          name: "NewCategory",
-          attributes: [],
-        })
+    async delAttribute(category, attribute_id){
+      await serviceDocumentation.removeAttributesById(category.cat.node, attribute_id)
+      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute_id))
     },
-    async delAttribute(category, attribute){
-      await serviceDocumentation.removeAttributesByLabel(category.cat.node, attribute)
-      category.attributes = category.attributes.filter(attr => !(attr.label == attribute))
-    },
-    async delCategory(category){
-      console.debug("wat ?", category)
-      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.name)
-      this.Categories = this.Categories.filter(cat => !(cat.label == category.name))
-    },
-    async editAttribute(category, attribute){
+    async editAttribute(attribute){
       if (!attribute.isEditing)
       {
         attribute.isEditing = true;
         return;
       }
-      await serviceDocumentation.setAttribute(this.ctxNode, attribute.label, attribute.value, attribute.new_label, attribute.new_value);
+      await serviceDocumentation.setAttribute(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
       attribute.isEditing = false;
+    },
+    async addCategory(){
+      const category = await serviceDocumentation.addCategoryAttribute(this.ctxNode, "NewCategory");
+      this.Categories.push({
+        cat: category,
+        name: "NewCategory",
+        attributes: [],
+        isEditing: false,
+      })
+    },
+    async delCategory(category){
+      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id)
+      this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id))
+    },
+    async editCategory(category){
+      if (!category.isEditing)
+      {
+        category.isEditing = true;
+        return;
+      }
+      await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name)
+      category.isEditing = false;
     },
     async debug(what) {
       console.debug("Debugging", what);
@@ -264,3 +265,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+.spl-button-bar {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 5px 5px 5px;
+}
+</style>

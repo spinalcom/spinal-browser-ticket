@@ -236,7 +236,6 @@ export default {
           this.setColorItem(itm.serverId, color);
           Object.assign(itm, { color });
         }
-        console.debug(colorGen, colorUsed);
       }
     },
     setColorItem(serverId, color) {

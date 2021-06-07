@@ -51,6 +51,7 @@ export class EquipmentBack {
 
   async init(graph: SpinalGraph<any>) {
     this.contexts = []
+    // const children = await graph.getChildren("BIMObjectGroupContext");
     const children = await graph.getChildren();
     for (const context of children) {
       if (context.info.type.get() === "BIMObjectGroupContext") {
@@ -63,7 +64,7 @@ export class EquipmentBack {
   async getContexts(): Promise<Map<string, EquipmentItem[]>> {
     const result: Map<string, EquipmentItem[]> = new Map()
 
-    await Promise.all(this.contexts.map(async (item) => {
+      await Promise.all(this.contexts.map(async (item) => {
       return this.getItemsInContext(item, item, true).then((map) => {
         for (const [key, value] of map) {
           if (!result.has(key)) result.set(key, []);

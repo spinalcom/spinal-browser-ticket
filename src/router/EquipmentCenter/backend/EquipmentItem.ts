@@ -125,5 +125,20 @@ export class EquipmentItem {
     allItems.set(server_id, item);
     return item
   }
+
+  getEquipmentNumber()
+  {
+    const node = FileSystem._objects[this.serverId];
+    if (node && node.getType().get() === EQUIPMENT_TYPE) return 1;
+    if (typeof this.children === "undefined") return 0;
+    const prom = [];
+    for (const [, arrayItem] of this.children) {
+      for (const item of arrayItem) {
+        prom.push(item.getEquipmentNumber());
+      }
+    }
+    return Promise.all(prom)
+      .then((resArr) => resArr.reduce((prev, curr) => prev + curr, 0));
+  }
 }
 
