@@ -130,14 +130,9 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-// import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from "../backend/EquipmentBack";
-import BackendInitializer from "../../../services/BackendInitializer";
-import { EventBus } from "../../../services/event";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
 import { FileSystem } from 'spinal-core-connectorjs_type'
-import "../../../services/EventHandler";
+// import "../../../services/EventHandler";
 
 import NodeTable from "./NodeTable.vue";
 import Editable from "../../../compoments/Editable.vue";
@@ -149,12 +144,6 @@ export default {
     Properties: {
       required: true,
       type: Object,
-      validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
-        }
-        return "success";
-      },
     },
   },
   data() {
