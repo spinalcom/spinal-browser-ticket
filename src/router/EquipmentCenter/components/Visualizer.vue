@@ -40,7 +40,7 @@ import { ViewManager } from "../../../services/ViewManager/ViewManager";
 // import { spinalBackEnd } from "../../../services/spinalBackend";
 import { EquipmentBack } from "../backend/EquipmentBack";
 // import BackendInitializer from '../../../services/BackendInitializer'
-import "../../../services/EventHandler";
+// import "../../../services/viewerUtils/eventsHandler/GlobalData";
 
 export default {
   name: "Visualizer",

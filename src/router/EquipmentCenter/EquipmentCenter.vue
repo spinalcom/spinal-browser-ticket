@@ -49,7 +49,7 @@ with this file. If not, see
       <el-tooltip content="Zoom" :disabled="!canIsolate">
         <el-button class="spl-el-button"
           icon="el-icon-search" circle
-          @click.stop="isolateAll()"
+          @click.stop="zoomOn()"
           :disabled="!canIsolate"
         >
         </el-button>
@@ -90,6 +90,7 @@ import TabManager from "../../compoments/tabManager/tabManager.vue";
 import Explorer from "./components/Explorer.vue";
 import Visualizer from "./components/Visualizer.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
+import "../../services/viewerUtils/eventsHandler/Equipment";
 const VIEW_KEY = "Equipment Center";
 // Component exports
 export default {
@@ -181,13 +182,16 @@ export default {
     popView() {
       ViewManager.getInstance(this.viewKey).pop()
     },
+    zoomOn() {
+      EventBus.$emit("equipment-zoom-all", { server_id: this.currentView.serverId });
+    },
     isolateAll() {
       // let list = this.items.items.map(item => {
       //   return { server_id: item.serverId };
       // });
       // console.debug("list : ", list)
       // EventBus.$emit("view-isolate-list", list);
-      EventBus.$emit("view-isolate-all", { server_id: this.currentView.serverId });
+      EventBus.$emit("equipment-isolate-all", { server_id: this.currentView.serverId });
     },
     selectInView() {
       // let list = this.items.items.map(item => {
@@ -195,7 +199,7 @@ export default {
       // });
       // console.debug("list : ", list)
       // EventBus.$emit("view-isolate-list", list);
-      EventBus.$emit("view-select-item", { server_id: this.currentView.serverId });
+      EventBus.$emit("equipment-select-item", { server_id: this.currentView.serverId });
     },
     formatData(){
       const res = [];
@@ -261,10 +265,10 @@ export default {
       let items = this.items.items.map(item => {
         return { server_id: item.serverId, color: item.getColor() };
       });
-      EventBus.$emit("view-color-all", items, { server_id: this.currentView.serverId });
+      EventBus.$emit("equipment-color-all", items, { server_id: this.currentView.serverId });
     },
     ShowAll() {
-      EventBus.$emit("view-show-all");
+      EventBus.$emit("equipment-show-all");
     },
   },
 };

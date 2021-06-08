@@ -61,7 +61,6 @@ import { ViewManager } from "../../../services/ViewManager/ViewManager";
 import { EquipmentBack } from "../backend/EquipmentBack";
 import BackendInitializer from "../../../services/BackendInitializer";
 import { EventBus } from "../../../services/event";
-import "../../../services/EventHandler";
 import NodeTable from "./NodeTable.vue";
 export default {
   name: "Explorer",

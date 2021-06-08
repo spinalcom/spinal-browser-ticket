@@ -137,7 +137,7 @@ import BackendInitializer from "../../../services/BackendInitializer";
 import { EventBus } from "../../../services/event";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
 import { FileSystem } from 'spinal-core-connectorjs_type'
-import "../../../services/EventHandler";
+// import "../../../services/viewerUtils/eventsHandler/GlobalData";
 
 import NodeTable from "./NodeTable.vue";
 import Editable from "../../../compoments/Editable.vue";
@@ -247,7 +247,7 @@ export default {
         attribute.isEditing = true;
         return;
       }
-      await serviceDocumentation.setAttribute(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
+      await serviceDocumentation.setAttributeById(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
       attribute.isEditing = false;
     },
     async addCategory(){
