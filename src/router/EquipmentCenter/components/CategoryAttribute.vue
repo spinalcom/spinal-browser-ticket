@@ -132,7 +132,6 @@ with this file. If not, see
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
 import { FileSystem } from 'spinal-core-connectorjs_type'
-// import "../../../services/EventHandler";
 
 import NodeTable from "./NodeTable.vue";
 import Editable from "../../../compoments/Editable.vue";
