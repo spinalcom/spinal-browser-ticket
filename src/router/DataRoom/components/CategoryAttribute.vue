@@ -50,7 +50,7 @@ import BackendInitializer from "../../../services/BackendInitializer";
 import { EventBus } from "../../../services/event";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
 import { FileSystem } from 'spinal-core-connectorjs_type'
-import "../../../services/EventHandler";
+// import "../../../services/viewerUtils/eventsHandler/GlobalData";
 
 export default {
   name: "Explorer",

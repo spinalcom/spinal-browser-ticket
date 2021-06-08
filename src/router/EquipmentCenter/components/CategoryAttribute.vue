@@ -227,7 +227,7 @@ export default {
         attribute.isEditing = true;
         return;
       }
-      await serviceDocumentation.setAttribute(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
+      await serviceDocumentation.setAttributeById(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
       attribute.isEditing = false;
     },
     async addCategory(){

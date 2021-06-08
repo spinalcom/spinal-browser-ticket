@@ -125,13 +125,14 @@ export default {
   },
   methods: {
     selectInView(item) {
-      EventBus.$emit("view-select-item", {
+      EventBus.$emit("equipment-select-item", {
         server_id: item.serverId,
         color: item.color
       });
     },
     SeeEvent(item) {
-      EventBus.$emit("view-isolate-item", {
+      console.debug("item", item)
+      EventBus.$emit("equipment-isolate-item", {
         server_id: item.serverId,
         color: item.color
       });
@@ -140,13 +141,13 @@ export default {
       let items = this.data.map(item => {
         return { server_id: item.serverId, color: item.color };
       });
-      EventBus.$emit("view-color-all", items, { server_id: zone });
+      EventBus.$emit("equipment-color-all", items, { server_id: zone });
     },
     ShowAll() {
-      EventBus.$emit("view-show-all");
+      EventBus.$emit("equipment-show-all");
     },
     isolateAll(zone) {
-      EventBus.$emit("view-isolate-all", { server_id: zone });
+      EventBus.$emit("equipment-isolate-all", { server_id: zone });
     },
     onSelectItem(item) {
       if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= 5)

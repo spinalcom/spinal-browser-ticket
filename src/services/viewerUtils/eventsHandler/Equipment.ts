@@ -22,14 +22,14 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { EventBus } from "./event";
-import { viewerUtils } from "./viewerUtils/viewerUtils";
-import { spinalBackEnd } from './spinalBackend';
+import { EventBus } from "../../event";
+import { viewerUtils } from "../viewerUtils";
+import { spinalBackEnd } from '../../spinalBackend';
 
 var lastColorZone = null;
 var lastColorItem = null;
 
-EventBus.$on('view-color-item', async (item) => {
+EventBus.$on('equipment-color-item', async (item) => {
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === item.server_id)) {
     lastColorItem = null
@@ -46,7 +46,7 @@ EventBus.$on('view-color-item', async (item) => {
   }
 });
 
-EventBus.$on('view-color-all', async (items, zone) => {
+EventBus.$on('equipment-color-all', async (items, zone) => {
   if (lastColorItem || (lastColorZone &&
     lastColorZone.server_id === zone.server_id)) {
     lastColorItem = null
@@ -65,32 +65,38 @@ EventBus.$on('view-color-all', async (items, zone) => {
   }
 });
 
-EventBus.$on('view-isolate-item', async (item) => {
+EventBus.$on('equipment-isolate-item', async (item) => {
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(item);
   viewerUtils.isolateObjects(lstByModel);
   await viewerUtils.rotateTo('front,top,right');
   viewerUtils.fitToView(lstByModel);
 });
 
-EventBus.$on('view-show-all', () => {
+EventBus.$on('equipment-show-all', () => {
   viewerUtils.showAll()
 });
 
-EventBus.$on('view-isolate-all', async (zone) => {
+EventBus.$on('equipment-isolate-all', async (zone) => {
   const zoneLstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(zone);
   viewerUtils.isolateObjects(zoneLstByModel);
   await viewerUtils.rotateTo('front,top,right');
   viewerUtils.fitToView(zoneLstByModel);
 });
 
-EventBus.$on('view-focus-item', async (item) => {
+EventBus.$on('equipment-zoom-all', async (zone) => {
+  const zoneLstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(zone);
+  await viewerUtils.rotateTo('front,top,right');
+  viewerUtils.fitToView(zoneLstByModel);
+});
+
+EventBus.$on('equipment-focus-item', async (item) => {
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(item);
   viewerUtils.selectObjects(lstByModel);
   await viewerUtils.rotateTo('front,top,right');
   viewerUtils.fitToView(lstByModel);
 });
 
-EventBus.$on('view-select-item', async (item) => {
+EventBus.$on('equipment-select-item', async (item) => {
   const lstByModel = await spinalBackEnd.spatialBack.getLstByModelEquipment(item);
   viewerUtils.selectObjects(lstByModel);
 });

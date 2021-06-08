@@ -1,5 +1,7 @@
 node_modules
 launch.config.js
+package.json
+package-lock.json
 .apps.json
 .browser_organs
 .config.json
