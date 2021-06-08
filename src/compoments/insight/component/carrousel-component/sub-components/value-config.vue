@@ -82,9 +82,9 @@ export default {
 
 <style scoped>
 ._content {
-   position:absolute;
+   position:relative;
    border:1px solid black;
-   width: 25%;
+   width: 100%;
    height: 100px;
    background-color: white;
    display: flex;

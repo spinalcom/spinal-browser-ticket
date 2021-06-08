@@ -48,7 +48,6 @@
       
       <value-config v-if="isModalVisible"
          :endpoint ="this.endpoint" :config="this.variableSelected.config" :dataType="this.variableSelected.dataType"
-         
          >
       </value-config>
 
