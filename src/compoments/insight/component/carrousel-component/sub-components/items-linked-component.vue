@@ -18,8 +18,6 @@
          v-on:click="openModal()" class = "_buttonGlobal" icon="el-icon-edit" > Modify all values
       </el-button>
       </div>
-      
-
       <value-config-global v-if="isModalVisible"
           :config="variableSelected.config" :dataType="variableSelected.dataType"
           @globalValue="ModifyAll"
@@ -139,13 +137,11 @@ export default {
          }
          this.selected= data.id;
       }
-      
-
-
-
-
-
-
+   },
+   watch: {
+      variableSelected(){
+         this.isModalVisible=false;
+      }
    },
 };
 </script>
