@@ -225,6 +225,7 @@ export default {
    watch: {
       variableSelected() {
          if (this.endpoint && this.bindProcess)
+            this.isModalVisible=false;
             this.endpoint.currentValue.unbind(this.bindProcess);
 
          this.updateEndpoint();
