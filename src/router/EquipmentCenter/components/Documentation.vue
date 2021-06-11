@@ -87,6 +87,7 @@ export default {
     return {
       ctxNode: false,
       documents: [],
+      directory: false,
     };
   },
   watch:
@@ -107,39 +108,81 @@ export default {
       deep: true,
     }
   },
+  async mounted() {
+    this.update(this.Properties.view.serverId);
+  },
   methods: {
     async update(id)
     {
       this.ctxNode = FileSystem._objects[id];
+      this.directory = await FileExplorer.getDirectory(this.ctxNode);
       await this.getDocuments();
+    },
+    docAt(serverId)
+    {
+      for (const doc of this.documents)
+      {
+        if (doc._server_id == serverId)
+        {
+          return doc;
+        }
+      }
+      return null;
     },
     async getDocuments()
     {
       this.documents = [];
-      const directory = await FileExplorer.getDirectory(this.ctxNode);
-      if (!directory)
+      if (!this.directory)
         return;
-      for (let i = 0; i < directory.length; ++i)
+      for (let i = 0; i < this.directory.length; ++i)
       {
-        this.documents.push(directory[i]);
+        this.documents.push(this.directory[i]);
       }
     },
     addDocument()
     {
       console.debug("WIP: add doc");
-
+      const maxSize = 25000000;
+      const input = document.createElement("input");
+      input.type = "file";
+      input.multiple = true;
+      input.click();
+      input.addEventListener(
+        "change",
+        event => {
+          const files = event.target.files;
+          let filelist = [];
+          for (const file of files) {
+            filelist.push(file);
+          }
+          // filelist.push(...this.messages.pj);
+          const sizes = filelist.map(el => el.size);
+          const filesSize = sizes.reduce((a, b) => a + b);
+          if (filesSize > maxSize) {
+            alert(
+              `The selected file(s) is too large. The maximum size must not exceed ${maxSize / 1000000} MB`
+            );
+            return;
+          }
+          // this.messages.pj = filelist;
+          console.log(filelist);
+          FileExplorer.addFileUpload(this.directory, filelist);
+          this.$emit("reload");
+          this.update(this.Properties.view.serverId);
+        },
+        false
+      );
     },
     async delDocument(id)
     {
       console.debug("WIP: del doc", id);
-      const directory = await FileExplorer.getDirectory(this.ctxNode);
-      if (!directory)
+      if (!this.directory)
         return;
-      for (let i = 0; i < directory.length; ++i)
+      for (let i = 0; i < this.directory.length; ++i)
       {
-        if (directory[i]._server_id == id)
+        if (this.directory[i]._server_id == id)
         {
-          directory.splice(i, 1);
+          this.directory.splice(i, 1);
           this.documents.splice(i, 1);
         }
       }
@@ -147,6 +190,37 @@ export default {
     downloadDocument(id)
     {
       console.debug("WIP: download doc", id);
+      const file = this.docAt(id);
+      console.debug("file is", file)
+      if (file._info.model_type.get() != "Directory") {
+        file._ptr.load(path => {
+          if (file._info.model_type.get() == "HttpPath") {
+            console.debug("file is HttpPath", path)
+            const element = document.createElement("a");
+            const _path =
+              path.host.get() +
+              "/file/" +
+              encodeURIComponent(path.httpRootPath.get()) +
+              "/" +
+              encodeURIComponent(path.httpPath.get());
+            element.setAttribute("href", _path);
+            element.setAttribute("download", file.name.get());
+            element.style.display = "none";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          } else {
+            console.debug("file is not HttpPath", path)
+            var element = document.createElement("a");
+            element.setAttribute("href", "/sceen/_?u=" + path._server_id);
+            element.setAttribute("download", file.name);
+            element.click();
+          }
+        });
+      } else {
+          console.debug("file is directory")
+        // check recursive directory & create a ZIP
+      }
     },
     async debug(what) {
       console.debug("Debugging", what);
