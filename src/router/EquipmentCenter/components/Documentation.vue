@@ -139,11 +139,16 @@ export default {
         this.documents.push(this.directory[i]);
       }
     },
-    addDocument()
+    async addDocument()
     {
       console.debug("WIP: add doc");
       const maxSize = 25000000;
       const input = document.createElement("input");
+
+      if (!this.directory)
+      {
+        this.directory = await FileExplorer.createDirectory(this.ctxNode);
+      }
       input.type = "file";
       input.multiple = true;
       input.click();
