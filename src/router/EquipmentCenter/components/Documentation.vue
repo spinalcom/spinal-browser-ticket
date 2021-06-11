@@ -24,8 +24,18 @@ with this file. If not, see
 
 <template>
   <el-container>
-    <!-- <el-header>
-    </el-header> -->
+    <el-header>
+      <el-tooltip :content="`Add document`">
+        <el-button
+          icon="el-icon-plus"
+          circle
+          type="primary"
+          style="float: right"
+          :disabled="ctxNode == false"
+          @click.native="addDocument()"
+        ></el-button>
+      </el-tooltip>
+    </el-header>
     <el-main>
       <el-row :gutter="10">
         <el-col :span=6 v-for="doc in documents" :key="doc._server_id">
@@ -52,14 +62,6 @@ with this file. If not, see
           </el-card>
         </el-col>
       </el-row>
-      <el-tooltip :content="`Add document`">
-        <el-button
-          icon="el-icon-plus"
-          circle
-          :disabled="ctxNode == false"
-          @click.native="addDocument()"
-        ></el-button>
-      </el-tooltip>
     </el-main>
   </el-container>
 </template>
