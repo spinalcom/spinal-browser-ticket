@@ -62,7 +62,7 @@ with this file. If not, see
           <el-table :data="category.attributes">
             <el-table-column label="Name">
               <editable slot-scope="scope" :content.sync="scope.row.label" :isEditing="scope.row.isEditing">
-                <a v-if="scope.row.type == 'url'" :href="scope.row.value">
+                <a v-if="scope.row.type == 'url'" :href="httpify(scope.row.value)">
                   {{ scope.row.label }}
                 </a>
                 <div v-else>
@@ -130,14 +130,8 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-// import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from "../backend/EquipmentBack";
-import BackendInitializer from "../../../services/BackendInitializer";
-import { EventBus } from "../../../services/event";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
 import { FileSystem } from 'spinal-core-connectorjs_type'
-// import "../../../services/viewerUtils/eventsHandler/GlobalData";
 
 import NodeTable from "./NodeTable.vue";
 import Editable from "../../../compoments/Editable.vue";
@@ -149,12 +143,6 @@ export default {
     Properties: {
       required: true,
       type: Object,
-      validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
-        }
-        return "success";
-      },
     },
   },
   data() {
@@ -217,14 +205,6 @@ export default {
       })
       console.debug("end");
     },
-    exportToExcel() {
-      this.$refs["Explorer-table"].exportToExcel();
-    },
-    async getAttributes(category)
-    {
-      let result = await serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat);
-      return result;
-    },
     async addAttribute(category){
       const node = await serviceDocumentation.addAttributeByCategory(this.ctxNode, category.cat, "newAttribute", "newValue", "newType", "newUnit");
       await spinalIO.waitNodeReady(node);
@@ -272,18 +252,17 @@ export default {
       await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name)
       category.isEditing = false;
     },
+    httpify(url)
+    {
+      if (!url.startsWith("http"))
+      {
+        return "http://" + url;
+      }
+      return url;
+    },
     async debug(what) {
       console.debug("Debugging", what);
     },
   },
 };
 </script>
-
-<style scoped>
-
-.spl-button-bar {
-  display: flex;
-  flex-direction: row-reverse;
-  padding: 5px 5px 5px 5px;
-}
-</style>

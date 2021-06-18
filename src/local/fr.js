@@ -56,6 +56,7 @@ export default {
   "node-type.Sum": "Nombre d'équipements",
   "spinal-twin.hasCategoryAttributes": "Attributs",
   "spinal-twin.Explorer": "Explorateur",
+  "spinal-twin.Documentation": "Documentation",
   "explorer.Name": "Nom",
   "SpaceManagement.Nom": "Nom",
   "SpaceManagement.Categories": "Categories",

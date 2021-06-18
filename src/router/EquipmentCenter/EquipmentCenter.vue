@@ -90,6 +90,7 @@ import TabManager from "../../compoments/tabManager/tabManager.vue";
 import Explorer from "./components/Explorer.vue";
 import Visualizer from "./components/Visualizer.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
+import Documentation from "./components/Documentation.vue";
 import "../../services/viewerUtils/eventsHandler/Equipment";
 const VIEW_KEY = "Equipment Center";
 // Component exports
@@ -123,6 +124,14 @@ export default {
             view: false,
           },
         },
+        {
+          name: "spinal-twin.Documentation",
+          content: Documentation,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          }
+        }
       ],
     };
   },
@@ -177,7 +186,6 @@ export default {
     updateNames()
     {
       this.tabs[0].name = `node-type.${this.items.nodeType}`;
-      this.tabs[1].name = "node-type.hasCategoryAttributes";
     },
     popView() {
       ViewManager.getInstance(this.viewKey).pop()
