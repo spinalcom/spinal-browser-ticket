@@ -30,27 +30,27 @@ with this file. If not, see
       </el-button>
     </el-tooltip>
     <div class="spl-button-bar">
-      <el-tooltip content="Isolate" :disabled="!canIsolate">
+      <el-tooltip content="Isolate" :disabled="!isNode">
         <el-button class="spl-el-button"
           icon="el-icon-aim" circle
           @click.stop="isolateAll()"
-          :disabled="!canIsolate"
+          :disabled="!isNode"
         >
         </el-button>
       </el-tooltip>
-      <el-tooltip content="Select" :disabled="!canIsolate">
+      <el-tooltip content="Select" :disabled="!isNode">
         <el-button class="spl-el-button"
           icon="el-icon-location" circle
           @click.stop="selectInView()"
-          :disabled="!canIsolate"
+          :disabled="!isNode"
         >
         </el-button>
       </el-tooltip>
-      <el-tooltip content="Zoom" :disabled="!canIsolate">
+      <el-tooltip content="Zoom" :disabled="!isNode">
         <el-button class="spl-el-button"
           icon="el-icon-search" circle
           @click.stop="zoomOn()"
-          :disabled="!canIsolate"
+          :disabled="!isNode"
         >
         </el-button>
       </el-tooltip>
@@ -105,7 +105,7 @@ export default {
       viewKey: VIEW_KEY,
       items: false,
       currentView: false,
-      canIsolate: false,
+      isNode: false,
       tabs: [
         {
           name: "node-type.context",
@@ -152,9 +152,9 @@ export default {
         this.contextServId = 0;
         mapItems = await EquipmentBack.getInstance().getContexts();
         // this.tabs[1].props.item = await EquipmentBack.getInstance().getContextsAttributes();
-        this.canIsolate = false;
+        this.isNode = false;
       } else {
-        this.canIsolate = true;
+        this.isNode = true;
         if (this.contextServId === 0) {
           this.contextServId = view.serverId;
         }
