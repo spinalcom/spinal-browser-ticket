@@ -37,7 +37,39 @@ with this file. If not, see
       </el-tooltip>
     </el-header>
     <el-main>
-      <el-row :gutter="10">
+      <el-table
+            :data="documents"
+            border
+            style="overflow: auto; height: 100%"
+            :header-cell-style="{'background-color': '#f0f2f5'}">
+        <el-table-column label="Document">
+          <div slot-scope="scope"> {{ scope.row.name }} </div>
+        </el-table-column>
+        <el-table-column
+            label="Actions"
+            fixed="right"
+            width=120>
+          <el-tooltip :content="`Download document`">
+            <el-button
+              icon="el-icon-download"
+              circle
+              :disabled="ctxNode == false"
+              @click.native="downloadDocument(doc._server_id)"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip :content="`Remove document`">
+            <el-button
+              icon="el-icon-delete"
+              circle
+              type=danger
+              :disabled="ctxNode == false"
+              @click.native="delDocument(doc._server_id)"
+            ></el-button>
+          </el-tooltip>
+        </el-table-column>
+      </el-table>
+
+      <!-- <el-row :gutter="10">
         <el-col :span=6 v-for="doc in documents" :key="doc._server_id">
           <el-card>
             <div slot="header">
@@ -61,7 +93,7 @@ with this file. If not, see
             </el-tooltip>
           </el-card>
         </el-col>
-      </el-row>
+      </el-row> -->
     </el-main>
   </el-container>
 </template>
