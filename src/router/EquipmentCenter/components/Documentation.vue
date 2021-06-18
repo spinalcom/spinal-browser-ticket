@@ -49,23 +49,27 @@ with this file. If not, see
             label="Actions"
             fixed="right"
             width=120>
-          <el-tooltip :content="`Download document`">
-            <el-button
-              icon="el-icon-download"
-              circle
-              :disabled="ctxNode == false"
-              @click.native="downloadDocument(doc._server_id)"
-            ></el-button>
-          </el-tooltip>
-          <el-tooltip :content="`Remove document`">
-            <el-button
-              icon="el-icon-delete"
-              circle
-              type=danger
-              :disabled="ctxNode == false"
-              @click.native="delDocument(doc._server_id)"
-            ></el-button>
-          </el-tooltip>
+          <div slot-scope="scope">
+            <el-tooltip :content="`Download document`">
+              <el-button
+                icon="el-icon-download"
+                circle
+                @click.native="downloadDocument(scope.row._server_id)"
+              ></el-button>
+            </el-tooltip>
+            <el-tooltip :content="`Remove document`">
+              <el-popconfirm
+                title="Are you sure to delete this?"
+                @confirm="delDocument(scope.row._server_id)">
+                <el-button
+                  icon="el-icon-delete"
+                  circle
+                  type=danger
+                  slot="reference"
+                ></el-button>
+              </el-popconfirm>
+            </el-tooltip>
+          </div>
         </el-table-column>
       </el-table>
 
@@ -175,7 +179,6 @@ export default {
     },
     async addDocument()
     {
-      console.debug("WIP: add doc");
       const maxSize = 25000000;
       const input = document.createElement("input");
 
@@ -214,7 +217,6 @@ export default {
     },
     async delDocument(id)
     {
-      console.debug("WIP: del doc", id);
       if (!this.directory)
         return;
       for (let i = 0; i < this.directory.length; ++i)
@@ -228,13 +230,10 @@ export default {
     },
     downloadDocument(id)
     {
-      console.debug("WIP: download doc", id);
       const file = this.docAt(id);
-      console.debug("file is", file)
       if (file._info.model_type.get() != "Directory") {
         file._ptr.load(path => {
           if (file._info.model_type.get() == "HttpPath") {
-            console.debug("file is HttpPath", path)
             const element = document.createElement("a");
             const _path =
               path.host.get() +
@@ -249,7 +248,6 @@ export default {
             element.click();
             document.body.removeChild(element);
           } else {
-            console.debug("file is not HttpPath", path)
             var element = document.createElement("a");
             element.setAttribute("href", "/sceen/_?u=" + path._server_id);
             element.setAttribute("download", file.name);
@@ -257,7 +255,6 @@ export default {
           }
         });
       } else {
-          console.debug("file is directory")
         // check recursive directory & create a ZIP
       }
     },

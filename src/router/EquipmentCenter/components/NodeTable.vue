@@ -131,7 +131,6 @@ export default {
       });
     },
     SeeEvent(item) {
-      console.debug("item", item)
       EventBus.$emit("equipment-isolate-item", {
         server_id: item.serverId,
         color: item.color
