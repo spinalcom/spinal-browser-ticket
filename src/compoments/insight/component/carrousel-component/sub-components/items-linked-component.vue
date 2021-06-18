@@ -28,7 +28,7 @@
       <endpoint-component 
          v-for="room of rooms"
          :name="room.name"
-         v-bind="room.name"
+         v-bind:key="room.name"
          :endpoints="room.endpoints"
          :variableSelected="variableSelected"
          :room="room"

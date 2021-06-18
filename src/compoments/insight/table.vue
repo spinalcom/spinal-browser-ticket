@@ -104,7 +104,7 @@ export default {
     groupLstVue,
     tableauContext,
     tableauCategory,
-    HeatmapVue
+    HeatmapVue,
   },
   props: [],
   data() {
@@ -119,37 +119,10 @@ export default {
   },
   async mounted() {
     this.profilSelected = null;
-    this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts
-
-    EventBus.$on("sidebar-selected-item", item => {
-      spinalBackEnd.heatmapBack
-        .getDataFilterItem(item)
-        .then(result => {
-          console.log("resuuuuuuuultat____", result);
-          this.contextLst = result;
-
-          if (this.contextSelected) {
-            for (const context of this.contextLst) {
-              if (this.contextSelected.id === context.id) {
-                const selectCategorie = this.selectCategorie;
-                this.SelectContext(context);
-                if (selectCategorie) {
-                  for (const cat of this.contextSelected.categories) {
-                    if (selectCategorie.id === cat.id) {
-                      this.onclick(cat);
-                    }
-                  }
-                }
-                break;
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    });
+    this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts and children
   },
+
+  
   methods: {
     ResetBreadCrumb() {
       this.profilSelected = null;
@@ -263,6 +236,34 @@ export default {
     }
   }
 };
+/*EventBus.$on("sidebar-selected-item", item => {
+      spinalBackEnd.heatmapBack
+        .getDataFilterItem(item)
+        .then(result => {
+          console.log("resuuuuuuuultat____", result);
+          this.contextLst = result;
+
+          if (this.contextSelected) {
+            for (const context of this.contextLst) {
+              if (this.contextSelected.id === context.id) {
+                const selectCategorie = this.selectCategorie;
+                this.SelectContext(context);
+                if (selectCategorie) {
+                  for (const cat of this.contextSelected.categories) {
+                    if (selectCategorie.id === cat.id) {
+                      this.onclick(cat);
+                    }
+                  }
+                }
+                break;
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    });*/
 </script>
 
 <style scoped>
@@ -271,17 +272,6 @@ export default {
   height: 100%;
   padding: 0 5px;
 }
-/* .card-content {
-   display: flex;
-   flex-direction: column;
-}
-.card-content > * {
-   margin-left: 0;
-   margin-top: 10px;
-} */
-/* .clearfix {
-   text-align: center;
-} */
 .breadcrumb-style {
   display: flex;
   justify-content: space-between;
@@ -291,15 +281,6 @@ export default {
   align-items: center;
   background-color: white;
 }
-
-/* .boutton-barre {
-   padding: 14px !important;
-} */
-/* .barre {
-   display: flex;
-   justify-content: flex-end;
-   margin-bottom: 10px;
-} */
 .spinal-space-header {
   display: flex;
   justify-content: space-between;

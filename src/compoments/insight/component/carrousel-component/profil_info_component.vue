@@ -43,7 +43,6 @@ export default {
       return {};
    },
    mounted() {
-      // console.log("this.variableSelected", this.variableSelected);
    },
    methods: {
       updateAverage() {

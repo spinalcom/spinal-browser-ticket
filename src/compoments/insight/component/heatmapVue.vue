@@ -120,7 +120,6 @@ export default {
             gradients,
             endpoints: this.endpoints,
          };
-
          EventBus.$emit("seeHeatMap", obj);
       },
 

@@ -120,18 +120,9 @@ export default {
     getRoomsCount(category) {
       return SpinalBackend.heatmapBack.getCategoriesRoomCount(category);
     },
-
-    getSurfaceTotale(category) {
-      const surfaceTotal = SpinalBackend.heatmapBack.getCategoriesSurface(
-        category
-      );
-      return Math.round(surfaceTotal * 100) / 100;
-    },
-
     seeGroups(category) {
       this.$emit("seeGroups", category);
     },
-
     goBack(){
       this.$emit("reset");
     },
@@ -164,13 +155,11 @@ export default {
     },
 
     getRow() {
-     
       return this.categories.map(el => {
         return {
           name: el.name,
           groups: el.groups.length,
           rooms: this.getRoomsCount(el),
-          surface: this.getSurfaceTotale(el)
         };
       });
     }

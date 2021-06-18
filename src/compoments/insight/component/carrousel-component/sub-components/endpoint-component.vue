@@ -1,7 +1,7 @@
 <template>
    <div class="div__content">
       <div class="relative">
-         <div class="div__rectangle" :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
+         <div v-if="this.endpoint" class="div__rectangle" :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
          </div>
          <el-tooltip content="Isolate" effect="light"
              :open-delay="300"
@@ -92,7 +92,6 @@ export default {
          this.endpoint = this.endpoints.find(
             (el) => el.id.get() == this.variableSelected.id
          );
-
          if (this.endpoint) {
             this.bindProcess = this.endpoint.currentValue.bind(() => {
                this.value = this.endpoint.currentValue.get();
@@ -224,10 +223,10 @@ export default {
 
    watch: {
       variableSelected() {
-         if (this.endpoint && this.bindProcess)
+         if (this.endpoint && this.bindProcess){
             this.isModalVisible=false;
             this.endpoint.currentValue.unbind(this.bindProcess);
-
+         }
          this.updateEndpoint();
          this.updateDisplay();
       },

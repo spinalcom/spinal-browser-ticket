@@ -121,6 +121,10 @@ export default class Heatmap {
     return tmp;
   }
 
+  timeout(ms) { //pass a time in milliseconds to this function
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   async Icontext(context) {
     let catLst = await groupManagerService.getCategories(context.info.id.get());
     const contextId = context.info.id.get();
@@ -400,7 +404,6 @@ export default class Heatmap {
 
 
     const bims = references.map(el => el.get());
-
     const bimMap = new Map();
 
     for (const bimObject of bims) {
@@ -417,6 +420,9 @@ export default class Heatmap {
     const res = []
 
     for (const [key, value] of bimMap.entries()) {
+      while (!window.spinal.BimObjectService.getModelByBimfile(key)){
+        await this.timeout(1000);
+      }
       res.push({
         model: window.spinal.BimObjectService
           .getModelByBimfile(key),

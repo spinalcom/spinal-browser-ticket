@@ -178,18 +178,6 @@ export default {
       this.$emit("selectgroup",group);
     },
 
-    //Selecting a profil
-    profilSelectEvent (value) {
-      console.log("Event recieved : ",value);
-      this.$parent.profilSelected=value;
-      this.$emit("addbreadcrumb", {
-        name: value.name,
-        click: () => {
-          
-        }
-      });
-      
-    },
     resetgroupSelected() {
       this.groupSelected = null;
     },

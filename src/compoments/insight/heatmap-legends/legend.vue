@@ -32,10 +32,9 @@ export default {
       this.bimObjectsColored = [];
       return {};
    },
-   mounted() {
+   mounted() { 
       console.log("colorElement");
       this.colorElement();
-      //console.log("PROFIL ",this.profil);
    },
 
    beforeDestroy() {
@@ -79,7 +78,6 @@ export default {
                const value = endpoint.currentValue.get();
                let color = this.getColor(value, this.profil.config);
                let vector = backendService.convertColorToVector(color);
-
                ids.forEach((el) => {
                   this.bimObjectsColored.push({ model: el.model, ids: el.ids });
 
