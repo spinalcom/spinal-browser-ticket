@@ -106,7 +106,6 @@ export default {
         await window.spinal.SpinalForgeViewer.loadModelFromNode(
           scenes[0].info.id.get()
         );
-        await viewerUtils.waitLoadModels(this.viewer);
       }
       await spinalBackEnd.waitInit();
       // const scenes = await spinalBackEnd.viewerBack.getScenes();

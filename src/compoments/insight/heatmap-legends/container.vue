@@ -63,7 +63,7 @@ export default {
       closed() {},
 
       openEvent() {
-         EventBus.$on("seeHeatMap", async (option) => {
+         EventBus.$on("seeHeatMap",  (option) => {
             this.seeLegend = true;
             //console.log("heatmap-legends/ ",option);
             this.gradients = option.gradients;
@@ -104,6 +104,7 @@ export default {
    beforeDestroy() {
       console.log("destroy container");
    },
+
 };
 </script>
 
