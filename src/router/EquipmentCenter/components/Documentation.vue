@@ -107,7 +107,7 @@ import { FileSystem } from 'spinal-core-connectorjs_type'
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 
 export default {
-  name: "Attributes",
+  name: "Documentation",
   components: {  },
   props: {
     Properties: {
