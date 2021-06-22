@@ -57,6 +57,7 @@ export default {
   "spinal-twin.hasCategoryAttributes": "Attributs",
   "spinal-twin.Explorer": "Explorateur",
   "spinal-twin.Documentation": "Documentation",
+  "spinal-twin.Notes": "Notes",
   "explorer.Name": "Nom",
   "SpaceManagement.Nom": "Nom",
   "SpaceManagement.Categories": "Categories",
