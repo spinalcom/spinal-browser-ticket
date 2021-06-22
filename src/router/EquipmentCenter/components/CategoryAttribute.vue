@@ -27,9 +27,70 @@ with this file. If not, see
     <!-- <el-header>
     </el-header> -->
     <el-main>
-      <el-collapse v-for="category in Categories" :key="category.nameCat">
-        <el-collapse-item>
-          <b slot="title" v-on:click.stop
+      <el-table v-if="Categories" :data="Categories" >
+        <el-table-column type=expand>
+          <div slot-scope="cat">
+            <el-table :data="cat.row.attributes">
+              <el-table-column label="Name">
+                <editable slot-scope="scope" :content.sync="scope.row.label" :isEditing="scope.row.isEditing">
+                  <a v-if="scope.row.type == 'url'" :href="httpify(scope.row.value)">
+                    {{ scope.row.label }}
+                  </a>
+                  <div v-else>
+                    {{ scope.row.label }}
+                  </div>
+                </editable>
+              </el-table-column>
+              <el-table-column label="Value">
+                <editable slot-scope="scope" :content.sync="scope.row.value" :isEditing="scope.row.isEditing">
+                  {{ scope.row.value }}
+                </editable>
+              </el-table-column>
+              <el-table-column label="Type">
+                <editable slot-scope="scope" :content.sync="scope.row.type" :isEditing="scope.row.isEditing">
+                  {{ scope.row.type }}
+                  </editable>
+              </el-table-column>
+              <el-table-column label="Unit">
+                <editable slot-scope="scope" :content.sync="scope.row.unit" :isEditing="scope.row.isEditing">
+                  {{ scope.row.unit }}
+                </editable>
+              </el-table-column>
+              <el-table-column fixed="right" label="Options" width="120">
+                <template slot-scope="scope">
+                  <el-tooltip :content="`Edit attribute ${scope.row.label}`">
+                    <el-button
+                      icon="el-icon-edit"
+                      circle
+                      @click.native="editAttribute(scope.row)"
+                    ></el-button>
+                  </el-tooltip>
+                  <el-tooltip :content="`Remove attribute ${scope.row.label}`">
+                    <el-popconfirm
+                      title="Are you sure to delete this?"
+                      @confirm="delAttribute(cat.row, scope.row.serverId)">
+                      <el-button
+                        type=danger
+                        icon="el-icon-delete"
+                        circle
+                        slot="reference"
+                      ></el-button>
+                    </el-popconfirm>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+            </el-table>
+          <el-tooltip :content="`Add attribute to ${cat.row.name}`">
+            <el-button
+              icon="el-icon-plus"
+              circle
+              @click.native="addAttribute(cat.row)"
+            ></el-button>
+          </el-tooltip>
+          </div>
+        </el-table-column>
+        <el-table-column label="Name">
+          <b slot-scope="cat" v-on:click.stop
                           v-on:input.stop
                           v-on:keyup.stop
                           v-on:keydown.stop
@@ -37,86 +98,35 @@ with this file. If not, see
                           v-on:blur.stop
                           v-on:change.stop
                           v-on:keypress.stop>
-            <editable :content.sync="category.name" :isEditing="category.isEditing">
-              {{ category.name }}
+            <editable :content.sync="cat.row.name" :isEditing="cat.row.isEditing">
+              {{ cat.row.name }}
             </editable>
           </b>
-          <el-tooltip :content="`Remove category ${category}`">
-            <el-popconfirm
-              title="Are you sure to delete this?"
-              @confirm="delCategory(category)">
+        </el-table-column>
+        <el-table-column label="Actions" fixed="right" width=200>
+          <div slot-scope="cat">
+            <el-tooltip :content="`Edit category ${cat.row.name}`">
               <el-button
-                slot="reference"
-                icon="el-icon-minus"
+                icon="el-icon-edit"
                 circle
+                @click.native="editCategory(cat.row)"
               ></el-button>
-            </el-popconfirm>
-          </el-tooltip>
-          <el-tooltip :content="`Edit category ${category}`">
-            <el-button
-              icon="el-icon-edit"
-              circle
-              @click.native="editCategory(category)"
-            ></el-button>
-          </el-tooltip>
-          <el-table :data="category.attributes">
-            <el-table-column label="Name">
-              <editable slot-scope="scope" :content.sync="scope.row.label" :isEditing="scope.row.isEditing">
-                <a v-if="scope.row.type == 'url'" :href="httpify(scope.row.value)">
-                  {{ scope.row.label }}
-                </a>
-                <div v-else>
-                  {{ scope.row.label }}
-                </div>
-              </editable>
-            </el-table-column>
-            <el-table-column label="Value">
-              <editable slot-scope="scope" :content.sync="scope.row.value" :isEditing="scope.row.isEditing">
-                {{ scope.row.value }}
-              </editable>
-            </el-table-column>
-            <el-table-column label="Type">
-              <editable slot-scope="scope" :content.sync="scope.row.type" :isEditing="scope.row.isEditing">
-                {{ scope.row.type }}
-                </editable>
-            </el-table-column>
-            <el-table-column label="Unit">
-              <editable slot-scope="scope" :content.sync="scope.row.unit" :isEditing="scope.row.isEditing">
-                {{ scope.row.unit }}
-                </editable>
-            </el-table-column>
-            <el-table-column fixed="right" label="Options" width="120">
-              <template slot-scope="scope">
-                <el-tooltip :content="`Remove attribute ${scope.row.label}`">
-                  <el-popconfirm
-                    title="Are you sure to delete this?"
-                    @confirm="delAttribute(category, scope.row.serverId)">
-                    <el-button
-                      icon="el-icon-minus"
-                      circle
-                      slot="reference"
-                    ></el-button>
-                  </el-popconfirm>
-                </el-tooltip>
-                <el-tooltip :content="`Edit attribute ${scope.row.label}`">
-                  <el-button
-                    icon="el-icon-edit"
-                    circle
-                    @click.native="editAttribute(scope.row)"
-                  ></el-button>
-                </el-tooltip>
-              <template>
-            </el-table-column>
-          </el-table>
-          <el-tooltip :content="`Add attribute to ${category.name}`">
-            <el-button
-              icon="el-icon-plus"
-              circle
-              @click.native="addAttribute(category)"
-            ></el-button>
-          </el-tooltip>
-        </el-collapse-item>
-      </el-collapse>
+            </el-tooltip>
+            <el-tooltip :content="`Remove category ${cat.row.name}`">
+              <el-popconfirm
+                title="Are you sure to delete this?"
+                @confirm="delCategory(cat.row)">
+                <el-button
+                  slot="reference"
+                  type=danger
+                  icon="el-icon-delete"
+                  circle
+                ></el-button>
+              </el-popconfirm>
+            </el-tooltip>
+          </div>
+        </el-table-column>
+      </el-table>
       <el-tooltip :content="`Add attribute category`">
         <el-button
           icon="el-icon-plus"
