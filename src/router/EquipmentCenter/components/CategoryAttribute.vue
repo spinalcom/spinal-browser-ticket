@@ -170,6 +170,10 @@ export default {
       deep: true,
     }
   },
+  mounted()
+  {
+    this.update(this.Properties.view.serverId);
+  },
   methods: {
     async update(id)
     {
