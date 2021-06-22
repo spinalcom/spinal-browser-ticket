@@ -74,6 +74,7 @@ export default {
       colorElement() {
          this.unBindAll();
          this.endpoints.map(({ endpoint, ids }) => {
+            if (!endpoint) return;
             let bindProcess = endpoint.currentValue.bind(() => {
                const value = endpoint.currentValue.get();
                let color = this.getColor(value, this.profil.config);
