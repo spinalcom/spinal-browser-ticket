@@ -91,6 +91,7 @@ import Explorer from "./components/Explorer.vue";
 import Visualizer from "./components/Visualizer.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import Documentation from "./components/Documentation.vue";
+import Notes from "./components/Notes.vue";
 import "../../services/viewerUtils/eventsHandler/Equipment";
 const VIEW_KEY = "Equipment Center";
 // Component exports
@@ -115,6 +116,7 @@ export default {
             items: false,
             view: false,
           },
+          ignore: false,
         },
         {
           name: "spinal-twin.hasCategoryAttributes",
@@ -123,6 +125,7 @@ export default {
             viewKey: VIEW_KEY,
             view: false,
           },
+          ignore: true,
         },
         {
           name: "spinal-twin.Documentation",
@@ -130,8 +133,18 @@ export default {
           props: {
             viewKey: VIEW_KEY,
             view: false,
-          }
-        }
+          },
+          ignore: true,
+        },
+        // {
+        //   name: "spinal-twin.Notes",
+        //   content: Notes,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
       ],
     };
   },
@@ -181,6 +194,20 @@ export default {
       for (let tab of this.tabs)
       {
         tab.props.view = this.currentView;
+      }
+      if (this.isNode)
+      {
+        for (let tab of this.tabs)
+        {
+          tab.ignore = false;
+        }
+      }
+      else
+      {
+        for (let i = 1; i < this.tabs.length; ++i)
+        {
+          this.tabs[i].ignore = true;
+        }
       }
     },
     updateNames()
