@@ -38,6 +38,7 @@ import { REFERENCE_OBJECT_RELATION_NAME, BIM_OBJECT_TYPE } from 'spinal-env-view
 // import { SpinalForgeViewer } from 'spinal-env-viewer-plugin-forge'
 
 import q from "q";
+import { EQUIPMENT_RELATION, EQUIPMENT_TYPE, ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 
 
 export default class Heatmap {
@@ -80,45 +81,51 @@ export default class Heatmap {
   }
 
   async getDataFilterItem(item) {
+    const res = [];
     const data = await this.initDefer.promise;
-    if (!item) return data;
+    if (!item){
+      return res;
+    }
     const itemNode = FileSystem._objects[item.server_id];
-    if (itemNode.getType().get() !== "geographicFloor") {
-      return data;
-    }
-
-    const idsAGarder = item.children.map(obj => obj.id);
-    const tmp = [];
-    for (const d of data) {
-      const cats = [];
-      for (const cat of d.categories) {
-        const groups = [];
-        for (const grp of cat.groups) {
-          const profils = [];
-          for (const r of grp.profils) {
-            if (idsAGarder.includes(r.id)) profils.push(r);
-          }
-          groups.push({
-            profils,
-            id: grp.id,
-            name: grp.name,
-            color: grp.color
-          });
-        }
-        cats.push({
-          groups,
-          id: cat.id,
-          name: cat.name
-        });
+    if (itemNode.getType().get() === ROOM_TYPE) {
+      res.push(itemNode.info.id.get());
+      const childs = await itemNode.getChildren(EQUIPMENT_RELATION);
+      for (const child of childs){
+        res.push(child.info.id.get());
       }
-      tmp.push({
-        categories: cats,
-        id: d.id,
-        name: d.name
-      });
+      return res;
     }
+    
+    const idsAGarder = item.children.map(obj => obj.id);
+    for (const d of data) {
+      for (const cat of d.categories) {
+        for (const grp of cat.groups) {
+          for (const profil of grp.rooms) {
+            for(const obj of profil.rooms){ //obj is either a room or a bimobject at this point
+              // if obj is a room we just have to filter with idAGarder
+              // if obj is a BIMOBJECT we filter depending on the room it is in
+              if (obj.type == ROOM_TYPE){
+                if (idsAGarder.includes(obj.id)){
+                  res.push(obj.id);
+                }
+              }
+              if (obj.type == EQUIPMENT_TYPE) {
+                const node = SpinalGraphService.getRealNode(obj.id);
+                const parents = await node.getParents(EQUIPMENT_RELATION);
+                for (const parent of parents){
+                  if (parent.info.type.get() == ROOM_TYPE && idsAGarder.includes(parent.info.id.get())){
+                    res.push(obj.id);
 
-    return tmp;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return res;
+
   }
 
   timeout(ms) { //pass a time in milliseconds to this function
