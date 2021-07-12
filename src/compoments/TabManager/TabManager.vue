@@ -20,62 +20,59 @@ with this file. If not, see
 
 <template>
   <el-tabs
+    :value="activetab"
     class="tab-manager-tabs"
     type="border-card"
-    :value="activetab"
   >
     <template
-      v-for="tab in tabsprop"
-    >
+        v-for="tab in tabsprop">
       {{ updateActive() }}
       <template v-if="!tab.ignore">
         <el-tab-pane
-          :key="$t(tab.name)"
-          :label="$t(tab.name)"
-          :name="$t(tab.name)"
-          :closable="false"
-          style="height:100%; overflow: auto"
-        >
-          <component  :is="tab.content" :Properties="tab.props"></component>
+            :key="$t(tab.name)"
+            :label="$t(tab.name)"
+            :name="$t(tab.name)"
+            :closable="false"
+            style="height:100%; overflow: auto">
+          <component
+            :is="tab.content"
+            :Properties="tab.props"
+          ></component>
         </el-tab-pane>
       </template>
     </template>
-    <!-- <el-tab-pane :disabled="true">
-      <span slot="label">
-        <el-dropdown trigger="click"
-                     @command="addTab">
-          <el-button type="primary"
-                     plain>
-            ···
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="tab in tabs"
-                              :key="tab.name"
-                              :command="tab">
-              <div v-if="!hasTab(tabsprop, tab)">
-                {{ tab.name }}
-              </div>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </span>
-    </el-tab-pane> -->
   </el-tabs>
 </template>
 
 <script>
+import Vue from 'vue';
 export default {
-  name: "tabManager",
+  name: "TabManager",
   components: {},
-  props: { tabsprop: Array },
+  props: {
+    tabsprop: {
+      type: Array,
+      required: true,
+      validator: function (value) {
+        if (!value.name instanceof String) {
+          console.error("Invalid tab name");
+          return false;
+        }
+        if (!value.content instanceof Vue) {
+          console.error("Invalid component for tab content");
+          return false;
+        }
+        return true;
+      }
+    }
+  },
+
   data() {
     return {
       activetab: this.$t(this.tabsprop[0].name),
     };
   },
-  async mounted() {
-    this.activetab = this.$t(this.tabsprop[0].name)
-  },
+
   watch: {
     tabsprop: {
       handler(oldTabs, newTabs) {
@@ -92,10 +89,16 @@ export default {
       immediate: true,
     },
   },
+
+  async mounted() {
+    this.activetab = this.$t(this.tabsprop[0].name)
+  },
+
   methods: {
     updateActive() {
       this.activetab = this.$t(this.tabsprop[0].name);
     },
+
     debug(active) {
       console.log(active);
     },

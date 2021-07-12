@@ -92,7 +92,7 @@ import { ViewManager } from "../../../services/ViewManager/ViewManager";
 const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { SpinalBackEnd, spinalBackEnd } from "../../../services/spinalBackend";
 import '../../../router/DataRoom/DataRoomEventHandler';
-import TabManager from '../tabManager.vue';
+import TabManager from '../TabManager.vue';
 export default {
   name: "CategoryAttribute",
   components: {TabManager  },

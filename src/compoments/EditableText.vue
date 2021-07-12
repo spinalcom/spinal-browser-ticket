@@ -26,24 +26,26 @@ with this file. If not, see
   <div v-if="!(isEditing)">
     <slot></slot>
   </div>
-  <el-input v-else
-    size="small"
+  <el-input
+    v-else
     v-model="test"
     @input.native="$emit('update:content', test)">
+    size="small"
   </el-input>
 </template>
 
 <script>
 export default {
-  name: "Editable",
+  name: "EditableText",
   props: {
     content: { required: true, type: String },
     isEditing: { required: true, type: Boolean },
   },
-  data: function () {
+  
+  data() {
     return {
       test: this.content
+    };
   }
-    }
 }
 </script>
