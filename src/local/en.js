@@ -53,10 +53,13 @@ export default {
   "node-type.hasFiles": "Documentation",
   "node-type.hasCategoryAttributes": "Attributes", // TODO replace references for spinal-twin
   "node-type.Sum": "Equipment number",
+  "node-type.Category": "Category",
+  "node-type.Attribute": "Attribute",
   "spinal-twin.hasCategoryAttributes": "Attributes",
   "spinal-twin.Explorer": "Explorer",
   "spinal-twin.Documentation": "Documentation",
   "spinal-twin.Notes": "Notes",
+  "spinal-twin.Tickets": "Tickets",
   "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",
   "SpaceManagement.Categories": "Categories",

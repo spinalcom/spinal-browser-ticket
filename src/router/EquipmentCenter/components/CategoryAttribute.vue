@@ -24,51 +24,98 @@ with this file. If not, see
 
 <template>
   <el-container>
-    <!-- <el-header>
-    </el-header> -->
+    <el-header>
+      <el-tooltip
+        :content="`Add attribute category`"
+        style="float: right"
+      >
+        <el-button
+          @click.native="addCategory()"
+          :disabled="ctxNode == false"
+          icon="el-icon-plus"
+          type="primary"
+          circle
+        ></el-button>
+      </el-tooltip>
+    </el-header>
     <el-main>
-      <el-table v-if="Categories" :data="Categories" >
+      <el-table
+        v-if="Categories"
+        :data="Categories"
+        :header-cell-style="{'background-color': '#f0f2f5'}"
+        border
+        style="overflow: auto; height: auto"
+      >
         <el-table-column type=expand>
           <div slot-scope="cat">
-            <el-table :data="cat.row.attributes">
-              <el-table-column label="Name">
-                <editable slot-scope="scope" :content.sync="scope.row.label" :isEditing="scope.row.isEditing">
-                  <a v-if="scope.row.type == 'url'" :href="httpify(scope.row.value)">
+            <el-table
+              :data="cat.row.attributes"
+              :header-cell-style="{'background-color': '#f0f2f5'}"
+              border
+              style="overflow: auto; height: auto"
+            >
+              <el-table-column :label="$t('node-type.Attribute')">
+                <editable-text
+                  :content.sync="scope.row.label"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
+                  <a
+                    v-if="scope.row.type == 'url'"
+                    :href="httpify(scope.row.value)"
+                  >
                     {{ scope.row.label }}
                   </a>
                   <div v-else>
                     {{ scope.row.label }}
                   </div>
-                </editable>
+                </editable-text>
               </el-table-column>
               <el-table-column label="Value">
-                <editable slot-scope="scope" :content.sync="scope.row.value" :isEditing="scope.row.isEditing">
+                <editable-text
+                  :content.sync="scope.row.value"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
                   {{ scope.row.value }}
-                </editable>
+                </editable-text>
               </el-table-column>
               <el-table-column label="Type">
-                <editable slot-scope="scope" :content.sync="scope.row.type" :isEditing="scope.row.isEditing">
+                <editable-text
+                  :content.sync="scope.row.type"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
                   {{ scope.row.type }}
-                  </editable>
+                </editable-text>
               </el-table-column>
               <el-table-column label="Unit">
-                <editable slot-scope="scope" :content.sync="scope.row.unit" :isEditing="scope.row.isEditing">
+                <editable-text
+                  :content.sync="scope.row.unit"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
                   {{ scope.row.unit }}
-                </editable>
+                </editable-text>
               </el-table-column>
-              <el-table-column fixed="right" label="Options" width="120">
+              <el-table-column
+                fixed="right"
+                label="Options"
+                width="120"
+              >
                 <template slot-scope="scope">
                   <el-tooltip :content="`Edit attribute ${scope.row.label}`">
                     <el-button
+                      @click.native="editAttribute(scope.row)"
                       icon="el-icon-edit"
                       circle
-                      @click.native="editAttribute(scope.row)"
                     ></el-button>
                   </el-tooltip>
                   <el-tooltip :content="`Remove attribute ${scope.row.label}`">
                     <el-popconfirm
+                      @confirm="delAttribute(cat.row, scope.row.serverId)"
                       title="Are you sure to delete this?"
-                      @confirm="delAttribute(cat.row, scope.row.serverId)">
+                    >
                       <el-button
                         type=danger
                         icon="el-icon-delete"
@@ -82,40 +129,41 @@ with this file. If not, see
             </el-table>
           <el-tooltip :content="`Add attribute to ${cat.row.name}`">
             <el-button
+              @click.native="addAttribute(cat.row)"
               icon="el-icon-plus"
               circle
-              @click.native="addAttribute(cat.row)"
             ></el-button>
           </el-tooltip>
           </div>
         </el-table-column>
-        <el-table-column label="Name">
-          <b slot-scope="cat" v-on:click.stop
-                          v-on:input.stop
-                          v-on:keyup.stop
-                          v-on:keydown.stop
-                          v-on:focus.stop
-                          v-on:blur.stop
-                          v-on:change.stop
-                          v-on:keypress.stop>
-            <editable :content.sync="cat.row.name" :isEditing="cat.row.isEditing">
+        <el-table-column :label="$t('node-type.Category')">
+          <p slot-scope="cat">
+            <editable-text
+              :content.sync="cat.row.name"
+              :isEditing="cat.row.isEditing"
+            >
               {{ cat.row.name }}
-            </editable>
-          </b>
+            </editable-text>
+          </p>
         </el-table-column>
-        <el-table-column label="Actions" fixed="right" width=200>
+        <el-table-column
+          label="Actions"
+          fixed="right"
+          width=200
+        >
           <div slot-scope="cat">
             <el-tooltip :content="`Edit category ${cat.row.name}`">
               <el-button
+                @click.native="editCategory(cat.row)"
                 icon="el-icon-edit"
                 circle
-                @click.native="editCategory(cat.row)"
               ></el-button>
             </el-tooltip>
             <el-tooltip :content="`Remove category ${cat.row.name}`">
               <el-popconfirm
+                @confirm="delCategory(cat.row)"
                 title="Are you sure to delete this?"
-                @confirm="delCategory(cat.row)">
+              >
                 <el-button
                   slot="reference"
                   type=danger
@@ -127,14 +175,6 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-      <el-tooltip :content="`Add attribute category`">
-        <el-button
-          icon="el-icon-plus"
-          circle
-          :disabled="ctxNode == false"
-          @click.native="addCategory()"
-        ></el-button>
-      </el-tooltip>
     </el-main>
   </el-container>
 </template>
@@ -143,24 +183,25 @@ with this file. If not, see
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
 import { FileSystem } from 'spinal-core-connectorjs_type'
 
-import NodeTable from "./NodeTable.vue";
-import Editable from "../../../compoments/Editable.vue";
+import EditableText from "../../../compoments/EditableText.vue";
 import { spinalIO } from '../../../services/spinalIO';
 export default {
   name: "Attributes",
-  components: { NodeTable, Editable },
+  components: { EditableText },
   props: {
     Properties: {
       required: true,
       type: Object,
     },
   },
+
   data() {
     return {
       ctxNode: false,
       Categories: false,
     };
   },
+
   watch:
   {
     Properties:
@@ -180,10 +221,12 @@ export default {
       deep: true,
     }
   },
+
   mounted()
   {
     this.update(this.Properties.view.serverId);
   },
+
   methods: {
     async update(id)
     {
@@ -219,6 +262,7 @@ export default {
       })
       console.debug("end");
     },
+    
     async addAttribute(category){
       const node = await serviceDocumentation.addAttributeByCategory(this.ctxNode, category.cat, "newAttribute", "newValue", "newType", "newUnit");
       await spinalIO.waitNodeReady(node);
@@ -231,10 +275,12 @@ export default {
         serverId: node._server_id,
       })
     },
+    
     async delAttribute(category, attribute_id){
       await serviceDocumentation.removeAttributesById(category.cat.node, attribute_id)
       category.attributes = category.attributes.filter(attr => (attr.serverId != attribute_id))
     },
+
     async editAttribute(attribute){
       if (!attribute.isEditing)
       {
@@ -244,6 +290,7 @@ export default {
       await serviceDocumentation.setAttributeById(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
       attribute.isEditing = false;
     },
+
     async addCategory(){
       const category = await serviceDocumentation.addCategoryAttribute(this.ctxNode, "NewCategory");
       this.Categories.push({
@@ -253,10 +300,12 @@ export default {
         isEditing: false,
       })
     },
+
     async delCategory(category){
       await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id)
       this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id))
     },
+
     async editCategory(category){
       if (!category.isEditing)
       {
@@ -266,6 +315,7 @@ export default {
       await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name)
       category.isEditing = false;
     },
+
     httpify(url)
     {
       if (!url.startsWith("http"))
@@ -274,6 +324,7 @@ export default {
       }
       return url;
     },
+    
     async debug(what) {
       console.debug("Debugging", what);
     },

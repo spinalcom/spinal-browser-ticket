@@ -20,57 +20,64 @@ with this file. If not, see
 
 <template>
   <div class="equipment-center">
-    <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
+    <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
     <el-tooltip content="Go back">
-      <el-button v-show="(currentView.serverId != 0)" class="spl-el-button" style="float: left"
-            icon="el-icon-arrow-left"
-            circle
-            @click.stop="popView()"
-          >
+      <el-button
+        v-show="(currentView.serverId != 0)"
+        @click.stop="popView()"
+        class="spl-el-button"
+        style="float: left"
+        icon="el-icon-arrow-left"
+        circle
+      >
       </el-button>
     </el-tooltip>
     <div class="spl-button-bar">
-      <el-tooltip content="Isolate" :disabled="!isNode">
-        <el-button class="spl-el-button"
-          icon="el-icon-aim" circle
+      <el-tooltip
+        :disabled="!isNode"
+        content="Isolate"
+      >
+        <el-button
+          :disabled="!isNode"
           @click.stop="isolateAll()"
-          :disabled="!isNode"
+          circle
+          class="spl-el-button"
+          icon="el-icon-aim"
         >
         </el-button>
       </el-tooltip>
-      <el-tooltip content="Select" :disabled="!isNode">
-        <el-button class="spl-el-button"
-          icon="el-icon-location" circle
+      <el-tooltip
+        :disabled="!isNode"
+        content="Select"
+      >
+        <el-button
+          :disabled="!isNode"
           @click.stop="selectInView()"
-          :disabled="!isNode"
+          circle
+          class="spl-el-button"
+          icon="el-icon-location"
         >
         </el-button>
       </el-tooltip>
-      <el-tooltip content="Zoom" :disabled="!isNode">
-        <el-button class="spl-el-button"
-          icon="el-icon-search" circle
+      <el-tooltip
+        :disabled="!isNode"
+        content="Zoom"
+      >
+        <el-button
+          :disabled="!isNode"
           @click.stop="zoomOn()"
-          :disabled="!isNode"
+          circle
+          class="spl-el-button"
+          icon="el-icon-search"
         >
         </el-button>
       </el-tooltip>
-      <!-- <el-tooltip content="Color">
-        <el-button class="spl-el-button"
-          icon="el-icon-picture-outline-round" circle
-          @click.stop="Color()"
-        >
-        </el-button>
-      </el-tooltip>
-      <el-tooltip content="Export data to excel">
-        <el-button class="spl-el-button"
-          icon="el-icon-download" circle
-          @click.stop="exportToExcel()"
-        >
-        </el-button>
-      </el-tooltip> -->
     </div>
-    <tab-manager ref="tab-manager" class="tab-manager" :tabsprop="tabs" />
-    <!-- <explorer :Properties="tabs[0].props"></explorer> -->
+    <tab-manager
+      :tabsprop="tabs"
+      ref="tab-manager"
+      class="tab-manager"
+    ><tab-manager>
   </div>
 </template>
 
@@ -85,22 +92,26 @@ import fileSaver from "file-saver";
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from "../../compoments/tabManager/tabManager.vue";
+import TabManager from "../../compoments/TabManager/TabManager.vue";
 // Specific components
-import Explorer from "./components/Explorer.vue";
-import Visualizer from "./components/Visualizer.vue";
+import ContextExplorer from "./components/ContextExplorer.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
-import Documentation from "./components/Documentation.vue";
-import Notes from "./components/Notes.vue";
+import NodeDocumentation from "./components/NodeDocumentation.vue";
+import NodeNotes from "./components/NodeNotes/NodeNotes.vue";
+import NodeTickets from "./components/NodeTickets.vue";
 import "../../services/viewerUtils/eventsHandler/Equipment";
+import NodeNotesMessage from './components/NodeNotes/NodeNotesMessage.vue';
 const VIEW_KEY = "Equipment Center";
 // Component exports
 export default {
-  name: "EquipmentCenter",
+  name: "TheEquipmentApp",
   components: {
     SpinalBreadcrumb,
     TabManager,
+    NodeNotesMessage,
+    NodeTickets,
   },
+
   data() {
     return {
       viewKey: VIEW_KEY,
@@ -110,7 +121,7 @@ export default {
       tabs: [
         {
           name: "node-type.context",
-          content: Explorer,
+          content: ContextExplorer,
           props: {
             viewKey: VIEW_KEY,
             items: false,
@@ -118,6 +129,7 @@ export default {
           },
           ignore: false,
         },
+
         {
           name: "spinal-twin.hasCategoryAttributes",
           content: CategoryAttribute,
@@ -127,18 +139,30 @@ export default {
           },
           ignore: true,
         },
+
         {
           name: "spinal-twin.Documentation",
-          content: Documentation,
+          content: NodeDocumentation,
           props: {
             viewKey: VIEW_KEY,
             view: false,
           },
           ignore: true,
         },
+
+        {
+          name: "spinal-twin.Notes",
+          content: NodeNotes,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+
         // {
-        //   name: "spinal-twin.Notes",
-        //   content: Notes,
+        //   name: "spinal-twin.Tickets",
+        //   content: NodeTickets,
         //   props: {
         //     viewKey: VIEW_KEY,
         //     view: false,
@@ -148,6 +172,7 @@ export default {
       ],
     };
   },
+
   async mounted() {
     await BackendInitializer.getInstance().initback(
       EquipmentBack.getInstance()
@@ -158,13 +183,15 @@ export default {
       0
     );
   },
+
   methods: {
     async onViewChange(view) {
+
+      // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
         mapItems = await EquipmentBack.getInstance().getContexts();
-        // this.tabs[1].props.item = await EquipmentBack.getInstance().getContextsAttributes();
         this.isNode = false;
       } else {
         this.isNode = true;
@@ -177,6 +204,7 @@ export default {
         );
       }
 
+      // Get children
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
         for (const item of items) {
@@ -189,6 +217,8 @@ export default {
         this.items = { nodeType, items, cols: Array.from(cols) };
       }
       this.currentView = view;
+      
+      // Update tabs
       this.tabs[0].props.items = this.items;
       this.updateNames();
       for (let tab of this.tabs)
@@ -210,32 +240,28 @@ export default {
         }
       }
     },
+
     updateNames()
     {
       this.tabs[0].name = `node-type.${this.items.nodeType}`;
     },
+
     popView() {
       ViewManager.getInstance(this.viewKey).pop()
     },
+
     zoomOn() {
       EventBus.$emit("equipment-zoom-all", { server_id: this.currentView.serverId });
     },
+
     isolateAll() {
-      // let list = this.items.items.map(item => {
-      //   return { server_id: item.serverId };
-      // });
-      // console.debug("list : ", list)
-      // EventBus.$emit("view-isolate-list", list);
       EventBus.$emit("equipment-isolate-all", { server_id: this.currentView.serverId });
     },
+
     selectInView() {
-      // let list = this.items.items.map(item => {
-      //   return { server_id: item.serverId };
-      // });
-      // console.debug("list : ", list)
-      // EventBus.$emit("view-isolate-list", list);
       EventBus.$emit("equipment-select-item", { server_id: this.currentView.serverId });
     },
+
     formatData(){
       const res = [];
       for (const item of this.items.items) {
@@ -264,6 +290,7 @@ export default {
       }
       return res
     },
+    
     exportToExcel() {
       let headers = [
         {
@@ -296,12 +323,14 @@ export default {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
+
     Color() {
       let items = this.items.items.map(item => {
         return { server_id: item.serverId, color: item.getColor() };
       });
       EventBus.$emit("equipment-color-all", items, { server_id: this.currentView.serverId });
     },
+
     ShowAll() {
       EventBus.$emit("equipment-show-all");
     },
@@ -332,5 +361,4 @@ export default {
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
 }
-
 </style>

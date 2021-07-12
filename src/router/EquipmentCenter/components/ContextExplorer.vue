@@ -21,36 +21,32 @@ with this file. If not, see
 <template>
   <div>
     <div class="spl-button-bar">
-      <!-- <el-button
-        class="spl-el-button"
-        icon="el-icon-aim"
-        circle
-        @click.stop="isolateAll()"
-      >
-      </el-button> -->
       <el-button
+        @click.stop="SeeAll()"
         class="spl-el-button"
         icon="el-icon-picture-outline-round"
         circle
-        @click.stop="SeeAll()"
       >
       </el-button>
       <el-button
+        @click.stop="exportToExcel()"
         class="spl-el-button"
         icon="el-icon-download"
         circle
-        @click.stop="exportToExcel()"
       >
       </el-button>
     </div>
-    <div v-if="Properties.items !== false" style="height:100%">
-      <node-table
+    <div
+      v-if="Properties.items !== false"
+      style="height:100%"
+    >
+      <context-explorer-node-table
         :ref="'Explorer-table'"
         :view-key="Properties.viewKey"
         :items="itemsComputed"
         :columns="cols"
       >
-      </node-table>
+      </context-explorer-node-table>
     </div>
   </div>
 </template>
@@ -61,22 +57,23 @@ import { ViewManager } from "../../../services/ViewManager/ViewManager";
 import { EquipmentBack } from "../backend/EquipmentBack";
 import BackendInitializer from "../../../services/BackendInitializer";
 import { EventBus } from "../../../services/event";
-import NodeTable from "./NodeTable.vue";
+import ContextExplorerNodeTable from "./ContextExplorerNodeTable.vue";
 export default {
-  name: "Explorer",
-  components: { NodeTable },
+  name: "ContextExplorer",
+  components: { ContextExplorerNodeTable },
   props: {
     Properties: {
       required: true,
       type: Object,
       validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
+        if (!value.viewKey instanceof String) {
+          return false;
         }
-        return "success";
+        return true;
       },
     },
   },
+
   data() {
     return {
       items: false,
@@ -84,6 +81,7 @@ export default {
       currentView: null,
     };
   },
+
   computed: {
     itemsComputed() {
       if (
@@ -99,6 +97,7 @@ export default {
       return [];
     },
   },
+
   methods: {
     changeView(item) {
       ViewManager.getInstance(this.Properties.viewKey).push(
@@ -106,18 +105,23 @@ export default {
         item.serverId
       );
     },
+
     SeeAll() {
       this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
     },
+
     isolateAll() {
       this.$refs["Explorer-table"].isolateAll(this.Properties.view.serverId);
     },
+
     exportToExcel() {
       this.$refs["Explorer-table"].exportToExcel();
     },
+
     ShowAll() {
       this.$refs["Explorer-table"].ShowAll();
     },
+    
     async debug(what) {
       console.debug("Debugging", what);
     },

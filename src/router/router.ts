@@ -33,7 +33,7 @@ const InsightCenter = () => import('./InsightCenter/InsightCenter.vue');
 const SpaceCenter = () => import('./Space Center/spacecenter.vue');
 const SpaceCenterGestion = () => import('../compoments/space/component/categoryLstVue.vue');
 const DataRoom = () => import("./DataRoom/DataRoom.vue")
-const EquipmentCenter = () => import("./EquipmentCenter/EquipmentCenter.vue")
+const EquipmentCenter = () => import("./EquipmentCenter/TheEquipmentApp.vue")
 export const routes = [
   { path: '*', redirect: { name: 'App List' } },
   { path: '/AppList', name: 'App List', component: AppList },

@@ -27,23 +27,26 @@ with this file. If not, see
     <el-header>
       <el-tooltip :content="`Add document`">
         <el-button
+          :disabled="ctxNode == false"
+          @click.native="addDocument()"
           icon="el-icon-plus"
           circle
           type="primary"
           style="float: right"
-          :disabled="ctxNode == false"
-          @click.native="addDocument()"
         ></el-button>
       </el-tooltip>
     </el-header>
     <el-main>
       <el-table
-            :data="documents"
-            border
-            style="overflow: auto; height: 100%"
-            :header-cell-style="{'background-color': '#f0f2f5'}">
+        :data="documents"
+        :header-cell-style="{'background-color': '#f0f2f5'}"
+        border
+        style="overflow: auto; height: 100%"
+      >
         <el-table-column label="Document">
-          <div slot-scope="scope"> {{ scope.row.name }} </div>
+          <div slot-scope="scope">
+            {{ scope.row.name }}
+          </div>
         </el-table-column>
         <el-table-column
             label="Actions"
@@ -52,15 +55,15 @@ with this file. If not, see
           <div slot-scope="scope">
             <el-tooltip :content="`Download document`">
               <el-button
+                @click.native="downloadDocument(scope.row._server_id)"
                 icon="el-icon-download"
                 circle
-                @click.native="downloadDocument(scope.row._server_id)"
               ></el-button>
             </el-tooltip>
             <el-tooltip :content="`Remove document`">
               <el-popconfirm
-                title="Are you sure to delete this?"
                 @confirm="delDocument(scope.row._server_id)">
+                title="Are you sure to delete this?"
                 <el-button
                   icon="el-icon-delete"
                   circle
@@ -72,32 +75,6 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-
-      <!-- <el-row :gutter="10">
-        <el-col :span=6 v-for="doc in documents" :key="doc._server_id">
-          <el-card>
-            <div slot="header">
-              <span> {{ doc.name }} </span>
-            </div>
-            <el-tooltip :content="`Remove document`">
-              <el-button
-                icon="el-icon-minus"
-                circle
-                :disabled="ctxNode == false"
-                @click.native="delDocument(doc._server_id)"
-              ></el-button>
-            </el-tooltip>
-            <el-tooltip :content="`Download document`">
-              <el-button
-                icon="el-icon-bottom"
-                circle
-                :disabled="ctxNode == false"
-                @click.native="downloadDocument(doc._server_id)"
-              ></el-button>
-            </el-tooltip>
-          </el-card>
-        </el-col>
-      </el-row> -->
     </el-main>
   </el-container>
 </template>
@@ -107,20 +84,15 @@ import { FileSystem } from 'spinal-core-connectorjs_type'
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 
 export default {
-  name: "Documentation",
+  name: "NodeDocumentation",
   components: {  },
   props: {
     Properties: {
       required: true,
       type: Object,
-      validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
-        }
-        return "success";
-      },
     },
   },
+
   data() {
     return {
       ctxNode: false,
@@ -128,6 +100,7 @@ export default {
       directory: false,
     };
   },
+
   watch:
   {
     Properties:
@@ -146,9 +119,11 @@ export default {
       deep: true,
     }
   },
+
   async mounted() {
     this.update(this.Properties.view.serverId);
   },
+
   methods: {
     async update(id)
     {
@@ -156,6 +131,7 @@ export default {
       this.directory = await FileExplorer.getDirectory(this.ctxNode);
       await this.getDocuments();
     },
+
     docAt(serverId)
     {
       for (const doc of this.documents)
@@ -167,6 +143,7 @@ export default {
       }
       return null;
     },
+
     async getDocuments()
     {
       this.documents = [];
@@ -177,6 +154,7 @@ export default {
         this.documents.push(this.directory[i]);
       }
     },
+
     async addDocument()
     {
       const maxSize = 25000000;
@@ -215,6 +193,7 @@ export default {
         false
       );
     },
+
     async delDocument(id)
     {
       if (!this.directory)
@@ -228,6 +207,7 @@ export default {
         }
       }
     },
+
     downloadDocument(id)
     {
       const file = this.docAt(id);
@@ -258,6 +238,7 @@ export default {
         // check recursive directory & create a ZIP
       }
     },
+  
     async debug(what) {
       console.debug("Debugging", what);
     },

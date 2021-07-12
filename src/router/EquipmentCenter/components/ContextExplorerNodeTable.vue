@@ -23,62 +23,81 @@ with this file. If not, see
 -->
 
 <template>
-  <el-table v-loading="loading"
-            :data="data"
-            border
-            style="overflow: auto; height: 100%"
-            :header-cell-style="{'background-color': '#f0f2f5'}"
-            show-summary
-            sum-text="Total"
-            @row-click="selectInView"
-            @row-dblclick="SeeEvent">
+  <el-table
+    v-loading="loading"
+    :data="data"
+    :header-cell-style="{'background-color': '#f0f2f5'}"
+    @row-click="selectInView"
+    @row-dblclick="SeeEvent"
+    border
+    style="overflow: auto; height: 100%"
+    show-summary
+    sum-text="Total"
+  >
     <el-table-column :label="$t('explorer.Name')">
       <div slot-scope="scope">
-        <div v-if="scope.row.color"
-             class="spinal-table-cell-color"
-             :style="getColor(scope.row.color)"></div>
-        <div> {{ scope.row.name }} </div>
+        <div
+          v-if="scope.row.color"
+          :style="getColor(scope.row.color)"
+          class="spinal-table-cell-color"
+          ></div>
+        <div>
+          {{ scope.row.name }}
+        </div>
       </div>
     </el-table-column>
 
-    <el-table-column v-for="column in columns"
-                     :key="column"
-                     :prop="column"
-                     align="center"
-                     :label="$t(`node-type.${column}`)">
+    <el-table-column
+      v-for="column in columns"
+      :key="column"
+      :prop="column"
+      :label="$t(`node-type.${column}`)"
+      align="center"
+    >
       <div slot-scope="scope">
         {{ columnValue(scope.row, column) }}
       </div>
     </el-table-column>
-    <el-table-column v-if="haveChildren"
-                     :label="$t('node-type.Sum')"
-                     prop="equipmentN"
-                     align="center">
+    <el-table-column
+      v-if="haveChildren"
+      :label="$t('node-type.Sum')"
+      prop="equipmentN"
+      align="center"
+    >
       <div slot-scope="scope">
         {{ scope.row.equipmentN }}
       </div>
     </el-table-column>
 
-    <el-table-column v-if="haveChildren"
-                     label=""
-                     width="65"
-                     align="center">
-      <div slot-scope="scope">
-        <el-button v-if="scope.row.haveChild"
-                   icon="el-icon-arrow-right"
-                   circle
-                   @click="onSelectGroup(scope.row)"></el-button>
-      </div>
-    </el-table-column>
-    <el-table-column v-else
-                     label=""
-                     width="65"
-                     align="center">
+    <el-table-column
+      v-if="haveChildren"
+      label=""
+      width="65"
+      align="center"
+      key="isGroup"
+    >
       <div slot-scope="scope">
         <el-button
-                   icon="el-icon-search"
-                   circle
-                   @click="onSelectItem(scope.row)"></el-button>
+          v-if="scope.row.haveChild"
+          @click="onSelectGroup(scope.row)"
+          icon="el-icon-arrow-right"
+          circle
+        ></el-button>
+      </div>
+    </el-table-column>
+    <el-table-column
+      v-else
+      label=""
+      width="65"
+      align="center"
+      key="isItem"
+    >
+      <div slot-scope="scope">
+        <el-button
+          @click="onSelectItem(scope.row)"
+          icon="el-icon-search"
+          circle
+        ></el-button>
       </div>
     </el-table-column>
     <!-- <el-table-column label=""
@@ -86,8 +105,8 @@ with this file. If not, see
                       align="center">
       <div slot-scope="scope">
         <el-button icon="el-icon-arrow-down"
-                    circle
                     @click="debug(scope.row)"></el-button>
+                    circle
       </div>
     </el-table-column> -->
   </el-table>
@@ -100,12 +119,13 @@ import { EventBus } from "../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 export default {
-  name: "NodeTable",
+  name: "ContextExplorerNodeTable",
   props: {
     viewKey: { required: true, type: String },
     items: { required: true, type: Array },
     columns: { required: true, type: Array }
   },
+
   data() {
     return {
       data: [],
@@ -114,15 +134,18 @@ export default {
       haveChildren: false
     };
   },
+
   watch: {
     items()
     {
       this.update();
     }
   },
+
   mounted() {
     this.update();
   },
+
   methods: {
     selectInView(item) {
       EventBus.$emit("equipment-select-item", {
@@ -130,35 +153,43 @@ export default {
         color: item.color
       });
     },
+
     SeeEvent(item) {
       EventBus.$emit("equipment-isolate-item", {
         server_id: item.serverId,
         color: item.color
       });
     },
+
     SeeAll(zone) {
       let items = this.data.map(item => {
         return { server_id: item.serverId, color: item.color };
       });
       EventBus.$emit("equipment-color-all", items, { server_id: zone });
     },
+
     ShowAll() {
       EventBus.$emit("equipment-show-all");
     },
+
     isolateAll(zone) {
       EventBus.$emit("equipment-isolate-all", { server_id: zone });
     },
+
     onSelectItem(item) {
       if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= 5)
         ViewManager.getInstance(this.viewKey).pop()
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
+
     onSelectGroup(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
+
     debug(item) {
       console.debug(item)
     },
+
     async update() {
       this.loading = true;
       const res = [];
@@ -197,6 +228,7 @@ export default {
       this.haveChildren = haveChild;
       this.loading = false;
     },
+
     updateColor(res, colorUsed) {
       if (colorUsed.length !== this.items.length) {
         const colorGen = new ColorGenerator(this.items.length, colorUsed);
@@ -208,6 +240,7 @@ export default {
         }
       }
     },
+
     setColorItem(serverId, color) {
       for (const item of this.items) {
         if (item.serverId === serverId) {
@@ -215,13 +248,16 @@ export default {
         }
       }
     },
+    
     getColor(color) {
       return { backgroundColor: color[0] === "#" ? color : `#${color}` };
     },
+
     columnValue(item, key) {
       if (item[key]) return item[key];
       return 0;
     },
+
     exportToExcel() {
       let headers = [
         {
