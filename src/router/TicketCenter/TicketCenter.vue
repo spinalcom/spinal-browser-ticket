@@ -36,7 +36,7 @@ with this file. If not, see
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from "../../compoments/tabManager/tabManager.vue";
+import TabManager from "../../compoments/TabManager/TabManager.vue";
 
 // Specific components
 import Explorer from "./components/Explorer.vue";
