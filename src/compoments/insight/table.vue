@@ -48,6 +48,7 @@ with this file. If not, see
 
       <!-- Si on a pas encore choisi de contexte -->
       <tableau-context v-if="contextSelected == null"
+                        v-loading="loading"
                        :context-lst="contextLst"
                        @select="SelectContext">
       </tableau-context>
@@ -80,6 +81,7 @@ with this file. If not, see
     <heatmap-vue class="heatmapContainer"
                  v-if="profilSelected!=null"
                  :profil="profilSelected"
+                 :filter="filterObjects"
                  @goBackProfil="BackToProfil"
                  style="margin-top:11px;">
 
@@ -114,12 +116,25 @@ export default {
       selectCategorie: null,
       contextSelected: null,
       profilSelected: null,
-      groupSelected: null
-    };
+      groupSelected: null,
+      loading:true,
+      filterObjects: []
+    }; 
   },
   async mounted() {
     this.profilSelected = null;
     this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts and children
+    this.loading=false;
+    EventBus.$on("sidebar-homeSelect", item => {
+      spinalBackEnd.heatmapBack
+        .getDataFilterItem(item)
+        .then(result => {
+          this.filterObjects = result;
+        })
+        .catch(err => {
+            console.error(err);
+        })
+    });
   },
 
   

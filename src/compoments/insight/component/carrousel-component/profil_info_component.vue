@@ -16,8 +16,9 @@
          <div class="endpointValues">
             <items-linked-component
                v-if="profil"
-               :rooms="profil.rooms"
+               :rooms="filteredObjects"
                :variableSelected="variableSelected"
+               :filterObjects="filterObjects"
             ></items-linked-component>
          </div>
       </div>
@@ -37,12 +38,16 @@ import ItemsLinkedComponent from "./sub-components/items-linked-component.vue";
 
 export default {
    name: "ProfilInfoComponent",
-   props: { variableSelected: {}, profil: {} },
+   props: {filterObjects:{}, variableSelected: {}, profil: {} },
    components: { ColorConfig, ItemsLinkedComponent },
    data() {
-      return {};
+      return {
+         filteredObjects: {}
+
+      };
    },
    mounted() {
+      this.filteredObjects= this.profil.rooms;
    },
    methods: {
       updateAverage() {
@@ -61,8 +66,23 @@ export default {
    },
    watch: {
       variableSelected() {
-         // console.log("variableSelected changed", this.variableSelected);
       },
+      filterObjects(){
+         console.log("Watch on filter triggered");
+         //console.log(this.filterObjects);
+         
+         if(this.filterObjects == 0){
+            this.filteredObjects=this.profil.rooms;
+         }
+         else{
+            this.filteredObjects = this.profil.rooms.filter(room => {
+            return this.filterObjects.includes(room.id);
+         });
+         }
+
+
+      }
+
    },
 };
 </script>

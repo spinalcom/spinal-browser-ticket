@@ -40,6 +40,7 @@
                   :is="renderComponent(i)"
                   :variableSelected="variableSelected"
                   :profil="profil"
+                  :filterObjects="filter"
                   @sendDataUpdated="sendDataUpdated"
                />
             </template>
@@ -64,7 +65,7 @@ const backendService = spinalBackEnd.heatmapBack;
 
 
 export default {
-   props: ["profil"],
+   props: ["profil","filter"],
 
    data() {
       return {
@@ -78,11 +79,7 @@ export default {
                title: "Profil info",
                content: profilInfoComponent
             },
-            // {
-            //    title: "Chart",
-            //    content: chartComponent,
-            //    image: require("./img.jpg"),
-            // },
+
          ],
       };
    },
@@ -183,17 +180,6 @@ export default {
          this.index = 0;
          
       }
-      // let profil = await spinalControlPointService.getElementLinked(
-      //    this.profil.id
-      // );
-      // let linkedItemId = profil[0].childrenIds[0];
-      // let res = await spinalControlPointService.getEndpointsNodeLinked(
-      //    linkedItemId,
-      //    this.profil.id
-      // );
-      // res.forEach((element) => {
-      //    this.variables.push(element.name._data);
-      // });
    },
 
    watch: {

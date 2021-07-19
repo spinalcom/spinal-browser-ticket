@@ -24,7 +24,6 @@
             >
       </value-config-global>
 
-<!-- v-if="room.name== '1-Pièce'|| room.name== '2-Pièce' " -->
       <endpoint-component 
          v-for="room of rooms"
          :name="room.name"
@@ -59,6 +58,7 @@ export default {
    props: {
       rooms: {},
       variableSelected: {},
+      filterObjects: {}
    },
    data() {
       return {
@@ -71,6 +71,7 @@ export default {
       };
    },
    mounted() {
+      
    },
    methods: {
 
@@ -140,8 +141,17 @@ export default {
    },
    watch: {
       variableSelected(){
-         this.isModalVisible=false;
-      }
+         this.isModalVisible=false; 
+      },
+      /*filterObjects(){
+         console.log("WATCH TRIGGERED");
+         //console.log(this.filterObjects);
+         this.rooms = this.rooms.filter(room => {
+            return this.filterObjects.includes(room.id);
+         });
+         console.log(a);
+
+      }*/
    },
 };
 </script>
