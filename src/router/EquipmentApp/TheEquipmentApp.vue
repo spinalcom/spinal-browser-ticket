@@ -89,6 +89,7 @@ import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import "../../services/viewerUtils/eventsHandler/Equipment";
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
@@ -97,11 +98,10 @@ import TabManager from "../../compoments/TabManager/TabManager.vue";
 import ContextExplorer from "./components/ContextExplorer.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import NodeDocumentation from "./components/NodeDocumentation.vue";
-import NodeNotes from "./components/NodeNotes/NodeNotes.vue";
 import NodeTickets from "./components/NodeTickets.vue";
-import "../../services/viewerUtils/eventsHandler/Equipment";
+import NodeNotes from "./components/NodeNotes/NodeNotes.vue";
 import NodeNotesMessage from './components/NodeNotes/NodeNotesMessage.vue';
-const VIEW_KEY = "Equipment Center";
+const VIEW_KEY = "EquipmentApp";
 // Component exports
 export default {
   name: "TheEquipmentApp",
@@ -160,15 +160,15 @@ export default {
           ignore: true,
         },
 
-        // {
-        //   name: "spinal-twin.Tickets",
-        //   content: NodeTickets,
-        //   props: {
-        //     viewKey: VIEW_KEY,
-        //     view: false,
-        //   },
-        //   ignore: true,
-        // },
+        {
+          name: "spinal-twin.Tickets",
+          content: NodeTickets,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
       ],
     };
   },
@@ -262,7 +262,7 @@ export default {
       EventBus.$emit("equipment-select-item", { server_id: this.currentView.serverId });
     },
 
-    formatData(){
+    formatData() {
       const res = [];
       for (const item of this.items.items) {
         const resItem = {

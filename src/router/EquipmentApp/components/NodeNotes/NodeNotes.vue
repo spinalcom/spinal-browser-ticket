@@ -100,14 +100,18 @@ with this file. If not, see
             height: min-content;"
           >
             <el-tooltip content="Delete note">
-              <el-button
-                v-on:click.native="delNote(note.selectedNode)"
-                class="spl-input-button"
-                icon="el-icon-delete"
-                type="danger"
-                size="small"
-                circle
-              ></el-button>
+              <el-popconfirm
+                @confirm="delNote(note.selectedNode)"
+                title="Are you sure to delete this?">
+                <el-button
+                  class="spl-input-button"
+                  icon="el-icon-delete"
+                  type="danger"
+                  size="small"
+                  circle
+                  slot="reference"
+                ></el-button>
+              </el-popconfirm>
             </el-tooltip>
             <!-- <el-button
               v-on:click.native="debug(note)"
