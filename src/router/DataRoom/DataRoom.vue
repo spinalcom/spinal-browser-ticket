@@ -146,7 +146,7 @@ with this file. If not, see
                        icon="el-icon-download"
                        circle
                        @click="exportData(scope.row)"></el-button>
-                       <el-button 
+                       <el-button
                         type="danger"
                        icon="el-icon-delete"
                        circle
@@ -222,7 +222,7 @@ import { ViewManager } from "../../services/ViewManager/ViewManager";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
-import TabManager from "../../compoments/tabManager/tabManager.vue";
+import TabManager from "../../compoments/TabManager/TabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import ticketcreate from "./components/ticketcreate";
