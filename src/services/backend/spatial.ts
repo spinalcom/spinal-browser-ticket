@@ -75,7 +75,7 @@ export default class BackEndSpatial {
     this.floors = [];
   }
 
-  
+
   async getContextSpatial(graph) {
     const children = await graph.getChildren();
     for (const context of children) {
@@ -264,8 +264,10 @@ function sortBIMObjectByModel(arrayOfBIMObject): { selection: number[], model }[
     const bimFileId = nodeBIMObject.info.bimFileId.get();
     const dbId = nodeBIMObject.info.dbid.get();
     const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
-    const obj = getOrAddModelIfMissing(arrayModel, model);
-    obj.selection.push(dbId);
+    if (model) {
+      const obj = getOrAddModelIfMissing(arrayModel, model);
+      obj.selection.push(dbId);
+    }
   }
   return arrayModel;
 }
