@@ -21,12 +21,12 @@ with this file. If not, see
 <template>
   <el-tabs
     :value="activetab"
+    @tab-click="handleClick"
     class="tab-manager-tabs"
     type="border-card"
   >
     <template
         v-for="tab in tabsprop">
-      {{ updateActive() }}
       <template v-if="!tab.ignore">
         <el-tab-pane
             :key="$t(tab.name)"
@@ -76,17 +76,11 @@ export default {
   watch: {
     tabsprop: {
       handler(oldTabs, newTabs) {
-        if (
-          typeof newTabs !== "undefined" &&
-          !oldTabs.some((tab) => {
-            this.$t(tab.name) == this.activeTab;
-          })
-        ) {
+        if (!newTabs.some(tab => !tab.ignore && this.$t(tab.name) === this.activetab)) {
           this.activetab = this.$t(newTabs[0].name);
         }
       },
       deep: true,
-      immediate: true,
     },
   },
 
@@ -95,12 +89,12 @@ export default {
   },
 
   methods: {
-    updateActive() {
-      this.activetab = this.$t(this.tabsprop[0].name);
+    handleClick(tab, event) {
+      this.activetab = tab._props.name;
     },
 
     debug(active) {
-      console.log(active);
+      console.debug(active);
     },
   },
 };
