@@ -113,9 +113,9 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
-import { EventBus } from "../../../services/event";
+import { ViewManager } from "../../../../services/ViewManager/ViewManager";
+import { ColorGenerator } from "../../../../services/utlils/ColorGenerator";
+import { EventBus } from "../../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 export default {

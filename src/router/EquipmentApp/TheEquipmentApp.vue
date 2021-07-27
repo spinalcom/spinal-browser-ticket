@@ -95,10 +95,10 @@ import "../../services/viewerUtils/eventsHandler/Equipment";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
 // Specific components
-import ContextExplorer from "./components/ContextExplorer.vue";
+import ContextExplorer from "./components/ContextExplorer/ContextExplorer.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import NodeDocumentation from "./components/NodeDocumentation.vue";
-import NodeTickets from "./components/NodeTickets.vue";
+import NodeTickets from "./components/NodeTickets/NodeTickets.vue";
 import NodeNotes from "./components/NodeNotes/NodeNotes.vue";
 import NodeNotesMessage from './components/NodeNotes/NodeNotesMessage.vue';
 const VIEW_KEY = "EquipmentApp";
