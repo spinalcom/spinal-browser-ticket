@@ -175,6 +175,14 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
+      <!-- <el-button
+        v-on:click.native="debug(ctxNode)"
+        class="spl-input-button"
+        icon="el-icon-search"
+        type="primary"
+        size="small"
+        circle
+      ></el-button> -->
     </el-main>
   </el-container>
 </template>
