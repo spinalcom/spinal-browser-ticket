@@ -52,7 +52,7 @@ with this file. If not, see
         square
         style="width: min-content"
       >
-        Download Image
+        {{ $t('spinal-twin.NoteDownload') }}
       </el-button>
       <el-button
         v-if="type == 'view'"
@@ -61,7 +61,7 @@ with this file. If not, see
         square
         style="width: min-content"
       >
-        Restore View
+        {{ $t('spinal-twin.NoteRestore') }}
       </el-button>
       <!-- <el-button
         @click.native="debug(file)"

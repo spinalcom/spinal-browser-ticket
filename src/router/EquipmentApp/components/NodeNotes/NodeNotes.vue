@@ -39,10 +39,10 @@ with this file. If not, see
         >
           <el-header class="delete-button"
           >
-            <el-tooltip content="Delete note">
+            <el-tooltip :content="$t('spinal-twin.DeleteNote')">
               <el-popconfirm
                 @confirm="delNote(note.selectedNode)"
-                title="Are you sure to delete this?">
+                :title="$t('spinal-twin.DeleteConfirm')">
                 <el-button
                   class="spl-input-button"
                   icon="el-icon-delete"

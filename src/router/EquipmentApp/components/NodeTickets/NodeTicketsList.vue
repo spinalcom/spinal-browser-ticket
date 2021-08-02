@@ -36,7 +36,7 @@ with this file. If not, see
           {{ scope.row.name }}
         </div>
       </el-table-column>
-      <el-table-column label="Step">
+      <el-table-column :label="$t('spinal-twin.Step')">
         <div slot-scope="scope">
           {{ scope.row.step }}
         </div>
@@ -51,16 +51,16 @@ with this file. If not, see
           fixed="right"
           width=120>
         <div slot-scope="scope">
-          <el-tooltip :content="`Inspect ticket`">
+          <el-tooltip :content="$t('spinal-twin.TicketInspect')">
               <el-button
                 @click="select(scope.row)"
                 icon="el-icon-search"
                 circle
               ></el-button>
           </el-tooltip>
-          <el-tooltip :content="`Archive ticket`">
+          <el-tooltip :content="$t('spinal-twin.TicketArchive')">
               <el-button
-                @click="debug(scope.row)"
+                @click="archive(scope.row)"
                 icon="el-icon-delete"
                 circle
                 type=danger
@@ -98,6 +98,11 @@ export default {
     debug(item) {
       console.debug(item);
     },
+
+    archive(ticket) {
+      this.$emit("archive", ticket);
+    },
+
     select(ticket) {
       this.$emit("select", ticket);
     },

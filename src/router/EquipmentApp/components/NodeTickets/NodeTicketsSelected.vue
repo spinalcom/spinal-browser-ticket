@@ -23,26 +23,26 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
+  <el-collapse>
+    <el-collapse-item name="Details" title="Details">
       <div class="separate">
-        <div> Current step </div>
+        <div> {{ $t('spinal-twin.CurrentStep') }} </div>
         <div> {{ selected.step }} </div>
       </div>
       <div class="separate">
-        <div> Priority </div>
+        <div> {{ $t('spinal-twin.Priority') }} </div>
         <div> {{ selected.priority }} </div>
       </div>
       <div class="separate">
-        <div> Creation time </div>
+        <div> {{ $t('spinal-twin.CreationTime') }} </div>
         <div> {{ DateFormat(selected.creationDate) }} </div>
       </div>
       <div class="separate">
-        <div> Created by </div>
+        <div> {{ $t('spinal-twin.TicketAuthor') }} </div>
         <div> {{ selected.ticket.user.name }} </div>
       </div>
-    </el-header>
-    <el-main>
+    </el-collapse-item>
+    <el-collapse-item name="Events" :title="$t('spinal-twin.Events')">
       <el-table
         :data="selected.events"
         :header-cell-style="{'background-color': '#f0f2f5'}"
@@ -54,7 +54,7 @@ with this file. If not, see
             {{ elapsedTimeFormat(scope.row.creationDate) }}
           </div>
         </el-table-column>
-        <el-table-column label="User">
+        <el-table-column :label="$t('spinal-twin.User')">
           <div slot-scope="scope">
             {{ scope.row.user.name }}
           </div>
@@ -65,58 +65,60 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-    </el-main>
-    <el-container>
-      <el-header>
-        <node-notes-create
-          v-if="selectedNode"
-          :node="selectedNode"
-          @send-note="sendNote"
-        ></node-notes-create>
-      </el-header>
-      <el-main class="note-feed">
-        <el-container
-          v-for="note of selected.comments"
-          :key="note._server_id"
-        >
-          <el-header class="delete-button">
-            <el-tooltip content="Delete note">
-              <el-popconfirm
-                @confirm="delNote(note.selectedNode)"
-                title="Are you sure to delete this?">
-                <el-button
-                  class="spl-input-button"
-                  icon="el-icon-delete"
-                  type="danger"
-                  size="small"
-                  circle
-                  slot="reference"
-                ></el-button>
-              </el-popconfirm>
-            </el-tooltip>
-            <!-- <el-button
-              v-on:click.native="debug(note)"
-              class="spl-input-button"
-              icon="el-icon-search"
-              type="primary"
-              size="small"
-              circle
-            ></el-button> -->
-          </el-header>
-          <el-main style="padding: 0 0 10px 0">
-            <node-notes-message
-              :username="note.element.username.get()"
-              :date="note.element.date.get()"
-              :message="note.element.message.get()"
-              :type="note.element.type.get()"
-              :file="note.element.file ? note.element.file : {}"
-              :viewPoint="note.element.viewPoint ? note.element.viewPoint : null"
-            ></node-notes-message>
-          </el-main>
-        </el-container>
-      </el-main>
-    </el-container>
-  </el-container>
+    </el-collapse-item>
+    <el-collapse-item name="Notes" title="Notes">
+      <el-container>
+        <el-header>
+          <node-notes-create
+            v-if="selectedNode"
+            :node="selectedNode"
+            @send-note="sendNote"
+          ></node-notes-create>
+        </el-header>
+        <el-main class="note-feed">
+          <el-container
+            v-for="note of selected.comments"
+            :key="note._server_id"
+          >
+            <el-header class="delete-button">
+              <el-tooltip :content="$t('spinal-twin.DeleteNote')">
+                <el-popconfirm
+                  @confirm="delNote(note.selectedNode)"
+                  :title="$t('spinal-twin.DeleteConfirm')">
+                  <el-button
+                    class="spl-input-button"
+                    icon="el-icon-delete"
+                    type="danger"
+                    size="small"
+                    circle
+                    slot="reference"
+                  ></el-button>
+                </el-popconfirm>
+              </el-tooltip>
+              <!-- <el-button
+                v-on:click.native="debug(note)"
+                class="spl-input-button"
+                icon="el-icon-search"
+                type="primary"
+                size="small"
+                circle
+              ></el-button> -->
+            </el-header>
+            <el-main style="padding: 0 0 10px 0">
+              <node-notes-message
+                :username="note.element.username.get()"
+                :date="note.element.date.get()"
+                :message="note.element.message.get()"
+                :type="note.element.type.get()"
+                :file="note.element.file ? note.element.file : {}"
+                :viewPoint="note.element.viewPoint ? note.element.viewPoint : null"
+              ></node-notes-message>
+            </el-main>
+          </el-container>
+        </el-main>
+      </el-container>
+    </el-collapse-item>
+  </el-collapse>
 </template>
 
 <script>
@@ -172,7 +174,7 @@ export default {
 
       var ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"));
       var d = moment.duration(ms);
-      return Math.floor(d.asDays()) + " days ago";
+      return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
 
     logFormat(n)

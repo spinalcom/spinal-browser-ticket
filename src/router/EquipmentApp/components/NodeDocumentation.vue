@@ -62,8 +62,8 @@ with this file. If not, see
             </el-tooltip>
             <el-tooltip :content="`Remove document`">
               <el-popconfirm
-                @confirm="delDocument(scope.row._server_id)">
-                title="Are you sure to delete this?"
+                @confirm="delDocument(scope.row._server_id)"
+                title="Are you sure to delete this?">
                 <el-button
                   icon="el-icon-delete"
                   circle

@@ -23,85 +23,91 @@ with this file. If not, see
 -->
 
 <template>
-  <el-dialog
-    title="Adding Ticket"
-    :visible.sync="active"
-  >
-    <el-form
-      ref="TicketDeclarationForm"
-      :model="newTicket"
-      label-width="80px"
-    >
-      <el-form-item label="Context">
-        <el-select
-          v-model="newTicket.context"
-          placeholder="placeholder"
-          @change="getProcesses()"
-        >
-          <el-option
-            v-for="context in contexts"
-            :key="context.id"
-            :label="context.name"
-            :value="context.id"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        v-show="processes"
-        label="Process"
+  <el-container>
+    <el-header>
+      <h2>
+        {{ $t('spinal-twin.TicketDeclare') }}
+      </h2>
+    </el-header>
+    <el-main>
+      <el-form
+        ref="TicketDeclarationForm"
+        :model="newTicket"
+        label-width="80px"
       >
-        <el-select
-          v-model="newTicket.process"
-          placeholder="placeholder"
-          @change="getIncidents()"
+
+        <el-form-item label="Context">
+          <el-select
+            v-model="newTicket.context"
+            placeholder="placeholder"
+            @change="getProcesses()"
+          >
+            <el-option
+              v-for="context in contexts"
+              :key="context.id"
+              :label="context.name"
+              :value="context.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          v-show="processes"
+          label="Process"
         >
-          <el-option
-            v-for="process in processes"
-            :key="process.id.get()"
-            :label="process.name.get()"
-            :value="process.id.get()"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        v-show="incidents"
-        label="Incident"
-      >
-        <el-select
-          v-model="newTicket.incident"
-          placeholder="placeholder"
+          <el-select
+            v-model="newTicket.process"
+            placeholder="placeholder"
+            @change="getIncidents()"
+          >
+            <el-option
+              v-for="process in processes"
+              :key="process.id.get()"
+              :label="process.name.get()"
+              :value="process.id.get()"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          v-show="incidents"
+          label="Incident"
         >
-          <el-option
-            v-for="incident in incidents"
-            :key="incident.id"
-            :label="incident.name"
-            :value="incident.id"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        v-show="newTicket.incident != ''"
-        label="Priority"
-      >
-        <el-radio-group v-model="newTicket.priority">
-          <el-radio label="Occasionally"></el-radio>
-          <el-radio label="Normal"></el-radio>
-          <el-radio label="Urgent"></el-radio>
-        </el-radio-group>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
+          <el-select
+            v-model="newTicket.incident"
+            placeholder="placeholder"
+          >
+            <el-option
+              v-for="incident in incidents"
+              :key="incident.id"
+              :label="incident.name"
+              :value="incident"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          v-show="newTicket.incident != ''"
+          :label="$t('spinal-twin.Priority')"
+        >
+          <el-radio-group v-model="newTicket.priority">
+            <el-radio label="Occasionally"></el-radio>
+            <el-radio label="Normal"></el-radio>
+            <el-radio label="Urgent"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+    </el-main>
+    <el-footer style="position: absolute; bottom: 50px">
       <el-button @click="close()">
-        Cancel
+        {{ $t('Cancel') }}
       </el-button>
       <el-button
         @click="confirm()"
         type="primary"
+        :disabled="newTicket.priority == ''"
       >
-        Confirm
+        {{ $t('Confirm') }}
       </el-button>
-    </span>
-  </el-dialog>
+    </el-footer>
+  </el-container>
 </template>
 
 <script>
@@ -125,8 +131,8 @@ export default {
     user()
     {
       return {
-        username: "admin",
-        userId: FileSystem._user_id
+        name: "admin",
+        id: FileSystem._userid
       };
     }
   },
@@ -169,12 +175,23 @@ export default {
     {
       let infos = {
         processId: this.newTicket.process,
-        name: "test",
-        user: user,
-        priority: this.newTicket.priority,
+        name: this.newTicket.incident.name,
+        user: this.user,
       }
-      await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node)
-      this.$emit("close");
+      switch (this.newTicket.priority)
+      {
+        case "Occasionally":
+          infos.priority = 0;
+          break;
+        case "Normal":
+          infos.priority = 1;
+          break;
+        case "Urgent":
+          infos.priority = 2;
+          break;
+      }
+      await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
+      this.$emit("update");
     },
   },
 }

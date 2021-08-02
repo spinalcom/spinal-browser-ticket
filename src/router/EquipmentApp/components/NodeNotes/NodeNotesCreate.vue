@@ -35,7 +35,7 @@ with this file. If not, see
           style="overflow: hidden"
         >
           <el-tooltip
-            content="Add current position as attachment"
+            :content="$t('spinal-twin.NotesAddPosition')"
             placement="right"
           >
             <el-dropdown-item
@@ -44,7 +44,7 @@ with this file. If not, see
             ></el-dropdown-item>
           </el-tooltip>
           <el-tooltip
-            content="Add a screenshot of the viewer as attachment"
+            :content="$t('spinal-twin.NotesAddScreenshot')"
             placement="right"
           >
             <el-dropdown-item
@@ -53,7 +53,7 @@ with this file. If not, see
             ></el-dropdown-item>
           </el-tooltip>
           <el-tooltip
-            content="Add file as attachment"
+            :content="$t('spinal-twin.NotesAddFile')"
             placement="right"
           >
             <el-dropdown-item
@@ -69,22 +69,34 @@ with this file. If not, see
         type="textarea"
         resize="none"
       ></el-input>
-      <el-tooltip content="Send note">
+      <el-tooltip :content="$t('spinal-twin.NoteSend')">
         <el-button
           v-on:click.native="sendNote()"
           class="spl-input-button"
           icon="el-icon-s-promotion"
           type="primary"
         >
-          Send
+          {{ $t('spinal-twin.NoteSend') }}
         </el-button>
       </el-tooltip>
     </el-container>
     <el-card
       v-if="attachment"
-      style="margin: 10px"
+      style="margin: 20px; position: relative; width: 90%"
     >
       {{ attachment.file.name }}
+      <el-tooltip :content="$t('spinal-twin.NotesDeleteAttachment')">
+        <el-button
+          v-on:click.native="delAttachment()"
+          class="spl-input-button"
+          icon="el-icon-circle-close"
+          type="danger"
+          circle
+          size="small"
+          style="position: absolute; top: 15px; right: 0"
+        >
+        </el-button>
+      </el-tooltip>
     </el-card>
   </div>
 </template>
@@ -161,6 +173,11 @@ export default {
       await this.$_sendnote(this.new_note, pack.type, pack.file, pack.view)
       this.$emit("send-note", this.new_note, pack);
       this.new_note = "";
+      this.attachment = undefined;
+    },
+
+    delAttachment()
+    {
       this.attachment = undefined;
     },
 

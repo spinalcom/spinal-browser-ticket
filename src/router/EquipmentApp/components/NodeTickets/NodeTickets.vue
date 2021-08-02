@@ -24,39 +24,8 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-container v-if="!selected">
-      <el-header>
-        <el-tooltip
-          :content="`Declare ticket`"
-          style="float: right"
-        >
-          <el-button
-            @click.native="addingTicket = true"
-            icon="el-icon-plus"
-            type="primary"
-            circle
-          ></el-button>
-        </el-tooltip>
-        <ticket-declaration-form
-          v-if="this.ctxNode"
-          :node="this.ctxNode"
-          :active.sync="addingTicket"
-          @close="addingTicket = false"
-        >
-        </ticket-declaration-form>
-      </el-header>
-      <el-main>
-        <node-tickets-list
-          v-if="tickets"
-          @select="select"
-          :tickets="tickets"
-        >
-        </node-tickets-list>
-      </el-main>
-    </el-container>
     <el-container
-      v-else
-      class="columnize"
+      v-if="selected"
     >
       <el-header
         class="rowify"
@@ -87,6 +56,42 @@ with this file. If not, see
           @update="update(Properties.view.serverId, true)"
         >
         </node-tickets-selected>
+      </el-main>
+    </el-container>
+    <el-container
+      v-else-if="addingTicket"
+    >
+      <ticket-declaration-form
+        v-if="this.ctxNode"
+        :node="this.ctxNode"
+        :active.sync="addingTicket"
+        @close="addingTicket = false"
+        @update="update(Properties.view.serverId)"
+      >
+      </ticket-declaration-form>
+    </el-container>
+    <el-container v-if="!selected && !addingTicket">
+      <el-header>
+        <el-tooltip
+          :content="$t('spinal-twin.TicketDeclare')"
+          style="float: right"
+        >
+          <el-button
+            @click.native="addingTicket = true"
+            icon="el-icon-plus"
+            type="primary"
+            circle
+          ></el-button>
+        </el-tooltip>
+      </el-header>
+      <el-main>
+        <node-tickets-list
+          v-if="tickets"
+          @select="select"
+          @archive="archive"
+          :tickets="tickets"
+        >
+        </node-tickets-list>
       </el-main>
     </el-container>
   </div>
@@ -191,13 +196,13 @@ export default {
         switch(priority)
         {
           case 0:
-            ticketDesc.priority = "normal"
+            ticketDesc.priority = this.$t('spinal-twin.TicketPriority.Occasion')
             break;
           case 1:
-            ticketDesc.priority = "moyen"
+            ticketDesc.priority = this.$t('spinal-twin.TicketPriority.Normal')
             break;
           case 2:
-            ticketDesc.priority = "urgent"
+            ticketDesc.priority = this.$t('spinal-twin.TicketPriority.Urgent')
             break;
         }
 
@@ -210,6 +215,7 @@ export default {
         return;
       }
       this.selected = false;
+      this.addingTicket = false;
     },
     
     DateFormat(time)
@@ -226,7 +232,7 @@ export default {
 
       var ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"));
       var d = moment.duration(ms);
-      return Math.floor(d.asDays()) + " days ago";
+      return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
 
     logFormat(n)
@@ -237,6 +243,20 @@ export default {
     select(ticket)
     {
       this.selected = ticket;
+    },
+
+    async archive(ticket)
+    {
+      let realTicket = ticket.ticket;
+      let contextId = await spinalServiceTicket.getTicketContextId(realTicket.id);
+      if (ticket.step == "Archived")
+      {
+        await spinalServiceTicket.unarchiveTicket(contextId, realTicket.processId, realTicket.id, this.userInfo);
+        this.update(this.Properties.view.serverId);
+        return;
+      }
+      await spinalServiceTicket.ArchiveTickets(contextId, realTicket.processId, realTicket.id, this.userInfo);
+      this.update(this.Properties.view.serverId);
     },
 
     addTicket()
