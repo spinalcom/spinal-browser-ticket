@@ -114,7 +114,7 @@ with this file. If not, see
                   <el-tooltip :content="`Remove attribute ${scope.row.label}`">
                     <el-popconfirm
                       @confirm="delAttribute(cat.row, scope.row.serverId)"
-                      title="Are you sure to delete this?"
+                      :title="$t('spinal-twin.DeleteConfirm')"
                     >
                       <el-button
                         type=danger
@@ -162,7 +162,7 @@ with this file. If not, see
             <el-tooltip :content="`Remove category ${cat.row.name}`">
               <el-popconfirm
                 @confirm="delCategory(cat.row)"
-                title="Are you sure to delete this?"
+                :title="$t('spinal-twin.DeleteConfirm')"
               >
                 <el-button
                   slot="reference"
