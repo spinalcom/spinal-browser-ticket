@@ -6,6 +6,7 @@
       >
       
          <div class="header">
+            
             <color-config
                :variableSelected="variableSelected"
                @updateAverage="updateAverage"
@@ -102,7 +103,8 @@ export default {
 .info_container .content .header {
    width: 100%;
    height: 90px;
-   /* border: 1px solid red; */
+
+   /*border: 1px solid red; */
 }
 
 .info_container .content .endpointValues {

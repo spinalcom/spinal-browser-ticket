@@ -1,8 +1,20 @@
 <template>
-   <div class="div__content">
+   <div class="div__content" >
       <div class="relative">
          <div v-if="this.endpoint" class="div__rectangle" :style="{ 'background-color': getColor(this.endpoint.currentValue.get(),this.variableSelected.config) }">
          </div>
+         
+
+         <el-tooltip content="The endpoint is undefined, please check the link between the object and the endpoint" effect="light"
+         :open-delay="300"
+         >
+
+          <i v-if="!this.endpoint" class="el-icon-warning absolute custom-icon position_left2"></i>
+         </el-tooltip>
+
+
+
+
          <el-tooltip content="Isolate" effect="light"
              :open-delay="300"
              placement="right">
@@ -22,6 +34,7 @@
          <el-button v-on:click="select()" class="custom-icon circled-button position_right2" circle icon="el-icon-view"></el-button>
          </el-tooltip>
       </div>
+   
 
       <div
          class="name"
@@ -84,7 +97,6 @@ export default {
    mounted() {
       this.updateEndpoint(); 
       this.updateDisplay();
-      //console.debug(this.room);
    },
 
    methods: {
@@ -138,6 +150,21 @@ export default {
          return colorHex;
       },
 
+      backgroundColor(){
+         console.log(this.endpoint == undefined);
+         if (this.endpoint == undefined){
+            return '#c9b9b9'
+         }
+         return '#ffffff';
+         /*if(endpointValue == NULL){
+            console.log(this.endpoint);
+            return '#c9b9b9'
+         }
+         else return '#ffffff'*/
+      },
+
+      
+
       async focus() {
          
          let data = { rooms: [this.room]}
@@ -155,20 +182,11 @@ export default {
          id: this.room.id,
          ids: allBimObjects,
          });
-         /*EventBus.$emit("insight-select", {
-         id: data.id,
-         ids: allBimObjects,
-         });*/
       },
       async isolate() {
          
          let data = { rooms: [this.room]}
          const allBimObjects = await this.getAllBimObjects(data);
-         /*EventBus.$emit("insight-isolate", {
-         id: data.id,
-         ids: allBimObjects,
-         });*/
-
          this.$emit('isolate',{
          id: this.room.id,
          ids: allBimObjects,
@@ -300,6 +318,19 @@ export default {
    top: 60px;
    right : 0%
 }
+
+.position_left{
+   left:0%;
+}
+.position_left2{
+   top:30px;
+   left:0%;
+}
+
+.absolute{
+   position:absolute;
+}
+
 
 
 
