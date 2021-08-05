@@ -45,6 +45,8 @@ export default {
   "DataRoom.ScreenShot": "Make a screen shot",
   "DataRoom.PointView": "Save one point of view",
   "DataRoom.PJ": "Add attachments",
+  "DataRoom.Endpoints": "Endpoints",
+  "DataRoom.Insight": "Insight",
   "node-type.context" : "Contexts",
   "node-type.groupingCategory" : "Categories",
   "node-type.BIMObjectGroupContext" : "BIM objects groups contexts",

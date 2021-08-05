@@ -46,6 +46,8 @@ export default {
   "DataRoom.ScreenShot": "Faire une capture d'écran",
   "DataRoom.PointView": "Enregistrer un point de la vue",
   "DataRoom.PJ": "Joindre un fichier",
+  "DataRoom.Endpoints": "Points de terminaison",
+  "DataRoom.Insight": "Tableau de bord",
   "node-type.context" : "Contextes",
   "node-type.groupingCategory" : "Catégories",
   "node-type.BIMObjectGroupContext" : "Contextes de groupes d'objets BIM",

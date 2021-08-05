@@ -66,6 +66,9 @@ with this file. If not, see
               </DataRoomTypeTable>
             </div>
         </el-tab-pane>
+
+
+        <!-- Tab Tickets -->
         <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Ticket')">
       <div class="barre"
       v-for="(item, index) in items"
@@ -80,7 +83,7 @@ with this file. If not, see
         <header-bar :header="ticketHeader"
                     :content="ticketContent"
                     :data="ticketData"></header-bar>
-                       </div>
+                      </div>
 
       </div>
       <el-table :data="tickets"
@@ -104,7 +107,6 @@ with this file. If not, see
             <!-- {{ scope.row.user.name }} -->
           </template>
         </el-table-column>
-
         <el-table-column :label="$t('DataRoom.Note')"
                          align="center">
           <template slot-scope="scope">
@@ -113,6 +115,8 @@ with this file. If not, see
         </el-table-column>
       </el-table>
         </el-tab-pane>
+
+        <!-- Tab Documentation -->
         <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Documentation')">
       <div class="barre"
       v-for="(item, index) in items"
@@ -124,9 +128,7 @@ with this file. If not, see
         <header-bar :header="documentHeader"
                     :content="documentContent"
                     :data="documentData"></header-bar>
-
       </div>
-
       <el-table :data="documents"
                 border
                 style="width: 100%"
@@ -156,11 +158,16 @@ with this file. If not, see
       </el-table>
 
         </el-tab-pane>
+
+        <!-- Tab Notes -->
         <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Note')">
           <el-container>
             <message-component :node-info="nodeInfo"></message-component>
           </el-container>
         </el-tab-pane>
+
+
+        <!-- Tab Calendrier -->
         <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Calendar')">
        <div class="barre"
       v-for="(item, index) in items"
@@ -191,6 +198,8 @@ with this file. If not, see
         </div>
 
         </el-tab-pane>
+
+      <!-- Tab Attributes -->
     <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Attributes')">
        <div class="barre"
       v-for="(item, index) in items"
@@ -200,6 +209,19 @@ with this file. If not, see
       <category-attribute :Properties="attributes"></category-attribute>
 
     </el-tab-pane>
+    <!-- Tab Endpoints -->
+    <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Endpoints')">
+
+
+    </el-tab-pane>
+
+    <!-- Tab Insight -->
+    <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Insight')">
+
+
+    </el-tab-pane>
+
+
       </el-tabs>
     </el-row>
     <div style="margin: -3px;"  v-else class="spinal-space-spacecon_container-container">

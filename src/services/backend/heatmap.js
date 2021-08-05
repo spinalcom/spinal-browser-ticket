@@ -436,7 +436,6 @@ export default class Heatmap {
         ids: Array.from(value)
       })
     }
-
     return res;
   }
 
