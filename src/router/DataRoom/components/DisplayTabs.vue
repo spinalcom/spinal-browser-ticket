@@ -241,7 +241,7 @@ with this file. If not, see
       ></control-endpoint-component>
       </div>
       
-      <div v-if="this.nodeInfo.selectedNode.info.type.get()=='geographicRoom'">
+      <div v-if="this.nodeInfo.selectedNode.info.type.get()=='geographicRoom' && this.equipmentEndpoints.length !=0">
         <h3> Equipment Endpoints </h3>
         <div v-for="eq of equipmentEndpoints" v-bind:key="eq.name">
           <li class="newline"> {{eq.name}} </li>
@@ -457,6 +457,7 @@ export default {
   beforeDestroy() {},
   methods: {
 
+    // return infos from an endpointNodeId  
     async getEndpointInfo(endpointNodeId){
       const realnode = SpinalGraphService.getRealNode(endpointNodeId);
       const attributesLstModels = await serviceDocumentation.getAllAttributes(realnode);
@@ -470,14 +471,17 @@ export default {
     
     async getNodeEndpointsInfo(nodeId,endpointRelation){
       const endpointProfilsModel = await SpinalGraphService.getChildren(nodeId,endpointRelation);
-      if (endpointProfilsModel.length==0) return
-      if(endpointRelation == 'hasControlPoints'){
+      if (endpointProfilsModel.length==0) return // si la node n'a pas d'endpoints on quitte la fonction
+      if (endpointRelation == 'hasControlPoints'){ // on cherche les control endpoints (onglet insight)
         const res= [];
-        for(const endpointProfil of endpointProfilsModel){
+        for(const endpointProfil of endpointProfilsModel){ // pour chaque profil de control endpoint
+          /** on récupère la data */
           const endpointsModels = await SpinalGraphService.getChildren(endpointProfil.id.get(),"hasBmsEndpoint");
           const endpoints = endpointsModels.map(el => el.get());
           const infos= [];
-          for (const endpoint of endpoints) {
+
+          for (const endpoint of endpoints) { // pour chaque control endpoint
+          /** on récupère la data */
             const info = await this.getEndpointInfo(endpoint.id);
             infos.push(info);
           }
@@ -486,13 +490,13 @@ export default {
         return res;
       }
       //endpointRelation == 'hasEndpoint'
-      else {
+      else { // on cherche les endpoints (onglet endpoint)
         const res =[];
         // premier automate associé ( à changer si besoin )
         const endpointsModels = await SpinalGraphService.getChildren(endpointProfilsModel[0].id.get(),"hasBmsEndpoint");
         const endpoints = endpointsModels.map(el => el.get());
         
-        for (const endpoint of endpoints) {
+        for (const endpoint of endpoints) { // pour chaque endpoint
           const info = await this.getEndpointInfo(endpoint.id);
           res.push(info);
         }

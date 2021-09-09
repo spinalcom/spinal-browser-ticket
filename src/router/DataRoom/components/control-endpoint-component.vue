@@ -26,8 +26,7 @@ export default {
          bindProcess: undefined,
       };
    },
-   mounted() {
-      //this.updateEndpoint(); 
+   mounted() { 
       this.value = this.endpoint.currentValue;
       this.unit= this.endpoint.unit;
    },
@@ -64,11 +63,6 @@ export default {
    },
 
    watch: {
-   },
-
-   beforeDestroy() {
-      if (this.endpoint && this.bindProcess)
-         this.endpoint.currentValue.unbind(this.bindProcess);
    },
 };
 </script>
