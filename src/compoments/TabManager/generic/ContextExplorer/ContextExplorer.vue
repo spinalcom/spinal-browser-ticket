@@ -22,7 +22,7 @@ with this file. If not, see
   <div>
     <div class="spl-button-bar">
       <el-button
-        @click.stop="SeeAll()"
+        @click.stop="Color()"
         class="spl-el-button"
         icon="el-icon-picture-outline-round"
         circle
@@ -45,6 +45,10 @@ with this file. If not, see
         :view-key="Properties.viewKey"
         :items="itemsComputed"
         :columns="cols"
+        :relation="Properties.relation"
+        :colored="colored"
+        @select="Select"
+        @isolate="Isolate"
       >
       </context-explorer-node-table>
     </div>
@@ -57,7 +61,10 @@ import { ViewManager } from "../../../../services/ViewManager/ViewManager";
 import { AppBack } from "../../../../services/backend/AppBack";
 import BackendInitializer from "../../../../services/BackendInitializer";
 import { EventBus } from "../../../../services/event";
+import ColorState from "./colorState"
+
 import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
+
 export default {
   name: "ContextExplorer",
   components: { ContextExplorerNodeTable },
@@ -96,30 +103,31 @@ export default {
       if (this.Properties && this.Properties.cols) return this.Properties.cols;
       return [];
     },
+    colored() {
+      return ColorState.colored();
+    }
   },
 
   methods: {
-    changeView(item) {
-      ViewManager.getInstance(this.Properties.viewKey).push(
-        item.name,
-        item.serverId
-      );
+    Color() {
+      ColorState.changeState();
+      EventBus.$emit("viewer-reset-color")
+      if (ColorState.colored())
+        this.$refs["Explorer-table"].Color(this.Properties.relation);
     },
 
-    SeeAll() {
-      this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
+    Select(item)
+    {
+      EventBus.$emit("viewer-select", item, this.Properties.relation);
     },
 
-    isolateAll() {
-      this.$refs["Explorer-table"].isolateAll(this.Properties.view.serverId);
+    Isolate(item)
+    {
+      EventBus.$emit("viewer-isolate", item, this.Properties.relation);
     },
 
     exportToExcel() {
       this.$refs["Explorer-table"].exportToExcel();
-    },
-
-    ShowAll() {
-      this.$refs["Explorer-table"].ShowAll();
     },
     
     async debug(what) {

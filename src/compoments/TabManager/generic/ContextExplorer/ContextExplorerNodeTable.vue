@@ -123,7 +123,9 @@ export default {
   props: {
     viewKey: { required: true, type: String },
     items: { required: true, type: Array },
-    columns: { required: true, type: Array }
+    columns: { required: true, type: Array },
+    relation: { required: true, type: String },
+    colored: { required: false, type: Boolean, default: false },
   },
 
   data() {
@@ -148,33 +150,15 @@ export default {
 
   methods: {
     selectInView(item) {
-      EventBus.$emit("test-select-item", {
-        server_id: item.serverId,
-        color: item.color
-      });
+      this.$emit("select", { server_id: item.serverId });
     },
 
     SeeEvent(item) {
-      EventBus.$emit("test-isolate-item", {
-        server_id: item.serverId,
-        color: item.color
-      });
+      this.$emit("isolate", { server_id: item.serverId });
     },
 
-    SeeAll(zone) {
-      let items = this.data.map(item => {
-        return { server_id: item.serverId, color: item.color };
-      });
-      console.debug(items, zone)
-      EventBus.$emit("test-color-all", items, { server_id: zone });
-    },
-
-    ShowAll() {
-      EventBus.$emit("test-show-all");
-    },
-
-    isolateAll(zone) {
-      EventBus.$emit("test-isolate-all", { server_id: zone });
+    Color() {
+      EventBus.$emit('viewer-color', this.data, this.relation)
     },
 
     onSelectItem(item) {
@@ -240,6 +224,9 @@ export default {
           Object.assign(itm, { color });
         }
       }
+      EventBus.$emit("viewer-reset-color");
+      if (this.colored)
+        EventBus.$emit('viewer-color', this.data, this.relation)
     },
 
     setColorItem(serverId, color) {

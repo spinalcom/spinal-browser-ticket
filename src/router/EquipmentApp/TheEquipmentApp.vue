@@ -91,6 +91,10 @@ import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import "../../services/viewerUtils/eventsHandler/Equipment";
 
+import {
+  EQUIPMENT_RELATION,
+} from '../../constants';
+
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
@@ -128,6 +132,7 @@ export default {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
+            relation: EQUIPMENT_RELATION,
           },
           ignore: false,
         },
@@ -266,15 +271,15 @@ export default {
     },
 
     zoomOn() {
-      EventBus.$emit("equipment-zoom-all", { server_id: this.currentView.serverId });
+      EventBus.$emit("viewer-zoom", { server_id: this.currentView.serverId }, EQUIPMENT_RELATION);
     },
 
     isolateAll() {
-      EventBus.$emit("equipment-isolate-all", { server_id: this.currentView.serverId });
+      EventBus.$emit("viewer-isolate", { server_id: this.currentView.serverId }, EQUIPMENT_RELATION);
     },
 
     selectInView() {
-      EventBus.$emit("equipment-select-item", { server_id: this.currentView.serverId });
+      EventBus.$emit("viewer-select", { server_id: this.currentView.serverId }, EQUIPMENT_RELATION);
     },
 
     formatData() {

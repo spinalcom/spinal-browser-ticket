@@ -248,6 +248,20 @@ export default class BackEndSpatial {
     });
     return sortBIMObjectByModel(listNode);
   }
+
+  /**
+   * @param { {server_id: number} } item
+   * @memberof BackEndSpatial
+   * @returns { Promise<{model, selection: number[] }[]>}
+   */
+  async getLstByModelAndRelation(item, relation, addRoomRef = false) {
+    const node = getNodeFromItem(item);
+    const relations = [...relation]
+    const listNode = await node.find(relations, (n) => {
+      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+    });
+    return sortBIMObjectByModel(listNode);
+  }
 }
 
 /**
