@@ -248,6 +248,18 @@ with this file. If not, see
       <h6 v-if="!this.floorControlEndpoints || this.floorControlEndpoints.length ==0" >
          No control-endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}} 
       </h6>
+      <template v-else>
+        <div v-for="profil of controlEndpoints" v-bind:key="profil.name">
+        <h3> {{profil.name}} </h3>
+        <control-endpoint-component 
+         v-for="endpoint of profil.info"
+         v-bind:key="endpoint.name"
+         :name="endpoint.name"
+         :endpoint="endpoint"
+      ></control-endpoint-component>
+      </div>
+      </template>
+
       
 
     </el-tab-pane>
@@ -579,6 +591,7 @@ export default {
           this.roomEndpoints.push({name: room.name.get(),info});
           }
         }
+        this.floorControlEndpoints = await this.getNodeEndpointsInfo(this.currentNodeInfo.selectedNode.info.id.get(),"hasControlPoints");
       }
       
       
