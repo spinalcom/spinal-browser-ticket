@@ -26,18 +26,22 @@ with this file. If not, see
     type="border-card"
   >
     <template
-        v-for="tab in tabsprop">
+        v-for="tab in tabsprop"
+      >
       <template v-if="!tab.ignore">
         <el-tab-pane
-            :key="$t(tab.name)"
-            :label="$t(tab.name)"
-            :name="$t(tab.name)"
-            :closable="false"
-            style="height:100%; overflow: auto">
-          <component
-            :is="tab.content"
-            :Properties="tab.props"
-          ></component>
+          :key="$t(tab.name)"
+          :label="$t(tab.name)"
+          :name="$t(tab.name)"
+          :closable="false"
+          style="height:100%; overflow: auto"
+        >
+          <keep-alive>
+            <component
+              :is="tab.content"
+              :Properties="tab.props"
+            ></component>
+          </keep-alive>
         </el-tab-pane>
       </template>
     </template>
