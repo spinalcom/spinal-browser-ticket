@@ -25,74 +25,318 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <h2>Category Attributes</h2>
+      <el-tooltip
+        :content="$t('spinal-twin.CategoryAdd')"
+        style="float: right"
+      >
+        <el-button
+          @click.native="addCategory()"
+          :disabled="ctxNode == false"
+          icon="el-icon-plus"
+          type="primary"
+          circle
+        ></el-button>
+      </el-tooltip>
     </el-header>
-    <el-main v-if="Category">
-      {{ Category.name._data }} : {{ Category.id._data }}
+    <el-main>
+      <el-table
+        v-if="Categories"
+        :data="Categories"
+        :header-cell-style="{'background-color': '#f0f2f5'}"
+        border
+        style="overflow: auto; height: auto"
+      >
+        <el-table-column type=expand>
+          <div slot-scope="cat">
+            <el-table
+              :data="cat.row.attributes"
+              :header-cell-style="{'background-color': '#f0f2f5'}"
+              border
+              style="overflow: auto; height: auto"
+            >
+              <el-table-column :label="$t('node-type.Attribute')">
+                <editable-text
+                  :content.sync="scope.row.label"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
+                  <a
+                    v-if="scope.row.type == 'url'"
+                    :href="httpify(scope.row.value)"
+                  >
+                    {{ scope.row.label }}
+                  </a>
+                  <div v-else>
+                    {{ scope.row.label }}
+                  </div>
+                </editable-text>
+              </el-table-column>
+              <el-table-column label="Value">
+                <editable-text
+                  :content.sync="scope.row.value"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
+                  {{ scope.row.value }}
+                </editable-text>
+              </el-table-column>
+              <el-table-column label="Type">
+                <editable-text
+                  :content.sync="scope.row.type"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
+                  {{ scope.row.type }}
+                </editable-text>
+              </el-table-column>
+              <el-table-column label="Unit">
+                <editable-text
+                  :content.sync="scope.row.unit"
+                  :isEditing="scope.row.isEditing"
+                  slot-scope="scope"
+                >
+                  {{ scope.row.unit }}
+                </editable-text>
+              </el-table-column>
+              <el-table-column
+                fixed="right"
+                label="Options"
+                width="120"
+              >
+                <div slot-scope="scope">
+                  <el-tooltip :content="$t('spinal-twin.AttributeEdit') + scope.row.label">
+                    <el-button
+                      @click.native="editAttribute(scope.row)"
+                      :icon="scope.row.isEditing ? 'el-icon-success' : 'el-icon-edit'"
+                      circle
+                    ></el-button>
+                  </el-tooltip>
+                  <el-tooltip :content="$t('Remove attribute ') + scope.row.label">
+                    <el-popconfirm
+                      @confirm="delAttribute(cat.row, scope.row.serverId)"
+                      :title="$t('spinal-twin.DeleteConfirm')"
+                    >
+                      <el-button
+                        type=danger
+                        icon="el-icon-delete"
+                        circle
+                        slot="reference"
+                      ></el-button>
+                    </el-popconfirm>
+                  </el-tooltip>
+                </div>
+              </el-table-column>
+            </el-table>
+          <el-tooltip :content="$t('spinal-twin.CategoryAddAttribute') + cat.row.name">
+            <el-button
+              @click.native="addAttribute(cat.row)"
+              icon="el-icon-plus"
+              circle
+            ></el-button>
+          </el-tooltip>
+          </div>
+        </el-table-column>
+        <el-table-column :label="$t('node-type.Category')">
+          <editable-text
+            :content.sync="cat.row.name"
+            :isEditing="cat.row.isEditing"
+            slot-scope="cat"
+          >
+            {{ cat.row.name }}
+          </editable-text>
+        </el-table-column>
+        <el-table-column
+          label="Actions"
+          fixed="right"
+          width=200
+        >
+          <div slot-scope="cat">
+            <el-tooltip :content="$t('spinal-twin.CategoryEdit') + cat.row.name">
+              <el-button
+                @click.native="editCategory(cat.row)"
+                :icon="cat.row.isEditing ? 'el-icon-success' : 'el-icon-edit'"
+                circle
+              ></el-button>
+            </el-tooltip>
+            <el-tooltip :content="$t('spinal-twin.CategoryRemove') + cat.row.name">
+              <el-popconfirm
+                @confirm="delCategory(cat.row)"
+                :title="$t('spinal-twin.DeleteConfirm')"
+              >
+                <el-button
+                  slot="reference"
+                  type=danger
+                  icon="el-icon-delete"
+                  circle
+                ></el-button>
+              </el-popconfirm>
+            </el-tooltip>
+          </div>
+        </el-table-column>
+      </el-table>
+      <!-- <el-button
+        v-on:click.native="debug(ctxNode)"
+        class="spl-input-button"
+        icon="el-icon-search"
+        type="primary"
+        size="small"
+        circle
+      ></el-button> -->
     </el-main>
   </el-container>
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { spinalBackEnd } from "../../../services/spinalBackend";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
+import { FileSystem } from 'spinal-core-connectorjs_type'
+
+import EditableText from "../../../compoments/EditableText.vue";
 import { spinalIO } from '../../../services/spinalIO';
 export default {
-  name: "CategoryAttributes",
+  name: "Attributes",
+  components: { EditableText },
   props: {
-    propList: { type: Object, default: function () { return {} } },
+    Properties: {
+      required: true,
+      type: Object,
     },
+  },
+
   data() {
     return {
-      currentView: null,
-      contextServId: 0,
-      item: [],
-      Category: null,
+      ctxNode: false,
+      Categories: false,
+    };
+  },
+
+  watch:
+  {
+    Properties:
+    {
+      handler: async function(oldProp, newProp)
+      {
+        if (newProp.view.serverId != 0)
+        {
+          this.update(newProp.view.serverId);
+        }
+        else
+        {
+          this.Categories = false;
+          this.ctxNode = false;
+        }
+      },
+      deep: true,
     }
   },
-  async mounted() {
-    await spinalBackEnd.waitInit()
-    ViewManager.getInstance(this.propList.viewKey).viewSubscribe(this.onViewChange.bind(this), 0);
+
+  mounted()
+  {
+    this.update(this.Properties.view.serverId);
   },
+
   methods: {
-    async onViewChange(view) {
-      let mapItems;
-      if (view.serverId === 0) {
-        this.contextServId = 0;
-        mapItems = await spinalBackEnd.DataRoomBack.getContexts();
-      } else {
-        if (this.contextServId === 0) {
-          this.contextServId = view.serverId;
-        }
-        mapItems = await spinalBackEnd.DataRoomBack.getItems(
-          view.serverId,
-          this.contextServId
-        );
-      }
-
-      this.Category = null
-
-      for (const [nodeType, items] of mapItems) {
-        const node = FileSystem._objects[items[0].serverId]
-        if (node.children)
+    async update(id)
+    {
+      console.debug("CATATT start");
+      // this.ctxNode = await SpinalGraphService.getInfo(id);
+      this.ctxNode = FileSystem._objects[id];
+      console.debug("CATATT end");
+      serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
+        this.Categories = [];
+        for(const category of Categories)
         {
-          if (node.children.PtrLst._attribute_names.includes("hasCategoryAttributes"))
+          serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat).then((attributes) =>
           {
-            const CategoryID = node.children.PtrLst.hasCategoryAttributes.children.ptr;
-            if (CategoryID)
+            let attrs = [];
+            for (const attribute of attributes)
             {
-              const Category = await spinalIO.loadPtr(CategoryID)
-              if (typeof Category !== 'undefined')
-              {
-                this.Category = Category[0].info
-              }
+              attrs.push({
+                label: attribute.label._data,
+                value: attribute.value._data,
+                type: attribute.type._data,
+                unit: attribute.unit._data,
+                isEditing: false,
+                serverId: attribute._server_id,
+              });
             }
-          }
+            let cat = {
+              cat: category,
+              name: category.nameCat,
+              attributes: attrs,
+              isEditing: false,
+            }
+            this.Categories.push(cat);
+          })
         }
-      }
+      })
+    },
+    
+    async addAttribute(category){
+      const node = await serviceDocumentation.addAttributeByCategory(this.ctxNode, category.cat, "newAttribute", "newValue", "newType", "newUnit");
+      await spinalIO.waitNodeReady(node);
+      category.attributes.push({
+        label: "newAttribute",
+        value: "newValue",
+        type: "newType",
+        unit: "newUnit",
+        isEditing: false,
+        serverId: node._server_id,
+      })
+    },
+    
+    async delAttribute(category, attribute_id){
+      await serviceDocumentation.removeAttributesById(category.cat.node, attribute_id)
+      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute_id))
+    },
 
-      this.currentView = view;
+    async editAttribute(attribute){
+      if (!attribute.isEditing)
+      {
+        attribute.isEditing = true;
+        return;
+      }
+      await serviceDocumentation.setAttributeById(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
+      attribute.isEditing = false;
+    },
+
+    async addCategory(){
+      const category = await serviceDocumentation.addCategoryAttribute(this.ctxNode, "NewCategory");
+      this.Categories.push({
+        cat: category,
+        name: "NewCategory",
+        attributes: [],
+        isEditing: false,
+      })
+    },
+
+    async delCategory(category){
+      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id)
+      this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id))
+    },
+
+    async editCategory(category){
+      if (!category.isEditing)
+      {
+        category.isEditing = true;
+        return;
+      }
+      await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name)
+      category.isEditing = false;
+    },
+
+    httpify(url)
+    {
+      if (!url.startsWith("http"))
+      {
+        return "http://" + url;
+      }
+      return url;
+    },
+    
+    async debug(what) {
+      console.debug("Debugging", what);
     },
   },
-}
+};
 </script>
