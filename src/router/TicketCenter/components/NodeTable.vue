@@ -138,9 +138,12 @@ export default {
     };
   },
   watch: {
-    items() {
-      this.update();
-    },
+    items: {
+      handler () {
+        this.update();
+      },
+      deep: true,
+    }
   },
   mounted() {
     this.update();

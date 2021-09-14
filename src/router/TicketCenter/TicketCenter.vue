@@ -41,7 +41,7 @@ import TabManager from "../../compoments/TabManager/TabManager.vue";
 // Specific components
 import Explorer from "./components/Explorer.vue";
 import Visualizer from "./components/Visualizer.vue";
-import TicketDetails from "./components/TicketDetails";
+import TicketDetails from "./components/TicketDetails.vue";
 
 const VIEW_KEY = "Ticket Center";
 
@@ -72,6 +72,7 @@ export default {
   methods: {},
 };
 </script>
+
 <style scoped>
 .ticket-center {
   margin: 5px 5px 5px 5px;

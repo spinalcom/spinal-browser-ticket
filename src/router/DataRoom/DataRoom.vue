@@ -222,7 +222,6 @@ import { ViewManager } from "../../services/ViewManager/ViewManager";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
-import TabManager from "../../compoments/TabManager/TabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import ticketcreate from "./components/ticketcreate";
@@ -238,7 +237,7 @@ import { SpinalEventService } from "spinal-env-viewer-task-service";
 import { serviceTicketPersonalized } from "spinal-service-ticket";
 import DisplayTabs from './components/DisplayTabs.vue';
 export default {
-  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager, CategoryAttribute,
+  components: { SpinalBreadcrumb, DataRoomTypeTable, CategoryAttribute,
   "ticket-create": ticketcreate,
   "header-bar": headerBarVue,
   "document-create": documentcreateVue,
