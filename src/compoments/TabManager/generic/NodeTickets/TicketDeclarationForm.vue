@@ -88,7 +88,7 @@ with this file. If not, see
           :label="$t('spinal-twin.Priority')"
         >
           <el-radio-group v-model="newTicket.priority">
-            <el-radio label="Occasionally"></el-radio>
+            <el-radio label="Occasion"></el-radio>
             <el-radio label="Normal"></el-radio>
             <el-radio label="Urgent"></el-radio>
           </el-radio-group>

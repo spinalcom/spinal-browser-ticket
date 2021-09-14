@@ -54,7 +54,7 @@ with this file. If not, see
 <script>
 import { ViewManager } from "../../../../services/ViewManager/ViewManager";
 // import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from "../../backend/EquipmentBack";
+import { AppBack } from "../../../../services/backend/AppBack";
 import BackendInitializer from "../../../../services/BackendInitializer";
 import { EventBus } from "../../../../services/event";
 import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";

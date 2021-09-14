@@ -27,36 +27,13 @@ with this file. If not, see
     <el-container
       v-if="selected"
     >
-      <el-header
-        class="rowify"
-        style="height:max-content;"
+      <node-tickets-selected
+        :selected="selected"
+        :stepping="Properties.stepping"
+        @update="update(Properties.view.serverId, true)"
+        @back="selected = false"
       >
-        <el-tooltip content="Go back">
-          <el-button
-            @click.stop="selected = false"
-            class="spl-el-button"
-            style="float: left"
-            icon="el-icon-arrow-left"
-            circle
-          >
-          </el-button>
-        </el-tooltip>
-        <el-button
-          @click="debug(selected)"
-          icon="el-icon-search"
-          circle
-        ></el-button>
-        <h2 style="margin: 0 50px">
-          {{ selected.name }}
-        </h2>
-      </el-header>
-      <el-main>
-        <node-tickets-selected
-          :selected="selected"
-          @update="update(Properties.view.serverId, true)"
-        >
-        </node-tickets-selected>
-      </el-main>
+      </node-tickets-selected>
     </el-container>
     <el-container
       v-else-if="addingTicket"
@@ -87,9 +64,9 @@ with this file. If not, see
       <el-main>
         <node-tickets-list
           v-if="tickets"
+          :tickets="tickets"
           @select="select"
           @archive="archive"
-          :tickets="tickets"
         >
         </node-tickets-list>
       </el-main>
@@ -109,6 +86,7 @@ import NodeTicketsList from './NodeTicketsList.vue';
 import spinalCore from 'spinal-core-connectorjs';
 import NodeTicketsSelected from './NodeTicketsSelected.vue';
 import TicketDeclarationForm from './TicketDeclarationForm.vue';
+import { getTicketDescription } from './Ticket'
 
 export default {
   name: "NodeTickets",
@@ -168,7 +146,10 @@ export default {
     async update(id, keepSelected = false)
     {
       // update tab infos from current node
-      this.ctxNode = await FileSystem._objects[id];
+      console.debug("TICKET start test")
+      // this.ctxNode = SpinalGraphService.getNode(id);
+      this.ctxNode = FileSystem._objects[id];
+      console.debug("TICKET end" + typeof this.ctxNode)
       const node = await SpinalGraphService.findNode(this.ctxNode.info.id.get())
 
       let ticketList = await spinalServiceTicket.getTicketsFromNode(node.id.get())
@@ -176,36 +157,10 @@ export default {
       let arrayId = 0;
       for (let ticket of ticketList)
       {
-        let ticketDesc = {
-          id: arrayId,
-          ticket: ticket,
-          name: ticket.name,
-          creation: this.elapsedTimeFormat(ticket.creationDate),
-          creationDate: ticket.creationDate,
-        }
-
-        let step = await SpinalGraphService.findNode(ticket.stepId);
-        ticketDesc.step = step.name.get();
-
-        ticketDesc.events = await spinalServiceTicket.getLogs(ticket.id);
-
-        let ticketNode = await SpinalGraphService.getRealNode(ticket.id);
-        ticketDesc.comments = await serviceDocumentation.getNotes(ticketNode);
-
-        let priority = ticket.priority;
-        switch(priority)
-        {
-          case 0:
-            ticketDesc.priority = this.$t('spinal-twin.TicketPriority.Occasion')
-            break;
-          case 1:
-            ticketDesc.priority = this.$t('spinal-twin.TicketPriority.Normal')
-            break;
-          case 2:
-            ticketDesc.priority = this.$t('spinal-twin.TicketPriority.Urgent')
-            break;
-        }
-
+        let ticketDesc = await getTicketDescription(ticket);
+        ticketDesc.id = arrayId;
+        ticketDesc.creation = this.elapsedTimeFormat(ticket.creationDate),
+        ticketDesc.priority = this.$t(ticketDesc.priority);
         this.tickets.push(ticketDesc);
         arrayId += 1;
       }
@@ -262,23 +217,6 @@ export default {
     addTicket()
     {
       console.debug("TODO : add ticket");
-    },
-
-    async changeStep(step, ticket)
-    {
-      if (step > 0)
-      {
-        let test = await spinalServiceTicket.moveTicketToNextStep(ticket.contextId, ticket.processId, ticket.id, this.userInfo)
-      }
-      else if (step < 0)
-      {
-        let test = await spinalServiceTicket.moveTicketToPreviousStep(ticket.contextId, ticket.processId, ticket.id, this.userInfo)
-      }
-      else
-      {
-        return
-      }
-      this.update(this.Properties.view.serverId, true)
     },
 
     async debug(what) {

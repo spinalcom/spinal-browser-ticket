@@ -25,7 +25,7 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <el-tooltip :content="`Add document`">
+      <el-tooltip :content="$t('spinal-twin.DocumentAdd')">
         <el-button
           :disabled="ctxNode == false"
           @click.native="addDocument()"
@@ -53,14 +53,14 @@ with this file. If not, see
             fixed="right"
             width=120>
           <div slot-scope="scope">
-            <el-tooltip :content="`Download document`">
+            <el-tooltip :content="$t('spinal-twin.DocumentDownload')">
               <el-button
                 @click.native="downloadDocument(scope.row._server_id)"
                 icon="el-icon-download"
                 circle
               ></el-button>
             </el-tooltip>
-            <el-tooltip :content="`Remove document`">
+            <el-tooltip :content="$t('spinal-twin.DocumentRemove')">
               <el-popconfirm
                 @confirm="delDocument(scope.row._server_id)"
                 :title="$t('spinal-twin.DeleteConfirm')">
@@ -82,6 +82,7 @@ with this file. If not, see
 <script>
 import { FileSystem } from 'spinal-core-connectorjs_type'
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
 
 export default {
   name: "NodeDocumentation",
@@ -127,7 +128,10 @@ export default {
   methods: {
     async update(id)
     {
+      console.debug("DOC start")
+      // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
+      console.debug("DOC end")
       this.directory = await FileExplorer.getDirectory(this.ctxNode);
       await this.getDocuments();
     },
@@ -180,7 +184,7 @@ export default {
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              `The selected file(s) is too large. The maximum size must not exceed ${maxSize / 1000000} MB`
+              this.$t("spinal-twin.ErrorFileTooLarge") + (maxSize / 1000000) + " MB"
             );
             return;
           }

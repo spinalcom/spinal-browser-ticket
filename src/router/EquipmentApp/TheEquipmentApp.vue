@@ -21,7 +21,7 @@ with this file. If not, see
 <template>
   <div class="equipment-center">
     <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
-    <el-tooltip content="Go back">
+    <el-tooltip :content="$t('spinal-twin.Back')">
       <el-button
         v-show="(currentView.serverId != 0)"
         @click.stop="popView()"
@@ -35,7 +35,7 @@ with this file. If not, see
     <div class="spl-button-bar">
       <el-tooltip
         :disabled="!isNode"
-        content="Isolate"
+        :content="$t('spinal-twin.Isolate')"
       >
         <el-button
           :disabled="!isNode"
@@ -48,7 +48,7 @@ with this file. If not, see
       </el-tooltip>
       <el-tooltip
         :disabled="!isNode"
-        content="Select"
+        :content="$t('spinal-twin.Select')"
       >
         <el-button
           :disabled="!isNode"
@@ -84,7 +84,7 @@ with this file. If not, see
 <script>
 // Script & tools
 import { ViewManager } from "../../services/ViewManager/ViewManager";
-import { EquipmentBack } from "./backend/EquipmentBack";
+import { AppBack } from "../../services/backend/AppBack";
 import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
@@ -94,13 +94,14 @@ import "../../services/viewerUtils/eventsHandler/Equipment";
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
+import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
 // Specific components
-import ContextExplorer from "./components/ContextExplorer/ContextExplorer.vue";
-import CategoryAttribute from "./components/CategoryAttribute.vue";
-import NodeDocumentation from "./components/NodeDocumentation.vue";
-import NodeTickets from "./components/NodeTickets/NodeTickets.vue";
-import NodeNotes from "./components/NodeNotes/NodeNotes.vue";
-import NodeNotesMessage from './components/NodeNotes/NodeNotesMessage.vue';
+import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
+import NodeDocumentation from "../../compoments/TabManager/generic/NodeDocumentation.vue";
+import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTickets.vue";
+import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue";
+import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue";
+import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
 const VIEW_KEY = "EquipmentApp";
 // Component exports
 export default {
@@ -110,6 +111,7 @@ export default {
     TabManager,
     NodeNotesMessage,
     NodeTickets,
+    NodeCalendar,
   },
 
   data() {
@@ -169,13 +171,25 @@ export default {
           },
           ignore: true,
         },
+
+        {
+          name: "spinal-twin.Calendar",
+          content: NodeCalendar,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
       ],
     };
   },
 
   async mounted() {
-    await BackendInitializer.getInstance().initback(
-      EquipmentBack.getInstance()
+    const graph = await BackendInitializer.getInstance().getGraph()
+    await AppBack.getInstance().init(
+      graph,
+      "BIMObjectGroupContext"
     );
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it
     await ViewManager.getInstance(this.viewKey).init(
@@ -191,16 +205,17 @@ export default {
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
-        mapItems = await EquipmentBack.getInstance().getContexts();
+        mapItems = await AppBack.getInstance().getContexts("BIMObject");
         this.isNode = false;
       } else {
         this.isNode = true;
         if (this.contextServId === 0) {
           this.contextServId = view.serverId;
         }
-        mapItems = await EquipmentBack.getInstance().getItems(
+        mapItems = await AppBack.getInstance().getItems(
           view.serverId,
-          this.contextServId
+          this.contextServId,
+          "BIMObject"
         );
       }
 

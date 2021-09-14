@@ -80,6 +80,7 @@ with this file. If not, see
 
 <script>
 import { FileSystem } from 'spinal-core-connectorjs_type'
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import NodeNotesMessage from "./NodeNotesMessage.vue";
 import NodeNotesCreate from './NodeNotesCreate.vue';
@@ -129,7 +130,10 @@ export default {
   methods: {
     async update(id)
     {
+      console.debug("NOTE start")
+      // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
+      console.debug("NOTE end")
       this.notes = [];
       this.notes = await serviceDocumentation.getNotes(this.ctxNode);
       this.new_note = "";

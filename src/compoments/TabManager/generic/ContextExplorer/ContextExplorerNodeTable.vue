@@ -61,11 +61,11 @@ with this file. If not, see
     <el-table-column
       v-if="haveChildren"
       :label="$t('node-type.Sum')"
-      prop="equipmentN"
+      prop="sum"
       align="center"
     >
       <div slot-scope="scope">
-        {{ scope.row.equipmentN }}
+        {{ scope.row.sum }}
       </div>
     </el-table-column>
 
@@ -148,14 +148,14 @@ export default {
 
   methods: {
     selectInView(item) {
-      EventBus.$emit("equipment-select-item", {
+      EventBus.$emit("test-select-item", {
         server_id: item.serverId,
         color: item.color
       });
     },
 
     SeeEvent(item) {
-      EventBus.$emit("equipment-isolate-item", {
+      EventBus.$emit("test-isolate-item", {
         server_id: item.serverId,
         color: item.color
       });
@@ -165,15 +165,16 @@ export default {
       let items = this.data.map(item => {
         return { server_id: item.serverId, color: item.color };
       });
-      EventBus.$emit("equipment-color-all", items, { server_id: zone });
+      console.debug(items, zone)
+      EventBus.$emit("test-color-all", items, { server_id: zone });
     },
 
     ShowAll() {
-      EventBus.$emit("equipment-show-all");
+      EventBus.$emit("test-show-all");
     },
 
     isolateAll(zone) {
-      EventBus.$emit("equipment-isolate-all", { server_id: zone });
+      EventBus.$emit("test-isolate-all", { server_id: zone });
     },
 
     onSelectItem(item) {
@@ -201,7 +202,7 @@ export default {
           serverId: item.serverId,
           haveChild: false,
           color: item.getColor(),
-          equipmentN: await item.getEquipmentNumber(),
+          sum: await item.countItems(),
         };
         if (resItem.color) colorUsed.push(resItem.color);
         if (item.children) {

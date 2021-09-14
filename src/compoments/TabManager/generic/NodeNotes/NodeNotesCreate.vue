@@ -278,7 +278,7 @@ export default {
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              "The selected file(s) is too large. The maximum size must not exceed 25 MB"
+              $t('spinal-twin.ErrorFileTooLarge') + "25 MB"
             );
             return;
           }
