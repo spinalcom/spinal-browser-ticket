@@ -19,7 +19,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="hide-overflow">
+  <div class="data-app">
     <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
     <el-tooltip :content="$t('spinal-twin.Back')">
       <el-button
@@ -83,8 +83,6 @@ with this file. If not, see
 
 <script>
 // Script & tools
-
-import Vue from 'vue'
 import { ViewManager } from "../../services/ViewManager/ViewManager";
 import { AppBack } from "../../services/backend/AppBack";
 import BackendInitializer from "../../services/BackendInitializer";
@@ -92,10 +90,13 @@ import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 
+import {
+  ROOM_RELATION,
+} from '../../constants';
+
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
-// Specific components
 import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
 import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
 import NodeDocumentation from "../../compoments/TabManager/generic/NodeDocumentation.vue";
@@ -103,19 +104,24 @@ import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTic
 import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue";
 import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue";
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
-import NodeTicketSelected from '../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue';
 
-const VIEW_KEY = "TicketApp";
+// Specific components
+import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
+import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
+
+const VIEW_KEY = "DataApp";
 // Component exports
 export default {
-  name: "TheTicketApp",
+  name: "TheDataApp",
   components: {
     SpinalBreadcrumb,
     TabManager,
-    NodeNotesMessage,
+    ContextExplorer,
     NodeTickets,
+    NodeDocumentation,
+    NodeNotesMessage,
     NodeCalendar,
-    NodeTicketSelected,
+    CategoryAttribute,
   },
 
   data() {
@@ -132,6 +138,7 @@ export default {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
+            relation: ROOM_RELATION,
           },
           ignore: false,
         },
@@ -167,6 +174,16 @@ export default {
         },
 
         {
+          name: "spinal-twin.Tickets",
+          content: NodeTickets,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+
+        {
           name: "spinal-twin.Calendar",
           content: NodeCalendar,
           props: {
@@ -175,6 +192,26 @@ export default {
           },
           ignore: true,
         },
+
+        // {
+        //   name: "spinal-twin.Endpoints",
+        //   content: InsightEndpoint,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
+
+        // {
+        //   name: "spinal-twin.ControlEndpoints",
+        //   content: InsightControlEndpoint,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
       ],
     };
   },
@@ -183,7 +220,7 @@ export default {
     const graph = await BackendInitializer.getInstance().getGraph()
     await AppBack.getInstance().init(
       graph,
-      "SpinalSystemServiceTicket"
+      "geographicContext"
     );
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it
     await ViewManager.getInstance(this.viewKey).init(
@@ -199,7 +236,7 @@ export default {
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
-        mapItems = await AppBack.getInstance().getContexts("SpinalSystemServiceTicketTypeTicket");
+        mapItems = await AppBack.getInstance().getContexts("hasGeographicRoom");
         this.isNode = false;
       } else {
         this.isNode = true;
@@ -209,9 +246,10 @@ export default {
         mapItems = await AppBack.getInstance().getItems(
           view.serverId,
           this.contextServId,
-          "SpinalSystemServiceTicketTypeTicket"
+          "hasGeographicRoom"
         );
       }
+
       // Get children
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
@@ -229,30 +267,6 @@ export default {
       // Update tabs
       this.tabs[0].props.items = this.items;
       this.updateNames();
-      if ( mapItems.size > 0) {
-        this.tabs[0].content = ContextExplorer;
-      } else {
-        // let ticket = await SpinalGraphService.findNode(this.currentView.serverId);
-        let nodeticket = FileSystem._objects[this.currentView.serverId];
-        // let ticket = await getTicketDescription(nodeticket.info);
-        // console.debug(JSON.stringify(ticket._ticket))
-        // let testComponent = Vue.extend(NodeTicketsSelected)
-        // this.tabs[0].content = new testComponent({
-        //   propsData: {
-        //     selected: ticket,
-        //     stepping: true,
-        //   },
-        // });
-        // this.tabs[0].content.$mount()
-        this.tabs[0].props.stepping = true;
-        this.tabs[0].props.selected = nodeticket.info.id.get();
-        console.debug("tab :", this.tabs[0].props.selected)
-        this.tabs[0].content = NodeTicketSelected;
-        // Vue.component(
-        //   "NodeTicketSelected",
-        //   require("../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue").default
-        // );
-      }
       for (let tab of this.tabs)
       {
         tab.props.view = this.currentView;
@@ -283,15 +297,15 @@ export default {
     },
 
     zoomOn() {
-      EventBus.$emit("ticket-viewer-zoom", { server_id: this.currentView.serverId });
+      EventBus.$emit("viewer-zoom", { server_id: this.currentView.serverId }, ROOM_RELATION);
     },
 
     isolateAll() {
-      EventBus.$emit("ticket-viewer-isolate", { server_id: this.currentView.serverId });
+      EventBus.$emit("viewer-isolate", { server_id: this.currentView.serverId }, ROOM_RELATION);
     },
 
     selectInView() {
-      EventBus.$emit("ticket-viewer-select", FileSystem._objects[this.currentView.serverId] );
+      EventBus.$emit("viewer-select", { server_id: this.currentView.serverId }, ROOM_RELATION);
     },
 
     formatData() {
@@ -356,27 +370,27 @@ export default {
       });
     },
 
-    Color() {
-      let items = this.items.items.map(item => {
-        return { server_id: item.serverId, color: item.getColor() };
-      });
-      EventBus.$emit("test-color-all", items, { server_id: this.currentView.serverId });
-    },
+    // Color() {
+    //   let items = this.items.items.map(item => {
+    //     return { server_id: item.serverId, color: item.getColor() };
+    //   });
+    //   EventBus.$emit("equipment-color-all", items, { server_id: this.currentView.serverId });
+    // },
 
-    ShowAll() {
-      EventBus.$emit("test-show-all");
-    },
+    // ShowAll() {
+    //   EventBus.$emit("equipment-show-all");
+    // },
   },
 };
 </script>
 
 <style scoped>
-.hide-overflow {
+.data-app {
   overflow: hidden;
 }
 .tab-manager {
   margin: 10px 10px 10px 0px;
-  height: 88%;
+  height: calc(100% - 120px);
   border-radius: 5px;
 }
 

@@ -15,24 +15,24 @@
   "author": "",
   "license": "Free_Software_License_Agreement.pdf",
   "dependencies": {
-    "@babel/core": "^7.4.5",
+    "@babel/core": "^7.15.5",
     "@chenfengyuan/vue-carousel": "^1.0.6",
-    "@vue/component-compiler-utils": "^3.2.0",
+    "@vue/component-compiler-utils": "^3.2.2",
     "@wyhaya/vue-slide": "^1.0.2",
     "aes-js": "^3.1.2",
-    "apexcharts": "^3.19.2",
-    "axios": "^0.21.1",
+    "apexcharts": "^3.28.3",
+    "axios": "^0.21.4",
     "babel-polyfill": "^6.26.0",
     "bootstrap-vue": "^2.21.2",
     "component": "^1.1.0",
-    "element-ui": "^2.13.2",
+    "element-ui": "^2.15.6",
     "eva-icons": "^1.1.2",
     "file-saver": "^2.0.5",
     "jquery": "^3.4.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.5.0",
+    "services": "0.0.3",
     "spinal-env-viewer-plugin-control-endpoint-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-control-endpoint-service.git",
     "spinal-env-viewer-plugin-documentation": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation.git",
     "spinal-env-viewer-plugin-documentation-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-documentation-service.git",
@@ -42,21 +42,21 @@
     "spinal-env-viewer-task-service": "git+https://github.com/spinalcom/spinal-env-viewer-task-service.git",
     "spinal-forge-viewer": "git+https://github.com/spinalcom/spinal-forge-viewer.git",
     "spinal-service-ticket": "git+https://github.com/spinalcom/spinal-service-ticket.git#devv2",
-    "tinygradient": "^1.1.4",
-    "typescript": "^4.2.3",
+    "tinygradient": "^1.1.5",
+    "typescript": "^4.4.3",
     "v-tooltip": "^2.1.2",
     "velocity-animate": "^1.5.2",
-    "vue": "^2.6.12",
-    "vue-apexcharts": "^1.5.3",
+    "vue": "^2.6.14",
+    "vue-apexcharts": "^1.6.2",
     "vue-cal": "^3.10.0",
     "vue-color": "^2.8.1",
     "vue-hot-reload-api": "^2.3.4",
-    "vue-i18n": "^8.22.1",
+    "vue-i18n": "^8.26.5",
     "vue-material": "^1.0.0-beta-15",
     "vue-plotly": "^1.0.1",
     "vue-ripple-directive": "^2.0.1",
-    "vue-router": "^3.5.1",
-    "vueperslides": "^2.13.0"
+    "vue-router": "^3.5.2",
+    "vueperslides": "^2.15.2"
   },
   "browserslist": [
     "last 1 chrome versions"
@@ -65,7 +65,8 @@
     "staticPath": "src/public"
   },
   "devDependencies": {
-    "sass": "^1.32.8",
-    "vue-template-compiler": "^2.6.12"
+    "parcel-plugin-static-files-copy": "^2.6.0",
+    "sass": "^1.42.1",
+    "vue-template-compiler": "^2.6.14"
   }
 }

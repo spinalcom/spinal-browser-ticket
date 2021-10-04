@@ -19,7 +19,9 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
+  <div
+    style="height:100%"
+  >
     <div class="spl-button-bar">
       <el-button
         @click.stop="Color()"
@@ -38,7 +40,7 @@ with this file. If not, see
     </div>
     <div
       v-if="Properties.items !== false"
-      style="height:100%"
+      style="height:calc(100% - 52px)"
     >
       <context-explorer-node-table
         :ref="'Explorer-table'"
@@ -47,6 +49,7 @@ with this file. If not, see
         :columns="cols"
         :relation="Properties.relation"
         :colored="colored"
+        style="height:100%"
         @select="Select"
         @isolate="Isolate"
       >
@@ -142,6 +145,7 @@ export default {
   margin: 0 0 0 10px;
 }
 .spl-button-bar {
+  overflow: hidden;
   display: flex;
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;

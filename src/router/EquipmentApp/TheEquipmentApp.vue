@@ -89,7 +89,6 @@ import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
-import "../../services/viewerUtils/eventsHandler/Equipment";
 
 import {
   EQUIPMENT_RELATION,
@@ -99,6 +98,7 @@ import {
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
 import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
+
 // Specific components
 import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
 import NodeDocumentation from "../../compoments/TabManager/generic/NodeDocumentation.vue";
@@ -106,6 +106,9 @@ import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTic
 import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue";
 import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue";
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
+import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
+import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
+
 const VIEW_KEY = "EquipmentApp";
 // Component exports
 export default {
@@ -116,6 +119,8 @@ export default {
     NodeNotesMessage,
     NodeTickets,
     NodeCalendar,
+    InsightControlEndpoint,
+    InsightEndpoint,
   },
 
   data() {
@@ -186,6 +191,26 @@ export default {
           },
           ignore: true,
         },
+
+        // {
+        //   name: "spinal-twin.Endpoints",
+        //   content: InsightEndpoint,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
+
+        // {
+        //   name: "spinal-twin.ControlEndpoints",
+        //   content: InsightControlEndpoint,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
       ],
     };
   },

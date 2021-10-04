@@ -109,6 +109,8 @@ export default {
   "spinal-twin.StartDate": "Date de début",
   "spinal-twin.EndDate": "Date de fin",
   "spinal-twin.Name": "Name",
+  "spinal-twin.Endpoints": "Endpoints",
+  "spinal-twin.ControlEndpoints": "ControlEndpoints",
   "spinal-twin.ErrorFileTooLarge": "The selected file(s) is too large. The maximum size must not exceed ",
   "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",

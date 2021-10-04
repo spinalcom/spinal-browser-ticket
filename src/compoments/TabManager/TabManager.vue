@@ -28,18 +28,19 @@ with this file. If not, see
     <template
         v-for="tab in tabsprop"
       >
-      <template v-if="!tab.ignore">
+      <template v-if="!tab.ignore" style="height:calc(100% - 120px)">
         <el-tab-pane
           :key="$t(tab.name)"
           :label="$t(tab.name)"
           :name="$t(tab.name)"
           :closable="false"
-          style="height:100%; overflow: auto"
+          style="height:calc(100%); overflow: hidden"
         >
           <keep-alive>
             <component
               :is="tab.content"
               :Properties="tab.props"
+              style="height:calc(100% - 20px)"
             ></component>
           </keep-alive>
         </el-tab-pane>

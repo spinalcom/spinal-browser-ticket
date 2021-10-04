@@ -22,94 +22,99 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
+<!-- 950 : 100 + 66 * data.length
+    :height="`${data.length > 15 ? 100 : 100 * data.length}%`"
+-->
 <template>
-  <el-table
-    v-loading="loading"
-    :data="data"
-    :header-cell-style="{'background-color': '#f0f2f5'}"
-    @row-click="selectInView"
-    @row-dblclick="SeeEvent"
-    border
-    style="overflow: auto; height: 100%"
-    show-summary
-    sum-text="Total"
-  >
-    <el-table-column :label="$t('explorer.Name')">
-      <div slot-scope="scope">
-        <div
-          v-if="scope.row.color"
-          :style="getColor(scope.row.color)"
-          class="spinal-table-cell-color"
-          ></div>
-        <div>
-          {{ scope.row.name }}
+  <div style="height:100%">
+    <el-table
+      v-loading="loading"
+      :data="data"
+      :header-cell-style="{'background-color': '#f0f2f5'}"
+      @row-click="selectInView"
+      @row-dblclick="SeeEvent"
+      height="100%"
+      border
+      show-summary
+      sum-text="Total"
+    >
+      <el-table-column :label="$t('explorer.Name')">
+        <div slot-scope="scope">
+          <div
+            v-if="scope.row.color"
+            :style="getColor(scope.row.color)"
+            class="spinal-table-cell-color"
+            ></div>
+          <div>
+            {{ scope.row.name }}
+          </div>
         </div>
-      </div>
-    </el-table-column>
+      </el-table-column>
 
-    <el-table-column
-      v-for="column in columns"
-      :key="column"
-      :prop="column"
-      :label="$t(`node-type.${column}`)"
-      align="center"
-    >
-      <div slot-scope="scope">
-        {{ columnValue(scope.row, column) }}
-      </div>
-    </el-table-column>
-    <el-table-column
-      v-if="haveChildren"
-      :label="$t('node-type.Sum')"
-      prop="sum"
-      align="center"
-    >
-      <div slot-scope="scope">
-        {{ scope.row.sum }}
-      </div>
-    </el-table-column>
+      <el-table-column
+        v-for="column in columns"
+        :key="column"
+        :prop="column"
+        :label="$t(`node-type.${column}`)"
+        align="center"
+      >
+        <div slot-scope="scope">
+          {{ columnValue(scope.row, column) }}
+        </div>
+      </el-table-column>
+      <el-table-column
+        v-if="haveChildren"
+        :label="$t('node-type.Sum')"
+        prop="sum"
+        align="center"
+      >
+        <div slot-scope="scope">
+          {{ scope.row.sum }}
+        </div>
+      </el-table-column>
 
-    <el-table-column
-      v-if="haveChildren"
-      label=""
-      width="65"
-      align="center"
-      key="isGroup"
-    >
-      <div slot-scope="scope">
-        <el-button
-          v-if="scope.row.haveChild"
-          @click="onSelectGroup(scope.row)"
-          icon="el-icon-arrow-right"
-          circle
-        ></el-button>
-      </div>
-    </el-table-column>
-    <el-table-column
-      v-else
-      label=""
-      width="65"
-      align="center"
-      key="isItem"
-    >
-      <div slot-scope="scope">
-        <el-button
-          @click="onSelectItem(scope.row)"
-          icon="el-icon-search"
-          circle
-        ></el-button>
-      </div>
-    </el-table-column>
-    <!-- <el-table-column label=""
-                      width="65"
-                      align="center">
-      <div slot-scope="scope">
-        <el-button icon="el-icon-arrow-down"
-                    @click="debug(scope.row)"></el-button>
-                    circle
-      </div>
-    </el-table-column> -->
-  </el-table>
+      <el-table-column
+        v-if="haveChildren"
+        label=""
+        width="65"
+        align="center"
+        key="isGroup"
+      >
+        <div slot-scope="scope">
+          <el-button
+            v-if="scope.row.haveChild"
+            @click="onSelectGroup(scope.row)"
+            icon="el-icon-arrow-right"
+            circle
+          ></el-button>
+        </div>
+      </el-table-column>
+      <el-table-column
+        v-else
+        label=""
+        width="65"
+        align="center"
+        key="isItem"
+      >
+        <div slot-scope="scope">
+          <el-button
+            @click="onSelectItem(scope.row)"
+            icon="el-icon-search"
+            circle
+          ></el-button>
+        </div>
+      </el-table-column>
+      <!-- <el-table-column label=""
+                        width="65"
+                        align="center">
+        <div slot-scope="scope">
+          <el-button icon="el-icon-arrow-down"
+                      @click="debug(scope.row)"></el-button>
+                      circle
+        </div>
+      </el-table-column> -->
+    </el-table>
+  </div>
 </template>
 
 <script>
@@ -212,6 +217,7 @@ export default {
       this.updateColor(this.data, colorUsed);
       this.haveChildren = haveChild;
       this.loading = false;
+      console.debug(this.data);
     },
 
     updateColor(res, colorUsed) {

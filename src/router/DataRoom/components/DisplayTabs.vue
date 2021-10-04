@@ -170,7 +170,7 @@ with this file. If not, see
                        icon="el-icon-download"
                        circle
                        @click="exportFichier(scope.row)"></el-button>
-                       <el-button 
+                       <el-button
                         type="danger"
                        icon="el-icon-delete"
                        circle
@@ -233,7 +233,7 @@ with this file. If not, see
       <div class="box">
       <h3> Endpoints </h3>
       <li> {{this.nodeInfo.selectedNode.info.name.get()}} </li>
-        <control-endpoint-component 
+        <control-endpoint-component
          v-for="endpoint of endpoints"
          v-bind:key="endpoint.name"
          :name="endpoint.name"
@@ -245,7 +245,7 @@ with this file. If not, see
         <h3> Equipment Endpoints </h3>
         <div v-for="eq of equipmentEndpoints" v-bind:key="eq.name">
           <li class="newline"> {{eq.name}} </li>
-          <control-endpoint-component 
+          <control-endpoint-component
           v-for="end of eq.info"
           v-bind:key="end.name"
           :name="end.name"
@@ -267,7 +267,7 @@ with this file. If not, see
     <el-tab-pane :label="$t('DataRoom.Insight')">
       <div v-for="profil of controlEndpoints" v-bind:key="profil.name">
         <h3> {{profil.name}} </h3>
-        <control-endpoint-component 
+        <control-endpoint-component
          v-for="endpoint of profil.info"
          v-bind:key="endpoint.name"
          :name="endpoint.name"
@@ -457,7 +457,7 @@ export default {
   beforeDestroy() {},
   methods: {
 
-    // return infos from an endpointNodeId  
+    // return infos from an endpointNodeId
     async getEndpointInfo(endpointNodeId){
       const realnode = SpinalGraphService.getRealNode(endpointNodeId);
       const attributesLstModels = await serviceDocumentation.getAllAttributes(realnode);
@@ -466,10 +466,11 @@ export default {
       for(const attr of attributes){
         endpointInfo[attr.label] = attr.value;
       }
-      return endpointInfo; 
+      return endpointInfo;
     },
     
     async getNodeEndpointsInfo(nodeId,endpointRelation){
+      console.debug("nodeid:", nodeId)
       const endpointProfilsModel = await SpinalGraphService.getChildren(nodeId,endpointRelation);
       if (endpointProfilsModel.length==0) return // si la node n'a pas d'endpoints on quitte la fonction
       if (endpointRelation == 'hasControlPoints'){ // on cherche les control endpoints (onglet insight)

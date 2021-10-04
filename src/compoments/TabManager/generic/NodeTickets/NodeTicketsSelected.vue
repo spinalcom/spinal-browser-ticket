@@ -260,24 +260,31 @@ export default {
       console.debug("inside changeStep", realTicket)
       if (step > 0)
       {
-        console.debug("move to next step")
         let tmpStep = await spinalServiceTicket.moveTicketToNextStep(contextId, realTicket.processId.get(), realTicket.id.get(), this.userInfo)
-        let realStep = SpinalGraphService.getRealNode(tmpStep.id);
-        console.debug("ticket step id:", ticket.ticket.stepId, tmpStep.id, realStep)
-        // ticket.ticket.stepId.set(tmpStep.id);
-        ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].name = realStep.info.name.get();
-        ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].serverId = realStep._server_id;
+        console.debug("move to next step", tmpStep)
+        if(tmpStep) {
+          SpinalGraphService.setInfo(realTicket.id.get());
+          let realStep = SpinalGraphService.getRealNode(tmpStep.id);
+          console.debug("ticket step id:", ticket.ticket.stepId, tmpStep.id, realStep)
+          // ticket.ticket.stepId.set(tmpStep.id);
+          ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].name = realStep.info.name.get();
+          ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].serverId = realStep._server_id;
+        }
+       
       }
       else if (step < 0)
       {
-        console.debug("move to previous step")
-
         let tmpStep = await spinalServiceTicket.moveTicketToPreviousStep(contextId, realTicket.processId.get(), realTicket.id.get(), this.userInfo)
-        let realStep = SpinalGraphService.getRealNode(tmpStep.id);
-        console.debug("ticket step id:", ticket.ticket.stepId, tmpStep.id, realStep)
-        // ticket.ticket.stepId.set(tmpStep.id);
-        ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].name = realStep.info.name.get();
-        ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].serverId = realStep._server_id;
+        console.debug("move to previous step", tmpStep)
+        if (tmpStep)
+        {
+          SpinalGraphService.setInfo(realTicket.id.get());
+          let realStep = SpinalGraphService.getRealNode(tmpStep.id);
+          console.debug("ticket step id:", ticket.ticket.stepId, tmpStep.id, realStep)
+          // ticket.ticket.stepId.set(tmpStep.id);
+          ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].name = realStep.info.name.get();
+          ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].serverId = realStep._server_id;
+        }
       }
       else
       {
