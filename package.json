@@ -21,7 +21,7 @@
     "@wyhaya/vue-slide": "^1.0.2",
     "aes-js": "^3.1.2",
     "apexcharts": "^3.28.3",
-    "axios": "^0.21.4",
+    "axios": "^0.21.2",
     "babel-polyfill": "^6.26.0",
     "bootstrap-vue": "^2.21.2",
     "component": "^1.1.0",
