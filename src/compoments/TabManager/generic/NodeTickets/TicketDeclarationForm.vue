@@ -189,6 +189,8 @@ export default {
         case "Urgent":
           infos.priority = 2;
           break;
+        default:
+          infos.priority = 0;
       }
       await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
       this.$emit("update");
