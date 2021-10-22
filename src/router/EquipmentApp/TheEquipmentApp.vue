@@ -182,15 +182,15 @@ export default {
           ignore: true,
         },
 
-        {
-          name: "spinal-twin.Calendar",
-          content: NodeCalendar,
-          props: {
-            viewKey: VIEW_KEY,
-            view: false,
-          },
-          ignore: true,
-        },
+        // {
+        //   name: "spinal-twin.Calendar",
+        //   content: NodeCalendar,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
 
         // {
         //   name: "spinal-twin.Endpoints",
