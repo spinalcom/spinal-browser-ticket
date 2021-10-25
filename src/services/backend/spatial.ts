@@ -281,17 +281,13 @@ export default class BackEndSpatial {
     });
     let objects = [];
     for (const ticket of listTicket) {
-      console.debug("ticket:", ticket.objects)
       let test = Object.keys(ticket.objects).map(function(key) {
         if (parseInt(key) || parseInt(key) === 0) {
-          console.debug(ticket.objects[key])
           return ticket.objects[key]
         }
       })
-      console.debug("test :", test.filter(e => { return typeof e !== "undefined" }))
       objects = objects.concat(test.filter(e => { return typeof e !== "undefined" }));
     }
-    console.debug("objects: ", objects)
     return sortBIMObjectByModel(objects);
   }
 
@@ -302,7 +298,6 @@ export default class BackEndSpatial {
    */
   async getObjectsByTicketGroup_Legacy(ticketGroup, addRoomRef = false) {
     let node = getNodeFromItem(ticketGroup);
-  console.debug("root :", node)
   const relations = [..."SpinalSystemServiceTicketHasTicket"]
     const listTicket = await node.find(relations, (n) => {
       return (
@@ -328,7 +323,6 @@ export default class BackEndSpatial {
 
   async addObjectToTicket(ticketGroup) {
     let node = getNodeFromItem(ticketGroup);
-    console.debug("root :", node)
     const relations = [..."SpinalSystemServiceTicketHasTicket"]
     const listTicket : spinal.Model[] = await node.find(relations, (n) => {
       return (
@@ -357,7 +351,6 @@ export default class BackEndSpatial {
       }
       ticket.add_attr({objects: objects.BIMIds})
     }
-    console.debug(listTicket)
     return sortBIMObjectByModel(listNode);
   }
 }
