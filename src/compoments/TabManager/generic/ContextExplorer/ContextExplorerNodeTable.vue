@@ -123,6 +123,7 @@ import { ColorGenerator } from "../../../../services/utlils/ColorGenerator";
 import { EventBus } from "../../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import { viewerState } from './viewerState';
 export default {
   name: "ContextExplorerNodeTable",
   props: {
@@ -130,7 +131,6 @@ export default {
     items: { required: true, type: Array },
     columns: { required: true, type: Array },
     relation: { required: true, type: String },
-    colored: { required: false, type: Boolean, default: false },
   },
 
   data() {
@@ -155,11 +155,15 @@ export default {
 
   methods: {
     selectInView(item) {
-      this.$emit("select", { server_id: item.serverId });
+      this.$emit("select", item);
     },
 
     SeeEvent(item) {
-      this.$emit("isolate", { server_id: item.serverId });
+      this.$emit("isolate", item);
+    },
+
+    Isolate() {
+      EventBus.$emit("isolate", this.data, this.relation);
     },
 
     Color() {
@@ -214,10 +218,18 @@ export default {
         res.push(resItem);
       }
       this.data = res;
-      this.updateColor(this.data, colorUsed);
       this.haveChildren = haveChild;
       this.loading = false;
-      console.debug(this.data);
+      console.debug("data", this.data);
+      this.updateIsolation();
+      this.updateColor(this.data, colorUsed);
+    },
+
+    updateIsolation()
+    {
+      EventBus.$emit("viewer-reset-isolate");
+      if (viewerState.isolated())
+        EventBus.$emit('viewer-isolate', this.data, this.relation)
     },
 
     updateColor(res, colorUsed) {
@@ -231,7 +243,7 @@ export default {
         }
       }
       EventBus.$emit("viewer-reset-color");
-      if (this.colored)
+      if (viewerState.colored())
         EventBus.$emit('viewer-color', this.data, this.relation)
     },
 

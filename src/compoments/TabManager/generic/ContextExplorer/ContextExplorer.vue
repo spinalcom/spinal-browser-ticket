@@ -23,13 +23,12 @@ with this file. If not, see
     style="height:100%"
   >
     <div class="spl-button-bar">
-      <el-button
-        @click.stop="Color()"
+      <button-switch
+        @click.native="Color"
         class="spl-el-button"
+        :active="colored"
         icon="el-icon-picture-outline-round"
-        circle
-      >
-      </el-button>
+      ></button-switch>
       <el-button
         @click.stop="exportToExcel()"
         class="spl-el-button"
@@ -48,7 +47,6 @@ with this file. If not, see
         :items="itemsComputed"
         :columns="cols"
         :relation="Properties.relation"
-        :colored="colored"
         style="height:100%"
         @select="Select"
         @isolate="Isolate"
@@ -64,13 +62,14 @@ import { ViewManager } from "../../../../services/ViewManager/ViewManager";
 import { AppBack } from "../../../../services/backend/AppBack";
 import BackendInitializer from "../../../../services/BackendInitializer";
 import { EventBus } from "../../../../services/event";
-import ColorState from "./colorState"
+import { viewerState } from "./viewerState"
 
+import ButtonSwitch from '../../../../compoments/ButtonSwitch'
 import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
 
 export default {
   name: "ContextExplorer",
-  components: { ContextExplorerNodeTable },
+  components: { ContextExplorerNodeTable, ButtonSwitch },
   props: {
     Properties: {
       required: true,
@@ -89,6 +88,7 @@ export default {
       items: false,
       contextServId: 0,
       currentView: null,
+      colored: false,
     };
   },
 
@@ -106,17 +106,18 @@ export default {
       if (this.Properties && this.Properties.cols) return this.Properties.cols;
       return [];
     },
-    colored() {
-      return ColorState.colored();
-    }
   },
 
   methods: {
     Color() {
-      ColorState.changeState();
+      viewerState.changeColoration();
       EventBus.$emit("viewer-reset-color")
-      if (ColorState.colored())
-        this.$refs["Explorer-table"].Color(this.Properties.relation);
+      this.colored = false;
+      if (viewerState.colored())
+      {
+        this.colored = true;
+        this.$refs["Explorer-table"].Color();
+      }
     },
 
     Select(item)
@@ -126,7 +127,10 @@ export default {
 
     Isolate(item)
     {
-      EventBus.$emit("viewer-isolate", item, this.Properties.relation);
+      viewerState.changeIsolation();
+      EventBus.$emit("viewer-reset-isolate")
+      if (viewerState.isolated())
+        this.$refs["Explorer-table"].Isolate();
     },
 
     exportToExcel() {
@@ -153,5 +157,10 @@ export default {
 
 .spinal-height-control {
   height: auto;
+}
+
+.primary {
+  background: 'blue';
+  color: blue;
 }
 </style>

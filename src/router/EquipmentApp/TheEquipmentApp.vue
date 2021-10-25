@@ -37,14 +37,13 @@ with this file. If not, see
         :disabled="!isNode"
         :content="$t('spinal-twin.Isolate')"
       >
-        <el-button
+        <button-switch
+          @click.native="isolateAll"
           :disabled="!isNode"
-          @click.stop="isolateAll()"
-          circle
+          :active="isolated"
           class="spl-el-button"
           icon="el-icon-aim"
-        >
-        </el-button>
+        ></button-switch>
       </el-tooltip>
       <el-tooltip
         :disabled="!isNode"
@@ -97,7 +96,9 @@ import {
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
+import ButtonSwitch from "../../compoments/ButtonSwitch.vue";
 import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
+import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
 
 // Specific components
 import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
@@ -116,6 +117,7 @@ export default {
   components: {
     SpinalBreadcrumb,
     TabManager,
+    ButtonSwitch,
     NodeNotesMessage,
     NodeTickets,
     NodeCalendar,
@@ -129,6 +131,7 @@ export default {
       items: false,
       currentView: false,
       isNode: false,
+      isolated: false,
       tabs: [
         {
           name: "node-type.context",
@@ -296,15 +299,22 @@ export default {
     },
 
     zoomOn() {
-      EventBus.$emit("viewer-zoom", { server_id: this.currentView.serverId }, EQUIPMENT_RELATION);
+      EventBus.$emit("viewer-zoom", this.currentView, EQUIPMENT_RELATION);
     },
 
     isolateAll() {
-      EventBus.$emit("viewer-isolate", { server_id: this.currentView.serverId }, EQUIPMENT_RELATION);
+      viewerState.changeIsolation();
+      EventBus.$emit("viewer-reset-isolate")
+      this.isolated = false;
+      if (viewerState.isolated())
+      {
+        this.isolated = true;
+        EventBus.$emit("viewer-isolate", [ this.currentView ], EQUIPMENT_RELATION);
+      }
     },
 
     selectInView() {
-      EventBus.$emit("viewer-select", { server_id: this.currentView.serverId }, EQUIPMENT_RELATION);
+      EventBus.$emit("viewer-select", this.currentView, EQUIPMENT_RELATION);
     },
 
     formatData() {
