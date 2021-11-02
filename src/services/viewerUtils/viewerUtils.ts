@@ -32,6 +32,7 @@ type RotateToFace = "top" | 'front' | "right" | "left" | "back" | 'bottom' |
   "back,top,left" | "front,bottom,right" | "back,bottom,right" |
   "front,bottom,left" | "back,bottom,left"
 
+
 export class ViewerUtils {
   elementColored: Set<{ model, dbIds: number[] }> = new Set();
   restoreColorMaterialBinded: () => void;
@@ -40,14 +41,20 @@ export class ViewerUtils {
   modelMap: Map<any, Map<string, Set<number>>> = new Map()
   initialized = q.defer();
   viewer
-
+  cube;
 
   constructor() {
     this.restoreColorMaterialBinded = this._restoreColorMaterial.bind(this);
   }
   initViewer(viewer) {
     this.viewer = viewer;
-    this.initialized.resolve();
+
+    viewer.loadExtension('Autodesk.ViewCubeUi').then((cube) => {
+      this.cube = cube
+      this.initialized.resolve();
+    })
+
+
   }
 
   waitLoadModels(viewer): Promise<void> {
@@ -86,7 +93,12 @@ export class ViewerUtils {
    */
   rotateTo(face: RotateToFace) {
     if (!this.viewer) return;
-    return rotateTo.call(this.viewer.viewCubeUi.cube, this.viewer, face);
+    return this.cube.setViewCube(face);
+  }
+
+  setCubeVisible(value: boolean) {
+    if (!this.viewer) return;
+    return this.cube.setVisible(value);
   }
 
   /**
