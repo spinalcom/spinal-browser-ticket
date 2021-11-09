@@ -52,7 +52,7 @@ with this file. If not, see
       </el-table-column>
 
       <el-table-column
-        v-for="column in columns"
+        v-for="column of columns"
         :key="column"
         :prop="column"
         :label="$t(`node-type.${column}`)"
@@ -60,16 +60,6 @@ with this file. If not, see
       >
         <div slot-scope="scope">
           {{ columnValue(scope.row, column) }}
-        </div>
-      </el-table-column>
-      <el-table-column
-        v-if="haveChildren"
-        :label="$t('node-type.Sum')"
-        prop="sum"
-        align="center"
-      >
-        <div slot-scope="scope">
-          {{ scope.row.sum }}
         </div>
       </el-table-column>
 
@@ -195,12 +185,14 @@ export default {
           serverId: item.serverId,
           haveChild: false,
           color: item.getColor(),
-          sum: await item.countItems(),
         };
         if (resItem.color) colorUsed.push(resItem.color);
+        for (let col of this.columns) {
+          resItem[col] = item[col];
+        }
         if (item.children) {
-          for (const [childTypes, childItems] of item.children) {
-            resItem[childTypes] = childItems.length;
+          for (const [_, childItems] of item.children) {
+            resItem["children"] = childItems.length;
             resItem.haveChild = true;
             haveChild = true;
           }

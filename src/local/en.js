@@ -67,6 +67,8 @@ export default {
   "spinal-twin.Back": "Go Back",
   "spinal-twin.Isolate": "Isolate",
   "spinal-twin.Select": "Select",
+  "spinal-twin.Area": "Area",
+  "spinal-twin.children": "Child node number",
   "spinal-twin.hasCategoryAttributes": "Attributes",
   "spinal-twin.CategoryAdd": "Add attribute category",
   "spinal-twin.CategoryEdit": "Edit category ",
