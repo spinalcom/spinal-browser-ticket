@@ -28,6 +28,10 @@ with this file. If not, see
       && typeof endpoints !== 'undefined'
       && endpoints.length != 0)"
   >
+    <h4>
+      {{ ctxNode.info.name.get() }}
+    </h4>
+    <div>
     <div v-for="eq of endpoints" v-bind:key="eq.name">
       <div style="display: flex; flex-direction: row; flex-wrap: wrap">
         <insight-control-endpoint-box
@@ -37,6 +41,7 @@ with this file. If not, see
           :endpoint="end"
         ></insight-control-endpoint-box>
       </div>
+    </div>
     </div>
   </el-container>
 </template>
