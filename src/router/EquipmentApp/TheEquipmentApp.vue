@@ -88,6 +88,7 @@ import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
 
 import {
   EQUIPMENT_RELATION,
@@ -98,7 +99,6 @@ import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb
 import TabManager from "../../compoments/TabManager/TabManager.vue";
 import ButtonSwitch from "../../compoments/ButtonSwitch.vue";
 import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
-import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
 
 // Specific components
 import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
