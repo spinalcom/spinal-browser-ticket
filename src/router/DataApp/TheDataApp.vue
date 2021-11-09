@@ -37,14 +37,13 @@ with this file. If not, see
         :disabled="!isNode"
         :content="$t('spinal-twin.Isolate')"
       >
-        <el-button
+        <button-switch
+          @click.native="isolateAll"
           :disabled="!isNode"
-          @click.stop="isolateAll()"
-          circle
+          :active="isolated"
           class="spl-el-button"
           icon="el-icon-aim"
-        >
-        </el-button>
+        ></button-switch>
       </el-tooltip>
       <el-tooltip
         :disabled="!isNode"
@@ -89,10 +88,14 @@ import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import { getSurfaceFromNode } from "./DataTools.ts";
+import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
 
 import {
   ROOM_RELATION,
 } from '../../constants';
+
+import ButtonSwitch from "../../compoments/ButtonSwitch.vue";
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
@@ -108,6 +111,7 @@ import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/Node
 // Specific components
 import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 const VIEW_KEY = "DataApp";
 // Component exports
@@ -122,6 +126,7 @@ export default {
     NodeNotesMessage,
     NodeCalendar,
     CategoryAttribute,
+    ButtonSwitch,
   },
 
   data() {
@@ -130,6 +135,7 @@ export default {
       items: false,
       currentView: false,
       isNode: false,
+      isolated: false,
       tabs: [
         {
           name: "node-type.context",
@@ -183,35 +189,36 @@ export default {
           ignore: true,
         },
 
+        // {
+        //   name: "spinal-twin.Calendar",
+        //   content: NodeCalendar,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
+
         {
-          name: "spinal-twin.Calendar",
-          content: NodeCalendar,
+          name: "spinal-twin.Endpoints",
+          content: InsightEndpoint,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+            context: false,
+          },
+          ignore: true,
+        },
+
+        {
+          name: "spinal-twin.ControlEndpoints",
+          content: InsightControlEndpoint,
           props: {
             viewKey: VIEW_KEY,
             view: false,
           },
           ignore: true,
         },
-
-        // {
-        //   name: "spinal-twin.Endpoints",
-        //   content: InsightEndpoint,
-        //   props: {
-        //     viewKey: VIEW_KEY,
-        //     view: false,
-        //   },
-        //   ignore: true,
-        // },
-
-        // {
-        //   name: "spinal-twin.ControlEndpoints",
-        //   content: InsightControlEndpoint,
-        //   props: {
-        //     viewKey: VIEW_KEY,
-        //     view: false,
-        //   },
-        //   ignore: true,
-        // },
       ],
     };
   },
@@ -250,26 +257,30 @@ export default {
         );
       }
 
+      console.debug("MapItems", mapItems)
       // Get children
       for (const [nodeType, items] of mapItems) {
-        const cols = new Set();
-        for (const item of items) {
-          if (item.children) {
-            for (const [childTypes] of item.children) {
-              cols.add(childTypes);
-            }
-          }
-        }
-        this.items = { nodeType, items, cols: Array.from(cols) };
+        this.items = { nodeType, items };
       }
+      await Promise.all(this.items.items.map(async function (item) {
+        console.debug("element", item)
+        item["Area"] = await getSurfaceFromNode(item);
+        console.debug("after", item)
+      }));
       this.currentView = view;
-      
+      this.items.cols = [ "children", "Area" ]
+      console.debug("cols", this.items.cols)
       // Update tabs
       this.tabs[0].props.items = this.items;
+      this.tabs[0].props.cols = this.items.cols;
       this.updateNames();
       for (let tab of this.tabs)
       {
         tab.props.view = this.currentView;
+        if (tab.name == "spinal-twin.Endpoints")
+        {
+          tab.props["context"] = this.contextServId
+        }
       }
       if (this.isNode)
       {
@@ -297,15 +308,22 @@ export default {
     },
 
     zoomOn() {
-      EventBus.$emit("viewer-zoom", { server_id: this.currentView.serverId }, ROOM_RELATION);
+      EventBus.$emit("viewer-zoom", this.currentView, ROOM_RELATION);
     },
 
     isolateAll() {
-      EventBus.$emit("viewer-isolate", { server_id: this.currentView.serverId }, ROOM_RELATION);
+      viewerState.changeIsolation();
+      EventBus.$emit("viewer-reset-isolate")
+      this.isolated = false;
+      if (viewerState.isolated())
+      {
+        this.isolated = true;
+        EventBus.$emit("viewer-isolate", [ this.currentView ], ROOM_RELATION);
+      }
     },
 
     selectInView() {
-      EventBus.$emit("viewer-select", { server_id: this.currentView.serverId }, ROOM_RELATION);
+      EventBus.$emit("viewer-select", this.currentView, ROOM_RELATION);
     },
 
     formatData() {
@@ -323,7 +341,8 @@ export default {
             resItem.haveChild = true;
           }
         }
-        else if (FileSystem._objects[item.serverId] !== undefined) {
+        else if (
+          [item.serverId] !== undefined) {
           let thisnode = FileSystem._objects[item.serverId]
           if (thisnode.children.PtrLst !== undefined) {
             for (const name of thisnode.children.PtrLst._attribute_names){

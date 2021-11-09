@@ -7,12 +7,12 @@
          {{ value | filterValue }} {{ unit }}
       </div>
    </div> -->
-   <el-card>
-      <div slot="name">
+   <el-card style="width: 30%; margin: 10px; height: 10%">
+      <h5>
          {{ name }}
-      </div>
+      </h5>
       <span>
-         {{ endpoint }}
+         {{ value | filterValue }} {{ unit }}
       </span>
    </el-card>
 </template>
