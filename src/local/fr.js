@@ -102,6 +102,7 @@ export default {
   "spinal-twin.CurrentStep": "Etape en cours",
   "spinal-twin.Step": "Etape",
   "spinal-twin.Priority": "Priorité",
+  "spinal-twin.Description": "Description",
   "spinal-twin.CreationTime": "Date de creation",
   "spinal-twin.Events": "Evenements",
   "spinal-twin.User": "Utilisateur",
