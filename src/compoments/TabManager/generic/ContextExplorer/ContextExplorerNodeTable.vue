@@ -55,7 +55,7 @@ with this file. If not, see
         v-for="column of columns"
         :key="column"
         :prop="column"
-        :label="$t(`node-type.${column}`)"
+        :label="$t(`spinal-twin.${column}`)"
         align="center"
       >
         <div slot-scope="scope">
