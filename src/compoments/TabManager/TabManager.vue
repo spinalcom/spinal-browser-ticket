@@ -32,7 +32,7 @@ with this file. If not, see
         <el-tab-pane
           :key="$t(tab.name)"
           :label="$t(tab.name)"
-          :name="$t(tab.name)"
+          :name="tab.name"
           :closable="false"
           style="height:calc(100%); overflow: hidden"
         >
@@ -74,7 +74,7 @@ export default {
 
   data() {
     return {
-      activetab: this.$t(this.tabsprop[0].name),
+      activetab: this.tabsprop[0].name,
     };
   },
 
@@ -82,7 +82,7 @@ export default {
     tabsprop: {
       handler(oldTabs, newTabs) {
         if (!newTabs.some(tab => !tab.ignore && this.$t(tab.name) === this.activetab)) {
-          this.activetab = this.$t(newTabs[0].name);
+          this.activetab = newTabs[0].name;
         }
       },
       deep: true,
