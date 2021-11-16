@@ -113,6 +113,7 @@ export default {
       viewerState.changeColoration();
       EventBus.$emit("viewer-reset-color")
       this.colored = false;
+      this.$refs["Explorer-table"].isColored = false;
       if (viewerState.colored())
       {
         this.colored = true;

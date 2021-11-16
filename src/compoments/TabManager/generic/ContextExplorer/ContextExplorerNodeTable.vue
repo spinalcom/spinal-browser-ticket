@@ -41,7 +41,7 @@ with this file. If not, see
       <el-table-column :label="$t('explorer.Name')">
         <div slot-scope="scope">
           <div
-            v-if="scope.row.color"
+            v-if="scope.row.color && isColored"
             :style="getColor(scope.row.color)"
             class="spinal-table-cell-color"
             ></div>
@@ -128,7 +128,8 @@ export default {
       data: [],
       loading: true,
       loadingArea: true,
-      haveChildren: false
+      haveChildren: false,
+      isColored: false,
     };
   },
 
@@ -158,6 +159,7 @@ export default {
 
     Color() {
       EventBus.$emit('viewer-color', this.data, this.relation)
+      this.isColored = true;
     },
 
     onSelectItem(item) {
@@ -215,6 +217,7 @@ export default {
       console.debug("data", this.data);
       this.updateIsolation();
       this.updateColor(this.data, colorUsed);
+      this.isColored = viewerState.colored();
     },
 
     updateIsolation()
