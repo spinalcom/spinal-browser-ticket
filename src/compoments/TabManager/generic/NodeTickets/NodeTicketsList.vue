@@ -69,14 +69,14 @@ with this file. If not, see
         </div>
       </el-table-column>
     </el-table>
-    <el-button
+    <!-- <el-button
       v-on:click.native="debug(tickets)"
       class="spl-input-button"
       icon="el-icon-search"
       type="primary"
       size="small"
       circle
-    ></el-button>
+    ></el-button> -->
   </el-main>
 </template>
 
