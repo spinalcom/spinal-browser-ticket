@@ -31,7 +31,7 @@ with this file. If not, see
       >
         <el-button
           @click.native="addCategory()"
-          :disabled="ctxNode == false"
+          :disabled="ctxNode == false || isEditing"
           icon="el-icon-plus"
           type="primary"
           circle
@@ -106,14 +106,15 @@ with this file. If not, see
                 <div slot-scope="scope">
                   <el-tooltip :content="$t('spinal-twin.AttributeEdit') + scope.row.label">
                     <el-button
-                      @click.native="editAttribute(scope.row)"
+                      @click.native="editAttribute(scope.row, cat.row)"
                       :icon="scope.row.isEditing ? 'el-icon-success' : 'el-icon-edit'"
+                      :disabled="!scope.row.isEditing && isEditing"
                       circle
                     ></el-button>
                   </el-tooltip>
                   <el-tooltip :content="$t('Remove attribute ') + scope.row.label">
                     <el-popconfirm
-                      @confirm="delAttribute(cat.row, scope.row.serverId)"
+                      @confirm="delAttribute(cat.row, scope.row)"
                       :title="$t('spinal-twin.DeleteConfirm')"
                     >
                       <el-button
@@ -130,6 +131,7 @@ with this file. If not, see
           <el-tooltip :content="$t('spinal-twin.CategoryAddAttribute') + cat.row.name">
             <el-button
               @click.native="addAttribute(cat.row)"
+              :disabled="isEditing"
               icon="el-icon-plus"
               circle
             ></el-button>
@@ -154,6 +156,7 @@ with this file. If not, see
             <el-tooltip :content="$t('spinal-twin.CategoryEdit') + cat.row.name">
               <el-button
                 @click.native="editCategory(cat.row)"
+                :disabled="!cat.row.isEditing && isEditing"
                 :icon="cat.row.isEditing ? 'el-icon-success' : 'el-icon-edit'"
                 circle
               ></el-button>
@@ -206,7 +209,8 @@ export default {
   data() {
     return {
       ctxNode: false,
-      Categories: false,
+      Categories: [],
+      isEditing: false,
     };
   },
 
@@ -222,7 +226,7 @@ export default {
         }
         else
         {
-          this.Categories = false;
+          this.Categories = [];
           this.ctxNode = false;
         }
       },
@@ -280,24 +284,37 @@ export default {
         value: "newValue",
         type: "newType",
         unit: "newUnit",
-        isEditing: false,
+        isEditing: true,
         serverId: node._server_id,
       })
+      this.isEditing = true;
     },
     
-    async delAttribute(category, attribute_id){
-      await serviceDocumentation.removeAttributesById(category.cat.node, attribute_id)
-      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute_id))
+    async delAttribute(category, attribute){
+      if (attribute.isEditing)
+      {
+        attribute.isEditing = false;
+        this.isEditing = false;
+      }
+      await serviceDocumentation.removeAttributesById(category.cat.node, attribute.serverId);
+      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute.serverId))
     },
 
-    async editAttribute(attribute){
+    async editAttribute(attribute, category){
       if (!attribute.isEditing)
       {
         attribute.isEditing = true;
+        this.isEditing = true;
+        return;
+      }
+      if (category.attributes.some(attr => { return attr.label == attribute.label}))
+      {
+        alert("Attribute '" + attribute.label + "' already exists in '" + category.name + "'");
         return;
       }
       await serviceDocumentation.setAttributeById(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
       attribute.isEditing = false;
+      this.isEditing = false;
     },
 
     async addCategory(){
@@ -306,8 +323,9 @@ export default {
         cat: category,
         name: "NewCategory",
         attributes: [],
-        isEditing: false,
+        isEditing: true,
       })
+      this.isEditing = true;
     },
 
     async delCategory(category){
@@ -319,10 +337,17 @@ export default {
       if (!category.isEditing)
       {
         category.isEditing = true;
+        this.isEditing = true;
+        return;
+      }
+      console.debug(this.Categories);
+      if (this.Categories.some((cat) => { return cat.name == category.name}))  {
+        alert("Category '" + category.name + "' already exists");
         return;
       }
       await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name)
       category.isEditing = false;
+      this.isEditing = false;
     },
 
     httpify(url)
