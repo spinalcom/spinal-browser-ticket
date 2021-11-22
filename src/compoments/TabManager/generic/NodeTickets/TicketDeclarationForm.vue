@@ -29,13 +29,13 @@ with this file. If not, see
         {{ $t('spinal-twin.TicketDeclare') }}
       </h2>
     </el-header>
+
     <el-main>
       <el-form
         ref="TicketDeclarationForm"
         :model="newTicket"
         label-width="80px"
       >
-
         <el-form-item label="Context">
           <el-select
             v-model="newTicket.context"
@@ -50,6 +50,7 @@ with this file. If not, see
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item
           v-show="processes"
           label="Process"
@@ -67,6 +68,7 @@ with this file. If not, see
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item
           v-show="incidents"
           label="Incident"
@@ -82,6 +84,7 @@ with this file. If not, see
             </div>
           </el-autocomplete>
         </el-form-item>
+
         <el-form-item
           v-show="newTicket.incident != '' && newTicket.incident != undefined"
           :label="$t('spinal-twin.Priority')"
@@ -100,6 +103,7 @@ with this file. If not, see
         </el-form-item>
       </el-form>
     </el-main>
+
     <el-footer style="position: absolute; bottom: 50px">
       <el-button @click="close()">
         {{ $t('Cancel') }}
@@ -216,13 +220,10 @@ export default {
         default:
           infos.priority = 0;
       }
-      console.debug("infos", infos);
       let ticketId = await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
       if (this.newTicket.description != undefined && this.newTicket.description != "") {
         let ticketnode = await SpinalGraphService.getRealNode(ticketId);
-        // serviceDocumentation.addNote(ticketId, this.user, this.newTicket.description);
-        let test = await serviceDocumentation.twinAddNote(ticketnode, this.user, this.newTicket.description, "text");
-        console.debug("test", test);
+        await serviceDocumentation.twinAddNote(ticketnode, this.user, this.newTicket.description, "text");
       }
       this.$emit("update");
     },

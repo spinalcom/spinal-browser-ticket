@@ -29,6 +29,7 @@ with this file. If not, see
         {{ $t('spinal-twin.EventAdd') }}
       </h2>
     </el-header>
+    
     <el-main>
       <el-cascader-panel
         v-on:change="cascaderSelection"
@@ -70,9 +71,17 @@ with this file. If not, see
         </el-form-item>
       </el-form>
     </el-main>
+
     <el-footer>
-      <el-button @click="cancel"> {{ $t('Cancel') }} </el-button>
-      <el-button type="primary" @click="confirmDate"> {{ $t('Confirm') }} </el-button>
+      <el-button @click="cancel">
+        {{ $t('Cancel') }}
+      </el-button>
+      <el-button
+        type="primary"
+        @click="confirmDate"
+      >
+        {{ $t('Confirm') }}
+      </el-button>
     </el-footer>
   </el-container>
 </template>
@@ -147,16 +156,6 @@ export default {
             });
             resolve(res);
           }
-          // const { level } = node;
-          // setTimeout(() => {
-          //   const nodes = Array.from({ length: level + 1 }).map(item => ({
-          //     value: ++id,
-          //     label: `Option - ${id}`,
-          //     leaf: level >= 2
-          //   }));
-          //   // Appelez le callback `resolve` pour renvoyer les données des noeuds enfants et indiquer que le chargement est terminé.
-          //   resolve(nodes);
-          // }, 1000);
         },
       },
     };

@@ -38,11 +38,6 @@ with this file. If not, see
         >
         </el-button>
       </el-tooltip>
-      <el-button
-        @click="debug(ticket)"
-        icon="el-icon-search"
-        circle
-      ></el-button>
       <h2 style="margin: 0 50px">
         {{ ticket.name }}
       </h2>
@@ -69,6 +64,7 @@ with this file. If not, see
         </el-tooltip>
       </div>
     </el-header>
+
     <el-main>
       <el-collapse>
         <el-collapse-item name="Details" title="Details">
@@ -89,6 +85,7 @@ with this file. If not, see
             <div> {{ ticket.ticket.user.name }} </div>
           </div>
         </el-collapse-item>
+
         <el-collapse-item name="Events" :title="$t('spinal-twin.Events')">
           <el-table
             :data="ticket.events"
@@ -113,6 +110,7 @@ with this file. If not, see
             </el-table-column>
           </el-table>
         </el-collapse-item>
+
         <el-collapse-item name="Notes" title="Notes">
           <el-container>
             <el-header>
@@ -122,6 +120,7 @@ with this file. If not, see
                 @send-note="sendNote"
               ></node-notes-create>
             </el-header>
+
             <el-main class="note-feed">
               <el-container
                 v-for="note of ticket.comments"
@@ -142,15 +141,8 @@ with this file. If not, see
                       ></el-button>
                     </el-popconfirm>
                   </el-tooltip>
-                  <el-button
-                    v-on:click.native="debug(ticket)"
-                    class="spl-input-button"
-                    icon="el-icon-search"
-                    type="primary"
-                    size="small"
-                    circle
-                  ></el-button>
                 </el-header>
+
                 <el-main style="padding: 0 0 10px 0">
                   <node-notes-message
                     :username="note.element.username.get()"
@@ -257,16 +249,12 @@ export default {
     {
       let realTicket = ticket.ticket;
       let contextId = await spinalServiceTicket.getTicketContextId(realTicket.id);
-      console.debug("inside changeStep", realTicket)
       if (step > 0)
       {
-        let tmpStep = await spinalServiceTicket.moveTicketToNextStep(contextId, realTicket.processId.get(), realTicket.id.get(), this.userInfo)
-        console.debug("move to next step", tmpStep)
+        let tmpStep = await spinalServiceTicket.moveTicketToNextStep(contextId, realTicket.processId.get(), realTicket.id.get(), this.userInfo);
         if(tmpStep) {
           SpinalGraphService.setInfo(realTicket.id.get());
           let realStep = SpinalGraphService.getRealNode(tmpStep.id);
-          console.debug("ticket step id:", ticket.ticket.stepId, tmpStep.id, realStep)
-          // ticket.ticket.stepId.set(tmpStep.id);
           ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].name = realStep.info.name.get();
           ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].serverId = realStep._server_id;
         }
@@ -274,14 +262,11 @@ export default {
       }
       else if (step < 0)
       {
-        let tmpStep = await spinalServiceTicket.moveTicketToPreviousStep(contextId, realTicket.processId.get(), realTicket.id.get(), this.userInfo)
-        console.debug("move to previous step", tmpStep)
+        let tmpStep = await spinalServiceTicket.moveTicketToPreviousStep(contextId, realTicket.processId.get(), realTicket.id.get(), this.userInfo);
         if (tmpStep)
         {
           SpinalGraphService.setInfo(realTicket.id.get());
           let realStep = SpinalGraphService.getRealNode(tmpStep.id);
-          console.debug("ticket step id:", ticket.ticket.stepId, tmpStep.id, realStep)
-          // ticket.ticket.stepId.set(tmpStep.id);
           ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].name = realStep.info.name.get();
           ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].serverId = realStep._server_id;
         }

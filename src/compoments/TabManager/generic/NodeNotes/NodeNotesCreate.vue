@@ -63,12 +63,14 @@ with this file. If not, see
           </el-tooltip>
         </el-dropdown-menu>
       </el-dropdown>
+
       <el-input
         v-model="new_note"
         v-on:keydown.enter.native="enterHandler"
         type="textarea"
         resize="none"
       ></el-input>
+
       <el-tooltip :content="$t('spinal-twin.NoteSend')">
         <el-button
           v-on:click.native="sendNote()"
@@ -80,6 +82,7 @@ with this file. If not, see
         </el-button>
       </el-tooltip>
     </el-container>
+
     <el-card
       v-if="attachment"
       style="margin: 20px; position: relative; width: 90%"
@@ -121,7 +124,7 @@ export default {
     {
       return {
         username: "admin",
-        userId: FileSystem._user_id
+        userId: FileSystem._user_id,
       };
     }
   },
@@ -149,7 +152,7 @@ export default {
         file,
         state,
         contextID,
-        groupID
+        groupID,
       );
     },
 
@@ -159,7 +162,7 @@ export default {
         type: "text",
         file: undefined,
         view: undefined,
-      }
+      };
       if (this.attachment)
       {
         if (this.new_note.trim() === "")
@@ -170,7 +173,7 @@ export default {
         pack.file = this.attachment.file;
         pack.view = this.attachment.view;
       }
-      await this.$_sendnote(this.new_note, pack.type, pack.file, pack.view)
+      await this.$_sendnote(this.new_note, pack.type, pack.file, pack.view);
       this.$emit("send-note", this.new_note, pack);
       this.new_note = "";
       this.attachment = undefined;

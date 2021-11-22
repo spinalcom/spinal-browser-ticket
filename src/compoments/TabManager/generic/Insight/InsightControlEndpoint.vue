@@ -23,7 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container v-if="ctxNode
+  <el-container
+    v-if="ctxNode
       && (ctxNode.info.type.get() == 'geographicRoom'
       && typeof endpoints !== 'undefined'
       && endpoints.length != 0)"
@@ -32,11 +33,14 @@ with this file. If not, see
       {{ ctxNode.info.name.get() }}
     </h4>
     <div>
-    <div v-for="eq of endpoints" v-bind:key="eq.name">
-      <div style="display: flex; flex-direction: row; flex-wrap: wrap">
+    <div
+      v-for="eq of endpoints"
+      :key="eq.name"
+    >
+      <div class="control-endpoint-grid">
         <insight-control-endpoint-box
           v-for="end of eq.info"
-          v-bind:key="end.name"
+          :key="end.name"
           :name="end.name"
           :endpoint="end"
         ></insight-control-endpoint-box>
@@ -105,9 +109,7 @@ export default {
     {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[id];
-      console.debug("ICE node", this.ctxNode);
       this.endpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id.get(), "hasControlPoints");
-      console.debug("control endpoints", this.endpoints);
     },
 
     // return infos from an endpointNodeId
@@ -124,10 +126,11 @@ export default {
 
     async getNodeEndpointsInfo(nodeId, endpointRelation){
       const endpointProfilsModel = await SpinalGraphService.getChildren(nodeId, endpointRelation);
-      if (endpointProfilsModel && endpointProfilsModel.length == 0) return // si la node n'a pas d'endpoints on quitte la fonction
-      if (endpointRelation == 'hasControlPoints'){ // on cherche les control endpoints (onglet insight)
+      if (endpointProfilsModel && endpointProfilsModel.length == 0)
+        return; // si la node n'a pas d'endpoints on quitte la fonction
+      if (endpointRelation == 'hasControlPoints') { // on cherche les control endpoints (onglet insight)
         const res = [];
-        for(const endpointProfil of endpointProfilsModel){ // pour chaque profil de control endpoint
+        for(const endpointProfil of endpointProfilsModel) { // pour chaque profil de control endpoint
           /** on récupère la data */
           const endpointsModels = await SpinalGraphService.getChildren(endpointProfil.id.get(), "hasBmsEndpoint");
           const endpoints = endpointsModels.map(el => el.get());
@@ -138,21 +141,10 @@ export default {
             const info = await this.getEndpointInfo(endpoint.id);
             infos.push(info);
           }
-        res.push({name: endpointProfil.name.get(), info:infos})
-        }
-        return res;
-      }
-      //endpointRelation == 'hasEndpoint'
-      else
-      { // on cherche les endpoints (onglet endpoint)
-        const res = [];
-        // premier automate associé ( à changer si besoin )
-        const endpointsModels = await SpinalGraphService.getChildren(endpointProfilsModel[0].id.get(), "hasBmsEndpoint");
-        const endpoints = endpointsModels.map(el => el.get());
-
-        for (const endpoint of endpoints) { // pour chaque endpoint
-          const info = await this.getEndpointInfo(endpoint.id);
-          res.push(info);
+          res.push({
+            name: endpointProfil.name.get(),
+            info:infos
+          });
         }
         return res;
       }
@@ -164,3 +156,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.control-endpoint-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+</style>

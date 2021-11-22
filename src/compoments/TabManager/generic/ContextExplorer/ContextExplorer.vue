@@ -19,14 +19,12 @@ with this file. If not, see
 -->
 
 <template>
-  <div
-    style="height:100%"
-  >
+  <div style="height:100%">
     <div class="spl-button-bar">
       <button-switch
+        :active="colored"
         @click.native="Color"
         class="spl-el-button"
-        :active="colored"
         icon="el-icon-picture-outline-round"
       ></button-switch>
       <el-button
@@ -34,9 +32,9 @@ with this file. If not, see
         class="spl-el-button"
         icon="el-icon-download"
         circle
-      >
-      </el-button>
+      ></el-button>
     </div>
+    
     <div
       v-if="Properties.items !== false"
       style="height:calc(100% - 52px)"
@@ -47,9 +45,9 @@ with this file. If not, see
         :items="itemsComputed"
         :columns="cols"
         :relation="Properties.relation"
-        style="height:100%"
         @select="Select"
         @isolate="Isolate"
+        style="height:100%"
       >
       </context-explorer-node-table>
     </div>
@@ -57,23 +55,24 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../../services/ViewManager/ViewManager";
-// import { spinalBackEnd } from "../../../services/spinalBackend";
-import { AppBack } from "../../../../services/backend/AppBack";
-import BackendInitializer from "../../../../services/BackendInitializer";
+// Tools
 import { EventBus } from "../../../../services/event";
 import { viewerState } from "./viewerState"
 
+// Components
 import ButtonSwitch from '../../../../compoments/ButtonSwitch'
 import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
 
 export default {
   name: "ContextExplorer",
-  components: { ContextExplorerNodeTable, ButtonSwitch },
+  components: {
+    ContextExplorerNodeTable,
+    ButtonSwitch
+  },
   props: {
     Properties: {
-      required: true,
       type: Object,
+      required: true,
       validator: function(value) {
         if (!value.viewKey instanceof String) {
           return false;
@@ -86,8 +85,6 @@ export default {
   data() {
     return {
       items: false,
-      contextServId: 0,
-      currentView: null,
       colored: false,
     };
   },
@@ -103,7 +100,8 @@ export default {
       return [];
     },
     cols() {
-      if (this.Properties && this.Properties.cols) return this.Properties.cols;
+      if (this.Properties && this.Properties.cols)
+        return this.Properties.cols;
       return [];
     },
   },
@@ -111,7 +109,7 @@ export default {
   methods: {
     Color() {
       viewerState.changeColoration();
-      EventBus.$emit("viewer-reset-color")
+      EventBus.$emit("viewer-reset-color");
       this.colored = false;
       this.$refs["Explorer-table"].isColored = false;
       if (viewerState.colored())
@@ -129,7 +127,7 @@ export default {
     Isolate(item)
     {
       viewerState.changeIsolation();
-      EventBus.$emit("viewer-reset-isolate")
+      EventBus.$emit("viewer-reset-isolate");
       if (viewerState.isolated())
         this.$refs["Explorer-table"].Isolate();
     },

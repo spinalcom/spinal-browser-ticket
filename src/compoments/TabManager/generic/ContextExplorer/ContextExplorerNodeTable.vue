@@ -94,15 +94,6 @@ with this file. If not, see
           ></el-button>
         </div>
       </el-table-column>
-      <!-- <el-table-column label=""
-                        width="65"
-                        align="center">
-        <div slot-scope="scope">
-          <el-button icon="el-icon-arrow-down"
-                      @click="debug(scope.row)"></el-button>
-                      circle
-        </div>
-      </el-table-column> -->
     </el-table>
   </div>
 </template>
@@ -158,13 +149,13 @@ export default {
     },
 
     Color() {
-      EventBus.$emit('viewer-color', this.data, this.relation)
+      EventBus.$emit('viewer-color', this.data, this.relation);
       this.isColored = true;
     },
 
     onSelectItem(item) {
       if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= 5)
-        ViewManager.getInstance(this.viewKey).pop()
+        ViewManager.getInstance(this.viewKey).pop();
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
 
@@ -173,7 +164,7 @@ export default {
     },
 
     debug(item) {
-      console.debug(item)
+      console.debug("Debugging", item);
     },
 
     async update() {
@@ -200,12 +191,12 @@ export default {
           }
         }
         else if (FileSystem._objects[item.serverId] !== undefined) {
-          let thisnode = FileSystem._objects[item.serverId]
+          let thisnode = FileSystem._objects[item.serverId];
           if (thisnode.children.PtrLst !== undefined) {
-            for (const name of thisnode.children.PtrLst._attribute_names){
+            for (const name of thisnode.children.PtrLst._attribute_names) {
               resItem[name] = thisnode.children.PtrLst[name].length;
-              resItem.haveChild = true
-              this.haveObjects = true
+              resItem.haveChild = true;
+              this.haveObjects = true;
             }
           }
         }
@@ -214,7 +205,6 @@ export default {
       this.data = res;
       this.haveChildren = haveChild;
       this.loading = false;
-      console.debug("data", this.data);
       this.updateIsolation();
       this.updateColor(this.data, colorUsed);
       this.isColored = viewerState.colored();
@@ -224,7 +214,7 @@ export default {
     {
       EventBus.$emit("viewer-reset-isolate");
       if (viewerState.isolated())
-        EventBus.$emit('viewer-isolate', this.data, this.relation)
+        EventBus.$emit('viewer-isolate', this.data, this.relation);
     },
 
     updateColor(res, colorUsed) {
@@ -251,22 +241,23 @@ export default {
     },
     
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return {
+        backgroundColor: color[0] === "#" ? color : `#${color}`
+      };
     },
 
     columnValue(item, key) {
-      if (item[key]) return item[key];
+      if (item[key])
+        return item[key];
       return 0;
     },
 
     exportToExcel() {
-      let headers = [
-        {
-          key: "name",
-          header: this.$t("name"),
-          width: 20
-        }
-      ];
+      let headers = [{
+        key: "name",
+        header: this.$t("name"),
+        width: 20
+      }];
       for (const column of this.columns) {
         headers.push({
           key: column,
@@ -274,19 +265,15 @@ export default {
           width: 10
         });
       }
-      let excelData = [
-        {
+      let excelData = [{
+        name: "Tableau",
+        author: "",
+        data: [{
           name: "Tableau",
-          author: "",
-          data: [
-            {
-              name: "Tableau",
-              header: headers,
-              rows: this.data
-            }
-          ]
-        }
-      ];
+          header: headers,
+          rows: this.data
+        }]
+      }];
       excelManager.export(excelData).then(reponse => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
@@ -303,10 +290,12 @@ export default {
   left: 0;
   top: 0;
 }
+
 .spl-table {
   height: 800px;
   overflow: auto;
 }
+
 .spinal-height-control {
   height: 80%;
 }

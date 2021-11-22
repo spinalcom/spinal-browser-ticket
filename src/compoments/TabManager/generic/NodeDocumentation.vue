@@ -36,6 +36,7 @@ with this file. If not, see
         ></el-button>
       </el-tooltip>
     </el-header>
+
     <el-main>
       <el-table
         :data="documents"
@@ -49,9 +50,10 @@ with this file. If not, see
           </div>
         </el-table-column>
         <el-table-column
-            label="Actions"
-            fixed="right"
-            width=120>
+          label="Actions"
+          fixed="right"
+          width=120
+        >
           <div slot-scope="scope">
             <el-tooltip :content="$t('spinal-twin.DocumentDownload')">
               <el-button
@@ -127,10 +129,9 @@ export default {
   methods: {
     async update(id)
     {
-      console.debug("DOC start")
-      // this.ctxNode = await SpinalGraphService.getInfo(id);
+      console.debug("DOC start");
       this.ctxNode = FileSystem._objects[id];
-      console.debug("DOC end")
+      console.debug("DOC end");
       this.directory = await FileExplorer.getDirectory(this.ctxNode);
       await this.getDocuments();
     },
@@ -178,7 +179,6 @@ export default {
           for (const file of files) {
             filelist.push(file);
           }
-          // filelist.push(...this.messages.pj);
           const sizes = filelist.map(el => el.size);
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
@@ -187,7 +187,6 @@ export default {
             );
             return;
           }
-          // this.messages.pj = filelist;
           console.log(filelist);
           FileExplorer.addFileUpload(this.directory, filelist);
           this.$emit("reload");

@@ -32,6 +32,7 @@ with this file. If not, see
       >
       </el-button>
     </el-tooltip>
+
     <div class="spl-button-bar">
       <el-tooltip
         :disabled="!isNode"
@@ -72,6 +73,7 @@ with this file. If not, see
         </el-button>
       </el-tooltip>
     </div>
+
     <tab-manager
       :tabsprop="tabs"
       ref="tab-manager"
@@ -90,14 +92,12 @@ import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import { getSurfaceFromNode } from "./DataTools.ts";
 import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
-
 import {
   ROOM_RELATION,
 } from '../../constants';
 
-import ButtonSwitch from "../../compoments/ButtonSwitch.vue";
-
 // Generic components
+import ButtonSwitch from "../../compoments/ButtonSwitch.vue";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
 import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
@@ -107,13 +107,11 @@ import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTic
 import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue";
 import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue";
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
-
-// Specific components
 import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 const VIEW_KEY = "DataApp";
+
 // Component exports
 export default {
   name: "TheDataApp",
@@ -132,7 +130,7 @@ export default {
   data() {
     return {
       viewKey: VIEW_KEY,
-      items: false,
+      items: {},
       currentView: false,
       isNode: false,
       isolated: false,
@@ -229,11 +227,11 @@ export default {
       graph,
       "geographicContext"
     );
-    // Get the ViewManager instance for the TicketCenter viewKey and initializes it
     await ViewManager.getInstance(this.viewKey).init(
       this.onViewChange.bind(this),
       0
     );
+    this.items.cols = [ "children", "Area" ];
   },
 
   methods: {
@@ -257,19 +255,15 @@ export default {
         );
       }
 
-      console.debug("MapItems", mapItems)
       // Get children
       for (const [nodeType, items] of mapItems) {
         this.items = { nodeType, items };
       }
       await Promise.all(this.items.items.map(async function (item) {
-        console.debug("element", item)
         item["Area"] = await getSurfaceFromNode(item);
-        console.debug("after", item)
       }));
       this.currentView = view;
-      this.items.cols = [ "children", "Area" ]
-      console.debug("cols", this.items.cols)
+      
       // Update tabs
       this.tabs[0].props.items = this.items;
       this.tabs[0].props.cols = this.items.cols;
@@ -304,7 +298,7 @@ export default {
     },
 
     popView() {
-      ViewManager.getInstance(this.viewKey).pop()
+      ViewManager.getInstance(this.viewKey).pop();
     },
 
     zoomOn() {
@@ -313,7 +307,7 @@ export default {
 
     isolateAll() {
       viewerState.changeIsolation();
-      EventBus.$emit("viewer-reset-isolate")
+      EventBus.$emit("viewer-reset-isolate");
       this.isolated = false;
       if (viewerState.isolated())
       {
@@ -353,7 +347,7 @@ export default {
         }
         res.push(resItem);
       }
-      return res
+      return res;
     },
     
     exportToExcel() {
@@ -388,17 +382,6 @@ export default {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
-
-    // Color() {
-    //   let items = this.items.items.map(item => {
-    //     return { server_id: item.serverId, color: item.getColor() };
-    //   });
-    //   EventBus.$emit("equipment-color-all", items, { server_id: this.currentView.serverId });
-    // },
-
-    // ShowAll() {
-    //   EventBus.$emit("equipment-show-all");
-    // },
   },
 };
 </script>
@@ -407,6 +390,7 @@ export default {
 .data-app {
   overflow: hidden;
 }
+
 .tab-manager {
   margin: 10px 10px 10px 0px;
   height: calc(100% - 120px);

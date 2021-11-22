@@ -35,6 +35,7 @@ with this file. If not, see
       </b>
       , {{ DateFormat(date) }}
     </el-header>
+    
     <el-main class="spl-chat-box">
       {{ message }}
       <img
@@ -44,6 +45,7 @@ with this file. If not, see
         class="spl-message-image"
       />
     </el-main>
+
     <div>
       <el-button
         v-if="type == 'img' || type == 'view'"
@@ -63,14 +65,6 @@ with this file. If not, see
       >
         {{ $t('spinal-twin.NoteRestore') }}
       </el-button>
-      <!-- <el-button
-        @click.native="debug(file)"
-        type="primary"
-        square
-        style="width: min-content"
-      >
-        Debug
-      </el-button> -->
     </div>
   </el-container>
 </template>

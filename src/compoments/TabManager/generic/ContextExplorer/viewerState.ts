@@ -32,7 +32,7 @@ export class ViewerState {
   
   public colored() : Boolean {
     return this.coloration;
-  };
+  }
   
   public changeColoration(): void {
     this.coloration = ! this.coloration;
@@ -40,7 +40,7 @@ export class ViewerState {
 
   public isolated() : Boolean {
     return this.isolation;
-  };
+  }
   
   public changeIsolation() : void {
     this.isolation = ! this.isolation;

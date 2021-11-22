@@ -26,7 +26,6 @@ class TicketDescription {
 };
 
 async function getTicketDescription(ticket: TicketInterface): Promise<TicketDescription> {
-  console.debug("ticket",ticket)
   let ticketDesc = new TicketDescription(
     ticket,
     ticket.name,
@@ -35,10 +34,8 @@ async function getTicketDescription(ticket: TicketInterface): Promise<TicketDesc
 
   let ticketNode = SpinalGraphService.getRealNode(ticket.id);
   ticketDesc.comments = await serviceDocumentation.getNotes(ticketNode);
-  console.debug("real ticket", ticketNode);
   let stepinfo = await SpinalGraphService.getParents(ticket.id, SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
   stepinfo = stepinfo.filter(step => step.type.get() === SPINAL_TICKET_SERVICE_STEP_TYPE);
-  console.debug("step : ", stepinfo, ticket.stepId)
   ticketDesc.step = stepinfo[0].name.get();
 
   ticketDesc.events = await spinalServiceTicket.getLogs(ticket.id);

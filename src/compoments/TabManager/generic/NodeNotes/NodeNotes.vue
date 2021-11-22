@@ -31,6 +31,7 @@ with this file. If not, see
         @send-note="sendNote"
       ></node-notes-create>
     </el-header>
+
     <el-main style="overflow: hidden">
       <div class="note-feed">
         <el-container
@@ -53,15 +54,8 @@ with this file. If not, see
                 ></el-button>
               </el-popconfirm>
             </el-tooltip>
-            <!-- <el-button
-              v-on:click.native="debug(note)"
-              class="spl-input-button"
-              icon="el-icon-search"
-              type="primary"
-              size="small"
-              circle
-            ></el-button> -->
           </el-header>
+
           <el-main style="padding: 0 0 10px 0">
             <node-notes-message
               :username="note.element.username.get()"
@@ -80,7 +74,6 @@ with this file. If not, see
 
 <script>
 import { FileSystem } from 'spinal-core-connectorjs_type'
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import NodeNotesMessage from "./NodeNotesMessage.vue";
 import NodeNotesCreate from './NodeNotesCreate.vue';
@@ -131,7 +124,6 @@ export default {
     async update(id)
     {
       console.debug("NOTE start")
-      // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
       console.debug("NOTE end")
       this.notes = [];

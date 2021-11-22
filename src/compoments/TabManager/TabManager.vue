@@ -90,7 +90,7 @@ export default {
   },
 
   async mounted() {
-    this.activetab = this.$t(this.tabsprop[0].name)
+    this.activetab = this.$t(this.tabsprop[0].name);
   },
 
   methods: {
@@ -98,8 +98,8 @@ export default {
       this.activetab = tab._props.name;
     },
 
-    debug(active) {
-      console.debug(active);
+    debug(item) {
+      console.debug("Debugging", item);
     },
   },
 };
@@ -109,6 +109,7 @@ export default {
 .tab-manager-tabs .el-tabs__content {
   height: 95%;
 }
+
 .tab-manager-pane {
   height: 100%;
 }

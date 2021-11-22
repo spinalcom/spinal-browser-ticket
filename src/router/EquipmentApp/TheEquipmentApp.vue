@@ -32,6 +32,7 @@ with this file. If not, see
       >
       </el-button>
     </el-tooltip>
+
     <div class="spl-button-bar">
       <el-tooltip
         :disabled="!isNode"
@@ -72,6 +73,7 @@ with this file. If not, see
         </el-button>
       </el-tooltip>
     </div>
+
     <tab-manager
       :tabsprop="tabs"
       ref="tab-manager"
@@ -89,7 +91,6 @@ import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
-
 import {
   EQUIPMENT_RELATION,
 } from '../../constants';
@@ -99,8 +100,6 @@ import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb
 import TabManager from "../../compoments/TabManager/TabManager.vue";
 import ButtonSwitch from "../../compoments/ButtonSwitch.vue";
 import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
-
-// Specific components
 import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
 import NodeDocumentation from "../../compoments/TabManager/generic/NodeDocumentation.vue";
 import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTickets.vue";
@@ -111,6 +110,7 @@ import InsightEndpoint from '../../compoments/TabManager/generic/Insight/Insight
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
 
 const VIEW_KEY = "EquipmentApp";
+
 // Component exports
 export default {
   name: "TheEquipmentApp",
@@ -295,7 +295,7 @@ export default {
     },
 
     popView() {
-      ViewManager.getInstance(this.viewKey).pop()
+      ViewManager.getInstance(this.viewKey).pop();
     },
 
     zoomOn() {
@@ -304,7 +304,7 @@ export default {
 
     isolateAll() {
       viewerState.changeIsolation();
-      EventBus.$emit("viewer-reset-isolate")
+      EventBus.$emit("viewer-reset-isolate");
       this.isolated = false;
       if (viewerState.isolated())
       {
@@ -343,7 +343,7 @@ export default {
         }
         res.push(resItem);
       }
-      return res
+      return res;
     },
     
     exportToExcel() {
@@ -378,17 +378,6 @@ export default {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
-
-    Color() {
-      let items = this.items.items.map(item => {
-        return { server_id: item.serverId, color: item.getColor() };
-      });
-      EventBus.$emit("equipment-color-all", items, { server_id: this.currentView.serverId });
-    },
-
-    ShowAll() {
-      EventBus.$emit("equipment-show-all");
-    },
   },
 };
 </script>
@@ -397,6 +386,7 @@ export default {
 .equipment-center {
   overflow: hidden;
 }
+
 .tab-manager {
   margin: 10px 10px 10px 0px;
   height: 88%;

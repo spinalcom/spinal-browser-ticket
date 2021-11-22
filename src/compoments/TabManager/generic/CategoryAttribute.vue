@@ -38,6 +38,7 @@ with this file. If not, see
         ></el-button>
       </el-tooltip>
     </el-header>
+
     <el-main>
       <el-table
         v-if="Categories"
@@ -71,6 +72,7 @@ with this file. If not, see
                   </div>
                 </editable-text>
               </el-table-column>
+
               <el-table-column label="Value">
                 <editable-text
                   :content.sync="scope.row.value"
@@ -80,6 +82,7 @@ with this file. If not, see
                   {{ scope.row.value }}
                 </editable-text>
               </el-table-column>
+
               <el-table-column label="Type">
                 <editable-text
                   :content.sync="scope.row.type"
@@ -89,6 +92,7 @@ with this file. If not, see
                   {{ scope.row.type }}
                 </editable-text>
               </el-table-column>
+
               <el-table-column label="Unit">
                 <editable-text
                   :content.sync="scope.row.unit"
@@ -98,6 +102,7 @@ with this file. If not, see
                   {{ scope.row.unit }}
                 </editable-text>
               </el-table-column>
+
               <el-table-column
                 fixed="right"
                 label="Options"
@@ -138,6 +143,7 @@ with this file. If not, see
           </el-tooltip>
           </div>
         </el-table-column>
+
         <el-table-column :label="$t('node-type.Category')">
           <editable-text
             :content.sync="cat.row.name"
@@ -147,6 +153,7 @@ with this file. If not, see
             {{ cat.row.name }}
           </editable-text>
         </el-table-column>
+
         <el-table-column
           label="Actions"
           fixed="right"
@@ -177,21 +184,12 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-      <!-- <el-button
-        v-on:click.native="debug(ctxNode)"
-        class="spl-input-button"
-        icon="el-icon-search"
-        type="primary"
-        size="small"
-        circle
-      ></el-button> -->
     </el-main>
   </el-container>
 </template>
 
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
 import { FileSystem } from 'spinal-core-connectorjs_type'
 
 import EditableText from "../../../compoments/EditableText.vue";
@@ -243,7 +241,6 @@ export default {
     async update(id)
     {
       console.debug("CATATT start");
-      // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
       console.debug("CATATT end");
       serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
@@ -286,7 +283,7 @@ export default {
         unit: "newUnit",
         isEditing: true,
         serverId: node._server_id,
-      })
+      });
       this.isEditing = true;
     },
     
@@ -297,7 +294,7 @@ export default {
         this.isEditing = false;
       }
       await serviceDocumentation.removeAttributesById(category.cat.node, attribute.serverId);
-      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute.serverId))
+      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute.serverId));
     },
 
     async editAttribute(attribute, category){
@@ -312,7 +309,14 @@ export default {
         alert("Attribute '" + attribute.label + "' already exists in '" + category.name + "'");
         return;
       }
-      await serviceDocumentation.setAttributeById(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
+      await serviceDocumentation.setAttributeById(
+        this.ctxNode,
+        attribute.serverId,
+        attribute.label,
+        attribute.value,
+        attribute.type,
+        attribute.unit
+      );
       attribute.isEditing = false;
       this.isEditing = false;
     },
@@ -324,13 +328,13 @@ export default {
         name: "NewCategory",
         attributes: [],
         isEditing: true,
-      })
+      });
       this.isEditing = true;
     },
 
     async delCategory(category){
-      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id)
-      this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id))
+      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id);
+      this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id));
     },
 
     async editCategory(category){
@@ -340,12 +344,11 @@ export default {
         this.isEditing = true;
         return;
       }
-      console.debug(this.Categories);
       if (this.Categories.some((cat) => { return cat.name == category.name}))  {
         alert("Category '" + category.name + "' already exists");
         return;
       }
-      await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name)
+      await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name);
       category.isEditing = false;
       this.isEditing = false;
     },
