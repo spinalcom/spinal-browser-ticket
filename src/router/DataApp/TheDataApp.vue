@@ -257,7 +257,8 @@ export default {
 
       // Get children
       for (const [nodeType, items] of mapItems) {
-        this.items = { nodeType, items };
+        this.items.nodeType = nodeType
+        this.items.items = items;
       }
       await Promise.all(this.items.items.map(async function (item) {
         item["Area"] = await getSurfaceFromNode(item);
