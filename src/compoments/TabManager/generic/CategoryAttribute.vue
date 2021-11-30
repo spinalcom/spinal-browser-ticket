@@ -304,7 +304,9 @@ export default {
         this.isEditing = true;
         return;
       }
-      if (category.attributes.some(attr => { return attr.label == attribute.label}))
+      if (category.attributes.some(attr => {
+        return attr.label == attribute.label && attr.cat.node._server_id != attribute.cat.node._server_id;
+      }))
       {
         alert("Attribute '" + attribute.label + "' already exists in '" + category.name + "'");
         return;
@@ -344,7 +346,11 @@ export default {
         this.isEditing = true;
         return;
       }
-      if (this.Categories.some((cat) => { return cat.name == category.name}))  {
+      console.debug(this.Categories, category);
+      if (this.Categories.some((cat) => {
+          return cat.name == category.name && cat.cat.node._server_id != category.cat.node._server_id;
+        }))
+      {
         alert("Category '" + category.name + "' already exists");
         return;
       }
