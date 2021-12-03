@@ -105,6 +105,9 @@ import { EventBus } from "../../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import { viewerState } from './viewerState';
+
+const CountNames = [ "BuildingCount", "FloorCount", "RoomCount", "EquipmentCount" ];
+
 export default {
   name: "ContextExplorerNodeTable",
   props: {
@@ -247,6 +250,7 @@ export default {
     },
 
     columnValue(item, key) {
+      if (CountNames.includes(key)) return item["children"];
       if (item[key])
         return item[key];
       return 0;

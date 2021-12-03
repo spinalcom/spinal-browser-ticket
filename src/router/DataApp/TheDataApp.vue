@@ -93,7 +93,12 @@ import fileSaver from "file-saver";
 import { getSurfaceFromNode } from "./DataTools.ts";
 import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
 import {
+  BUILDING_TYPE,
+  FLOOR_TYPE,
+  GEO_RELATIONS,
   ROOM_RELATION,
+  ROOM_TYPE,
+  SPATIAL_CONTEXT_TYPE,
 } from '../../constants';
 
 // Generic components
@@ -109,6 +114,7 @@ import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeC
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
 import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
+import { CONTEXT_TYPE } from 'spinal-env-viewer-task-service';
 
 const VIEW_KEY = "DataApp";
 
@@ -231,12 +237,11 @@ export default {
       this.onViewChange.bind(this),
       0
     );
-    this.items.cols = [ "children", "Area" ];
   },
 
   methods: {
     async onViewChange(view) {
-
+      
       // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
@@ -260,10 +265,12 @@ export default {
         this.items.nodeType = nodeType
         this.items.items = items;
       }
+
       await Promise.all(this.items.items.map(async function (item) {
         item["Area"] = await getSurfaceFromNode(item);
       }));
       this.currentView = view;
+      this.setColumns(view);
       
       if (this.isolated == true)
       {
@@ -298,6 +305,33 @@ export default {
           this.tabs[i].ignore = true;
         }
       }
+    },
+
+    setColumns(view) {
+      let node = FileSystem._objects[view.serverId];
+      this.items.cols = [ ];
+      console.debug(node);
+      if (!node) {
+        this.items.cols = [ "BuildingCount", "Area" ];
+        return;
+      }
+      let nodeType = node.info.type.get();
+      console.debug("node type", nodeType, SPATIAL_CONTEXT_TYPE);
+      switch (nodeType)
+      {
+        case SPATIAL_CONTEXT_TYPE:
+          this.items.cols = [ "FloorCount", "Area" ];
+          break;
+        case BUILDING_TYPE:
+          this.items.cols = [ "RoomCount", "Area" ];
+          break;
+        case FLOOR_TYPE:
+          this.items.cols = [ "EquipmentCount", "Area" ];
+          break;
+        default:
+          this.items.cols = [ ];
+      }
+      console.debug(this.items.cols);
     },
 
     updateNames()
