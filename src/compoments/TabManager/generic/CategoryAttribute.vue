@@ -305,7 +305,8 @@ export default {
         return;
       }
       if (category.attributes.some(attr => {
-        return attr.label == attribute.label && attr.cat.node._server_id != attribute.cat.node._server_id;
+        console.debug("attr", attr, attribute)
+        return attr.label == attribute.label && attr.serverId != attribute.serverId;
       }))
       {
         alert("Attribute '" + attribute.label + "' already exists in '" + category.name + "'");
