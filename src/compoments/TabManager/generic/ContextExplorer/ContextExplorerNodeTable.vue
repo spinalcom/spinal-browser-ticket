@@ -205,7 +205,7 @@ export default {
       this.data = res;
       this.haveChildren = haveChild;
       this.loading = false;
-      this.updateIsolation();
+      // this.updateIsolation();
       this.updateColor(this.data, colorUsed);
       this.isColored = viewerState.colored();
     },
