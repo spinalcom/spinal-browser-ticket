@@ -305,7 +305,6 @@ export default {
         return;
       }
       if (category.attributes.some(attr => {
-        console.debug("attr", attr, attribute)
         return attr.label == attribute.label && attr.serverId != attribute.serverId;
       }))
       {
@@ -347,7 +346,6 @@ export default {
         this.isEditing = true;
         return;
       }
-      console.debug(this.Categories, category);
       if (this.Categories.some((cat) => {
           return cat.name == category.name && cat.cat.node._server_id != category.cat.node._server_id;
         }))

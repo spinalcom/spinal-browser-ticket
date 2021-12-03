@@ -310,13 +310,11 @@ export default {
     setColumns(view) {
       let node = FileSystem._objects[view.serverId];
       this.items.cols = [ ];
-      console.debug(node);
       if (!node) {
         this.items.cols = [ "BuildingCount", "Area" ];
         return;
       }
       let nodeType = node.info.type.get();
-      console.debug("node type", nodeType, SPATIAL_CONTEXT_TYPE);
       switch (nodeType)
       {
         case SPATIAL_CONTEXT_TYPE:
@@ -331,7 +329,6 @@ export default {
         default:
           this.items.cols = [ ];
       }
-      console.debug(this.items.cols);
     },
 
     updateNames()
