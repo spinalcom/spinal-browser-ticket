@@ -32,7 +32,7 @@ with this file. If not, see
       ></node-notes-create>
     </el-header>
 
-    <el-main style="overflow: hidden">
+    <el-main style="">
       <div class="note-feed">
         <el-container
           v-for="note of notes"
