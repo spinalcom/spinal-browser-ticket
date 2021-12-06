@@ -38,6 +38,7 @@ with this file. If not, see
         {{ event.title }}
       </h2>
     </el-header>
+
     <el-main>
       <h3>
         Details
@@ -87,8 +88,7 @@ export default {
   methods: {
     async deleteEvent()
     {
-      let test = await SpinalEventService.removeEvent(this.event.id);
-      console.debug(test);
+      await SpinalEventService.removeEvent(this.event.id);
       this.$emit("update");
     },
 

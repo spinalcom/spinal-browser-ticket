@@ -31,13 +31,14 @@ with this file. If not, see
       >
         <el-button
           @click.native="addCategory()"
-          :disabled="ctxNode == false"
+          :disabled="ctxNode == false || isEditing"
           icon="el-icon-plus"
           type="primary"
           circle
         ></el-button>
       </el-tooltip>
     </el-header>
+
     <el-main>
       <el-table
         v-if="Categories"
@@ -71,6 +72,7 @@ with this file. If not, see
                   </div>
                 </editable-text>
               </el-table-column>
+
               <el-table-column label="Value">
                 <editable-text
                   :content.sync="scope.row.value"
@@ -80,6 +82,7 @@ with this file. If not, see
                   {{ scope.row.value }}
                 </editable-text>
               </el-table-column>
+
               <el-table-column label="Type">
                 <editable-text
                   :content.sync="scope.row.type"
@@ -89,6 +92,7 @@ with this file. If not, see
                   {{ scope.row.type }}
                 </editable-text>
               </el-table-column>
+
               <el-table-column label="Unit">
                 <editable-text
                   :content.sync="scope.row.unit"
@@ -98,6 +102,7 @@ with this file. If not, see
                   {{ scope.row.unit }}
                 </editable-text>
               </el-table-column>
+
               <el-table-column
                 fixed="right"
                 label="Options"
@@ -106,14 +111,15 @@ with this file. If not, see
                 <div slot-scope="scope">
                   <el-tooltip :content="$t('spinal-twin.AttributeEdit') + scope.row.label">
                     <el-button
-                      @click.native="editAttribute(scope.row)"
+                      @click.native="editAttribute(scope.row, cat.row)"
                       :icon="scope.row.isEditing ? 'el-icon-success' : 'el-icon-edit'"
+                      :disabled="!scope.row.isEditing && isEditing"
                       circle
                     ></el-button>
                   </el-tooltip>
                   <el-tooltip :content="$t('Remove attribute ') + scope.row.label">
                     <el-popconfirm
-                      @confirm="delAttribute(cat.row, scope.row.serverId)"
+                      @confirm="delAttribute(cat.row, scope.row)"
                       :title="$t('spinal-twin.DeleteConfirm')"
                     >
                       <el-button
@@ -130,12 +136,14 @@ with this file. If not, see
           <el-tooltip :content="$t('spinal-twin.CategoryAddAttribute') + cat.row.name">
             <el-button
               @click.native="addAttribute(cat.row)"
+              :disabled="isEditing"
               icon="el-icon-plus"
               circle
             ></el-button>
           </el-tooltip>
           </div>
         </el-table-column>
+
         <el-table-column :label="$t('node-type.Category')">
           <editable-text
             :content.sync="cat.row.name"
@@ -145,6 +153,7 @@ with this file. If not, see
             {{ cat.row.name }}
           </editable-text>
         </el-table-column>
+
         <el-table-column
           label="Actions"
           fixed="right"
@@ -154,6 +163,7 @@ with this file. If not, see
             <el-tooltip :content="$t('spinal-twin.CategoryEdit') + cat.row.name">
               <el-button
                 @click.native="editCategory(cat.row)"
+                :disabled="!cat.row.isEditing && isEditing"
                 :icon="cat.row.isEditing ? 'el-icon-success' : 'el-icon-edit'"
                 circle
               ></el-button>
@@ -174,21 +184,12 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-      <!-- <el-button
-        v-on:click.native="debug(ctxNode)"
-        class="spl-input-button"
-        icon="el-icon-search"
-        type="primary"
-        size="small"
-        circle
-      ></el-button> -->
     </el-main>
   </el-container>
 </template>
 
 <script>
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
 import { FileSystem } from 'spinal-core-connectorjs_type'
 
 import EditableText from "../../../compoments/EditableText.vue";
@@ -206,7 +207,8 @@ export default {
   data() {
     return {
       ctxNode: false,
-      Categories: false,
+      Categories: [],
+      isEditing: false,
     };
   },
 
@@ -222,7 +224,7 @@ export default {
         }
         else
         {
-          this.Categories = false;
+          this.Categories = [];
           this.ctxNode = false;
         }
       },
@@ -239,7 +241,6 @@ export default {
     async update(id)
     {
       console.debug("CATATT start");
-      // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
       console.debug("CATATT end");
       serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
@@ -280,24 +281,46 @@ export default {
         value: "newValue",
         type: "newType",
         unit: "newUnit",
-        isEditing: false,
+        isEditing: true,
         serverId: node._server_id,
-      })
+      });
+      this.isEditing = true;
     },
     
-    async delAttribute(category, attribute_id){
-      await serviceDocumentation.removeAttributesById(category.cat.node, attribute_id)
-      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute_id))
+    async delAttribute(category, attribute){
+      if (attribute.isEditing)
+      {
+        attribute.isEditing = false;
+        this.isEditing = false;
+      }
+      await serviceDocumentation.removeAttributesById(category.cat.node, attribute.serverId);
+      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute.serverId));
     },
 
-    async editAttribute(attribute){
+    async editAttribute(attribute, category){
       if (!attribute.isEditing)
       {
         attribute.isEditing = true;
+        this.isEditing = true;
         return;
       }
-      await serviceDocumentation.setAttributeById(this.ctxNode, attribute.serverId, attribute.label, attribute.value, attribute.type, attribute.unit);
+      if (category.attributes.some(attr => {
+        return attr.label == attribute.label && attr.serverId != attribute.serverId;
+      }))
+      {
+        alert("Attribute '" + attribute.label + "' already exists in '" + category.name + "'");
+        return;
+      }
+      await serviceDocumentation.setAttributeById(
+        this.ctxNode,
+        attribute.serverId,
+        attribute.label,
+        attribute.value,
+        attribute.type,
+        attribute.unit
+      );
       attribute.isEditing = false;
+      this.isEditing = false;
     },
 
     async addCategory(){
@@ -306,23 +329,33 @@ export default {
         cat: category,
         name: "NewCategory",
         attributes: [],
-        isEditing: false,
-      })
+        isEditing: true,
+      });
+      this.isEditing = true;
     },
 
     async delCategory(category){
-      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id)
-      this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id))
+      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id);
+      this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id));
     },
 
     async editCategory(category){
       if (!category.isEditing)
       {
         category.isEditing = true;
+        this.isEditing = true;
         return;
       }
-      await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name)
+      if (this.Categories.some((cat) => {
+          return cat.name == category.name && cat.cat.node._server_id != category.cat.node._server_id;
+        }))
+      {
+        alert("Category '" + category.name + "' already exists");
+        return;
+      }
+      await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name);
       category.isEditing = false;
+      this.isEditing = false;
     },
 
     httpify(url)

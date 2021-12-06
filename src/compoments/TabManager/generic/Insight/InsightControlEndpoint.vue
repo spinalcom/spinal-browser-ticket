@@ -23,33 +23,30 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
-      Component Header
-    </el-header>
-    <el-main v-if="ctxNode">
-      <el-container
-        v-if="(
-          nodeInfo.selectedNode.info.type.get() == 'geographicRoom'
-          && equipmentEndpoints.length != 0
-        )"
-      >
-        <el-header>
-          Control Endpoints
-        </el-header>
-        <el-main>
-          <div v-for="eq of equipmentEndpoints" v-bind:key="eq.name">
-            {{ eq.name }}
-            <insight-control-endpoint
-              v-for="end of eq.info"
-              v-bind:key="end.name"
-              :name="end.name"
-              :endpoint="end"
-            ></insight-control-endpoint>
-          </div>
-        </el-main>
-      </el-container>
-    </el-main>
+  <el-container
+    v-if="ctxNode
+      && (ctxNode.info.type.get() == 'geographicRoom'
+      && typeof endpoints !== 'undefined'
+      && endpoints.length != 0)"
+  >
+    <h4>
+      {{ ctxNode.info.name.get() }}
+    </h4>
+    <div>
+    <div
+      v-for="eq of endpoints"
+      :key="eq.name"
+    >
+      <div class="control-endpoint-grid">
+        <insight-control-endpoint-box
+          v-for="end of eq.info"
+          :key="end.name"
+          :name="end.name"
+          :endpoint="end"
+        ></insight-control-endpoint-box>
+      </div>
+    </div>
+    </div>
   </el-container>
 </template>
 
@@ -64,8 +61,15 @@ export default {
   components: { InsightControlEndpointBox },
   props: {
     Properties: {
-      required: true,
       type: Object,
+      required: true,
+      default: undefined,
+      validator: function(value) {
+        if (!value.viewKey instanceof String) {
+          return false;
+        }
+        return true;
+      },
     },
   },
 
@@ -105,20 +109,14 @@ export default {
     {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[id];
-      console.debug("node", this.ctxNode)
-      // this.controlEndpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id, "hasControlPoints");
-      this.endpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id, "hasEndPoint");
-      console.debug("endpoints", this.endpoints)
+      this.endpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id.get(), "hasControlPoints");
     },
 
     // return infos from an endpointNodeId
     async getEndpointInfo(endpointNodeId){
       const realnode = SpinalGraphService.getRealNode(endpointNodeId);
-      console.debug("real node:", realnode)
       const attributesLstModels = await serviceDocumentation.getAllAttributes(realnode);
-      console.debug("attributesLstModels:", attributesLstModels)
       const attributes = attributesLstModels.map(el => el.get());
-      console.debug("attributes:", attributes)
       const endpointInfo = {};
       for (const attr of attributes) {
         endpointInfo[attr.label] = attr.value;
@@ -128,10 +126,11 @@ export default {
 
     async getNodeEndpointsInfo(nodeId, endpointRelation){
       const endpointProfilsModel = await SpinalGraphService.getChildren(nodeId, endpointRelation);
-      if (endpointProfilsModel.length == 0) return // si la node n'a pas d'endpoints on quitte la fonction
-      if (endpointRelation == 'hasControlPoints'){ // on cherche les control endpoints (onglet insight)
+      if (endpointProfilsModel && endpointProfilsModel.length == 0)
+        return; // si la node n'a pas d'endpoints on quitte la fonction
+      if (endpointRelation == 'hasControlPoints') { // on cherche les control endpoints (onglet insight)
         const res = [];
-        for(const endpointProfil of endpointProfilsModel){ // pour chaque profil de control endpoint
+        for(const endpointProfil of endpointProfilsModel) { // pour chaque profil de control endpoint
           /** on récupère la data */
           const endpointsModels = await SpinalGraphService.getChildren(endpointProfil.id.get(), "hasBmsEndpoint");
           const endpoints = endpointsModels.map(el => el.get());
@@ -142,21 +141,10 @@ export default {
             const info = await this.getEndpointInfo(endpoint.id);
             infos.push(info);
           }
-        res.push({name: endpointProfil.name.get(), info:infos})
-        }
-        return res;
-      }
-      //endpointRelation == 'hasEndpoint'
-      else { // on cherche les endpoints (onglet endpoint)
-        const res = [];
-        // premier automate associé ( à changer si besoin )
-        const endpointsModels = await SpinalGraphService.getChildren(endpointProfilsModel[0].id.get(), "hasBmsEndpoint");
-        const endpoints = endpointsModels.map(el => el.get());
-        
-        for (const endpoint of endpoints) { // pour chaque endpoint
-          const info = await this.getEndpointInfo(endpoint.id);
-          console.debug(info)
-          res.push(info);
+          res.push({
+            name: endpointProfil.name.get(),
+            info:infos
+          });
         }
         return res;
       }
@@ -168,3 +156,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.control-endpoint-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+</style>

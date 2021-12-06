@@ -45,12 +45,9 @@ with this file. If not, see
   </el-container>
 </template>
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
+
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
-import moment from "moment";
 
 export default {
   name: "NodeCalendarTable",

@@ -27,26 +27,45 @@ import { viewerUtils } from "../viewerUtils";
 import { spinalBackEnd } from '../../spinalBackend';
 
 EventBus.$on('viewer-zoom', async (root, relation) => {
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
-  await viewerUtils.rotateTo('front,top,right');
-  viewerUtils.fitToView(items);
+  await viewerUtils.waitInitialized()
+  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: root.serverId }, relation);
+  await viewerUtils.fitToView(items);
 });
 
-EventBus.$on('viewer-isolate', async (root, relation) => {
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
-  viewerUtils.isolateObjects(items);
+EventBus.$on('viewer-reset-isolate', async () => {
+  await viewerUtils.waitInitialized()
+  viewerUtils.showAll();
+});
+
+EventBus.$on('viewer-isolate', async (items, relation) => {
+  await viewerUtils.waitInitialized()
+  viewerUtils.showAll()
+  let list = [];
+  await Promise.all(items.map( async (item) => {
+    const test = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true)
+    list = list.concat(test);
+  }));
+  viewerUtils.isolateObjects(list);
+});
+
+EventBus.$on('viewer-reset-select', async () => {
+  await viewerUtils.waitInitialized()
+  viewerUtils.clearSelection();
 });
 
 EventBus.$on('viewer-select', async (root, relation) => {
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
+  await viewerUtils.waitInitialized()
+  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: root.serverId }, relation);
   viewerUtils.selectObjects(items);
 });
 
-EventBus.$on('viewer-reset-color', () => {
+EventBus.$on('viewer-reset-color', async () => {
+  await viewerUtils.waitInitialized()
   viewerUtils.restoreColorThemingItems();
 });
 
 EventBus.$on('viewer-color', async (items, relation) => {
+  await viewerUtils.waitInitialized()
   viewerUtils.restoreColorThemingItems()
   items.map( async (item) => {
     const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true);

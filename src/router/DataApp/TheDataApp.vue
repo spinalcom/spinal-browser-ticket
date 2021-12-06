@@ -32,19 +32,19 @@ with this file. If not, see
       >
       </el-button>
     </el-tooltip>
+
     <div class="spl-button-bar">
       <el-tooltip
         :disabled="!isNode"
         :content="$t('spinal-twin.Isolate')"
       >
-        <el-button
+        <button-switch
+          @click.native="isolateAll"
           :disabled="!isNode"
-          @click.stop="isolateAll()"
-          circle
+          :active="isolated"
           class="spl-el-button"
           icon="el-icon-aim"
-        >
-        </el-button>
+        ></button-switch>
       </el-tooltip>
       <el-tooltip
         :disabled="!isNode"
@@ -73,6 +73,7 @@ with this file. If not, see
         </el-button>
       </el-tooltip>
     </div>
+
     <tab-manager
       :tabsprop="tabs"
       ref="tab-manager"
@@ -89,12 +90,19 @@ import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
-
+import { getSurfaceFromNode } from "./DataTools.ts";
+import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
 import {
+  BUILDING_TYPE,
+  FLOOR_TYPE,
+  GEO_RELATIONS,
   ROOM_RELATION,
+  ROOM_TYPE,
+  SPATIAL_CONTEXT_TYPE,
 } from '../../constants';
 
 // Generic components
+import ButtonSwitch from "../../compoments/ButtonSwitch.vue";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import TabManager from "../../compoments/TabManager/TabManager.vue";
 import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
@@ -104,12 +112,12 @@ import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTic
 import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue";
 import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue";
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
-
-// Specific components
 import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
+import { CONTEXT_TYPE } from 'spinal-env-viewer-task-service';
 
 const VIEW_KEY = "DataApp";
+
 // Component exports
 export default {
   name: "TheDataApp",
@@ -122,14 +130,17 @@ export default {
     NodeNotesMessage,
     NodeCalendar,
     CategoryAttribute,
+    ButtonSwitch,
   },
 
   data() {
     return {
       viewKey: VIEW_KEY,
-      items: false,
+      items: {},
       currentView: false,
       isNode: false,
+      isolated: false,
+      relations: [],
       tabs: [
         {
           name: "node-type.context",
@@ -138,7 +149,8 @@ export default {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
-            relation: ROOM_RELATION,
+            relation: [],
+            depth: 6,
           },
           ignore: false,
         },
@@ -183,35 +195,36 @@ export default {
           ignore: true,
         },
 
+        // {
+        //   name: "spinal-twin.Calendar",
+        //   content: NodeCalendar,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
+
         {
-          name: "spinal-twin.Calendar",
-          content: NodeCalendar,
+          name: "spinal-twin.Endpoints",
+          content: InsightEndpoint,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+            context: false,
+          },
+          ignore: true,
+        },
+
+        {
+          name: "spinal-twin.ControlEndpoints",
+          content: InsightControlEndpoint,
           props: {
             viewKey: VIEW_KEY,
             view: false,
           },
           ignore: true,
         },
-
-        // {
-        //   name: "spinal-twin.Endpoints",
-        //   content: InsightEndpoint,
-        //   props: {
-        //     viewKey: VIEW_KEY,
-        //     view: false,
-        //   },
-        //   ignore: true,
-        // },
-
-        // {
-        //   name: "spinal-twin.ControlEndpoints",
-        //   content: InsightControlEndpoint,
-        //   props: {
-        //     viewKey: VIEW_KEY,
-        //     view: false,
-        //   },
-        //   ignore: true,
-        // },
       ],
     };
   },
@@ -222,16 +235,18 @@ export default {
       graph,
       "geographicContext"
     );
-    // Get the ViewManager instance for the TicketCenter viewKey and initializes it
     await ViewManager.getInstance(this.viewKey).init(
       this.onViewChange.bind(this),
       0
     );
+    this.relations = GEO_RELATIONS;
+    this.relations.push("hasReferenceObject.ROOM");
+    this.tabs[0].props.relations = this.relations;
   },
 
   methods: {
     async onViewChange(view) {
-
+      
       // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
@@ -252,24 +267,34 @@ export default {
 
       // Get children
       for (const [nodeType, items] of mapItems) {
-        const cols = new Set();
-        for (const item of items) {
-          if (item.children) {
-            for (const [childTypes] of item.children) {
-              cols.add(childTypes);
-            }
-          }
-        }
-        this.items = { nodeType, items, cols: Array.from(cols) };
+        this.items.nodeType = nodeType
+        this.items.items = items;
       }
+
+      await Promise.all(this.items.items.map(async function (item) {
+        item["Area"] = await getSurfaceFromNode(item);
+      }));
       this.currentView = view;
+      this.setColumns(view);
       
+      if (this.isolated == true)
+      {
+        viewerState.changeIsolation();
+        EventBus.$emit("viewer-reset-isolate");
+        this.isolated = false;
+      }
+
       // Update tabs
       this.tabs[0].props.items = this.items;
+      this.tabs[0].props.cols = this.items.cols;
       this.updateNames();
       for (let tab of this.tabs)
       {
         tab.props.view = this.currentView;
+        if (tab.name == "spinal-twin.Endpoints")
+        {
+          tab.props["context"] = this.contextServId
+        }
       }
       if (this.isNode)
       {
@@ -287,25 +312,56 @@ export default {
       }
     },
 
+    setColumns(view) {
+      let node = FileSystem._objects[view.serverId];
+      this.items.cols = [ ];
+      if (!node) {
+        this.items.cols = [ "BuildingCount", "Area" ];
+        return;
+      }
+      let nodeType = node.info.type.get();
+      switch (nodeType)
+      {
+        case SPATIAL_CONTEXT_TYPE:
+          this.items.cols = [ "FloorCount", "Area" ];
+          break;
+        case BUILDING_TYPE:
+          this.items.cols = [ "RoomCount", "Area" ];
+          break;
+        case FLOOR_TYPE:
+          this.items.cols = [ "EquipmentCount", "Area" ];
+          break;
+        default:
+          this.items.cols = [ ];
+      }
+    },
+
     updateNames()
     {
       this.tabs[0].name = `node-type.${this.items.nodeType}`;
     },
 
     popView() {
-      ViewManager.getInstance(this.viewKey).pop()
+      ViewManager.getInstance(this.viewKey).pop();
     },
 
     zoomOn() {
-      EventBus.$emit("viewer-zoom", { server_id: this.currentView.serverId }, ROOM_RELATION);
+      EventBus.$emit("viewer-zoom", this.currentView, this.relations);
     },
 
     isolateAll() {
-      EventBus.$emit("viewer-isolate", { server_id: this.currentView.serverId }, ROOM_RELATION);
+      viewerState.changeIsolation();
+      EventBus.$emit("viewer-reset-isolate");
+      this.isolated = false;
+      if (viewerState.isolated())
+      {
+        this.isolated = true;
+        EventBus.$emit("viewer-isolate", [ this.currentView ], this.relations);
+      }
     },
 
     selectInView() {
-      EventBus.$emit("viewer-select", { server_id: this.currentView.serverId }, ROOM_RELATION);
+      EventBus.$emit("viewer-select", this.currentView, this.relations);
     },
 
     formatData() {
@@ -323,7 +379,8 @@ export default {
             resItem.haveChild = true;
           }
         }
-        else if (FileSystem._objects[item.serverId] !== undefined) {
+        else if (
+          [item.serverId] !== undefined) {
           let thisnode = FileSystem._objects[item.serverId]
           if (thisnode.children.PtrLst !== undefined) {
             for (const name of thisnode.children.PtrLst._attribute_names){
@@ -334,7 +391,7 @@ export default {
         }
         res.push(resItem);
       }
-      return res
+      return res;
     },
     
     exportToExcel() {
@@ -369,17 +426,6 @@ export default {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
-
-    // Color() {
-    //   let items = this.items.items.map(item => {
-    //     return { server_id: item.serverId, color: item.getColor() };
-    //   });
-    //   EventBus.$emit("equipment-color-all", items, { server_id: this.currentView.serverId });
-    // },
-
-    // ShowAll() {
-    //   EventBus.$emit("equipment-show-all");
-    // },
   },
 };
 </script>
@@ -388,6 +434,7 @@ export default {
 .data-app {
   overflow: hidden;
 }
+
 .tab-manager {
   margin: 10px 10px 10px 0px;
   height: calc(100% - 120px);

@@ -24,17 +24,15 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-container
-      v-if="selected"
-    >
+    <el-container v-if="selected">
       <node-tickets-selected
         :selected="selected"
         :stepping="Properties.stepping"
         @update="update(Properties.view.serverId, true)"
         @back="selected = false"
-      >
-      </node-tickets-selected>
+      ></node-tickets-selected>
     </el-container>
+
     <el-container
       v-else-if="addingTicket"
     >
@@ -44,9 +42,9 @@ with this file. If not, see
         :active.sync="addingTicket"
         @close="addingTicket = false"
         @update="update(Properties.view.serverId)"
-      >
-      </ticket-declaration-form>
+      ></ticket-declaration-form>
     </el-container>
+
     <el-container v-if="!selected && !addingTicket">
       <el-header>
         <el-tooltip
@@ -61,6 +59,7 @@ with this file. If not, see
           ></el-button>
         </el-tooltip>
       </el-header>
+
       <el-main>
         <node-tickets-list
           v-if="tickets"
@@ -75,15 +74,12 @@ with this file. If not, see
 </template>
 
 <script>
-// imports
 import moment from "moment";
 import { spinalServiceTicket } from "spinal-service-ticket"
 import { LOGS_EVENTS } from "spinal-service-ticket/src/Constants"
 import { FileSystem } from 'spinal-core-connectorjs_type'
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import NodeTicketsList from './NodeTicketsList.vue';
-import spinalCore from 'spinal-core-connectorjs';
 import NodeTicketsSelected from './NodeTicketsSelected.vue';
 import TicketDeclarationForm from './TicketDeclarationForm.vue';
 import { getTicketDescription } from './Ticket'
@@ -100,7 +96,6 @@ export default {
 
   data() {
     return {
-      // properties
       ctxNode: false,
       tickets: false,
       selected: false,
@@ -146,20 +141,20 @@ export default {
     async update(id, keepSelected = false)
     {
       // update tab infos from current node
-      console.debug("TICKET start test")
+      console.debug("TICKET start");
       // this.ctxNode = SpinalGraphService.getNode(id);
       this.ctxNode = FileSystem._objects[id];
-      console.debug("TICKET end" + typeof this.ctxNode)
-      const node = await SpinalGraphService.findNode(this.ctxNode.info.id.get())
+      console.debug("TICKET end" + typeof this.ctxNode);
+      const node = await SpinalGraphService.findNode(this.ctxNode.info.id.get());
 
-      let ticketList = await spinalServiceTicket.getTicketsFromNode(node.id.get())
-      this.tickets = []
+      let ticketList = await spinalServiceTicket.getTicketsFromNode(node.id.get());
+      this.tickets = [];
       let arrayId = 0;
       for (let ticket of ticketList)
       {
         let ticketDesc = await getTicketDescription(ticket);
         ticketDesc.id = arrayId;
-        ticketDesc.creation = this.elapsedTimeFormat(ticket.creationDate),
+        ticketDesc.creation = this.elapsedTimeFormat(ticket.creationDate);
         ticketDesc.priority = this.$t(ticketDesc.priority);
         this.tickets.push(ticketDesc);
         arrayId += 1;
@@ -212,11 +207,6 @@ export default {
       }
       await spinalServiceTicket.ArchiveTickets(contextId, realTicket.processId, realTicket.id, this.userInfo);
       this.update(this.Properties.view.serverId);
-    },
-
-    addTicket()
-    {
-      console.debug("TODO : add ticket");
     },
 
     async debug(what) {

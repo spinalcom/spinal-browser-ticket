@@ -49,34 +49,18 @@ with this file. If not, see
       <el-table-column
           label="Actions"
           fixed="right"
-          width=120>
+          width=80>
         <div slot-scope="scope">
           <el-tooltip :content="$t('spinal-twin.TicketInspect')">
-              <el-button
-                @click="select(scope.row)"
-                icon="el-icon-search"
-                circle
-              ></el-button>
-          </el-tooltip>
-          <el-tooltip :content="$t('spinal-twin.TicketArchive')">
-              <el-button
-                @click="archive(scope.row)"
-                icon="el-icon-delete"
-                circle
-                type=danger
-              ></el-button>
+            <el-button
+              @click="select(scope.row)"
+              icon="el-icon-search"
+              circle
+            ></el-button>
           </el-tooltip>
         </div>
       </el-table-column>
     </el-table>
-    <el-button
-      v-on:click.native="debug(tickets)"
-      class="spl-input-button"
-      icon="el-icon-search"
-      type="primary"
-      size="small"
-      circle
-    ></el-button>
   </el-main>
 </template>
 
@@ -96,11 +80,7 @@ export default {
   },
   methods: {
     debug(item) {
-      console.debug(item);
-    },
-
-    archive(ticket) {
-      this.$emit("archive", ticket);
+      console.debug("Debugging", item);
     },
 
     select(ticket) {

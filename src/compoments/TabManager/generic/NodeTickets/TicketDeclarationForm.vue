@@ -29,18 +29,18 @@ with this file. If not, see
         {{ $t('spinal-twin.TicketDeclare') }}
       </h2>
     </el-header>
+
     <el-main>
       <el-form
         ref="TicketDeclarationForm"
         :model="newTicket"
         label-width="80px"
       >
-
         <el-form-item label="Context">
           <el-select
             v-model="newTicket.context"
             placeholder="placeholder"
-            @change="getProcesses()"
+            @change="setProcesses()"
           >
             <el-option
               v-for="context in contexts"
@@ -50,6 +50,7 @@ with this file. If not, see
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item
           v-show="processes"
           label="Process"
@@ -57,7 +58,7 @@ with this file. If not, see
           <el-select
             v-model="newTicket.process"
             placeholder="placeholder"
-            @change="getIncidents()"
+            @change="setIncidents()"
           >
             <el-option
               v-for="process in processes"
@@ -67,24 +68,25 @@ with this file. If not, see
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item
           v-show="incidents"
           label="Incident"
         >
-          <el-select
+          <el-autocomplete
             v-model="newTicket.incident"
+            :fetch-suggestions="suggestIncidents"
+            @select="selected"
             placeholder="placeholder"
           >
-            <el-option
-              v-for="incident in incidents"
-              :key="incident.id"
-              :label="incident.name"
-              :value="incident"
-            ></el-option>
-          </el-select>
+            <div slot-scope="{ item }">
+              <div>{{ item }}</div>
+            </div>
+          </el-autocomplete>
         </el-form-item>
+
         <el-form-item
-          v-show="newTicket.incident != ''"
+          v-show="newTicket.incident != '' && newTicket.incident != undefined"
           :label="$t('spinal-twin.Priority')"
         >
           <el-radio-group v-model="newTicket.priority">
@@ -93,8 +95,15 @@ with this file. If not, see
             <el-radio label="Urgent"></el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item
+          v-show="newTicket.incident != '' && newTicket.incident != undefined"
+          :label="$t('spinal-twin.Description')"
+        >
+          <el-input v-model="newTicket.description" placeholder="Placeholder"></el-input>
+        </el-form-item>
       </el-form>
     </el-main>
+
     <el-footer style="position: absolute; bottom: 50px">
       <el-button @click="close()">
         {{ $t('Cancel') }}
@@ -112,6 +121,8 @@ with this file. If not, see
 
 <script>
 import { spinalServiceTicket } from "spinal-service-ticket"
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 export default {
   name: "TicketDeclarationForm",
@@ -131,7 +142,7 @@ export default {
     user()
     {
       return {
-        name: "admin",
+        username: "admin",
         id: FileSystem._userid
       };
     }
@@ -144,6 +155,7 @@ export default {
         process: "",
         incident: "",
         priority: "",
+        description: "",
       },
       contexts: false,
       processes: false,
@@ -156,14 +168,30 @@ export default {
   },
 
   methods: {
-    async getProcesses()
+    async setProcesses()
     {
       this.processes = await spinalServiceTicket.getAllProcess(this.newTicket.context);
     },
 
-    async getIncidents()
+    async setIncidents()
     {
       this.incidents = await spinalServiceTicket.getCommonIncident(this.newTicket.process);
+    },
+
+    async suggestIncidents(query = "", callback)
+    {
+      let res = [];
+      for (const incident of this.incidents) {
+        if (incident.name.toLowerCase().includes(query.toLowerCase())) {
+          res.push(incident.name);
+        }
+      }
+      callback(res);
+    },
+
+    selected(item)
+    {
+      this.newTicket.incident = item;
     },
 
     close()
@@ -175,7 +203,7 @@ export default {
     {
       let infos = {
         processId: this.newTicket.process,
-        name: this.newTicket.incident.name,
+        name: this.newTicket.incident,
         user: this.user,
       }
       switch (this.newTicket.priority)
@@ -192,9 +220,18 @@ export default {
         default:
           infos.priority = 0;
       }
-      await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
+      let ticketId = await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
+      if (this.newTicket.description != undefined && this.newTicket.description != "") {
+        let ticketnode = await SpinalGraphService.getRealNode(ticketId);
+        await serviceDocumentation.twinAddNote(ticketnode, this.user, this.newTicket.description, "text");
+      }
       this.$emit("update");
     },
+
+    debug(item)
+    {
+      console.debug(item);
+    }
   },
 }
 </script>

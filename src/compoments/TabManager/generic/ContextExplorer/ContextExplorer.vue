@@ -19,25 +19,22 @@ with this file. If not, see
 -->
 
 <template>
-  <div
-    style="height:100%"
-  >
+  <div style="height:100%">
     <div class="spl-button-bar">
-      <el-button
-        @click.stop="Color()"
+      <button-switch
+        :active="colored"
+        @click.native="Color"
         class="spl-el-button"
         icon="el-icon-picture-outline-round"
-        circle
-      >
-      </el-button>
+      ></button-switch>
       <el-button
         @click.stop="exportToExcel()"
         class="spl-el-button"
         icon="el-icon-download"
         circle
-      >
-      </el-button>
+      ></el-button>
     </div>
+    
     <div
       v-if="Properties.items !== false"
       style="height:calc(100% - 52px)"
@@ -48,10 +45,10 @@ with this file. If not, see
         :items="itemsComputed"
         :columns="cols"
         :relation="Properties.relation"
-        :colored="colored"
-        style="height:100%"
+        :depth="Properties.depth"
         @select="Select"
         @isolate="Isolate"
+        style="height:100%"
       >
       </context-explorer-node-table>
     </div>
@@ -59,22 +56,24 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../../services/ViewManager/ViewManager";
-// import { spinalBackEnd } from "../../../services/spinalBackend";
-import { AppBack } from "../../../../services/backend/AppBack";
-import BackendInitializer from "../../../../services/BackendInitializer";
+// Tools
 import { EventBus } from "../../../../services/event";
-import ColorState from "./colorState"
+import { viewerState } from "./viewerState"
 
+// Components
+import ButtonSwitch from '../../../../compoments/ButtonSwitch'
 import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
 
 export default {
   name: "ContextExplorer",
-  components: { ContextExplorerNodeTable },
+  components: {
+    ContextExplorerNodeTable,
+    ButtonSwitch
+  },
   props: {
     Properties: {
-      required: true,
       type: Object,
+      required: true,
       validator: function(value) {
         if (!value.viewKey instanceof String) {
           return false;
@@ -87,8 +86,7 @@ export default {
   data() {
     return {
       items: false,
-      contextServId: 0,
-      currentView: null,
+      colored: false,
     };
   },
 
@@ -103,20 +101,23 @@ export default {
       return [];
     },
     cols() {
-      if (this.Properties && this.Properties.cols) return this.Properties.cols;
+      if (this.Properties && this.Properties.cols)
+        return this.Properties.cols;
       return [];
     },
-    colored() {
-      return ColorState.colored();
-    }
   },
 
   methods: {
     Color() {
-      ColorState.changeState();
-      EventBus.$emit("viewer-reset-color")
-      if (ColorState.colored())
-        this.$refs["Explorer-table"].Color(this.Properties.relation);
+      viewerState.changeColoration();
+      EventBus.$emit("viewer-reset-color");
+      this.colored = false;
+      this.$refs["Explorer-table"].isColored = false;
+      if (viewerState.colored())
+      {
+        this.colored = true;
+        this.$refs["Explorer-table"].Color();
+      }
     },
 
     Select(item)
@@ -126,7 +127,10 @@ export default {
 
     Isolate(item)
     {
-      EventBus.$emit("viewer-isolate", item, this.Properties.relation);
+      viewerState.changeIsolation();
+      EventBus.$emit("viewer-reset-isolate");
+      if (viewerState.isolated())
+        this.$refs["Explorer-table"].Isolate();
     },
 
     exportToExcel() {
@@ -153,5 +157,10 @@ export default {
 
 .spinal-height-control {
   height: auto;
+}
+
+.primary {
+  background: 'blue';
+  color: blue;
 }
 </style>

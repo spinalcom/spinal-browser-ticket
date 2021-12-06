@@ -1,24 +1,15 @@
 <template>
-   <!-- <div class="div__content" >
-      <div v-tooltip="name">
+   <el-card class="control-endpoint-box">
+      <h5>
          {{ name }}
-      </div>
-      <div v-tooltip="`${value} ${unit}`">
-         {{ value | filterValue }} {{ unit }}
-      </div>
-   </div> -->
-   <el-card>
-      <div slot="name">
-         {{ name }}
-      </div>
+      </h5>
       <span>
-         {{ endpoint }}
+         {{ value | filterValue }} {{ unit }}
       </span>
    </el-card>
 </template>
 
 <script>
-
 export default {
    name: "InsightControlEndpointBox",
    props: {
@@ -52,7 +43,7 @@ export default {
       filterValue(value) {
          if (typeof value == "string" && value != "") {
             return value;
-            }
+         }
          else if (typeof value !== "undefined") {
             const isBoolean = typeof value === "boolean";
             if (isBoolean) return value.toString().toUpperCase();
@@ -60,7 +51,7 @@ export default {
             return value.toFixed(2);
          }
          else
-         return "NULL";
+            return "NULL";
       },
    },
 };
@@ -68,7 +59,9 @@ export default {
 </script>
 
 <style scoped>
-
-
-
+.control-endpoint-box {
+   width: 30%;
+   margin: 10px;
+   height: 10%;
+}
 </style>

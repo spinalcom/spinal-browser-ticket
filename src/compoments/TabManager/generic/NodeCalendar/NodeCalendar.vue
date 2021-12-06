@@ -24,9 +24,7 @@ with this file. If not, see
 
 <template>
   <el-container>
-    <el-header
-        v-if="!addingEvent && !selectedEvent"
-      >
+    <el-header v-if="!addingEvent && !selectedEvent">
       <el-tooltip :content="$t('spinal-twin.EventAdd')"></el-tooltip>
       <el-button
         icon="el-icon-circle-plus-outline"
@@ -49,9 +47,7 @@ with this file. If not, see
       @close="selectedEvent = false"
       @update="update(Properties.view.serverId)"
     ></node-calendar-event-details>
-    <el-main
-      v-else-if="ctxNode && events"
-    >
+    <el-main v-else-if="ctxNode && events">
       <node-calendar-table
         :events="events"
         @select="select"
@@ -86,7 +82,6 @@ export default {
       addingEvent: false,
       selectedEvent: false,
       events: false,
-      // properties
     };
   },
 
@@ -127,7 +122,6 @@ export default {
             class: event.groupId,
             id: event.id,
             event: event,
-            // backgroundColor : group && group.color
           };
         });
       });
@@ -136,10 +130,9 @@ export default {
     async update(id)
     {
       // update tab infos from current node
-      console.debug("CAL start")
-      // this.ctxNode = await SpinalGraphService.getInfo(id);
+      console.debug("CAL start");
       this.ctxNode = FileSystem._objects[id];
-      console.debug("CAL end")
+      console.debug("CAL end");
       await this.loadCalendar();
       this.addingEvent = false;
       this.selectedEvent = false;
@@ -154,7 +147,6 @@ export default {
     select(event)
     {
       this.selectedEvent = event;
-      console.debug(event);
     },
 
     async debug(what) {
