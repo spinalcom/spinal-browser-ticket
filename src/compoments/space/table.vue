@@ -213,7 +213,6 @@ export default {
 .spacecon {
   width: 100%;
   height: 100%;
-  padding: 5px 5px 5px 5px;
   overflow: hidden;
 }
 
@@ -258,6 +257,7 @@ export default {
   width: 100%;
   padding: 5px 10px 10px 5px;
   background-color: #fdfdfd;
+  height: calc(100% - 50px);
 }
 
 .spinal-space-header {

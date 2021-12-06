@@ -32,6 +32,7 @@ type RotateToFace = "top" | 'front' | "right" | "left" | "back" | 'bottom' |
   "back,top,left" | "front,bottom,right" | "back,bottom,right" |
   "front,bottom,left" | "back,bottom,left"
 
+
 export class ViewerUtils {
   elementColored: Set<{ model, dbIds: number[] }> = new Set();
   restoreColorMaterialBinded: () => void;
@@ -40,15 +41,36 @@ export class ViewerUtils {
   modelMap: Map<any, Map<string, Set<number>>> = new Map()
   initialized = q.defer();
   viewer
-
+  cube;
 
   constructor() {
     this.restoreColorMaterialBinded = this._restoreColorMaterial.bind(this);
   }
   initViewer(viewer) {
     this.viewer = viewer;
-    this.initialized.resolve();
+
+    viewer.loadExtension('Autodesk.ViewCubeUi').then((cube) => {
+      this.cube = cube
+      this.initialized.resolve();
+    })
+
+
   }
+
+  waitLoadModels(viewer): Promise<void> {
+    let nbOfModels = Object.keys(spinal.SpinalForgeViewer.viewerManager.models).length
+    return new Promise((resolve) => {
+      const fn = (e) => {
+        nbOfModels -= 1;
+        if (nbOfModels <= 1) {
+          viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+          resolve();
+        }
+      }
+      viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+    })
+  }
+
 
   /**
    * @returns Promise<void>
@@ -71,7 +93,12 @@ export class ViewerUtils {
    */
   rotateTo(face: RotateToFace) {
     if (!this.viewer) return;
-    return rotateTo.call(this.viewer.viewCubeUi.cube, this.viewer, face);
+    return this.cube.setViewCube(face);
+  }
+
+  setCubeVisible(value: boolean) {
+    if (!this.viewer) return;
+    return this.cube.setVisible(value);
   }
 
   /**
@@ -147,6 +174,7 @@ export class ViewerUtils {
 
   convertHewToRGB(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    console.log(result);
     return result
       ? {
         r: parseInt(result[1], 16),
@@ -158,8 +186,8 @@ export class ViewerUtils {
 
   colorThemingItems(model, color: string, dbIds: number[]) {
     this.elementColored.add({ model, dbIds });
+    console.log(color);
     const _color = this.convertHewToRGB(color);
-
     dbIds.forEach(dbId => {
       model.setThemingColor(
         dbId,

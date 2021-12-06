@@ -23,8 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div id="autodesk_forge_viewer"
-       class="viewerContainer">
+  <div id="autodesk_forge_viewer" class="viewerContainer">
     <heatmap-legend></heatmap-legend>
   </div>
 </template>
@@ -33,15 +32,21 @@ with this file. If not, see
 import { ForgeViewer } from "spinal-forge-viewer";
 import { spinalBackEnd } from "../../../services/spinalBackend";
 import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
-import { EventBus } from "../../../services/event";
+// import { EventBus } from "../../../services/event";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { DISABLE_VIEWER } from "../../../constants";
 
-import HeatmapLegendContainer from "../../heatmap/heatmap-legends/container.vue";
+import HeatmapLegendContainer from "../../insight/heatmap-legends/container.vue";
 
 import "spinal-env-viewer-plugin-forge";
 export default {
   name: "AppViewer",
+  props: {
+    // : { required: false, type: "Boolean" }
+  },
+  components: {
+    "heatmap-legend": HeatmapLegendContainer
+  },
   data() {
     this.elementColored = new Map();
     return {
@@ -51,6 +56,7 @@ export default {
       materials: {}
     };
   },
+<<<<<<< HEAD
   components: {
     "heatmap-legend": HeatmapLegendContainer
   },
@@ -73,6 +79,29 @@ export default {
         this.isoLate(ids);
       }
     });
+=======
+  mounted() {
+    // EventBus.$on("see", data => {
+    //   console.log("on see", data);
+    //   this.isoLate(data.ids);
+    //   this.restoreAllColor();
+    //   this.colorsRooms(data.ids, data.color, data.id);
+    // });
+
+    // EventBus.$on("seeAll", data => {
+    //   if (this.allElementAreColored(data)) {
+    //     this.restoreAllColor();
+    //   } else {
+    //     let ids = [];
+    //     this.restoreAllColor();
+    //     data.forEach(element => {
+    //       ids.push(...element.ids);
+    //       this.colorsRooms(element.ids, element.color, element.id);
+    //     });
+    //     this.isoLate(ids);
+    //   }
+    // });
+>>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
     return this.createViewer();
   },
   methods: {
@@ -80,10 +109,10 @@ export default {
       if (this.viewer) {
         if (toShowUI === false) {
           if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("none");
-          if (this.viewer.viewCubeUi) this.viewer.viewCubeUi.setVisible(false);
+          viewerUtils.setCubeVisible(false);
         } else {
           if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("");
-          if (this.viewer.viewCubeUi) this.viewer.viewCubeUi.setVisible(true);
+          viewerUtils.setCubeVisible(true);
         }
         setTimeout(this.viewer.resize.bind(this.viewer), 400);
       }
@@ -91,20 +120,33 @@ export default {
     async createViewer() {
       const container = document.getElementById("autodesk_forge_viewer");
       this.forgeViewer = new ForgeViewer(container, false);
-      await this.forgeViewer.start(
-        "/models/Resource/3D View/{3D} 341878/{3D}.svf",
-        true
-      );
+      await this.forgeViewer.start();
+      //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
+      //   true
       this.viewer = this.forgeViewer.viewer;
       await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
       const scenes = await spinalBackEnd.viewerBack.getScenes();
       SpinalGraphService._addNode(scenes[0]);
       if (!DISABLE_VIEWER) {
-        await window.spinal.SpinalForgeViewer.loadModelFromNode(
-          scenes[0].info.id.get()
-        );
+        let found = false;
+        for (const scene of scenes) {
+          SpinalGraphService._addNode(scene);
+          if (scene.info.autoLoad?.get() === true) {
+            await window.spinal.SpinalForgeViewer.loadModelFromNode(
+              scene.info.id.get()
+            );
+            found = true;
+            break;
+          }
+        }
+        if (!found && scenes.length > 0)
+          await window.spinal.SpinalForgeViewer.loadModelFromNode(
+            scenes[0].info.id.get()
+          );
       }
+      this.$emit("onModelLoadEnd");
       await spinalBackEnd.waitInit();
+<<<<<<< HEAD
       this.viewer.fitToView();
       viewerUtils.initViewer(this.viewer);
       this.elementColored.clear();
@@ -145,6 +187,14 @@ export default {
       }
       return true;
     },
+=======
+      // const scenes = await spinalBackEnd.viewerBack.getScenes();
+      // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
+      this.viewer.fitToView();
+      viewerUtils.initViewer(this.viewer);
+    },
+
+>>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
     colorsRooms(roomsList, argColor, id) {
       this.elementColored.set(id, roomsList);
       const color = this.convertHewToRGB(argColor);
@@ -190,17 +240,41 @@ export default {
       this.viewer.impl.invalidate(true, true, true);
     },
 
-    isoLate(roomsList) {
-      let dbIds = roomsList.map(el => el.dbid);
-      if (roomsList.length === 0) {
-        this.viewer.isolate(dbIds, this.viewer.model);
-      } else {
-        let model = window.spinal.BimObjectService.getModelByBimfile(
-          roomsList[0].bimFileId
-        );
-
-        this.viewer.isolate(dbIds, model);
+    pushToModel(targetArray, ids, model) {
+      for (const obj of targetArray) {
+        if (obj.model === model) {
+          for (const id of ids) {
+            obj.selection.add(id);
+          }
+          return;
+        }
       }
+
+      const idSet = new Set();
+      for (const id of ids) {
+        idSet.add(id);
+      }
+      targetArray.push({
+        model,
+        selection: idSet
+      });
+    },
+
+    convertForIsolate(roomLst) {
+      const data = [];
+      for (const room of roomLst) {
+        let model = window.spinal.BimObjectService.getModelByBimfile(
+          room.bimFileId
+        );
+        this.pushToModel(data, [room.dbid], model);
+      }
+      return data.map(it => {
+        return { model: it.model, selection: Array.from(it.selection) };
+      });
+    },
+
+    isoLate(roomsList) {
+      viewerUtils.isolateObjects(this.convertForIsolate(roomsList));
     },
 
     convertHewToRGB(hex) {

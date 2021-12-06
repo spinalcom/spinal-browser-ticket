@@ -25,82 +25,88 @@ with this file. If not, see
 <template>
   <div class="notesContainer">
     <div class="form">
-
-      <el-container id="myList"
-                    class="messages md-scrollbar">
+      <el-container id="myList" class="messages md-scrollbar">
         <ul class="div_messages">
-          <message-component v-for="(note,index) in notesDisplayList"
-                             :key="index"
-                             :date="note.date"
-                             :username="note.username"
-                             :message="note.message"
-                             :type="note.type"
-                             :file="note.file"
-                             :viewPoint="note.viewPoint"></message-component>
+          <message-component
+            v-for="(note, index) in notesDisplayList"
+            :key="index"
+            :date="note.date"
+            :username="note.username"
+            :message="note.message"
+            :type="note.type"
+            :file="note.file"
+            :viewPoint="note.viewPoint"
+          ></message-component>
         </ul>
-
       </el-container>
 
-      <form @submit.prevent="addNote"
-            class="noteForm">
-
+      <form @submit.prevent="addNote" class="noteForm">
         <el-dropdown class="dropdown-class">
           <el-button type="primary">
             Actions<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
-          <el-dropdown-menu class="dropdown-menu-class"
-                            slot="dropdown">
+          <el-dropdown-menu class="dropdown-menu-class" slot="dropdown">
             <el-dropdown-item>
-              <el-button type="primary"
-                         @click="saveViewPoint"
-                         :title="'save point of view'"
-                         icon="el-icon-position">
+              <el-button
+                type="primary"
+                @click="saveViewPoint"
+                :title="'save point of view'"
+                icon="el-icon-position"
+              >
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
-              <el-button type="primary"
-                         @click="TakeScreenShot"
-                         :title="'Take a screenshot'"
-                         icon="el-icon-camera-solid">
+              <el-button
+                type="primary"
+                @click="TakeScreenShot"
+                :title="'Take a screenshot'"
+                icon="el-icon-camera-solid"
+              >
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
-              <el-button type="primary"
-                         @click="addPJ"
-                         :title="'Add Attachment'"
-                         icon="el-icon-paperclip">
+              <el-button
+                type="primary"
+                @click="addPJ"
+                :title="'Add Attachment'"
+                icon="el-icon-paperclip"
+              >
               </el-button>
             </el-dropdown-item>
-
           </el-dropdown-menu>
         </el-dropdown>
 
         <div class="messageForm">
-          <el-container class="pjDiv md-scrollbar"
-                        v-if="messages.pj.length > 0">
-
-            <attachment-component v-for="(file,index) in messages.pj"
-                                  :key="index"
-                                  :file="file"
-                                  @remove="removePJ">{{file.name}}
+          <el-container
+            class="pjDiv md-scrollbar"
+            v-if="messages.pj.length > 0"
+          >
+            <attachment-component
+              v-for="(file, index) in messages.pj"
+              :key="index"
+              :file="file"
+              @remove="removePJ"
+              >{{ file.name }}
             </attachment-component>
           </el-container>
-          <el-input class="myField md-inline"
-                    placeholder="message"
-                    v-model="messages.messageUser">
+          <el-input
+            class="myField md-inline"
+            placeholder="message"
+            v-model="messages.messageUser"
+          >
           </el-input>
         </div>
 
         <div class="sendBtn">
-          <el-button type="primary"
-                     @click.prevent="addNote"
-                     icon="el-icon-s-promotion">
+          <el-button
+            type="primary"
+            @click.prevent="addNote"
+            icon="el-icon-s-promotion"
+          >
             Send
           </el-button>
         </div>
-
       </form>
-
     </div>
   </div>
 </template>
@@ -111,7 +117,7 @@ import { MESSAGE_TYPES } from "spinal-models-documentation";
 
 import {
   SpinalNode,
-  SpinalGraphService
+  SpinalGraphService,
 } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
@@ -126,37 +132,37 @@ export default {
   props: {
     nodeInfo: {},
     noteContextSelected: {
-      default: () => ({})
+      default: () => ({}),
     },
     noteCategorySelected: {
-      default: () => ({})
+      default: () => ({}),
     },
     noteGroupSelected: {
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
 
   components: {
     "message-component": messageVue,
-    "attachment-component": attachmentVue
+    "attachment-component": attachmentVue,
   },
 
   data() {
     this.userConnected = {
       username: "admin",
-      userId: FileSystem._user_id
+      userId: FileSystem._user_id,
     };
     return {
       messages: {
         messageUser: "",
-        pj: []
+        pj: [],
       },
       // messageUser: "",
       messageUserEdit: "",
       notesDisplayList: [],
       editNodePopup: false,
       selectedNote: undefined,
-      scrollToEnd: false
+      scrollToEnd: false,
     };
   },
 
@@ -180,7 +186,7 @@ export default {
             file: note.element.file,
             selectedNode: note.selectedNode,
             element: note.element,
-            viewPoint: note.element.viewPoint
+            viewPoint: note.element.viewPoint,
           };
           this.notesDisplayList.push(obj);
           i++;
@@ -278,7 +284,7 @@ export default {
 
       input.addEventListener(
         "change",
-        event => {
+        (event) => {
           const files = event.target.files;
 
           let filelist = [];
@@ -288,7 +294,7 @@ export default {
 
           filelist.push(...this.messages.pj);
 
-          const sizes = filelist.map(el => el.size);
+          const sizes = filelist.map((el) => el.size);
 
           const filesSize = sizes.reduce((a, b) => a + b);
 
@@ -306,7 +312,7 @@ export default {
     },
 
     removePJ(file) {
-      this.messages.pj = this.messages.pj.filter(el => el.name !== file.name);
+      this.messages.pj = this.messages.pj.filter((el) => el.name !== file.name);
     },
 
     async TakeScreenShot() {
@@ -319,8 +325,8 @@ export default {
         window.spinal.SpinalForgeViewer.viewerManager.viewer.getScreenShot(
           0,
           0,
-          async url => {
-            let blob = await fetch(url).then(r => r.blob());
+          async (url) => {
+            let blob = await fetch(url).then((r) => r.blob());
 
             const name = this.nodeInfo.selectedNote
               ? this.nodeInfo.selectedNote.getName().get()
@@ -351,8 +357,8 @@ export default {
 
     getObjectName(model, dbid) {
       if (model && dbid) {
-        return new Promise(resolve => {
-          model.getProperties(dbid, async res => {
+        return new Promise((resolve) => {
+          model.getProperties(dbid, async (res) => {
             console.log(res.name);
             resolve(res.name);
           });
@@ -369,8 +375,8 @@ export default {
 
     _createBimObjectNode(model, dbid) {
       if (model && dbid) {
-        return new Promise(resolve => {
-          model.getProperties(dbid, async res => {
+        return new Promise((resolve) => {
+          model.getProperties(dbid, async (res) => {
             const info = await window.spinal.BimObjectService.createBIMObject(
               dbid,
               res.name,
@@ -406,37 +412,37 @@ export default {
         overrides: true,
         objectSet: false,
         viewport: true,
-        renderOptions: true
+        renderOptions: true,
       };
       const file = await this.getScreenShotFile(true);
       const viewerState = viewer.getState(filter);
       const objectState = {
         isolated: viewer
           .getAggregateIsolation()
-          .map(el => ({ modelId: el.model.id, ids: el.ids })),
+          .map((el) => ({ modelId: el.model.id, ids: el.ids })),
 
         selected: viewer
           .getAggregateSelection()
-          .map(el => ({ modelId: el.model.id, selection: el.selection }))
+          .map((el) => ({ modelId: el.model.id, selection: el.selection })),
       };
 
       file.viewState = JSON.stringify(viewerState, getCircularReplacer());
       file.objectState = JSON.stringify(objectState, getCircularReplacer());
 
       this.messages.pj.push(file);
-    }
+    },
   },
 
   watch: {
     nodeInfo() {
       this.resetBind();
       this.updatedd();
-    }
+    },
   },
   mounted() {
     this.resetBind();
     this.updatedd();
-  }
+  },
 };
 </script>
 

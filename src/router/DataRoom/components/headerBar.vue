@@ -76,10 +76,10 @@ with this file. If not, see
                icon="el-icon-download"
                circle
                @click="exportData"></el-button>
-    <el-button class="boutton-barre"
+    <!--<el-button class="boutton-barre"
                icon="el-icon-view"
                circle
-               @click="SeeAll"></el-button>
+               @click="SeeAll"></el-button>-->
 
   </el-row>
 </template>
@@ -100,6 +100,7 @@ export default {
   props: ["header", "content", "data"],
   methods: {
     exportData() {
+      console.log(this.content)
       let excelData = [
         {
           name: "Tableau",

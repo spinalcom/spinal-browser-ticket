@@ -38,9 +38,8 @@ import { REFERENCE_OBJECT_RELATION_NAME, BIM_OBJECT_TYPE } from 'spinal-env-view
 // import { SpinalForgeViewer } from 'spinal-env-viewer-plugin-forge'
 
 import q from "q";
+import { EQUIPMENT_RELATION, EQUIPMENT_TYPE, ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 
-
-// const spinalForgeViewer = new SpinalForgeViewer();
 
 export default class Heatmap {
 
@@ -67,8 +66,9 @@ export default class Heatmap {
       return false;
 
     });
-
+  
     const Icontexts = contexts.map(el => this.Icontext(el));
+
     const res = await Promise.all(Icontexts);
     this.initDefer.resolve(res);
 
@@ -81,45 +81,55 @@ export default class Heatmap {
   }
 
   async getDataFilterItem(item) {
+    const res = [];
     const data = await this.initDefer.promise;
-    if (!item) return data;
+    if (!item){
+      return res;
+    }
     const itemNode = FileSystem._objects[item.server_id];
-    if (itemNode.getType().get() !== "geographicFloor") {
-      return data;
-    }
-
-    const idsAGarder = item.children.map(obj => obj.id);
-    const tmp = [];
-    for (const d of data) {
-      const cats = [];
-      for (const cat of d.categories) {
-        const groups = [];
-        for (const grp of cat.groups) {
-          const profils = [];
-          for (const r of grp.profils) {
-            if (idsAGarder.includes(r.id)) profils.push(r);
-          }
-          groups.push({
-            profils,
-            id: grp.id,
-            name: grp.name,
-            color: grp.color
-          });
-        }
-        cats.push({
-          groups,
-          id: cat.id,
-          name: cat.name
-        });
+    if (itemNode.getType().get() === ROOM_TYPE) {
+      res.push(itemNode.info.id.get());
+      const childs = await itemNode.getChildren(EQUIPMENT_RELATION);
+      for (const child of childs){
+        res.push(child.info.id.get());
       }
-      tmp.push({
-        categories: cats,
-        id: d.id,
-        name: d.name
-      });
+      return res;
     }
+    
+    const idsAGarder = item.children.map(obj => obj.id);
+    for (const d of data) {
+      for (const cat of d.categories) {
+        for (const grp of cat.groups) {
+          for (const profil of grp.rooms) {
+            for(const obj of profil.rooms){ //obj is either a room or a bimobject at this point
+              // if obj is a room we just have to filter with idAGarder
+              // if obj is a BIMOBJECT we filter depending on the room it is in
+              if (obj.type == ROOM_TYPE){
+                if (idsAGarder.includes(obj.id)){
+                  res.push(obj.id);
+                }
+              }
+              if (obj.type == EQUIPMENT_TYPE) {
+                const node = SpinalGraphService.getRealNode(obj.id);
+                const parents = await node.getParents(EQUIPMENT_RELATION);
+                for (const parent of parents){
+                  if (parent.info.type.get() == ROOM_TYPE && idsAGarder.includes(parent.info.id.get())){
+                    res.push(obj.id);
 
-    return tmp;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return res;
+
+  }
+
+  timeout(ms) { //pass a time in milliseconds to this function
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   async Icontext(context) {
@@ -133,6 +143,7 @@ export default class Heatmap {
     return {
       name: context.info.name.get(),
       id: context.info.id.get(),
+      _server_id: context.info._server_id,
       categories: await Promise.all(arr)
     };
   }
@@ -368,7 +379,14 @@ export default class Heatmap {
   }
 
   convertColorToVector(argColor) {
-    const color = argColor[0] === "#" ? argColor : `#${argColor}`;
+
+    let color = "";
+    if (argColor) {
+      color = argColor[0] === "#" ? argColor : `#${argColor}`;
+    }
+
+    if (color.trim().length == 0) return new THREE.Vector4(1, 0, 0, 0);
+
     const rgbColor = this._convertHexToRGB(color);
 
     return rgbColor
@@ -393,7 +411,6 @@ export default class Heatmap {
 
 
     const bims = references.map(el => el.get());
-
     const bimMap = new Map();
 
     for (const bimObject of bims) {
@@ -410,13 +427,15 @@ export default class Heatmap {
     const res = []
 
     for (const [key, value] of bimMap.entries()) {
+      while (!window.spinal.BimObjectService.getModelByBimfile(key)){
+        await this.timeout(1000);
+      }
       res.push({
         model: window.spinal.BimObjectService
           .getModelByBimfile(key),
         ids: Array.from(value)
       })
     }
-
     return res;
   }
 

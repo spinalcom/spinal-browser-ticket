@@ -39,13 +39,13 @@ with this file. If not, see
     <div class="drawer-main-content spinal-scrollbar">
       <appList></appList>
     </div>
-    <div class="drawer-main-footer">
+    <!-- <div class="drawer-main-footer">
       <a href="http://spinalcom.com/"
          target="_blank">
         <img class="spinalcore-poweredby-image"
-             src="../../assets/imgs/spinalcore-poweredby-yellow.png" />
+             src="../../assets/imgs/spinaltwin_logo_fond_phto_RVB.png" />
       </a>
-    </div>
+    </div> -->
 
   </div>
 </template>
@@ -106,6 +106,9 @@ export default {
     #829cbc,
     #829cbc
   ); */
+}
+.drawer-content .drawer-main-content:last-child {
+  height: calc(100% - 56px);
 }
 .drawer-main-footer {
   height: 56px;

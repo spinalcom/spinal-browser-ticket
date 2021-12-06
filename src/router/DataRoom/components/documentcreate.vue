@@ -24,7 +24,8 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-button icon="el-icon-circle-plus-outline"
+    <el-button type="primary"
+    icon="el-icon-circle-plus-outline"
                circle
                @click="addPJ">
     </el-button>

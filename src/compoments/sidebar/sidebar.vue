@@ -38,7 +38,7 @@ with this file. If not, see
     <hr />
     <a href="http://spinalcom.com/" target="_blank">
       <img
-        src="../../assets/imgs/spinalcore-poweredby-yellow.png"
+        src="../../assets/imgs/spinaltwin_logo_fond_phto_RVB.png"
         alt="spinalcore-poweredby"
       />
     </a>

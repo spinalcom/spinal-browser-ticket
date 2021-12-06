@@ -38,12 +38,14 @@ import {
   EQUIPMENT_TYPE,
   GEO_RELATIONS,
   EQUIPMENT_RELATION,
+  TICKET_TICKET_TYPE,
 } from '../../constants';
 import { EventBus } from '../event';
 import { FileSystem } from 'spinal-core-connectorjs_type';
 import ProcessOnChange from '../utlils/ProcessOnChange';
 import throttle from 'lodash.throttle';
 import { SpinalGraphService, SpinalNode } from 'spinal-env-viewer-graph-service';
+import obj from 'spinal-model-bmsnetwork/dist/SpinalBms';
 const anyWin: any = window;
 type nodeRef = {
   name: string,
@@ -75,7 +77,7 @@ export default class BackEndSpatial {
     this.floors = [];
   }
 
-  
+
   async getContextSpatial(graph) {
     const children = await graph.getChildren();
     for (const context of children) {
@@ -248,6 +250,116 @@ export default class BackEndSpatial {
     });
     return sortBIMObjectByModel(listNode);
   }
+
+  /**
+   * @param { {server_id: number} } item
+   * @memberof BackEndSpatial
+   * @returns { Promise<{model, selection: number[] }[]>}
+   */
+  async getLstByModelAndRelation(item, relation, addRoomRef = false) {
+    const node = getNodeFromItem(item);
+    const relations = [...relation]
+    const listNode = await node.find(relations, (n) => {
+      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+    });
+    return sortBIMObjectByModel(listNode);
+  }
+
+  /**
+   * @param { {server_id: number} } item
+   * @memberof BackEndSpatial
+   * @returns { Promise<{model, selection: number[] }[]>}
+   */
+  async getObjectsByTicketGroup(ticketGroup, addRoomRef = false) {
+    let node = getNodeFromItem(ticketGroup);
+    const relations = [..."SpinalSystemServiceTicketHasTicket"]
+    const listTicket = await node.find(relations, (n) => {
+      return (
+        n.getType().get() === TICKET_TICKET_TYPE
+        || n.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+      );
+    });
+    let objects = [];
+    for (const ticket of listTicket) {
+      console.debug("ticket:", ticket.objects)
+      let test = Object.keys(ticket.objects).map(function(key) {
+        if (parseInt(key) || parseInt(key) === 0) {
+          console.debug(ticket.objects[key])
+          return ticket.objects[key]
+        }
+      })
+      console.debug("test :", test.filter(e => { return typeof e !== "undefined" }))
+      objects = objects.concat(test.filter(e => { return typeof e !== "undefined" }));
+    }
+    console.debug("objects: ", objects)
+    return sortBIMObjectByModel(objects);
+  }
+
+  /**
+   * @param { {server_id: number} } item
+   * @memberof BackEndSpatial
+   * @returns { Promise<{model, selection: number[] }[]>}
+   */
+  async getObjectsByTicketGroup_Legacy(ticketGroup, addRoomRef = false) {
+    let node = getNodeFromItem(ticketGroup);
+  console.debug("root :", node)
+  const relations = [..."SpinalSystemServiceTicketHasTicket"]
+    const listTicket = await node.find(relations, (n) => {
+      return (
+        n.getType().get() === TICKET_TICKET_TYPE
+        || n.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+      );
+    });
+
+    let listNode = [];
+    for (const ticket of listTicket) {
+      const parents = await ticket.getParents("SpinalSystemServiceTicketHasTicket")
+      for (const parent of parents) {
+        if (parent.getType().get() != "SpinalSystemServiceTicketTypeStep")
+          node = parent;
+      }
+      const objects = await node.find(relations, (n) => {
+        return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+      });
+      listNode = listNode.concat(objects)
+    }
+    return sortBIMObjectByModel(listNode);
+  }
+
+  async addObjectToTicket(ticketGroup) {
+    let node = getNodeFromItem(ticketGroup);
+    console.debug("root :", node)
+    const relations = [..."SpinalSystemServiceTicketHasTicket"]
+    const listTicket : spinal.Model[] = await node.find(relations, (n) => {
+      return (
+        n.getType().get() === TICKET_TICKET_TYPE
+        || n.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+      );
+    });
+
+    let listNode = [];
+    for (const ticket of listTicket) {
+      const parents = await ticket.getParents("SpinalSystemServiceTicketHasTicket")
+      for (const parent of parents) {
+        if (parent.getType().get() != "SpinalSystemServiceTicketTypeStep")
+          node = parent;
+      }
+      const objects = {
+        BIMObjects: [],
+        BIMIds: [],
+        nameAttr: ["objects"],
+      };
+      objects.BIMObjects = await node.find(relations, (n) => {
+        return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+      });
+      for (const obj of objects.BIMObjects) {
+        objects.BIMIds.push(obj.info.bimFileId.get())
+      }
+      ticket.add_attr({objects: objects.BIMIds})
+    }
+    console.debug(listTicket)
+    return sortBIMObjectByModel(listNode);
+  }
 }
 
 /**
@@ -264,11 +376,14 @@ function sortBIMObjectByModel(arrayOfBIMObject): { selection: number[], model }[
     const bimFileId = nodeBIMObject.info.bimFileId.get();
     const dbId = nodeBIMObject.info.dbid.get();
     const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
-    const obj = getOrAddModelIfMissing(arrayModel, model);
-    obj.selection.push(dbId);
+    if (model) {
+      const obj = getOrAddModelIfMissing(arrayModel, model);
+      obj.selection.push(dbId);
+    }
   }
   return arrayModel;
 }
+
 function getOrAddModelIfMissing(array, model): { selection: number[], model } {
   for (const obj of array) {
     if (obj.model === model) {

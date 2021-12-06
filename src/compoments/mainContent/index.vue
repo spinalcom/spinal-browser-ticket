@@ -23,41 +23,28 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="spinal-main-container"
-       :class="{'have-abs-viewer' : absviewer}">
+  <div class="spinal-main-container" :class="{ 'have-abs-viewer': absviewer }">
     <div class="spinal-main-container-left">
       <spinalNavbar class="main-navbar"></spinalNavbar>
-      <div v-show="!absviewer"
-           ref="viewerContainer"
-           class="spinal-viewer-container"
-           :class="{'abs-viewer' : absviewer}">
-        <div ref="viewerContent"
-             class="viewer-content">
+      <div
+        v-show="!absviewer"
+        ref="viewerContainer"
+        class="spinal-viewer-container"
+        :class="{ 'abs-viewer': absviewer }"
+      >
+        <div ref="viewerContent" class="viewer-content">
           <div class="content-viewer-view">
-            <appViewer ref="viewerItem">
-              <!-- :is-minimized="absviewer" -->
+            <appViewer
+              ref="viewerItem"
+              @onModelLoadEnd="showLoadingModel = false"
+              v-loading="showLoadingModel"
+            >
             </appViewer>
-            <el-button-group class="btn-abs-viewer-popio"
-                             v-show="!absviewer">
-              <el-button size="mini"
-                         class=""
-                         @click="onMiniClick">
-                <i data-eva="minus-outline"
-                   data-eva-animation="zoom"
-                   height="30px"
-                   data-eva-height="24"
-                   data-eva-width="24"></i>
-              </el-button>
-              <el-button size="mini"
-                         class=""
-                         @click="onPopClick">
-                <i data-eva="expand-outline"
-                   data-eva-animation="zoom"
-                   data-eva-height="24"
-                   data-eva-width="24"></i>
+            <el-button-group class="btn-abs-viewer-popio" v-show="!absviewer">
+              <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
+              <el-button icon="el-icon-copy-document" @click="onPopClick">
               </el-button>
             </el-button-group>
-
           </div>
         </div>
       </div>
@@ -66,37 +53,17 @@ with this file. If not, see
       <router-view></router-view>
     </div>
     <transition name="el-fade-in-linear">
-      <div v-show="absviewer"
-           ref="viewerContainerMini"
-           class="viewer-container-mini"
-           :class="{hideViewer}">
+      <div
+        v-show="absviewer"
+        ref="viewerContainerMini"
+        class="viewer-container-mini"
+        :class="{ hideViewer }"
+      >
         <div class="spinal-viewer-header-container">
-          <div ref="headerViewer"
-               class="spinal-viewer-header-drag-elm">
-            <i class="spinal-viewer-header-move-icon"
-               data-eva="move-outline"
-               data-eva-fill="#fff"
-               height="30px"
-               data-eva-height="24"
-               data-eva-width="24"></i>
-          </div>
+          <div ref="headerViewer" class="spinal-viewer-header-drag-elm"></div>
           <el-button-group class="btn-abs-viewer-popio">
-            <el-button size="mini"
-                       class=""
-                       @click="onMiniClick">
-              <i data-eva="minus-outline"
-                 data-eva-animation="zoom"
-                 height="30px"
-                 data-eva-height="24"
-                 data-eva-width="24"></i>
-            </el-button>
-            <el-button size="mini"
-                       class=""
-                       @click="onPopClick">
-              <i data-eva="expand-outline"
-                 data-eva-animation="zoom"
-                 data-eva-height="24"
-                 data-eva-width="24"></i>
+            <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
+            <el-button icon="el-icon-copy-document" @click="onPopClick">
             </el-button>
           </el-button-group>
         </div>
@@ -118,13 +85,14 @@ export default {
   },
   data() {
     return {
+      showLoadingModel: true,
       absviewer: false,
       hideViewer: false
     };
   },
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
-    eva.replace();
+    // eva.replace();
   },
   methods: {
     onPopClick(event) {
@@ -161,7 +129,7 @@ export default {
   transition: 200ms all cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .spinal-main-container.have-abs-viewer {
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .spinal-main-container.have-abs-viewer .spinal-main-container-left {
@@ -170,6 +138,7 @@ export default {
 }
 .spinal-main-container.have-abs-viewer .spinal-other-container {
   width: 100%;
+  flex-grow: 1;
 }
 
 .spinal-other-container > div {
@@ -221,7 +190,7 @@ export default {
   }
 
   .spinal-main-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
   .spinal-main-container-left {
     height: 50%;
@@ -253,6 +222,8 @@ export default {
 }
 .btn-abs-viewer-popio > .el-button {
   padding: 0 !important;
+  height: 26px;
+  width: 24px;
 }
 .btn-abs-viewer-mini {
   position: absolute;
@@ -297,7 +268,7 @@ export default {
   position: absolute;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   left: calc(100% - var(--minimized-viewer-width) - 8px);
-  top: calc(100% - var(--minimized-viewer-height) - 58px);
+  top: calc(100% - var(--minimized-viewer-height) - 8px);
 }
 
 .viewer-container-mini.hideViewer .viewer-content {
