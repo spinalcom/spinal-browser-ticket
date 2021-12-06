@@ -28,9 +28,8 @@ import { spinalBackEnd } from '../../spinalBackend';
 
 EventBus.$on('viewer-zoom', async (root, relation) => {
   await viewerUtils.waitInitialized()
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
-  await viewerUtils.rotateTo('front,top,right');
-  viewerUtils.fitToView(items);
+  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: root.serverId }, relation);
+  await viewerUtils.fitToView(items);
 });
 
 EventBus.$on('viewer-reset-isolate', async () => {

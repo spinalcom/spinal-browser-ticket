@@ -114,7 +114,8 @@ export default {
     viewKey: { required: true, type: String },
     items: { required: true, type: Array },
     columns: { required: true, type: Array },
-    relation: { required: true, type: String },
+    relation: { required: true, type: Array },
+    depth: { required: false, type: Number, default: 5 },
   },
 
   data() {
@@ -157,7 +158,8 @@ export default {
     },
 
     onSelectItem(item) {
-      if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= 5)
+      console.debug("depth", this.depth);
+      if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth)
         ViewManager.getInstance(this.viewKey).pop();
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
@@ -263,9 +265,11 @@ export default {
         width: 20
       }];
       for (const column of this.columns) {
+        let name = column;
+        if (CountNames.includes(column)) name = "children";
         headers.push({
-          key: column,
-          header: this.$t(column),
+          key: name,
+          header: this.$t(name),
           width: 10
         });
       }

@@ -140,6 +140,7 @@ export default {
       currentView: false,
       isNode: false,
       isolated: false,
+      relations: [],
       tabs: [
         {
           name: "node-type.context",
@@ -148,7 +149,8 @@ export default {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
-            relation: ROOM_RELATION,
+            relation: [],
+            depth: 6,
           },
           ignore: false,
         },
@@ -203,26 +205,26 @@ export default {
         //   ignore: true,
         // },
 
-        {
-          name: "spinal-twin.Endpoints",
-          content: InsightEndpoint,
-          props: {
-            viewKey: VIEW_KEY,
-            view: false,
-            context: false,
-          },
-          ignore: true,
-        },
+        // {
+        //   name: "spinal-twin.Endpoints",
+        //   content: InsightEndpoint,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //     context: false,
+        //   },
+        //   ignore: true,
+        // },
 
-        {
-          name: "spinal-twin.ControlEndpoints",
-          content: InsightControlEndpoint,
-          props: {
-            viewKey: VIEW_KEY,
-            view: false,
-          },
-          ignore: true,
-        },
+        // {
+        //   name: "spinal-twin.ControlEndpoints",
+        //   content: InsightControlEndpoint,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
       ],
     };
   },
@@ -237,6 +239,9 @@ export default {
       this.onViewChange.bind(this),
       0
     );
+    this.relations = GEO_RELATIONS;
+    this.relations.push("hasReferenceObject.ROOM");
+    this.tabs[0].props.relations = this.relations;
   },
 
   methods: {
@@ -341,7 +346,7 @@ export default {
     },
 
     zoomOn() {
-      EventBus.$emit("viewer-zoom", this.currentView, ROOM_RELATION);
+      EventBus.$emit("viewer-zoom", this.currentView, this.relations);
     },
 
     isolateAll() {
@@ -351,12 +356,12 @@ export default {
       if (viewerState.isolated())
       {
         this.isolated = true;
-        EventBus.$emit("viewer-isolate", [ this.currentView ], ROOM_RELATION);
+        EventBus.$emit("viewer-isolate", [ this.currentView ], this.relations);
       }
     },
 
     selectInView() {
-      EventBus.$emit("viewer-select", this.currentView, ROOM_RELATION);
+      EventBus.$emit("viewer-select", this.currentView, this.relations);
     },
 
     formatData() {

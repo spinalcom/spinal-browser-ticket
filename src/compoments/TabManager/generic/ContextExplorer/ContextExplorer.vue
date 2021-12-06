@@ -45,6 +45,7 @@ with this file. If not, see
         :items="itemsComputed"
         :columns="cols"
         :relation="Properties.relation"
+        :depth="Properties.depth"
         @select="Select"
         @isolate="Isolate"
         style="height:100%"

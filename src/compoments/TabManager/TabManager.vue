@@ -81,7 +81,7 @@ export default {
   watch: {
     tabsprop: {
       handler(oldTabs, newTabs) {
-        if (!newTabs.some(tab => !tab.ignore && this.$t(tab.name) === this.activetab)) {
+        if (!newTabs.some(tab => !tab.ignore && tab.name === this.activetab)) {
           this.activetab = newTabs[0].name;
         }
       },
