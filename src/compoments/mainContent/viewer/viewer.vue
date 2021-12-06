@@ -56,30 +56,6 @@ export default {
       materials: {}
     };
   },
-<<<<<<< HEAD
-  components: {
-    "heatmap-legend": HeatmapLegendContainer
-  },
-  mounted() {
-    EventBus.$on("see", data => {
-      this.isoLate(data.ids);
-      this.restoreAllColor();
-      this.colorsRooms(data.ids, data.color, data.id);
-    });
-    EventBus.$on("seeAll", data => {
-      if (this.allElementAreColored(data)) {
-        this.restoreAllColor();
-      } else {
-        let ids = [];
-        this.restoreAllColor();
-        data.forEach(element => {
-          ids.push(...element.ids);
-          this.colorsRooms(element.ids, element.color, element.id);
-        });
-        this.isoLate(ids);
-      }
-    });
-=======
   mounted() {
     // EventBus.$on("see", data => {
     //   console.log("on see", data);
@@ -101,7 +77,6 @@ export default {
     //     this.isoLate(ids);
     //   }
     // });
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
     return this.createViewer();
   },
   methods: {
@@ -146,55 +121,12 @@ export default {
       }
       this.$emit("onModelLoadEnd");
       await spinalBackEnd.waitInit();
-<<<<<<< HEAD
-      this.viewer.fitToView();
-      viewerUtils.initViewer(this.viewer);
-      this.elementColored.clear();
-      this.viewer.impl.invalidate(true, true, true);
-    },
-    isoLate(roomsList) {
-      let dbIds = roomsList.map(el => el.dbid);
-      if (roomsList.length === 0) {
-        this.viewer.isolate(dbIds, this.viewer.model);
-      } else {
-        let model = window.spinal.BimObjectService.getModelByBimfile(
-          roomsList[0].bimFileId
-        );
-
-        this.viewer.isolate(dbIds, model);
-      }
-    },
-    convertHewToRGB(hex) {
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result
-        ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-          }
-        : null;
-    },
-
-    elementIsColored(elementCol) {
-      return this.elementColored.get(elementCol) != undefined;
-    },
-
-    allElementAreColored(allElement) {
-      for (const element of allElement) {
-        if (!this.elementIsColored(element.id)) {
-          return false;
-        }
-      }
-      return true;
-    },
-=======
       // const scenes = await spinalBackEnd.viewerBack.getScenes();
       // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
       this.viewer.fitToView();
       viewerUtils.initViewer(this.viewer);
     },
 
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
     colorsRooms(roomsList, argColor, id) {
       this.elementColored.set(id, roomsList);
       const color = this.convertHewToRGB(argColor);

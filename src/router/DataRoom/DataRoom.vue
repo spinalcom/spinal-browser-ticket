@@ -24,38 +24,6 @@ with this file. If not, see
 
 <template>
   <div class="data-room">
-<<<<<<< HEAD
-    <div class="data-room-breadcrumb-container"
-         style="margin: 10px;">
-      <SpinalBreadcrumb :view-key="viewKey">
-      </SpinalBreadcrumb>
-    </div>
-    <el-row v-if="display === false">
-      <el-tabs type="border-card">
-        <el-tab-pane :label="panel">
-          <div v-for="(item, index) in items"
-               :key="item.nodeType"
-               :name="item.nodeType">
-            <el-header>
-              <div style="float: right">
-
-                <el-button icon="el-icon-download"
-                           circle
-                           @click.stop="exportData(index)">
-                </el-button>
-                <el-button icon="el-icon-view"
-                           circle
-                           @click.stop="SeeAllClick(index)"></el-button>
-              </div>
-            </el-header>
-            <DataRoomTypeTable :ref="`data-room-table`"
-                               :view-key="viewKey"
-                               :node-type="item.nodeType"
-                               :items="item.items"
-                               :collums="item.cols">
-            </DataRoomTypeTable>
-          </div>
-=======
     <div class="data-room-breadcrumb-container">
       <SpinalBreadcrumb :view-key="viewKey">
       </SpinalBreadcrumb>
@@ -97,7 +65,6 @@ with this file. If not, see
                                  :collums="item.cols">
               </DataRoomTypeTable>
             </div>
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
         </el-tab-pane>
 
 
@@ -247,25 +214,25 @@ with this file. If not, see
       <div class="box">
       <h3> Endpoints </h3>
       <h6 v-if="(!this.floorEndpoints && !this.buildingEndpoints) || (this.floorEndpoints.length === 0 && this.buildingEndpoints.length === 0)">
-         No endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}} 
+         No endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}}
       </h6>
       
       <template v-else>
       <li> {{this.currentNodeInfo.selectedNode.info.name.get()}} </li>
-        <control-endpoint-component 
+        <control-endpoint-component
          v-for="endpoint of floorEndpoints"
          v-bind:key="endpoint.name"
          :name="endpoint.name"
          :endpoint="endpoint"
       ></control-endpoint-component>
       </template>
-      </div> 
+      </div>
 
       <div v-if="this.currentNodeInfo.selectedNode.info.type.get()=='geographicFloor' && this.roomEndpoints.length !=0">
         <h3> Room Endpoints </h3>
         <div v-for="room of roomEndpoints" v-bind:key="room.name">
           <li class="newline"> {{room.name}} </li>
-          <control-endpoint-component 
+          <control-endpoint-component
           v-for="end of room.info"
           v-bind:key="end.name"
           :name="end.name"
@@ -279,12 +246,12 @@ with this file. If not, see
     <!-- Tab Insight -->
     <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Insight')">
       <h6 v-if="!this.floorControlEndpoints || this.floorControlEndpoints.length ==0" >
-         No control-endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}} 
+         No control-endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}}
       </h6>
       <template v-else>
         <div v-for="profil of controlEndpoints" v-bind:key="profil.name">
         <h3> {{profil.name}} </h3>
-        <control-endpoint-component 
+        <control-endpoint-component
          v-for="endpoint of profil.info"
          v-bind:key="endpoint.name"
          :name="endpoint.name"
@@ -300,13 +267,6 @@ with this file. If not, see
 
       </el-tabs>
     </el-row>
-<<<<<<< HEAD
-    <div v-else
-         class="spinal-space-spacecon_container-container">
-      <div class="spacecon_container">
-        <room-data :node-id="nodeId"></room-data>
-      </div>
-=======
     <div style="margin: -3px;"  v-else class="spinal-space-spacecon_container-container">
       <div
            class="spacecon_container">
@@ -318,7 +278,6 @@ with this file. If not, see
     <display-tabs v-if="equipmentId"
                    :node-id="equipmentId" v-bind:IsRoom="false"></display-tabs>
            </div>
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
     </div>
   </div>
 </template>
@@ -330,19 +289,6 @@ const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
-<<<<<<< HEAD
-import "./DataRoomEventHandler";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileSystem } from "spinal-core-connectorjs_type";
-export default {
-  components: {
-    SpinalBreadcrumb,
-    DataRoomTypeTable,
-    TabManager,
-    "room-data": RoomData,
-    CategoryAttribute
-  },
-=======
 import ticketcreate from "./components/ticketcreate";
 import headerBarVue from "./components/headerBar.vue";
 import Calendar from "./components/Calendar.vue";
@@ -368,7 +314,6 @@ export default {
   controlEndpointComponent,
   VueCal,
     DisplayTabs },
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
   data() {
     return {
       currentView: null,
@@ -392,20 +337,6 @@ export default {
       dataEq: {},
       display: false,
       activeNames: [],
-<<<<<<< HEAD
-      tabs: [
-        /*{
-          name: "Tableau",
-          content: Explorer,
-          props: {
-            viewKey: VIEWKEY_DATA_ROOM_CENTER,
-            items: false,
-            view: false,
-          },
-          optional: false,
-        },*/
-      ]
-=======
 
       currentNodeInfo: {},
       buildingControlEndpoints : [],
@@ -419,7 +350,6 @@ export default {
         view: false,
         viewKey: VIEWKEY_DATA_ROOM_CENTER
       },
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
     };
   },
   filters: {
@@ -468,36 +398,6 @@ export default {
         this.activeNames.push(nodeType);
       }
       this.currentView = view;
-<<<<<<< HEAD
-      if (this.items[0].nodeType === "geographicContext") {
-        this.panel = "Contextes";
-      }
-      if (this.items[0].nodeType === "geographicBuilding") {
-        this.panel = "Bâtiments";
-      }
-      if (this.items[0].nodeType === "geographicFloor") {
-        this.panel = "Etages";
-      }
-      if (this.items[0].nodeType === "geographicRoom") {
-        this.panel = "Pièces";
-      }
-      /*this.tabs = [
-        {
-          name: "Equipements",
-          content: Explorer,
-          props: {
-            viewKey: VIEWKEY_DATA_ROOM_CENTER,
-            items: false,
-            view: false,
-          },
-          optional: false,
-        },
-      ]*/
-      if (this.items[0].nodeType === "BIMObject") {
-        this.display = true;
-        const idNode = localStorage.getItem("nodeId");
-        this.nodeId = idNode;
-=======
       this.currentNodeInfo = {
         selectedNode: FileSystem._objects[this.currentView.serverId]
       };
@@ -544,7 +444,6 @@ export default {
         this.roomId = null
         const equipment = localStorage.getItem("equipmentId");
         this.equipmentId = equipment;
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
       }
       
     },
@@ -554,13 +453,10 @@ export default {
         item.serverId,
         item.nodeId
       );
-<<<<<<< HEAD
-=======
     },
     popView(index) {
       localStorage.removeItem("roomServerId");
       this.$refs["data-room-table"][index].popView();
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
     },
     exportData(index) {
       this.$refs["data-room-table"][index].exportToExcel();
@@ -713,7 +609,7 @@ export default {
       for(const attr of attributes){
         endpointInfo[attr.label] = attr.value;
       }
-      return endpointInfo; 
+      return endpointInfo;
     },
 
     async getNodeEndpointsInfo(nodeId,endpointRelation){
@@ -775,8 +671,6 @@ export default {
 </style>
 
 <style scoped>
-<<<<<<< HEAD
-=======
 .data-room-data-pane,
 .data-room-data-pane > div {
   height: 100%;
@@ -794,7 +688,6 @@ export default {
 .data-room-data-tabs {
   height: 100%;
 }
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
 .data-room-tabs {
   margin: 5px auto;
   height: calc(100% - 55px);
@@ -809,11 +702,6 @@ export default {
 }
 .data-room-collapse-bar-title {
   flex-grow: 1;
-<<<<<<< HEAD
-}
-.spacecon .spacecon_container {
-=======
->>>>>>> 3f41d5ff23fda4b1b414064aa0de80ba8616e06e
   border-radius: 4px;
 }
 .spinal-space-spacecon_container-container {
