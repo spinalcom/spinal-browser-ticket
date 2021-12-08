@@ -30,6 +30,11 @@ export default {
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
   "error.returntodrive.title": "Erreur",
+  "Routes.AppList": "Sélectionner l'application",
+  "Routes.DataApp": "Explorer le bâtiment",
+  "Routes.InsightCenter": "Visualiser l'activité",
+  "Routes.SpaceCenter": "Inspecter les espaces",
+  "Routes.EquipmentApp": "Inspecter les équipements",
   "DataRoom.geographicContext": "Contextes", // Could be generic
   "DataRoom.geographicBuilding": "Bâtiments", // Could be generic
   "DataRoom.geographicFloor": "Etages", // Could be generic

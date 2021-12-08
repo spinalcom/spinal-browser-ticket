@@ -44,7 +44,7 @@ with this file. If not, see
           <div class="app-item-text">
             <i class="el-icon-edit"
                style="font-size: 30px;"></i>
-            <span>{{ route.name }}</span>
+            <span>{{ $t('Routes.' + route.name) }}</span>
           </div>
         </el-card>
       </router-link>

@@ -29,6 +29,11 @@ export default {
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
   "error.returntodrive.title": "Error",
+  "Routes.AppList": "Select the application",
+  "Routes.DataApp": "Explore the building",
+  "Routes.InsightCenter": "Visualize the activity",
+  "Routes.SpaceCenter": "Inspect the spaces",
+  "Routes.EquipmentApp": "Inspect the equipments",
   "DataRoom.geographicContext": "Contextes", // Could be generic
   "DataRoom.geographicBuilding": "Bâtiments", // Could be generic
   "DataRoom.geographicFloor": "Etages", // Could be generic

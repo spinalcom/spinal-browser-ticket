@@ -38,14 +38,14 @@ const DataApp = () => import("./DataApp/TheDataApp.vue")
 const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
 export const routes = [
   { path: '*', redirect: { name: 'App List' } },
-  { path: '/AppList', name: 'App List', component: AppList },
-  { path: '/DataRoom', name: 'Data Room', component: DataRoom },
-  { path: '/TicketCenter', name: 'Ticket Center', component: TicketCenter },
-  { path: '/InsightCenter', name: 'Insight Center', component: InsightCenter },
-  { path: '/Spacecenter', name: 'Space Center', component: SpaceCenter },
-  { path: '/EquipmentApp', name: 'Equipment Center', component: EquipmentApp },
-  { path: '/DataApp', name: 'Data App', component: DataApp },
-  { path: '/TicketApp', name: 'Ticket App', component: TicketApp },
+  { path: '/AppList', name: 'AppList', component: AppList },
+  // { path: '/DataRoom', name: 'Data Room', component: DataRoom },
+  // { path: '/TicketCenter', name: 'Ticket Center', component: TicketCenter },
+  { path: '/DataApp', name: 'DataApp', component: DataApp },
+  { path: '/InsightCenter', name: 'InsightCenter', component: InsightCenter },
+  { path: '/Spacecenter', name: 'SpaceCenter', component: SpaceCenter },
+  { path: '/EquipmentApp', name: 'EquipmentApp', component: EquipmentApp },
+  // { path: '/TicketApp', name: 'Ticket App', component: TicketApp },
 ];
 const realroutes = [...routes,
 { path: '/Spacecenter/Gestion', name: 'gestion', component: SpaceCenterGestion },
