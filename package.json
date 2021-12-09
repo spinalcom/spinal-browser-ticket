@@ -40,6 +40,10 @@
     "spinal-env-viewer-plugin-excel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-excel-manager-service.git",
     "spinal-env-viewer-plugin-forge": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-forge.git",
     "spinal-env-viewer-task-service": "git+https://github.com/spinalcom/spinal-env-viewer-task-service.git",
+    "spinal-env-viewer-plugin-endpoint_chart_viewer": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-endpoint_chart_viewer.git",
+    "spinal-env-viewer-panel-manager-service_spinalforgeextention": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service_spinalforgeextention.git",
+    "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
+    "spinal-env-viewer-panel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
     "spinal-forge-viewer": "git+https://github.com/spinalcom/spinal-forge-viewer.git",
     "spinal-service-ticket": "git+https://github.com/spinalcom/spinal-service-ticket.git#devv2",
     "tinygradient": "^1.1.4",
@@ -61,6 +65,12 @@
   "browserslist": [
     "last 1 chrome versions"
   ],
+  "browserify": {
+    "transform": [
+      "vueify",
+      "babelify"
+    ]
+  },
   "staticFiles": {
     "staticPath": "src/public"
   },
