@@ -22,9 +22,29 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import  './eventsHandler/DataRoom'
-import  './eventsHandler/GlobalData'
-import  './eventsHandler/Space'
-import  './eventsHandler/Insight'
-import  './eventsHandler/ViewerEvents'
-import  './eventsHandler/TicketViewerEvents'
+export class ViewerState {
+
+  public coloration: Boolean = false;
+  public isolation: Boolean = false;
+
+  constructor() {
+  }
+  
+  public colored() : Boolean {
+    return this.coloration;
+  }
+  
+  public changeColoration(): void {
+    this.coloration = ! this.coloration;
+  }
+
+  public isolated() : Boolean {
+    return this.isolation;
+  }
+  
+  public changeIsolation() : void {
+    this.isolation = ! this.isolation;
+  }
+};
+
+export let viewerState : ViewerState = new ViewerState();

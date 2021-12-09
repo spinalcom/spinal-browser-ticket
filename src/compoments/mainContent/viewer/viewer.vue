@@ -23,8 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div id="autodesk_forge_viewer"
-       class="viewerContainer">
+  <div id="autodesk_forge_viewer" class="viewerContainer">
     <heatmap-legend></heatmap-legend>
   </div>
 </template>
@@ -33,7 +32,7 @@ with this file. If not, see
 import { ForgeViewer } from "spinal-forge-viewer";
 import { spinalBackEnd } from "../../../services/spinalBackend";
 import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
-import { EventBus } from "../../../services/event";
+// import { EventBus } from "../../../services/event";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { DISABLE_VIEWER } from "../../../constants";
 
@@ -42,7 +41,9 @@ import HeatmapLegendContainer from "../../insight/heatmap-legends/container.vue"
 import "spinal-env-viewer-plugin-forge";
 export default {
   name: "AppViewer",
-  props: ["isMinimized"],
+  props: {
+    // : { required: false, type: "Boolean" }
+  },
   components: {
     "heatmap-legend": HeatmapLegendContainer
   },
@@ -83,10 +84,10 @@ export default {
       if (this.viewer) {
         if (toShowUI === false) {
           if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("none");
-          if (this.viewer.viewCubeUi) this.viewer.viewCubeUi.setVisible(false);
+          viewerUtils.setCubeVisible(false);
         } else {
           if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("");
-          if (this.viewer.viewCubeUi) this.viewer.viewCubeUi.setVisible(true);
+          viewerUtils.setCubeVisible(true);
         }
         setTimeout(this.viewer.resize.bind(this.viewer), 400);
       }
@@ -94,19 +95,31 @@ export default {
     async createViewer() {
       const container = document.getElementById("autodesk_forge_viewer");
       this.forgeViewer = new ForgeViewer(container, false);
-      await this.forgeViewer.start(
-        "/models/Resource/3D View/{3D} 341878/{3D}.svf",
-        true
-      );
+      await this.forgeViewer.start();
+      //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
+      //   true
       this.viewer = this.forgeViewer.viewer;
       await window.spinal.SpinalForgeViewer.initialize(this.forgeViewer);
       const scenes = await spinalBackEnd.viewerBack.getScenes();
       SpinalGraphService._addNode(scenes[0]);
       if (!DISABLE_VIEWER) {
-        await window.spinal.SpinalForgeViewer.loadModelFromNode(
-          scenes[0].info.id.get()
-        );
+        let found = false;
+        for (const scene of scenes) {
+          SpinalGraphService._addNode(scene);
+          if (scene.info.autoLoad?.get() === true) {
+            await window.spinal.SpinalForgeViewer.loadModelFromNode(
+              scene.info.id.get()
+            );
+            found = true;
+            break;
+          }
+        }
+        if (!found && scenes.length > 0)
+          await window.spinal.SpinalForgeViewer.loadModelFromNode(
+            scenes[0].info.id.get()
+          );
       }
+      this.$emit("onModelLoadEnd");
       await spinalBackEnd.waitInit();
       // const scenes = await spinalBackEnd.viewerBack.getScenes();
       // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
@@ -220,52 +233,6 @@ export default {
       return true;
     }
   }
-  // =======
-  //           );
-  //         }
-  //       }
-  //       this.elementColored.clear();
-  //       this.viewer.impl.invalidate(true, true, true);
-  //     },
-
-  //     isoLate(roomsList) {
-  //       let dbIds = roomsList.map(el => el.dbid);
-  //       if (roomsList.length === 0) {
-  //         this.viewer.isolate(dbIds, this.viewer.model);
-  //       } else {
-  //         let model = window.spinal.BimObjectService.getModelByBimfile(
-  //           roomsList[0].bimFileId
-  //         );
-
-  //         this.viewer.isolate(dbIds, model);
-  //       }
-  //     },
-
-  //     convertHewToRGB(hex) {
-  //       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  //       return result
-  //         ? {
-  //             r: parseInt(result[1], 16),
-  //             g: parseInt(result[2], 16),
-  //             b: parseInt(result[3], 16)
-  //           }
-  //         : null;
-  //     },
-
-  //     elementIsColored(elementCol) {
-  //       return this.elementColored.get(elementCol) != undefined;
-  //     },
-
-  //     allElementAreColored(allElement) {
-  //       for (const element of allElement) {
-  //         if (!this.elementIsColored(element.id)) {
-  //           return false;
-  //         }
-  //       }
-  //       return true;
-  //     }
-  //   }
-  // >>>>>>> master
 };
 </script>
 

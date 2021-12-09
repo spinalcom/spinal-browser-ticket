@@ -46,6 +46,9 @@ import './app.css';
 import './compoments/sidebar/eventSideBar'
 import './services/viewerUtils/viewerEventHandle';
 
+// @ts-ignore
+window.Autodesk.Viewing.Private.analytics.optOut();
+
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts)
 

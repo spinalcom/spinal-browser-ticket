@@ -35,7 +35,7 @@ with this file. If not, see
                     class="drawer-list-item"
                     v-ripple>
         <i class="el-icon-document drawer-list-item-icon"></i>
-        <span>{{route.name}}</span>
+        <span>{{ $t("Routes." + route.name)}}</span>
       </el-menu-item>
     </el-menu>
   </div>
