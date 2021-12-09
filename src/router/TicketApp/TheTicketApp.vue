@@ -19,65 +19,74 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="equipment-center">
-    <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    <el-tooltip content="Go back">
-      <el-button v-show="(currentView.serverId != 0)" class="spl-el-button" style="float: left"
-            icon="el-icon-arrow-left"
-            circle
-            @click.stop="popView()"
-          >
+  <div class="hide-overflow">
+    <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
+    <el-tooltip :content="$t('spinal-twin.Back')">
+      <el-button
+        v-show="(currentView.serverId != 0)"
+        @click.stop="popView()"
+        class="spl-el-button"
+        style="float: left"
+        icon="el-icon-arrow-left"
+        circle
+      >
       </el-button>
     </el-tooltip>
     <div class="spl-button-bar">
-      <el-tooltip content="Isolate" :disabled="!isNode">
-        <el-button class="spl-el-button"
-          icon="el-icon-aim" circle
+      <el-tooltip
+        :disabled="!isNode"
+        :content="$t('spinal-twin.Isolate')"
+      >
+        <el-button
+          :disabled="!isNode"
           @click.stop="isolateAll()"
-          :disabled="!isNode"
+          circle
+          class="spl-el-button"
+          icon="el-icon-aim"
         >
         </el-button>
       </el-tooltip>
-      <el-tooltip content="Select" :disabled="!isNode">
-        <el-button class="spl-el-button"
-          icon="el-icon-location" circle
+      <el-tooltip
+        :disabled="!isNode"
+        :content="$t('spinal-twin.Select')"
+      >
+        <el-button
+          :disabled="!isNode"
           @click.stop="selectInView()"
-          :disabled="!isNode"
+          circle
+          class="spl-el-button"
+          icon="el-icon-location"
         >
         </el-button>
       </el-tooltip>
-      <el-tooltip content="Zoom" :disabled="!isNode">
-        <el-button class="spl-el-button"
-          icon="el-icon-search" circle
+      <el-tooltip
+        :disabled="!isNode"
+        content="Zoom"
+      >
+        <el-button
+          :disabled="!isNode"
           @click.stop="zoomOn()"
-          :disabled="!isNode"
+          circle
+          class="spl-el-button"
+          icon="el-icon-search"
         >
         </el-button>
       </el-tooltip>
-      <!-- <el-tooltip content="Color">
-        <el-button class="spl-el-button"
-          icon="el-icon-picture-outline-round" circle
-          @click.stop="Color()"
-        >
-        </el-button>
-      </el-tooltip>
-      <el-tooltip content="Export data to excel">
-        <el-button class="spl-el-button"
-          icon="el-icon-download" circle
-          @click.stop="exportToExcel()"
-        >
-        </el-button>
-      </el-tooltip> -->
     </div>
-    <tab-manager ref="tab-manager" class="tab-manager" :tabsprop="tabs" />
-    <!-- <explorer :Properties="tabs[0].props"></explorer> -->
+    <tab-manager
+      :tabsprop="tabs"
+      ref="tab-manager"
+      class="tab-manager"
+    ><tab-manager>
   </div>
 </template>
 
 <script>
 // Script & tools
+
+import Vue from 'vue'
 import { ViewManager } from "../../services/ViewManager/ViewManager";
-import { EquipmentBack } from "./backend/EquipmentBack";
+import { AppBack } from "../../services/backend/AppBack";
 import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
@@ -85,21 +94,30 @@ import fileSaver from "file-saver";
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from "../../compoments/tabManager/tabManager.vue";
+import TabManager from "../../compoments/TabManager/TabManager.vue";
 // Specific components
-import Explorer from "./components/Explorer.vue";
-import Visualizer from "./components/Visualizer.vue";
-import CategoryAttribute from "./components/CategoryAttribute.vue";
-import Documentation from "./components/Documentation.vue";
-import "../../services/viewerUtils/eventsHandler/Equipment";
-const VIEW_KEY = "Equipment Center";
+import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
+import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
+import NodeDocumentation from "../../compoments/TabManager/generic/NodeDocumentation.vue";
+import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTickets.vue";
+import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue";
+import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue";
+import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
+import NodeTicketSelected from '../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue';
+
+const VIEW_KEY = "TicketApp";
 // Component exports
 export default {
-  name: "EquipmentCenter",
+  name: "TheTicketApp",
   components: {
     SpinalBreadcrumb,
     TabManager,
+    NodeNotesMessage,
+    NodeTickets,
+    NodeCalendar,
+    NodeTicketSelected,
   },
+
   data() {
     return {
       viewKey: VIEW_KEY,
@@ -109,13 +127,15 @@ export default {
       tabs: [
         {
           name: "node-type.context",
-          content: Explorer,
+          content: ContextExplorer,
           props: {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
           },
+          ignore: false,
         },
+
         {
           name: "spinal-twin.hasCategoryAttributes",
           content: CategoryAttribute,
@@ -123,21 +143,47 @@ export default {
             viewKey: VIEW_KEY,
             view: false,
           },
+          ignore: true,
         },
+
         {
           name: "spinal-twin.Documentation",
-          content: Documentation,
+          content: NodeDocumentation,
           props: {
             viewKey: VIEW_KEY,
             view: false,
-          }
-        }
+          },
+          ignore: true,
+        },
+
+        {
+          name: "spinal-twin.Notes",
+          content: NodeNotes,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+
+        // {
+        //   name: "spinal-twin.Calendar",
+        //   content: NodeCalendar,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //   },
+        //   ignore: true,
+        // },
       ],
     };
   },
+
   async mounted() {
-    await BackendInitializer.getInstance().initback(
-      EquipmentBack.getInstance()
+    const graph = await BackendInitializer.getInstance().getGraph()
+    await AppBack.getInstance().init(
+      graph,
+      "SpinalSystemServiceTicket"
     );
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it
     await ViewManager.getInstance(this.viewKey).init(
@@ -145,25 +191,28 @@ export default {
       0
     );
   },
+
   methods: {
     async onViewChange(view) {
+
+      // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
-        mapItems = await EquipmentBack.getInstance().getContexts();
-        // this.tabs[1].props.item = await EquipmentBack.getInstance().getContextsAttributes();
+        mapItems = await AppBack.getInstance().getContexts("SpinalSystemServiceTicketTypeTicket");
         this.isNode = false;
       } else {
         this.isNode = true;
         if (this.contextServId === 0) {
           this.contextServId = view.serverId;
         }
-        mapItems = await EquipmentBack.getInstance().getItems(
+        mapItems = await AppBack.getInstance().getItems(
           view.serverId,
-          this.contextServId
+          this.contextServId,
+          "SpinalSystemServiceTicketTypeTicket"
         );
       }
-
+      // Get children
       for (const [nodeType, items] of mapItems) {
         const cols = new Set();
         for (const item of items) {
@@ -176,40 +225,76 @@ export default {
         this.items = { nodeType, items, cols: Array.from(cols) };
       }
       this.currentView = view;
+      
+      // Update tabs
       this.tabs[0].props.items = this.items;
       this.updateNames();
+      if ( mapItems.size > 0) {
+        this.tabs[0].content = ContextExplorer;
+      } else {
+        // let ticket = await SpinalGraphService.findNode(this.currentView.serverId);
+        let nodeticket = FileSystem._objects[this.currentView.serverId];
+        // let ticket = await getTicketDescription(nodeticket.info);
+        // console.debug(JSON.stringify(ticket._ticket))
+        // let testComponent = Vue.extend(NodeTicketsSelected)
+        // this.tabs[0].content = new testComponent({
+        //   propsData: {
+        //     selected: ticket,
+        //     stepping: true,
+        //   },
+        // });
+        // this.tabs[0].content.$mount()
+        this.tabs[0].props.stepping = true;
+        this.tabs[0].props.selected = nodeticket.info.id.get();
+        console.debug("tab :", this.tabs[0].props.selected)
+        this.tabs[0].content = NodeTicketSelected;
+        // Vue.component(
+        //   "NodeTicketSelected",
+        //   require("../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue").default
+        // );
+      }
       for (let tab of this.tabs)
       {
         tab.props.view = this.currentView;
       }
+      if (this.isNode)
+      {
+        for (let tab of this.tabs)
+        {
+          tab.ignore = false;
+        }
+      }
+      else
+      {
+        for (let i = 1; i < this.tabs.length; ++i)
+        {
+          this.tabs[i].ignore = true;
+        }
+      }
     },
+
     updateNames()
     {
       this.tabs[0].name = `node-type.${this.items.nodeType}`;
     },
+
     popView() {
       ViewManager.getInstance(this.viewKey).pop()
     },
+
     zoomOn() {
-      EventBus.$emit("equipment-zoom-all", { server_id: this.currentView.serverId });
+      EventBus.$emit("ticket-viewer-zoom", { server_id: this.currentView.serverId });
     },
+
     isolateAll() {
-      // let list = this.items.items.map(item => {
-      //   return { server_id: item.serverId };
-      // });
-      // console.debug("list : ", list)
-      // EventBus.$emit("view-isolate-list", list);
-      EventBus.$emit("equipment-isolate-all", { server_id: this.currentView.serverId });
+      EventBus.$emit("ticket-viewer-isolate", { server_id: this.currentView.serverId });
     },
+
     selectInView() {
-      // let list = this.items.items.map(item => {
-      //   return { server_id: item.serverId };
-      // });
-      // console.debug("list : ", list)
-      // EventBus.$emit("view-isolate-list", list);
-      EventBus.$emit("equipment-select-item", { server_id: this.currentView.serverId });
+      EventBus.$emit("ticket-viewer-select", FileSystem._objects[this.currentView.serverId] );
     },
-    formatData(){
+
+    formatData() {
       const res = [];
       for (const item of this.items.items) {
         const resItem = {
@@ -237,6 +322,7 @@ export default {
       }
       return res
     },
+    
     exportToExcel() {
       let headers = [
         {
@@ -269,21 +355,23 @@ export default {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
     },
+
     Color() {
       let items = this.items.items.map(item => {
         return { server_id: item.serverId, color: item.getColor() };
       });
-      EventBus.$emit("equipment-color-all", items, { server_id: this.currentView.serverId });
+      EventBus.$emit("test-color-all", items, { server_id: this.currentView.serverId });
     },
+
     ShowAll() {
-      EventBus.$emit("equipment-show-all");
+      EventBus.$emit("test-show-all");
     },
   },
 };
 </script>
 
 <style scoped>
-.equipment-center {
+.hide-overflow {
   overflow: hidden;
 }
 .tab-manager {
@@ -305,5 +393,4 @@ export default {
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
 }
-
 </style>

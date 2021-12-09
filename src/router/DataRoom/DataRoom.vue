@@ -148,7 +148,7 @@ with this file. If not, see
                        icon="el-icon-download"
                        circle
                        @click="exportData(scope.row)"></el-button>
-                       <el-button 
+                       <el-button
                         type="danger"
                        icon="el-icon-delete"
                        circle
@@ -214,25 +214,25 @@ with this file. If not, see
       <div class="box">
       <h3> Endpoints </h3>
       <h6 v-if="(!this.floorEndpoints && !this.buildingEndpoints) || (this.floorEndpoints.length === 0 && this.buildingEndpoints.length === 0)">
-         No endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}} 
+         No endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}}
       </h6>
       
       <template v-else>
       <li> {{this.currentNodeInfo.selectedNode.info.name.get()}} </li>
-        <control-endpoint-component 
+        <control-endpoint-component
          v-for="endpoint of floorEndpoints"
          v-bind:key="endpoint.name"
          :name="endpoint.name"
          :endpoint="endpoint"
       ></control-endpoint-component>
       </template>
-      </div> 
+      </div>
 
       <div v-if="this.currentNodeInfo.selectedNode.info.type.get()=='geographicFloor' && this.roomEndpoints.length !=0">
         <h3> Room Endpoints </h3>
         <div v-for="room of roomEndpoints" v-bind:key="room.name">
           <li class="newline"> {{room.name}} </li>
-          <control-endpoint-component 
+          <control-endpoint-component
           v-for="end of room.info"
           v-bind:key="end.name"
           :name="end.name"
@@ -246,12 +246,12 @@ with this file. If not, see
     <!-- Tab Insight -->
     <el-tab-pane v-if="addTabs === true" :label="$t('DataRoom.Insight')">
       <h6 v-if="!this.floorControlEndpoints || this.floorControlEndpoints.length ==0" >
-         No control-endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}} 
+         No control-endpoints linked to {{this.currentNodeInfo.selectedNode.info.name.get()}}
       </h6>
       <template v-else>
         <div v-for="profil of controlEndpoints" v-bind:key="profil.name">
         <h3> {{profil.name}} </h3>
-        <control-endpoint-component 
+        <control-endpoint-component
          v-for="endpoint of profil.info"
          v-bind:key="endpoint.name"
          :name="endpoint.name"
@@ -287,7 +287,6 @@ import { ViewManager } from "../../services/ViewManager/ViewManager";
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 const VIEWKEY_DATA_ROOM_CENTER = "Data room";
 import { spinalBackEnd } from "../../services/spinalBackend";
-import TabManager from "../../compoments/tabManager/tabManager.vue";
 import DataRoomTypeTable from "./DataRoomTypeTable.vue";
 import CategoryAttribute from "./components/CategoryAttribute.vue";
 import ticketcreate from "./components/ticketcreate";
@@ -305,7 +304,7 @@ import { serviceTicketPersonalized } from "spinal-service-ticket";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import DisplayTabs from './components/DisplayTabs.vue';
 export default {
-  components: { SpinalBreadcrumb, DataRoomTypeTable, TabManager, CategoryAttribute,
+  components: { SpinalBreadcrumb, DataRoomTypeTable, CategoryAttribute,
   "ticket-create": ticketcreate,
   "header-bar": headerBarVue,
   "document-create": documentcreateVue,
@@ -610,7 +609,7 @@ export default {
       for(const attr of attributes){
         endpointInfo[attr.label] = attr.value;
       }
-      return endpointInfo; 
+      return endpointInfo;
     },
 
     async getNodeEndpointsInfo(nodeId,endpointRelation){

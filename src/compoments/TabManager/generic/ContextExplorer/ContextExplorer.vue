@@ -19,71 +19,77 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
+  <div style="height:100%">
     <div class="spl-button-bar">
-      <!-- <el-button
-        class="spl-el-button"
-        icon="el-icon-aim"
-        circle
-        @click.stop="isolateAll()"
-      >
-      </el-button> -->
-      <el-button
+      <button-switch
+        :active="colored"
+        @click.native="Color"
         class="spl-el-button"
         icon="el-icon-picture-outline-round"
-        circle
-        @click.stop="SeeAll()"
-      >
-      </el-button>
+      ></button-switch>
       <el-button
+        @click.stop="exportToExcel()"
         class="spl-el-button"
         icon="el-icon-download"
         circle
-        @click.stop="exportToExcel()"
-      >
-      </el-button>
+      ></el-button>
     </div>
-    <div v-if="Properties.items !== false" style="height:100%">
-      <node-table
+    
+    <div
+      v-if="Properties.items !== false"
+      style="height:calc(100% - 52px)"
+    >
+      <context-explorer-node-table
         :ref="'Explorer-table'"
         :view-key="Properties.viewKey"
         :items="itemsComputed"
         :columns="cols"
+        :relation="Properties.relation"
+        :depth="Properties.depth"
+        @select="Select"
+        @isolate="Isolate"
+        style="height:100%"
       >
-      </node-table>
+      </context-explorer-node-table>
     </div>
   </div>
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-// import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from "../backend/EquipmentBack";
-import BackendInitializer from "../../../services/BackendInitializer";
-import { EventBus } from "../../../services/event";
-import NodeTable from "./NodeTable.vue";
+// Tools
+import { EventBus } from "../../../../services/event";
+import { viewerState } from "./viewerState"
+
+// Components
+import ButtonSwitch from '../../../../compoments/ButtonSwitch'
+import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
+
 export default {
-  name: "Explorer",
-  components: { NodeTable },
+  name: "ContextExplorer",
+  components: {
+    ContextExplorerNodeTable,
+    ButtonSwitch
+  },
   props: {
     Properties: {
-      required: true,
       type: Object,
+      required: true,
       validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
+        if (!value.viewKey instanceof String) {
+          return false;
         }
-        return "success";
+        return true;
       },
     },
   },
+
   data() {
     return {
       items: false,
-      contextServId: 0,
-      currentView: null,
+      colored: false,
     };
   },
+
   computed: {
     itemsComputed() {
       if (
@@ -95,29 +101,42 @@ export default {
       return [];
     },
     cols() {
-      if (this.Properties && this.Properties.cols) return this.Properties.cols;
+      if (this.Properties && this.Properties.cols)
+        return this.Properties.cols;
       return [];
     },
   },
+
   methods: {
-    changeView(item) {
-      ViewManager.getInstance(this.Properties.viewKey).push(
-        item.name,
-        item.serverId
-      );
+    Color() {
+      viewerState.changeColoration();
+      EventBus.$emit("viewer-reset-color");
+      this.colored = false;
+      this.$refs["Explorer-table"].isColored = false;
+      if (viewerState.colored())
+      {
+        this.colored = true;
+        this.$refs["Explorer-table"].Color();
+      }
     },
-    SeeAll() {
-      this.$refs["Explorer-table"].SeeAll(this.Properties.view.serverId);
+
+    Select(item)
+    {
+      EventBus.$emit("viewer-select", item, this.Properties.relation);
     },
-    isolateAll() {
-      this.$refs["Explorer-table"].isolateAll(this.Properties.view.serverId);
+
+    Isolate(item)
+    {
+      viewerState.changeIsolation();
+      EventBus.$emit("viewer-reset-isolate");
+      if (viewerState.isolated())
+        this.$refs["Explorer-table"].Isolate();
     },
+
     exportToExcel() {
       this.$refs["Explorer-table"].exportToExcel();
     },
-    ShowAll() {
-      this.$refs["Explorer-table"].ShowAll();
-    },
+    
     async debug(what) {
       console.debug("Debugging", what);
     },
@@ -130,6 +149,7 @@ export default {
   margin: 0 0 0 10px;
 }
 .spl-button-bar {
+  overflow: hidden;
   display: flex;
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
@@ -137,5 +157,10 @@ export default {
 
 .spinal-height-control {
   height: auto;
+}
+
+.primary {
+  background: 'blue';
+  color: blue;
 }
 </style>
