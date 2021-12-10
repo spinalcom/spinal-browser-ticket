@@ -49,17 +49,27 @@
          {{value | filterValue}} {{unit}}
       </div>
 
+      <div class="relative">
+         <el-button  v-on:click="openChartModal" class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button>
 
       <el-button v-if="displayBoolButton" 
-      v-on:click="flip()" class="margin-left custom-icon circled-button" circle icon="el-icon-refresh">
+      v-on:click="flip()" class="config-btn-position custom-icon circled-button" circle icon="el-icon-refresh">
       </el-button>
 
       <el-button v-if="this.variableSelected.type=='Consigne' && this.variableSelected.dataType !='Boolean'" 
-      v-on:click="openModal()" class="margin-left custom-icon circled-button" circle icon="el-icon-setting">
+      v-on:click="openConfigModal()" class="config-btn-position custom-icon circled-button" circle icon="el-icon-setting">
       </el-button>
 
       
-      <value-config v-if="isModalVisible"
+
+
+
+      </div>
+      <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
+      </endpoint-chart-viewer-panel>
+      <!--<modal v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
+      </modal> -->
+      <value-config v-if="isConfigModalVisible"
          :endpoint ="this.endpoint" :config="this.variableSelected.config" :dataType="this.variableSelected.dataType"
          >
       </value-config>
@@ -75,12 +85,11 @@ const backendService = spinalBackEnd.heatmapBack;
 import valueConfig from "./value-config";
 import { EventBus } from "../../../../../services/event";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
-
-
-
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import endpointChartViewerPanel from "../../chart/endpointChartViewerPanel.vue"
 
 export default {
-   components: { valueConfig},
+   components: { valueConfig ,	endpointChartViewerPanel },
    name: "endpoint-component",
    props: { name: {}, endpoints: {}, variableSelected: {}, room:{} },
    data() {
@@ -90,13 +99,16 @@ export default {
          bindProcess: undefined,
          endpoint: undefined,
          displayBoolButton: undefined,
-         isModalVisible: false,
+         isConfigModalVisible: false,
+         isChartModalVisible : false,
          isInsightIsolate: false,
+         selectedNode : undefined,
       };
    },
-   mounted() {
+   async mounted() {
       this.updateEndpoint(); 
       this.updateDisplay();
+      this.selectedNode = await this.getEndpoint();
    },
 
    methods: {
@@ -156,14 +168,45 @@ export default {
             return '#c9b9b9'
          }
          return '#ffffff';
-         /*if(endpointValue == NULL){
-            console.log(this.endpoint);
-            return '#c9b9b9'
+      },
+      
+      //useless now ? not sure
+      async getEndpoint() {
+         let allControlPoints = await SpinalGraphService.getChildren(this.room.id, ["hasControlPoints"]);
+         for (let controlPoint of allControlPoints) {
+            let allBmsEndpoints = await SpinalGraphService.getChildren(controlPoint.id.get(), ["hasBmsEndpoint"]);
+            let test = allBmsEndpoints.filter(elt => elt.name.get() == this.endpoint.name.get());
+            if (test.length != 0){
+               test = test[0];
+               return SpinalGraphService.getInfo(test.id.get());
+               /*spinalPanelManagerService.openPanel("endpoint_chart_viewer", {
+				      selectedNode: SpinalGraphService.getInfo(test.id.get()),
+			      });*/
+
+            }
          }
-         else return '#ffffff'*/
+
+		},
+      // useless now
+      async printError(){
+
+         let allControlPoints = await SpinalGraphService.getChildren(this.room.id, ["hasControlPoints"]);
+         for (let controlPoint of allControlPoints) {
+            let allBmsEndpoints = await SpinalGraphService.getChildren(controlPoint.id.get(), ["hasBmsEndpoint"]);
+            let test = allBmsEndpoints.filter(elt => elt.name.get() == this.endpoint.name.get());
+            if (test.length != 0){
+               test = test[0];
+               //console.log(test.id.get());
+               console.log(SpinalGraphService.getInfo(test.id.get()));
+               //console.log(SpinalGraphService.getRealNode(test.id.get()))
+            }
+         }
+
+
+
+
       },
 
-      
 
       async focus() {
          
@@ -207,10 +250,16 @@ export default {
          return allBimObjects.map(el => el.get());
       },
 
-      
+      /*toggleModal: function(){
+         this.isChartModalVisible=!this.isChartModalVisible;
+      },*/
 
-      openModal() {
-      this.isModalVisible=!this.isModalVisible;
+      openChartModal(){
+         this.isChartModalVisible=!this.isChartModalVisible;
+      },
+
+      openConfigModal() {
+      this.isConfigModalVisible=!this.isConfigModalVisible;
       },
       onMouseOver(){
          //console.log(this.room);
@@ -242,7 +291,7 @@ export default {
    watch: {
       variableSelected() {
          if (this.endpoint && this.bindProcess){
-            this.isModalVisible=false;
+            this.isConfigModalVisible=false;
             this.endpoint.currentValue.unbind(this.bindProcess);
          }
          this.updateEndpoint();
@@ -343,7 +392,7 @@ export default {
 }
 
 .margin-left{
-   margin-left: 45%;
+   margin-left: 25%;
 }
 
 .circled-button{
@@ -360,6 +409,17 @@ export default {
    background-color: white;
 }
 
+.config-btn-position {
+   position: absolute;
+   left: 40%
+
+}
+
+.dashboard-btn-position{
+   position: absolute;
+   left:5%
+  
+}
 
 .custom-icon {
    font-size: 20px;

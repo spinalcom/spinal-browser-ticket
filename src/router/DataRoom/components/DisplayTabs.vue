@@ -440,8 +440,8 @@ export default {
       });
 
     this.controlEndpoints = await this.getNodeEndpointsInfo(this.nodeId,"hasControlPoints");
-    //console.log(this.controlEndpoints);
     this.endpoints = await this.getNodeEndpointsInfo(this.nodeId,"hasEndPoint");
+    
     const equipments = await SpinalGraphService.getChildren(this.nodeId);
     for (const equipment of equipments){
       const id = equipment.id.get();
@@ -450,6 +450,7 @@ export default {
         this.equipmentEndpoints.push({name: equipment.name.get(),info});
       }
     }
+    console.log("endpoints:",this.endpoints);
 
 
 

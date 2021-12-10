@@ -83,6 +83,7 @@ export default {
          if (value == undefined || !confirm("Are you sure you want to modify all values")){
             return;
          }
+         this.isModalVisible = false;
          for (var room of this.rooms){   
             var endpoints = room.endpoints;
             var endpoint = endpoints.find(
@@ -90,6 +91,7 @@ export default {
                );
             endpoint.currentValue.set(value);
          }
+         
       },
       getColor(endpointValue, config) {
          if (config.enumeration) {

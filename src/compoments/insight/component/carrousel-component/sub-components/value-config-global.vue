@@ -49,7 +49,7 @@ export default {
         validate(){
             //this.$parent.endpoint.currentValue.set(this.value);
             this.$emit("globalValue",this.value);
-            this.$parent.isModalVisible = false;
+            this.$parent.isConfigModalVisible = false;
         },
         FloatType(){
             return this.dataType == 'Float'  || this.dataType=='Double' || this.dataType=='Real' ;

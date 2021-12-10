@@ -39,6 +39,9 @@ import { REFERENCE_OBJECT_RELATION_NAME, BIM_OBJECT_TYPE } from 'spinal-env-view
 
 import q from "q";
 import { EQUIPMENT_RELATION, EQUIPMENT_TYPE, ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
+import {SpinalServiceTimeseries} from 'spinal-model-timeseries';
+
+
 
 
 export default class Heatmap {
@@ -259,41 +262,6 @@ export default class Heatmap {
   }
 
 
-  ///////////////////////////////////////////////////////////
-  //                surface  utilities                     //
-  ///////////////////////////////////////////////////////////
-
-
-  getContextSurface(contextObject) {
-    let surface = 0;
-    for (const category of contextObject.categories) {
-      surface += this.getCategoriesSurface(category);
-    }
-
-    return surface;
-  }
-
-  getCategoriesSurface(categoryObject) {
-    let surface = 0;
-
-    for (const group of categoryObject.groups) {
-      surface += this.getGroupSurface(group);
-    }
-
-    return surface;
-  }
-
-  getGroupSurface(groupObject) {
-    let surface = 0;
-    for (const room of groupObject.rooms) {
-      surface += this.getRoomSurface(room);
-    }
-    return surface;
-  }
-
-  getRoomSurface(roomObject) {
-    return roomObject.surface ? roomObject.surface : 0;
-  }
 
 
   ///////////////////////////////////////////////////////////

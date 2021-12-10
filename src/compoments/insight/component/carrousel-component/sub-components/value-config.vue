@@ -60,7 +60,7 @@ export default {
   methods: {
     validate() {
       this.$parent.endpoint.currentValue.set(this.value);
-      this.$parent.isModalVisible = false;
+      this.$parent.isConfigModalVisible = false;
     },
     FloatType() {
       return (
