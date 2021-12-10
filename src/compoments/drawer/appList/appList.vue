@@ -34,7 +34,6 @@ with this file. If not, see
                     :route="route.path"
                     class="drawer-list-item"
                     v-ripple>
-        <i class="el-icon-document drawer-list-item-icon"></i>
         <span>{{ $t("Routes." + route.name)}}</span>
       </el-menu-item>
     </el-menu>
