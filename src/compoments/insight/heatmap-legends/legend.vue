@@ -71,6 +71,7 @@ export default {
          );
       },
 
+      // Coloration sol ne marche pas - remarque : la variable ids est vide.
       colorElement() {
          this.unBindAll();
          this.endpoints.map(({ endpoint, ids }) => {
@@ -90,6 +91,7 @@ export default {
                spinal.SpinalForgeViewer.viewerManager.viewer.impl.invalidate(
                   true
                );
+               
             });
             this.bindProcessMap.set(endpoint, bindProcess);
          });

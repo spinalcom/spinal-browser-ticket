@@ -374,7 +374,7 @@ export default class Heatmap {
     if (info && info.type.get() === BIM_OBJECT_TYPE) {
       references = [info];
     } else {
-      references = await SpinalGraphService.getChildren(roomId, [REFERENCE_OBJECT_RELATION_NAME]);
+      references = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]);
     }
 
 

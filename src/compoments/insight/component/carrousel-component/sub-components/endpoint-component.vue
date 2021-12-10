@@ -50,7 +50,7 @@
       </div>
 
       <div class="relative">
-         <el-button  v-on:click="openChartModal" class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button>
+      <!--<el-button  v-on:click="openChartModal" class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button> -->
 
       <el-button v-if="displayBoolButton" 
       v-on:click="flip()" class="config-btn-position custom-icon circled-button" circle icon="el-icon-refresh">
@@ -65,8 +65,8 @@
 
 
       </div>
-      <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
-      </endpoint-chart-viewer-panel>
+      <!--<endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
+      </endpoint-chart-viewer-panel> -->
       <!--<modal v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
       </modal> -->
       <value-config v-if="isConfigModalVisible"
@@ -89,7 +89,7 @@ import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import endpointChartViewerPanel from "../../chart/endpointChartViewerPanel.vue"
 
 export default {
-   components: { valueConfig ,	endpointChartViewerPanel },
+   components: { valueConfig ,	/*endpointChartViewerPanel*/ },
    name: "endpoint-component",
    props: { name: {}, endpoints: {}, variableSelected: {}, room:{} },
    data() {
@@ -120,6 +120,7 @@ export default {
             this.bindProcess = this.endpoint.currentValue.bind(() => {
                this.value = this.endpoint.currentValue.get();
                this.unit = this.endpoint.unit.get();
+               if(isNaN(this.value)) this.unit = "";
             });
          }
          

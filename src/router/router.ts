@@ -28,14 +28,14 @@ import Vue from "vue";
 Vue.use(VueRouter);
 
 const AppList = () => import('./AppList/AppList.vue');
-const TicketCenter = () => import('./TicketCenter/TicketCenter.vue');
+//const TicketCenter = () => import('./TicketCenter/TicketCenter.vue');
 const InsightCenter = () => import('./InsightCenter/InsightCenter.vue');
 const SpaceCenter = () => import('./Space Center/spacecenter.vue');
 const SpaceCenterGestion = () => import('../compoments/space/component/categoryLstVue.vue');
-const DataRoom = () => import("./DataRoom/DataRoom.vue")
+//const DataRoom = () => import("./DataRoom/DataRoom.vue")
 const EquipmentApp = () => import("./EquipmentApp/TheEquipmentApp.vue")
 const DataApp = () => import("./DataApp/TheDataApp.vue")
-const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
+//const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
 export const routes = [
   { path: '*', redirect: { name: 'AppList' } },
   { path: '/AppList', name: 'AppList', component: AppList },
