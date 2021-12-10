@@ -91,6 +91,7 @@ import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer/viewerState.ts";
+import { getEquipmentNumber } from "./EquipmentTools"
 import {
   EQUIPMENT_RELATION,
 } from '../../constants';
@@ -128,7 +129,7 @@ export default {
   data() {
     return {
       viewKey: VIEW_KEY,
-      items: false,
+      items: {},
       currentView: false,
       isNode: false,
       isolated: false,
@@ -140,7 +141,7 @@ export default {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
-            relation: EQUIPMENT_RELATION,
+            relation: [ EQUIPMENT_RELATION ],
           },
           ignore: false,
         },
@@ -253,19 +254,39 @@ export default {
       }
 
       // Get children
+      // for (const [nodeType, items] of mapItems) {
+      //   const cols = new Set();
+      //   for (const item of items) {
+      //     if (item.children) {
+      //       for (const [childTypes] of item.children) {
+      //         cols.add(childTypes);
+      //       }
+      //     }
+      //   }
+      //   console.debug("cols ?", Array.from(cols));
+      //   this.items = { nodeType, items, cols: Array.from(cols) };
+      // }
+
+      // Get children
       for (const [nodeType, items] of mapItems) {
-        const cols = new Set();
-        for (const item of items) {
-          if (item.children) {
-            for (const [childTypes] of item.children) {
-              cols.add(childTypes);
-            }
-          }
-        }
-        this.items = { nodeType, items, cols: Array.from(cols) };
+        this.items.nodeType = nodeType
+        this.items.items = items;
       }
+
+      await Promise.all(this.items.items.map(async function (item) {
+        item["TotalEquipments"] = await getEquipmentNumber(item);
+      }));
+
       this.currentView = view;
+      this.setColumns(view);
       
+      if (this.isolated == true)
+      {
+        viewerState.changeIsolation();
+        EventBus.$emit("viewer-reset-isolate");
+        this.isolated = false;
+      }
+            
       // Update tabs
       this.tabs[0].props.items = this.items;
       this.updateNames();
@@ -286,6 +307,27 @@ export default {
         {
           this.tabs[i].ignore = true;
         }
+      }
+    },
+
+    setColumns(view) {
+      let node = FileSystem._objects[view.serverId];
+      this.items.cols = [ ];
+      if (!node) {
+        this.items.cols = [ "CategoryCount", "TotalEquipments" ];
+        return;
+      }
+      let nodeType = node.info.type.get();
+      switch (nodeType)
+      {
+        case "BIMObjectGroupContext":
+          this.items.cols = [ "GroupCount", "TotalEquipments" ];
+          break;
+        case "groupingCategory":
+          this.items.cols = [ "EquipmentCount" ];
+          break;
+        default:
+          this.items.cols = [ ];
       }
     },
 

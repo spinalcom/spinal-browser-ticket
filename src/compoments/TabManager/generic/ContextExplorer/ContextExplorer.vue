@@ -101,8 +101,11 @@ export default {
       return [];
     },
     cols() {
-      if (this.Properties && this.Properties.cols)
-        return this.Properties.cols;
+      if (this.Properties &&
+        this.Properties.items &&
+        this.Properties.items.cols
+      )
+        return this.Properties.items.cols;
       return [];
     },
   },

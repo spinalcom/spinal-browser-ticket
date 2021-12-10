@@ -106,7 +106,7 @@ import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import { viewerState } from './viewerState';
 
-const CountNames = [ "BuildingCount", "FloorCount", "RoomCount", "EquipmentCount" ];
+const CountNames = [ "BuildingCount", "FloorCount", "RoomCount", "CategoryCount", "GroupCount", "EquipmentCount" ];
 
 export default {
   name: "ContextExplorerNodeTable",
@@ -185,6 +185,7 @@ export default {
           color: item.getColor(),
         };
         if (resItem.color) colorUsed.push(resItem.color);
+        console.debug("cols", this.columns)
         for (let col of this.columns) {
           resItem[col] = item[col];
         }
