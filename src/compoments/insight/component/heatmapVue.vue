@@ -156,6 +156,7 @@ export default {
 
       getEndpointToBind(endpointId) {
          const promises = this.profil.rooms.map(async (el) => {
+            //console.log(el);
             const endpoint = el.endpoints.find((e) => e.id.get() == endpointId);
             return {
                endpoint,
