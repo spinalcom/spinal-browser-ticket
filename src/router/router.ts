@@ -37,7 +37,7 @@ const EquipmentApp = () => import("./EquipmentApp/TheEquipmentApp.vue")
 const DataApp = () => import("./DataApp/TheDataApp.vue")
 const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
 export const routes = [
-  { path: '*', redirect: { name: 'App List' } },
+  { path: '*', redirect: { name: 'AppList' } },
   { path: '/AppList', name: 'AppList', component: AppList },
   // { path: '/DataRoom', name: 'Data Room', component: DataRoom },
   // { path: '/TicketCenter', name: 'Ticket Center', component: TicketCenter },
