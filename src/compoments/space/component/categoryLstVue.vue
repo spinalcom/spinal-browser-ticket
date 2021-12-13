@@ -128,7 +128,7 @@ import ChartsEsp from "./ChartsEsp";
 import { EventBus } from "../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
-
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 
 export default {
@@ -193,16 +193,24 @@ export default {
     async getAllBimObjects(data) {
       // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
       const promises = data.rooms.map(el =>
-        groupManagerUtilities.getBimObjects(el.id)
+        //groupManagerUtilities.getBimObjects(el.id)
+        this.getBimObjectsAndRoomReference(el.id)
       );
-
       const allBimObjects = await Promise.all(promises).then(result => {
         result = result.flat(10);
         return result;
       });
-
       return allBimObjects.map(el => el.get());
     },
+
+    async getBimObjectsAndRoomReference(roomId) {
+      let objects = await groupManagerUtilities.getBimObjects(roomId);
+      let ref = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]); // la constante dans spinal-env-viewer-context-geographic-service/build/constants.js pas correcte
+      return objects.concat(ref);
+    },
+
+
+
     async SeeAll() {
       if (this.roomsSelected) {
         this.$refs.roomscomponent.SeeAll();
