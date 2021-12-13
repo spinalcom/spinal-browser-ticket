@@ -43,6 +43,10 @@ async function findSurface(node) : Promise<number>
     let attr = await getAttrByKey(info, "area");
     return attr.value.get();
   }
+  if (node.children === undefined)
+  {
+    return 0;
+  }
   for (let [_, childList] of node.children)
   {
     for (let child of childList)
