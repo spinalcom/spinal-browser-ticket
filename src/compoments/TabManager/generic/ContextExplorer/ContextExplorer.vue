@@ -46,6 +46,7 @@ with this file. If not, see
         :columns="cols"
         :relation="Properties.relation"
         :depth="Properties.depth"
+        :context="Properties.context"
         @select="Select"
         @isolate="Isolate"
         style="height:100%"

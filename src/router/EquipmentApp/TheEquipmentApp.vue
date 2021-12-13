@@ -142,6 +142,7 @@ export default {
             items: false,
             view: false,
             relation: [ EQUIPMENT_RELATION ],
+            context: false,
           },
           ignore: false,
         },
@@ -289,6 +290,7 @@ export default {
             
       // Update tabs
       this.tabs[0].props.items = this.items;
+      this.tabs[0].props.context = this.contextServId;
       this.updateNames();
       for (let tab of this.tabs)
       {

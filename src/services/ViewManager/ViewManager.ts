@@ -61,11 +61,17 @@ export class ViewManager {
     if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
   }
 
-  pop() {
-    this.breadcrumb.pop();
+  pop(trigger: boolean = true) : ISpinalView {
+    let ret = this.breadcrumb.pop();
     const view = this.breadcrumb[this.breadcrumb.length - 1];
-    this.onChangeFct.forEach(fct => {fct(view)})
+    if (trigger)
+      this.onChangeFct.forEach(fct => {fct(view)})
     if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb)
+    return ret;
+  }
+  
+  back() : ISpinalView {
+    return this.breadcrumb[this.breadcrumb.length - 1];
   }
 
   breacrumbSubscribe(fct: ViewManagerBreacrumbSubscribeFct) {
