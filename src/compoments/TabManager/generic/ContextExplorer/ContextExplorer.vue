@@ -87,7 +87,7 @@ export default {
   data() {
     return {
       items: false,
-      colored: false,
+      colored: viewerState.colored(),
     };
   },
 
@@ -115,13 +115,12 @@ export default {
     Color() {
       viewerState.changeColoration();
       EventBus.$emit("viewer-reset-color");
-      this.colored = false;
       this.$refs["Explorer-table"].isColored = false;
       if (viewerState.colored())
       {
-        this.colored = true;
         this.$refs["Explorer-table"].Color();
       }
+      this.colored = viewerState.colored();
     },
 
     Select(item)
