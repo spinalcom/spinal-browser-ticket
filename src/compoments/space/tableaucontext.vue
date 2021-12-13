@@ -102,7 +102,7 @@ export default {
   },
   watch: {
     contextLst() {
-      console.log("context", this.contextLst);
+      //console.log("context", this.contextLst);
     }
   },
   async mounted() {},
