@@ -91,6 +91,7 @@ import fileSaver from "file-saver";
 import { EventBus } from "../../../services/event";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 
 export default {
   data() {
@@ -116,7 +117,7 @@ export default {
       excelManager.export(excelData).then(reponse => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
-      // console.log("expoooooooooooort", this.data);
+      
     },
     async SeeAll() {
       let listes = this.data.map(el => this.getSalles(el));
@@ -135,8 +136,9 @@ export default {
     },
 
     async getAllBimObjects(id) {
-      const allBimObjects = await groupManagerUtilities.getBimObjects(id);
-
+      let allBimObjects = await groupManagerUtilities.getBimObjects(id);
+      let ref = await SpinalGraphService.getChildren(id, ["hasReferenceObject.ROOM"]);
+      allBimObjects = allBimObjects.concat(ref);
       return allBimObjects.map(el => el.get());
     },
 
