@@ -193,6 +193,7 @@ export default {
           }
         }
         else if (FileSystem._objects[item.serverId] !== undefined) {
+          resItem["children"] = 0;
           let thisnode = FileSystem._objects[item.serverId];
           if (thisnode.children.PtrLst !== undefined) {
             for (const name of thisnode.children.PtrLst._attribute_names) {
