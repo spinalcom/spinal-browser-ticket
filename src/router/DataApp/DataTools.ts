@@ -35,7 +35,7 @@ async function findSurface(node) : Promise<number>
 {
   let area = 0;
   const info = FileSystem._objects[node.serverId];
-  if (node.children === undefined || info === undefined)
+  if (info === undefined)
   {
     return 0;
   }
