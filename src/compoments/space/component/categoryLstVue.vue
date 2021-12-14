@@ -154,7 +154,7 @@ export default {
         // if (this.roomsSelected && this.roomsSelected.id === obj.id) {
         //   this.roomsSelected = obj;
         // }
-        console.log(obj)
+        //console.log(obj)
         let roo = {
           id: obj.id,
           name: obj.name,
