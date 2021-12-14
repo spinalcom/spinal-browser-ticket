@@ -77,7 +77,7 @@ export default {
   "spinal-twin.Back": "Retour",
   "spinal-twin.Isolate": "Isoler",
   "spinal-twin.Select": "Sélectionner",
-  "spinal-twin.Area": "Surface",
+  "spinal-twin.Area": "Surface (m²)",
   "spinal-twin.children": "Nombre de noeuds enfants",
   "spinal-twin.BuildingCount": "Nombre de bâtiments",
   "spinal-twin.FloorCount": "Nombre d'étages",

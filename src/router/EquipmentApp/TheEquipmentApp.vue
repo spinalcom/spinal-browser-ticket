@@ -255,20 +255,6 @@ export default {
       }
 
       // Get children
-      // for (const [nodeType, items] of mapItems) {
-      //   const cols = new Set();
-      //   for (const item of items) {
-      //     if (item.children) {
-      //       for (const [childTypes] of item.children) {
-      //         cols.add(childTypes);
-      //       }
-      //     }
-      //   }
-      //   console.debug("cols ?", Array.from(cols));
-      //   this.items = { nodeType, items, cols: Array.from(cols) };
-      // }
-
-      // Get children
       for (const [nodeType, items] of mapItems) {
         this.items.nodeType = nodeType
         this.items.items = items;
