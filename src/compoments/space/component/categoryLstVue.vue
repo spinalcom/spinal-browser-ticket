@@ -61,10 +61,10 @@ with this file. If not, see
             </el-table-column>
             true
             <el-table-column prop="surface"
-                             :label="$t('SpaceManagement.Surface')"
+                             :label="$t('SpaceManagement.Surface') + ' (m²)'">
                              align="center">
               <template slot-scope="scope">
-                {{ scope.row.surface | roundSurface }} m²
+                {{ scope.row.surface | roundSurface }}
               </template>
             </el-table-column>
             <el-table-column label=""

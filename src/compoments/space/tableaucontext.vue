@@ -65,10 +65,10 @@ with this file. If not, see
               </template>
             </el-table-column>
 
-            <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
+            <el-table-column :label="$t('SpaceManagement.SurfaceTotale') + ' (m²)'">
                              align="center">
               <template slot-scope="scope">
-                {{ getSurfaceTotale(scope.row) }} m²
+                {{ getSurfaceTotale(scope.row) }}
               </template>
             </el-table-column>
 
