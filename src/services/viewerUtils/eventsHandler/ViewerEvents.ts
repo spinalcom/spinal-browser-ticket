@@ -27,18 +27,18 @@ import { viewerUtils } from "../viewerUtils";
 import { spinalBackEnd } from '../../spinalBackend';
 
 EventBus.$on('viewer-zoom', async (root, relation) => {
-  await viewerUtils.waitInitialized()
+  await viewerUtils.waitInitialized();
   const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: root.serverId }, relation);
   await viewerUtils.fitToView(items);
 });
 
 EventBus.$on('viewer-reset-isolate', async () => {
-  await viewerUtils.waitInitialized()
+  await viewerUtils.waitInitialized();
   viewerUtils.showAll();
 });
 
 EventBus.$on('viewer-isolate', async (items, relation) => {
-  await viewerUtils.waitInitialized()
+  await viewerUtils.waitInitialized();
   viewerUtils.showAll()
   let list = [];
   await Promise.all(items.map( async (item) => {
@@ -49,24 +49,24 @@ EventBus.$on('viewer-isolate', async (items, relation) => {
 });
 
 EventBus.$on('viewer-reset-select', async () => {
-  await viewerUtils.waitInitialized()
+  await viewerUtils.waitInitialized();
   viewerUtils.clearSelection();
 });
 
 EventBus.$on('viewer-select', async (root, relation) => {
-  await viewerUtils.waitInitialized()
+  await viewerUtils.waitInitialized();
   const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: root.serverId }, relation);
   viewerUtils.selectObjects(items);
 });
 
 EventBus.$on('viewer-reset-color', async () => {
-  await viewerUtils.waitInitialized()
+  await viewerUtils.waitInitialized();
   viewerUtils.restoreColorThemingItems();
 });
 
 EventBus.$on('viewer-color', async (items, relation) => {
-  await viewerUtils.waitInitialized()
-  viewerUtils.restoreColorThemingItems()
+  await viewerUtils.waitInitialized();
+  viewerUtils.restoreColorThemingItems();
   items.map( async (item) => {
     const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true);
     for (const { selection, model } of list) {

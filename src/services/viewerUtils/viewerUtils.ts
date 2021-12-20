@@ -186,7 +186,6 @@ export class ViewerUtils {
 
   colorThemingItems(model, color: string, dbIds: number[]) {
     this.elementColored.add({ model, dbIds });
-    //console.log(color);
     const _color = this.convertHewToRGB(color);
     dbIds.forEach(dbId => {
       model.setThemingColor(
