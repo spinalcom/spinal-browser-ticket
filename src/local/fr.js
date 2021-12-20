@@ -26,6 +26,7 @@
 export default {
   "Cancel": "Annuler",
   "Confirm": "Confirmer",
+  "Table": "Tableau",
   "sidebar.topButton.buildingNameDefault": "Batiment",
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
