@@ -41,7 +41,7 @@ with this file. If not, see
                   <div v-if="scope.row.color"
                        class="spinal-table-cell-color"
                        :style="getColor(scope.row.color)"></div>
-                  <div> {{ scope.row.name }} </div>
+                  <div class="word-break"> {{ scope.row.name }} </div>
                 </div>
               </template>
             </el-table-column>
@@ -199,6 +199,10 @@ export default {
 
 .el-icon-download {
   width: 30px;
+}
+
+.word-break {
+  word-break: normal;
 }
 </style>
 

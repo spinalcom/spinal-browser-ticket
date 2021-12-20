@@ -29,7 +29,7 @@ with this file. If not, see
         <el-breadcrumb class="breadcrumb-style"
                        separator="/">
           <el-breadcrumb-item>
-            <a @click="ResetBreadCrumb()">Insight Center</a>
+            <a @click="ResetBreadCrumb()">{{$t("Routes.InsightCenter")}}</a>
           </el-breadcrumb-item>
           <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
                               :key="index">

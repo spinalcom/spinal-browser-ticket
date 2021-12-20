@@ -181,6 +181,12 @@ export default {
          this.index = 0;
          
       }
+      /*// Update references
+      for(const element of this.profil.rooms){
+            element.references = await backendService._getRoomReferences(element.id);
+      }*/
+
+      
    },
 
    watch: {

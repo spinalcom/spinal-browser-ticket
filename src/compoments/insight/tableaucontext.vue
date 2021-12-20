@@ -28,7 +28,7 @@ with this file. If not, see
     
     <el-tabs type="border-card">
 
-      <el-tab-pane label="Tableau">
+      <el-tab-pane :label="$t('Table')">
 
         <header-bar :header="getHeader()"
                     :content="getRow()"
