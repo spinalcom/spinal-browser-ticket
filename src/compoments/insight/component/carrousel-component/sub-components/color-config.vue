@@ -1,33 +1,5 @@
 <template>
    <div class="__container">
-      <!-- <config-component
-         class="header-item"
-         v-if="variableSelected.config.min"
-         :config="variableSelected.config.min"
-         :name="'Min'"
-         @updateAverage="updateAverage"
-         @colorUpdated="sendEvent"
-      ></config-component>
-
-      <config-component
-         class="header-item"
-         v-if="variableSelected.config.average"
-         :config="variableSelected.config.average"
-         :disabled="true"
-         :name="'Average'"
-         @updateAverage="updateAverage"
-         @colorUpdated="sendEvent"
-      ></config-component>
-
-      <config-component
-         class="header-item"
-         v-if="variableSelected.config.max"
-         :config="variableSelected.config.max"
-         :name="'Max'"
-         @updateAverage="updateAverage"
-         @colorUpdated="sendEvent"
-      ></config-component> -->
-
       <config-component
          class="header-item"
          v-for="item of colors"
