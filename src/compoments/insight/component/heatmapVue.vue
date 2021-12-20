@@ -156,6 +156,7 @@ export default {
 
       getEndpointToBind(endpointId) {
          const promises = this.profil.rooms.map(async (el) => {
+            //console.log(el);
             const endpoint = el.endpoints.find((e) => e.id.get() == endpointId);
             return {
                endpoint,
@@ -180,6 +181,12 @@ export default {
          this.index = 0;
          
       }
+      /*// Update references
+      for(const element of this.profil.rooms){
+            element.references = await backendService._getRoomReferences(element.id);
+      }*/
+
+      
    },
 
    watch: {

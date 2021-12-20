@@ -50,7 +50,7 @@ with this file. If not, see
   <el-row>
     <el-tabs type="border-card">
 
-      <el-tab-pane label="Tableau">
+      <el-tab-pane :label="$t('Table')">
 
         <el-button class="boutton-barre"
                icon="el-icon-arrow-left"

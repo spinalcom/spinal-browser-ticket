@@ -35,13 +35,17 @@ async function findSurface(node) : Promise<number>
 {
   let area = 0;
   const info = FileSystem._objects[node.serverId];
-  if (node.children === undefined || info === undefined)
+  if (info === undefined)
   {
     return 0;
   }
   if (info.getType().get() === ROOM_TYPE) {
     let attr = await getAttrByKey(info, "area");
     return attr.value.get();
+  }
+  if (node.children === undefined)
+  {
+    return 0;
   }
   for (let [_, childList] of node.children)
   {

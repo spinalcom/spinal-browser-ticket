@@ -26,6 +26,14 @@
 export default {
   "Cancel": "Annuler",
   "Confirm": "Confirmer",
+  "Table": "Tableau",
+  "True": "Vrai",
+  "False": "Faux",
+  "Min": "Minimum",
+  "Max": "Maximum",
+  "Average": "Moyenne",
+  "Value": "Valeur",
+  
   "sidebar.topButton.buildingNameDefault": "Batiment",
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
@@ -77,12 +85,15 @@ export default {
   "spinal-twin.Back": "Retour",
   "spinal-twin.Isolate": "Isoler",
   "spinal-twin.Select": "Sélectionner",
-  "spinal-twin.Area": "Surface",
+  "spinal-twin.Area": "Surface (m²)",
   "spinal-twin.children": "Nombre de noeuds enfants",
   "spinal-twin.BuildingCount": "Nombre de bâtiments",
   "spinal-twin.FloorCount": "Nombre d'étages",
   "spinal-twin.RoomCount": "Nombre de salles",
+  "spinal-twin.CategoryCount": "Nombre de catégories",
+  "spinal-twin.GroupCount": "Nombre de groupes",
   "spinal-twin.EquipmentCount": "Nombre d'équipements",
+  "spinal-twin.TotalEquipments": "Nombre total d'équipements",
   "spinal-twin.hasCategoryAttributes": "Attributs",
   "spinal-twin.CategoryAdd": "Ajouter une categorie d'attributs",
   "spinal-twin.CategoryEdit": "Editer la categorie ",
@@ -155,5 +166,6 @@ export default {
   "HeatmapCenter.Valeur": "Valeur",
   "HeatmapCenter.Heatmap_bool": "Afficher Heatmap",
   "HeatmapCenter.Courbe_bool": "Afficher courbe",
-  "HeatmapCenter.GO": "Go"
+  "HeatmapCenter.GO": "Go",
+  "HeatmapCenter.ModifyAll": "Modifier toutes les valeurs"
 };

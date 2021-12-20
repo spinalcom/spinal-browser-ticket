@@ -80,16 +80,20 @@ export default {
                let color = this.getColor(value, this.profil.config);
                let vector = backendService.convertColorToVector(color);
                ids.forEach((el) => {
+                  if(el.model) {
                   this.bimObjectsColored.push({ model: el.model, ids: el.ids });
-
+                  
                   el.ids.forEach((id) => {
+                     
                      el.model.setThemingColor(id, vector, true);
                   });
+                  }
                });
 
                spinal.SpinalForgeViewer.viewerManager.viewer.impl.invalidate(
                   true
                );
+               
             });
             this.bindProcessMap.set(endpoint, bindProcess);
          });

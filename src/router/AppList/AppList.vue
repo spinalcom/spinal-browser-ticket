@@ -42,8 +42,6 @@ with this file. If not, see
             <svg class="app-item-image"></svg>
           </div> -->
           <div class="app-item-text">
-            <i class="el-icon-edit"
-               style="font-size: 30px;"></i>
             <span>{{ $t('Routes.' + route.name) }}</span>
           </div>
         </el-card>

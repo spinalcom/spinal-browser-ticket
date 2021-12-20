@@ -151,6 +151,7 @@ export default {
             view: false,
             relation: [],
             depth: 6,
+            context: false,
           },
           ignore: false,
         },
@@ -241,7 +242,7 @@ export default {
     );
     this.relations = GEO_RELATIONS;
     this.relations.push("hasReferenceObject.ROOM");
-    this.tabs[0].props.relations = this.relations;
+    this.tabs[0].props.relation = this.relations;
   },
 
   methods: {
@@ -287,6 +288,7 @@ export default {
       // Update tabs
       this.tabs[0].props.items = this.items;
       this.tabs[0].props.cols = this.items.cols;
+      this.tabs[0].props.context = this.contextServId;
       this.updateNames();
       for (let tab of this.tabs)
       {

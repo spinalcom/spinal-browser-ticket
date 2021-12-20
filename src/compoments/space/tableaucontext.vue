@@ -41,7 +41,7 @@ with this file. If not, see
                   <div v-if="scope.row.color"
                        class="spinal-table-cell-color"
                        :style="getColor(scope.row.color)"></div>
-                  <div> {{ scope.row.name }} </div>
+                  <div class="word-break"> {{ scope.row.name }} </div>
                 </div>
               </template>
             </el-table-column>
@@ -65,10 +65,10 @@ with this file. If not, see
               </template>
             </el-table-column>
 
-            <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
+            <el-table-column :label="$t('SpaceManagement.SurfaceTotale') + ' (m²)'">
                              align="center">
               <template slot-scope="scope">
-                {{ getSurfaceTotale(scope.row) }} m²
+                {{ getSurfaceTotale(scope.row) }}
               </template>
             </el-table-column>
 
@@ -102,7 +102,7 @@ export default {
   },
   watch: {
     contextLst() {
-      console.log("context", this.contextLst);
+      //console.log("context", this.contextLst);
     }
   },
   async mounted() {},
@@ -199,6 +199,10 @@ export default {
 
 .el-icon-download {
   width: 30px;
+}
+
+.word-break {
+  word-break: normal;
 }
 </style>
 

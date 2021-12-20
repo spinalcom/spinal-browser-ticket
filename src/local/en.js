@@ -25,6 +25,14 @@
 export default {
   "Cancel": "Cancel",
   "Confirm": "Confirm",
+  "Table": "Table",
+  "True": "True",
+  "False": "False",
+  "Min": "Minimum",
+  "Max": "Maximum",
+  "Average": "Average",
+  "Value": "Value",
+  
   "sidebar.topButton.buildingNameDefault": "Building",
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
@@ -76,12 +84,15 @@ export default {
   "spinal-twin.Back": "Go Back",
   "spinal-twin.Isolate": "Isolate",
   "spinal-twin.Select": "Select",
-  "spinal-twin.Area": "Area",
+  "spinal-twin.Area": "Area (m²)",
   "spinal-twin.children": "Child node number",
   "spinal-twin.BuildingCount": "Buildings number",
   "spinal-twin.FloorCount": "Level number",
   "spinal-twin.RoomCount": "Room number",
-  "spinal-twin.EquipmentCount": "Equipment Number",
+  "spinal-twin.CategoryCount": "Category number",
+  "spinal-twin.GroupCount": "Group number",
+  "spinal-twin.EquipmentCount": "Equipment number",
+  "spinal-twin.TotalEquipments": "Total equipment number",
   "spinal-twin.hasCategoryAttributes": "Attributes",
   "spinal-twin.CategoryAdd": "Add attribute category",
   "spinal-twin.CategoryEdit": "Edit category ",
@@ -152,6 +163,7 @@ export default {
   "HeatmapCenter.Valeur": "Value",
   "HeatmapCenter.Heatmap_bool": "Display Heatmap",
   "HeatmapCenter.Courbe_bool": "Display graph",
-  "HeatmapCenter.GO": "Go"
+  "HeatmapCenter.GO": "Go",
+  "HeatmapCenter.ModifyAll": "Modify all values"
 };
 

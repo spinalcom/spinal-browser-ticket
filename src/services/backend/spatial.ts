@@ -260,7 +260,7 @@ export default class BackEndSpatial {
     const node = getNodeFromItem(item);
     const relations = [...relation]
     const listNode = await node.find(relations, (n) => {
-      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject" || n.getType().get() === "groupHasBIMObject");
     });
     return sortBIMObjectByModel(listNode);
   }

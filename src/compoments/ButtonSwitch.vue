@@ -28,8 +28,7 @@ with this file. If not, see
       :icon="icon"
       type="primary"
       circle
-    >
-    </el-button>
+    ></el-button>
   </div>
   
   <div v-else>
@@ -37,8 +36,7 @@ with this file. If not, see
       :icon="icon"
       :disabled="disabled"
       circle
-    >
-    </el-button>
+    ></el-button>
   </div>
 </template>
 
@@ -47,7 +45,7 @@ export default {
   name: "ButtonSwitch",
   props: {
     icon: { type: String, required: true },
-    active: { type: Boolean, required: true},
+    active: { type: Boolean, required: true },
     disabled: { type: Boolean, required: false, default: false },
   },
 }

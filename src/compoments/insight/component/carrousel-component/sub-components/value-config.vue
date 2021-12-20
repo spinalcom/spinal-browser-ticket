@@ -29,7 +29,7 @@
       </option>
     </select>
 
-    <p class="value" align="center">value : {{ value }}</p>
+    <p class="value" align="center"> {{$t("Value")}} : {{ value }}</p>
 
     <el-button v-on:click="validate()" class="_button"> OK </el-button>
   </div>
@@ -51,10 +51,12 @@ export default {
 
   mounted() {
     if (this.FloatType() || this.IntegerType()) {
-      this.value = this.endpoint.currentValue.get();
+      this.value = this.endpoint.currentValue.get().toFixed(2);
       this.min = this.config.min.value;
       this.max = this.config.max.value;
     }
+  },
+  computed:{
   },
 
   methods: {
@@ -100,6 +102,7 @@ export default {
   overflow: hidden;
   overflow-y: auto;
   z-index: 2;
+  top:25%
 }
 
 ._button {

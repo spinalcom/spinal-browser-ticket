@@ -46,6 +46,7 @@ with this file. If not, see
         :columns="cols"
         :relation="Properties.relation"
         :depth="Properties.depth"
+        :context="Properties.context"
         @select="Select"
         @isolate="Isolate"
         style="height:100%"
@@ -86,7 +87,7 @@ export default {
   data() {
     return {
       items: false,
-      colored: false,
+      colored: viewerState.colored(),
     };
   },
 
@@ -101,8 +102,11 @@ export default {
       return [];
     },
     cols() {
-      if (this.Properties && this.Properties.cols)
-        return this.Properties.cols;
+      if (this.Properties &&
+        this.Properties.items &&
+        this.Properties.items.cols
+      )
+        return this.Properties.items.cols;
       return [];
     },
   },
@@ -111,13 +115,12 @@ export default {
     Color() {
       viewerState.changeColoration();
       EventBus.$emit("viewer-reset-color");
-      this.colored = false;
       this.$refs["Explorer-table"].isColored = false;
       if (viewerState.colored())
       {
-        this.colored = true;
         this.$refs["Explorer-table"].Color();
       }
+      this.colored = viewerState.colored();
     },
 
     Select(item)

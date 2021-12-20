@@ -64,7 +64,6 @@ with this file. If not, see
       </el-table-column>
 
       <el-table-column
-        v-if="haveChildren"
         label=""
         width="65"
         align="center"
@@ -73,21 +72,12 @@ with this file. If not, see
         <div slot-scope="scope">
           <el-button
             v-if="scope.row.haveChild"
-            @click="onSelectGroup(scope.row)"
+            @click="onSelectItem(scope.row)"
             icon="el-icon-arrow-right"
             circle
           ></el-button>
-        </div>
-      </el-table-column>
-      <el-table-column
-        v-else
-        label=""
-        width="65"
-        align="center"
-        key="isItem"
-      >
-        <div slot-scope="scope">
           <el-button
+            v-else
             @click="onSelectItem(scope.row)"
             icon="el-icon-search"
             circle
@@ -105,8 +95,9 @@ import { EventBus } from "../../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import { viewerState } from './viewerState';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
-const CountNames = [ "BuildingCount", "FloorCount", "RoomCount", "EquipmentCount" ];
+const CountNames = [ "BuildingCount", "FloorCount", "RoomCount", "CategoryCount", "GroupCount", "EquipmentCount" ];
 
 export default {
   name: "ContextExplorerNodeTable",
@@ -115,6 +106,7 @@ export default {
     items: { required: true, type: Array },
     columns: { required: true, type: Array },
     relation: { required: true, type: Array },
+    context: { required: true, type: Number },
     depth: { required: false, type: Number, default: 5 },
   },
 
@@ -158,13 +150,18 @@ export default {
     },
 
     onSelectItem(item) {
-      console.debug("depth", this.depth);
-      if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth)
-        ViewManager.getInstance(this.viewKey).pop();
-      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
-    },
-
-    onSelectGroup(item) {
+      let view = ViewManager.getInstance(this.viewKey).back();
+      if (view.serverId == 0)
+      {
+        ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+        return;
+      }
+      if (ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth
+        || !SpinalGraphService.hasChildInContext(FileSystem._objects[view.serverId].info.id.get(), FileSystem._objects[this.context].info.id.get())
+      )
+      {
+        ViewManager.getInstance(this.viewKey).pop(false);
+      }
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
 
@@ -196,11 +193,12 @@ export default {
           }
         }
         else if (FileSystem._objects[item.serverId] !== undefined) {
+          resItem["children"] = 0;
           let thisnode = FileSystem._objects[item.serverId];
           if (thisnode.children.PtrLst !== undefined) {
             for (const name of thisnode.children.PtrLst._attribute_names) {
               resItem[name] = thisnode.children.PtrLst[name].length;
-              resItem.haveChild = true;
+              resItem.haveChild = false;
               this.haveObjects = true;
             }
           }
@@ -233,8 +231,9 @@ export default {
         }
       }
       EventBus.$emit("viewer-reset-color");
-      if (viewerState.colored())
+      if (viewerState.colored()) {
         EventBus.$emit('viewer-color', this.data, this.relation)
+      }
     },
 
     setColorItem(serverId, color) {

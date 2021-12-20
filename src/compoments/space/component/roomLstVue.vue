@@ -38,10 +38,10 @@ with this file. If not, see
       </el-table-column>
 
       <el-table-column prop="surface"
-                       label="Surface"
+                       label="Surface (m²)"
                        align="center">
         <template slot-scope="scope">
-          {{ scope.row.surface | roundSurface }} m²
+          {{ scope.row.surface | roundSurface }}
         </template>
       </el-table-column>
       <el-table-column label=""
@@ -89,7 +89,6 @@ export default {
   beforeDestroy() {},
   methods: {
     SeeEvent(data) {
-      console.log(data);
       this.$emit("seeEvent", { rooms: [data], color: this.color });
     },
     SeeAll() {

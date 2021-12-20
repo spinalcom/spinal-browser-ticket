@@ -61,10 +61,10 @@ with this file. If not, see
             </el-table-column>
             true
             <el-table-column prop="surface"
-                             :label="$t('SpaceManagement.Surface')"
+                             :label="$t('SpaceManagement.Surface') + ' (m²)'">
                              align="center">
               <template slot-scope="scope">
-                {{ scope.row.surface | roundSurface }} m²
+                {{ scope.row.surface | roundSurface }}
               </template>
             </el-table-column>
             <el-table-column label=""
@@ -128,7 +128,7 @@ import ChartsEsp from "./ChartsEsp";
 import { EventBus } from "../../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
-
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 
 export default {
@@ -154,7 +154,7 @@ export default {
         // if (this.roomsSelected && this.roomsSelected.id === obj.id) {
         //   this.roomsSelected = obj;
         // }
-        console.log(obj)
+        //console.log(obj)
         let roo = {
           id: obj.id,
           name: obj.name,
@@ -193,16 +193,24 @@ export default {
     async getAllBimObjects(data) {
       // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
       const promises = data.rooms.map(el =>
-        groupManagerUtilities.getBimObjects(el.id)
+        //groupManagerUtilities.getBimObjects(el.id)
+        this.getBimObjectsAndRoomReference(el.id)
       );
-
       const allBimObjects = await Promise.all(promises).then(result => {
         result = result.flat(10);
         return result;
       });
-
       return allBimObjects.map(el => el.get());
     },
+
+    async getBimObjectsAndRoomReference(roomId) {
+      let objects = await groupManagerUtilities.getBimObjects(roomId);
+      let ref = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]); // la constante dans spinal-env-viewer-context-geographic-service/build/constants.js pas correcte
+      return objects.concat(ref);
+    },
+
+
+
     async SeeAll() {
       if (this.roomsSelected) {
         this.$refs.roomscomponent.SeeAll();

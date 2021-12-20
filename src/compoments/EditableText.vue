@@ -38,7 +38,7 @@ with this file. If not, see
 export default {
   name: "EditableText",
   props: {
-    content: { required: true, type: String },
+    content: { required: true },
     isEditing: { required: true, type: Boolean },
   },
   
