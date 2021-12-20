@@ -94,6 +94,7 @@ import { viewerState } from "../../compoments/TabManager/generic/ContextExplorer
 import { getEquipmentNumber } from "./EquipmentTools"
 import {
   EQUIPMENT_RELATION,
+  EQUIPMENT_RELATION_LIST,
 } from '../../constants';
 
 // Generic components
@@ -109,7 +110,9 @@ import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeC
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
 import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
+import { CONTEXT_TYPE } from 'spinal-env-viewer-task-service';
 
+const EQUIPMENT_APP_RELATIONS = EQUIPMENT_RELATION_LIST.concat(EQUIPMENT_RELATION);
 const VIEW_KEY = "EquipmentApp";
 
 // Component exports
@@ -141,7 +144,7 @@ export default {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
-            relation: [ EQUIPMENT_RELATION ],
+            relation: EQUIPMENT_APP_RELATIONS,
             context: false,
           },
           ignore: false,
@@ -329,7 +332,7 @@ export default {
     },
 
     zoomOn() {
-      EventBus.$emit("viewer-zoom", this.currentView, EQUIPMENT_RELATION);
+      EventBus.$emit("viewer-zoom", this.currentView, EQUIPMENT_APP_RELATIONS);
     },
 
     isolateAll() {
@@ -339,12 +342,12 @@ export default {
       if (viewerState.isolated())
       {
         this.isolated = true;
-        EventBus.$emit("viewer-isolate", [ this.currentView ], EQUIPMENT_RELATION);
+        EventBus.$emit("viewer-isolate", [ this.currentView ], EQUIPMENT_APP_RELATIONS);
       }
     },
 
     selectInView() {
-      EventBus.$emit("viewer-select", this.currentView, EQUIPMENT_RELATION);
+      EventBus.$emit("viewer-select", this.currentView, EQUIPMENT_APP_RELATIONS);
     },
 
     formatData() {

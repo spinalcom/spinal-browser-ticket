@@ -106,3 +106,9 @@ export const GEO_RELATIONS = [
 export const SCENE_RELATION_CONTEXT_TYPE = 'SpinalService';
 export const SCENE_RELATION_NAME = 'hasScene';
 export const PART_RELATION_NAME = 'hasParts';
+
+export const CATEGORY_RELATION_NAME = 'hasCategory';
+export const GROUP_RELATION_NAME = 'hasGroup';
+export const GROUP_EQUIPMENT_RELATION_NAME = 'groupHasBIMObject';
+
+export const EQUIPMENT_RELATION_LIST = [ CATEGORY_RELATION_NAME, GROUP_RELATION_NAME, GROUP_EQUIPMENT_RELATION_NAME ];
