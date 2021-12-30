@@ -24,13 +24,13 @@ with this file. If not, see
 
 <template>
 	<md-content class="chart-data-endpoint-graph-container">
-		
 		<md-content
 			id="chart-data-endpoint-graph-container-plotgraph"
-		>
-		</md-content>
+		></md-content>
+
+		
 		<md-empty-state
-			v-if="!isReady && chartData.length <= 0"
+			v-if="isReady && chartData.length <= 0"
 			class="chart-data-endpoint-graph-container-empty"
 			md-icon="show_chart"
 			md-label="No Endpoint selected"
@@ -80,7 +80,7 @@ with this file. If not, see
 				chartData: [],
 				selectedNames: "",
 				optionOpen: false,
-				isReady: true,
+				isReady: false,
 				haveData: false,
 				lineMode: "lines",
 				layout: {
@@ -91,7 +91,7 @@ with this file. If not, see
 					},
 					font: {
 						size: 15,
-						color: "#FFFFFF",
+						color: "#000000",
 					},
 					paper_bgcolor: "rgba(0,0,0,0)",
 					plot_bgcolor: "rgba(0,0,0,0)",
@@ -342,6 +342,7 @@ with this file. If not, see
 		width: 100%;
 		height: 100%;
 		max-width: unset;
+		
 	}
 	.chart-data-endpoint-graph-container-option-button {
 		bottom: 5px;

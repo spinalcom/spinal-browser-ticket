@@ -29,29 +29,34 @@ with this file. If not, see
 			<div class="endpoint-chart-viewer-panel">
 				<div class="md-layout endpoint-chart-viewer-panel-topbtn-container">
 					<md-button v-for="value in buttons" :key="value" class="md-layout-item topbtn"
-						:disabled="value === btnSelected" :class="{ 'raise-disable': value === btnSelected }"
+						:disabled="value === btnSelected" :class="{'raise-disable': value === btnSelected }"
 						@click="onClick(value)">
 						{{ value }}
 					</md-button>
-					<!--<md-button
-				class="md-layout-item topbtn"
-				:disabled="value === btnSelected"
-				:class="{ 'raise-disable': 'CUSTOM' === btnSelected }"
-				@click="onClickCustom"
-				>CUSTOM</md-button> -->
+					<md-button
+					class="md-layout-item topbtn"
+					:disabled="btnSelected==='CUSTOM'"
+					:class="{ 'raise-disable': 'CUSTOM' === btnSelected }"
+					@click="onClickCustom"
+					>CUSTOM</md-button>
 
+					<md-button style="background:red"
+					class="md-layout-item topbtn"
+					@click="openChartModal"
+					>X</md-button>
 				</div>
+
 				<div class="
 				md-layout md-alignment-center-center
 				endpoint-chart-viewer-panel-chart-container
-			" :class="{ autodeskv6: isviewerV6 }">
+				" :class="{ autodeskv6: isviewerV6 }">
 					<plotlyCompoment :data="timeSeriesData" :reloadData="reloadData"></plotlyCompoment>
 				</div>
-				<!--  <customDateIntervalDialog
+				<customDateIntervalDialog
 			@closeDialog="closeDialogCustom"
 			:dateAvailable="dateAvailable"
 			:isOpen="isDialogCustomOpen"
-		></customDateIntervalDialog>  -->
+		></customDateIntervalDialog>
 			</div>
 
 		</div>
@@ -63,7 +68,7 @@ with this file. If not, see
 	import {
 		ChartDataEndpoint
 	} from "./ChartDataEndpoint.js";
-	//import customDateIntervalDialog from "./customDateIntervalDialog.vue";
+	import customDateIntervalDialog from "./customDateIntervalDialog.vue";
 	import union from "lodash.union";
 	import {
 		timeSeriesMap,
@@ -74,7 +79,7 @@ with this file. If not, see
 		name: "my_compo",
 		components: {
 			plotlyCompoment,
-			//customDateIntervalDialog,
+			customDateIntervalDialog,
 		},
 		props: ["isChartModalVisible", "openChartModal", "selectedNode"],
 		data() {
@@ -98,7 +103,7 @@ with this file. If not, see
 				const index = this.timeSeriesData.findIndex((elem) => {
 					return elem === nodeId;
 				});
-
+				console.log("index : ",index);
 				if (index === -1) {
 					let data;
 					if (this.btnSelected === "CUSTOM") {
@@ -119,8 +124,6 @@ with this file. If not, see
 					const t = timeSeriesMap.get(idToRemove);
 					timeSeriesMap.delete(idToRemove);
 					await t.uninit();
-
-
 					this.timeSeriesData.splice(index, 1);
 				}
 				let tmp = this.timeSeriesData.map((nodeId) => {
@@ -179,6 +182,8 @@ with this file. If not, see
 				if(this.isChartModalVisible){
 					this.toogleSelect(this.selectedNode.id.get());
 				}
+				else this.removed();
+				
 				
 			}
 		}
@@ -203,7 +208,9 @@ with this file. If not, see
 	.endpoint-chart-viewer-panel .topbtn {
 		margin: unset;
 		min-width: 3em;
+		
 	}
+
 
 	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {
 		height: calc(100% - 36px);
@@ -237,11 +244,12 @@ with this file. If not, see
 		overflow: hidden;
 		overflow-y: auto;
 		z-index: 2;
+		
 
 	}
 
 	.overlay {
-		background: rgba(80, 80, 80, 0.5);
+		background: rgba(255, 255, 255, 0.5);
 		position: fixed;
 		top: 0;
 		bottom: 0;
@@ -250,7 +258,7 @@ with this file. If not, see
 	}
 
 	.modale {
-		background-color: #f1f1f1;
+		background-color: white;
 		width: 95%;
 		height: 95%;
 		position: fixed;

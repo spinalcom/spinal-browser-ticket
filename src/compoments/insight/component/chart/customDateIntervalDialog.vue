@@ -84,9 +84,14 @@ with this file. If not, see
 
 <script>
 import moment from 'moment';
+import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 export default {
   name: "customDateIntervalDialog",
   props: ["isOpen", "dateAvailable"],
+  components: {
+			VueCtkDateTimePicker,
+		},
   data() {
     const today = new Date();
     today.setUTCHours(23, 59, 59);

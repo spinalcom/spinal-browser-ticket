@@ -50,7 +50,7 @@
       </div>
 
       <div class="relative">
-      <!--<el-button  v-on:click="openChartModal" class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button> -->
+      <el-button  v-on:click="openChartModal" class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button> 
 
       <el-button v-if="displayBoolButton" 
       v-on:click="flip()" class="config-btn-position custom-icon circled-button" circle icon="el-icon-refresh">
@@ -65,10 +65,13 @@
 
 
       </div>
-      <!--<endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
-      </endpoint-chart-viewer-panel> -->
+      <!-- Chart Component -->
+      <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
+      </endpoint-chart-viewer-panel> 
       <!--<modal v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
       </modal> -->
+
+
       <value-config v-if="isConfigModalVisible"
          :endpoint ="this.endpoint" :config="this.variableSelected.config" :dataType="this.variableSelected.dataType"
          >
@@ -89,7 +92,7 @@ import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import endpointChartViewerPanel from "../../chart/endpointChartViewerPanel.vue"
 
 export default {
-   components: { valueConfig ,	/*endpointChartViewerPanel*/ },
+   components: { valueConfig ,	endpointChartViewerPanel },
    name: "endpoint-component",
    props: { name: {}, endpoints: {}, variableSelected: {}, room:{} },
    data() {
@@ -281,7 +284,6 @@ export default {
             const isBoolean = typeof value === "boolean";
             if (isBoolean) return value.toString().toUpperCase();
             if (value.toString().trim().length === 0) return "NULL";
-            
             return value.toFixed(2);
          }
          else
@@ -290,13 +292,15 @@ export default {
    },
 
    watch: {
-      variableSelected() {
+      async variableSelected() {
          if (this.endpoint && this.bindProcess){
             this.isConfigModalVisible=false;
             this.endpoint.currentValue.unbind(this.bindProcess);
          }
          this.updateEndpoint();
          this.updateDisplay();
+         this.selectedNode = await this.getEndpoint();
+      
       },
    },
 
