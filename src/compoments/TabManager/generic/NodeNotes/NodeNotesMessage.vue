@@ -44,6 +44,10 @@ with this file. If not, see
         alt="image"
         class="spl-message-image"
       />
+      <i
+        v-else-if="(type == 'img' || type == 'view')"
+        class="el-icon-document-delete"
+      ></i>
     </el-main>
 
     <div>
@@ -114,16 +118,24 @@ export default {
 
     getImage()
     {
+      console.debug("note file:", this.file)
       if (!this.file.load)
+      {
+        console.debug("nope 1");
         return;
+      }
       this.file.load((f) =>
       {
         if (typeof f === "undefined")
+        {
+          console.debug("nope 2");
           return;
+        }
         f.load(async (l) => {
           await this.waitimageReady(l);
           this.image = f._ptr.data.value;
           this.image_name = f.name.get();
+          console.debug("yep", this.image);
         });
       });
     },
@@ -163,11 +175,24 @@ export default {
 
     downloadImage()
     {
-      var element = document.createElement("a");
-      element.setAttribute("href", "/sceen/_?u=" + this.image);
-      element.setAttribute("download", this.image_name);
-      element.click();
+      console.debug("download image", this.file);
+      let test = this.file.load((loaded) => {
+        console.debug("loaded", loaded);
+      });
+      console.debug("test", test);
+      // var element = document.createElement("a");
+      // element.setAttribute("href", "/sceen/_?u=" + test);
+      // element.setAttribute("download", this.image_name);
+      // element.click();
     },
+
+    // downloadImage()
+    // {
+    //   var element = document.createElement("a");
+    //   element.setAttribute("href", "/sceen/_?u=" + this.image);
+    //   element.setAttribute("download", this.image_name);
+    //   element.click();
+    // },
 
     debug(what) {
       console.debug("Debugging", what);

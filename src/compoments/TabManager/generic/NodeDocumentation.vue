@@ -51,7 +51,6 @@ with this file. If not, see
         </el-table-column>
         <el-table-column
           label="Actions"
-          fixed="right"
           width=120
         >
           <div slot-scope="scope">

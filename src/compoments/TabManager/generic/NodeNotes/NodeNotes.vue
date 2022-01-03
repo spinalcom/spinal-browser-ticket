@@ -37,25 +37,8 @@ with this file. If not, see
         <el-container
           v-for="note of notes"
           :key="note._server_id"
+          style="display: flex; flex-direction: row; align-items: flex-start; margin-bottom: 10px"
         >
-          <el-header class="delete-button"
-          >
-            <el-tooltip :content="$t('spinal-twin.DeleteNote')">
-              <el-popconfirm
-                @confirm="delNote(note.selectedNode)"
-                :title="$t('spinal-twin.DeleteConfirm')">
-                <el-button
-                  class="spl-input-button"
-                  icon="el-icon-delete"
-                  type="danger"
-                  size="small"
-                  circle
-                  slot="reference"
-                ></el-button>
-              </el-popconfirm>
-            </el-tooltip>
-          </el-header>
-
           <el-main style="padding: 0 0 10px 0">
             <node-notes-message
               :username="note.element.username.get()"
@@ -66,6 +49,23 @@ with this file. If not, see
               :viewPoint="note.element.viewPoint ? note.element.viewPoint : null"
             ></node-notes-message>
           </el-main>
+          <el-tooltip
+            :content="$t('spinal-twin.DeleteNote')"
+            class="delete-button"
+          >
+            <el-popconfirm
+              @confirm="delNote(note.selectedNode)"
+              :title="$t('spinal-twin.DeleteConfirm')">
+              <el-button
+                class="spl-input-button"
+                icon="el-icon-delete"
+                type="danger"
+                size="small"
+                circle
+                slot="reference"
+              ></el-button>
+            </el-popconfirm>
+          </el-tooltip>
         </el-container>
       </div>
     </el-main>
@@ -154,13 +154,11 @@ export default {
 .note-feed {
   overflow: auto;
   display: flex;
-  flex-direction: column-reverse
+  flex-direction: column-reverse;
+  flex-wrap: wrap;
 }
 
 .delete-button {
-  padding: 10px 0 0 0;
-  display: flex;
-  flex-direction: row-reverse;
-  height: min-content;
+  padding: 25px 10px 10px 10px;
 }
 </style>
