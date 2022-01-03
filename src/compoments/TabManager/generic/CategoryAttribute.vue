@@ -53,7 +53,6 @@ with this file. If not, see
               :data="cat.row.attributes"
               :header-cell-style="{'background-color': '#f0f2f5'}"
               border
-              style="overflow: auto; height: auto"
             >
               <el-table-column :label="$t('node-type.Attribute')">
                 <editable-text
@@ -156,8 +155,7 @@ with this file. If not, see
 
         <el-table-column
           label="Actions"
-          fixed="right"
-          width=200
+          width=120
         >
           <div slot-scope="cat">
             <el-tooltip :content="$t('spinal-twin.CategoryEdit') + cat.row.name">
@@ -335,6 +333,11 @@ export default {
     },
 
     async delCategory(category){
+      if (category.isEditing)
+      {
+        category.isEditing = false;
+        this.isEditing = false;
+      }
       await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id);
       this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id));
     },

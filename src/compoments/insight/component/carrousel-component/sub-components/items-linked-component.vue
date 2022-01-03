@@ -7,7 +7,7 @@
          <el-button 
          v-on:click="ModifyAll(false)" class = "_buttonGlobal2" circle :style="{ 'background-color': getColor(false,this.variableSelected.config) }">
          </el-button>
-         <p class= "modifyAllValuesText"> Modify all Values </p>
+         <p class= "modifyAllValuesText"> {{$t("HeatmapCenter.ModifyAll")}} </p>
          <el-button 
             v-on:click="ModifyAll(true)" class = "_buttonGlobal2" circle :style="{ 'background-color': getColor(true,this.variableSelected.config) }">
          </el-button>
@@ -15,7 +15,7 @@
       
       <div v-if="variableSelected.type=='Consigne' && variableSelected.dataType !='Boolean'" class= "fullWidth" >
       <el-button  
-         v-on:click="openModal()" class = "_buttonGlobal" icon="el-icon-edit" > Modify all values
+         v-on:click="openModal()" class = "_buttonGlobal" icon="el-icon-edit" > {{$t("HeatmapCenter.ModifyAll")}}
       </el-button>
       </div>
       

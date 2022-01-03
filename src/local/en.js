@@ -26,6 +26,13 @@ export default {
   "Cancel": "Cancel",
   "Confirm": "Confirm",
   "Table": "Table",
+  "True": "True",
+  "False": "False",
+  "Min": "Minimum",
+  "Max": "Maximum",
+  "Average": "Average",
+  "Value": "Value",
+  
   "sidebar.topButton.buildingNameDefault": "Building",
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
@@ -165,6 +172,7 @@ export default {
   "HeatmapCenter.Valeur": "Value",
   "HeatmapCenter.Heatmap_bool": "Display Heatmap",
   "HeatmapCenter.Courbe_bool": "Display graph",
-  "HeatmapCenter.GO": "Go"
+  "HeatmapCenter.GO": "Go",
+  "HeatmapCenter.ModifyAll": "Modify all values"
 };
 
