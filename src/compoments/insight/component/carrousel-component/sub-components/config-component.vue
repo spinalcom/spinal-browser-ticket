@@ -1,7 +1,7 @@
 <template>
    <div class="config">
       <div class="config_cont">
-         <div class="name">{{getName()}}</div>
+         <div class="name">{{/*getName()*/  $t(getName())}}</div>
          <!--  -->
          <el-input-number
             class="input"

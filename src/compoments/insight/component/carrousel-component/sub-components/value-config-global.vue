@@ -8,7 +8,7 @@
     </select>
 
     <p class ="value" align="center">
-        value : {{value}}
+        {{$t("Value")}} : {{value}}
     </p>
     
 

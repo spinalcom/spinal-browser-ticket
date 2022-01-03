@@ -27,6 +27,13 @@ export default {
   "Cancel": "Annuler",
   "Confirm": "Confirmer",
   "Table": "Tableau",
+  "True": "Vrai",
+  "False": "Faux",
+  "Min": "Minimum",
+  "Max": "Maximum",
+  "Average": "Moyenne",
+  "Value": "Valeur",
+  
   "sidebar.topButton.buildingNameDefault": "Batiment",
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
@@ -159,5 +166,6 @@ export default {
   "HeatmapCenter.Valeur": "Valeur",
   "HeatmapCenter.Heatmap_bool": "Afficher Heatmap",
   "HeatmapCenter.Courbe_bool": "Afficher courbe",
-  "HeatmapCenter.GO": "Go"
+  "HeatmapCenter.GO": "Go",
+  "HeatmapCenter.ModifyAll": "Modifier toutes les valeurs"
 };
