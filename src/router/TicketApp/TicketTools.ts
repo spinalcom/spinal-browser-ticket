@@ -22,19 +22,19 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { SpinalNode } from "spinal-model-graph";
+
 import { FileSystem } from 'spinal-core-connectorjs_type';
 import { AppItem } from "../../services/backend/AppItem";
-import { EQUIPMENT_TYPE } from "../../constants";
+import { SPINAL_TICKET_SERVICE_TICKET_TYPE } from 'spinal-service-ticket/dist/Constants.js';
 
-async function getEquipmentNumber(item: AppItem) {
+async function getTicketNumber(item: AppItem) {
   const node = FileSystem._objects[item.serverId];
-  if (node && node.getType().get() === EQUIPMENT_TYPE) return 1;
+  if (node && node.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE) return 1;
   if (typeof item.children === "undefined") return 0;
   const prom = [];
   for (const [, arrayItem] of item.children) {
     for (const i of arrayItem) {
-      prom.push(getEquipmentNumber(i));
+      prom.push(getTicketNumber(i));
     }
   }
   return Promise.all(prom)
@@ -42,5 +42,5 @@ async function getEquipmentNumber(item: AppItem) {
 }
 
 module.exports = {
-  getEquipmentNumber: getEquipmentNumber,
+  getTicketNumber: getTicketNumber,
 }

@@ -97,7 +97,7 @@ import fileSaver from "file-saver";
 import { viewerState } from './viewerState';
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
-const CountNames = [ "BuildingCount", "FloorCount", "RoomCount", "CategoryCount", "GroupCount", "EquipmentCount" ];
+const CountNames = [ "BuildingCount", "FloorCount", "RoomCount", "CategoryCount", "GroupCount", "EquipmentCount", "ProcessCount", "StepCount", "TicketCount" ];
 
 export default {
   name: "ContextExplorerNodeTable",

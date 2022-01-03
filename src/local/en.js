@@ -35,6 +35,7 @@ export default {
   "Routes.InsightCenter": "Visualize the activity",
   "Routes.SpaceCenter": "Inspect the spaces",
   "Routes.EquipmentApp": "Inspect the equipments",
+  "Routes.TicketApp": "Handle the tickets",
   "DataRoom.geographicContext": "Contextes", // Could be generic
   "DataRoom.geographicBuilding": "Bâtiments", // Could be generic
   "DataRoom.geographicFloor": "Etages", // Could be generic
@@ -79,13 +80,21 @@ export default {
   "spinal-twin.Select": "Select",
   "spinal-twin.Area": "Area (m²)",
   "spinal-twin.children": "Child node number",
+
   "spinal-twin.BuildingCount": "Buildings number",
   "spinal-twin.FloorCount": "Level number",
   "spinal-twin.RoomCount": "Room number",
+
   "spinal-twin.CategoryCount": "Category number",
   "spinal-twin.GroupCount": "Group number",
   "spinal-twin.EquipmentCount": "Equipment number",
   "spinal-twin.TotalEquipments": "Total equipment number",
+  
+  "spinal-twin.ProcessCount": "Process number",
+  "spinal-twin.StepCount": "Step number",
+  "spinal-twin.TicketCount": "Ticket number",
+  "spinal-twin.TotalTickets": "Total ticket number",
+
   "spinal-twin.hasCategoryAttributes": "Attributes",
   "spinal-twin.CategoryAdd": "Add attribute category",
   "spinal-twin.CategoryEdit": "Edit category ",

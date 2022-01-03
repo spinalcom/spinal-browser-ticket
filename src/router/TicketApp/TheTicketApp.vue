@@ -91,6 +91,13 @@ import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import { getTicketNumber } from "./TicketTools";
+import {
+  SERVICE_TYPE,
+  PROCESS_TYPE,
+  SPINAL_TICKET_SERVICE_STEP_TYPE,
+  SPINAL_TICKET_SERVICE_TICKET_TYPE,
+} from 'spinal-service-ticket/dist/Constants.js';
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
@@ -105,7 +112,9 @@ import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeC
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
 import NodeTicketSelected from '../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue';
 
+export const TICKET_APP_RELATIONS = [ SERVICE_TYPE, PROCESS_TYPE, SPINAL_TICKET_SERVICE_STEP_TYPE, SPINAL_TICKET_SERVICE_TICKET_TYPE ];
 const VIEW_KEY = "TicketApp";
+
 // Component exports
 export default {
   name: "TheTicketApp",
@@ -121,7 +130,7 @@ export default {
   data() {
     return {
       viewKey: VIEW_KEY,
-      items: false,
+      items: {},
       currentView: false,
       isNode: false,
       tabs: [
@@ -132,6 +141,8 @@ export default {
             viewKey: VIEW_KEY,
             items: false,
             view: false,
+            relation: TICKET_APP_RELATIONS,
+            context: false,
           },
           ignore: false,
         },
@@ -212,23 +223,37 @@ export default {
           "SpinalSystemServiceTicketTypeTicket"
         );
       }
+
       // Get children
       for (const [nodeType, items] of mapItems) {
-        const cols = new Set();
-        for (const item of items) {
-          if (item.children) {
-            for (const [childTypes] of item.children) {
-              cols.add(childTypes);
-            }
-          }
-        }
-        this.items = { nodeType, items, cols: Array.from(cols) };
+        this.items.nodeType = nodeType;
+        this.items.items = items;
       }
+
+      // Get children
+      // for (const [nodeType, items] of mapItems) {
+      //   const cols = new Set();
+      //   for (const item of items) {
+      //     if (item.children) {
+      //       for (const [childTypes] of item.children) {
+      //         cols.add(childTypes);
+      //       }
+      //     }
+      //   }
+      //   this.items = { nodeType, items, cols: Array.from(cols) };
+      // }
       this.currentView = view;
       
+      await Promise.all(this.items.items.map(async function (item) {
+        item["TotalTickets"] = await getTicketNumber(item);
+      }));
+
+      this.setColumns(view);
+
       // Update tabs
       this.tabs[0].props.items = this.items;
       this.updateNames();
+      this.tabs[0].props.context = this.contextServId;
       if ( mapItems.size > 0) {
         this.tabs[0].content = ContextExplorer;
       } else {
@@ -249,7 +274,7 @@ export default {
         console.debug("tab :", this.tabs[0].props.selected)
         this.tabs[0].content = NodeTicketSelected;
         // Vue.component(
-        //   "NodeTicketSelected",
+          //   "NodeTicketSelected",
         //   require("../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue").default
         // );
       }
@@ -271,6 +296,32 @@ export default {
           this.tabs[i].ignore = true;
         }
       }
+    },
+
+    setColumns(view) {
+      let node = FileSystem._objects[view.serverId];
+      this.items.cols = [ ];
+      if (!node) {
+        this.items.cols = [ "ProcessCount", "TotalTickets" ];
+        return;
+      }
+      let nodeType = node.info.type.get();
+      console.debug("nodeType :", nodeType, TICKET_APP_RELATIONS)
+      switch (nodeType)
+      {
+        case SERVICE_TYPE:
+          this.items.cols = [ "StepCount", "TotalTickets" ];
+          break;
+        case PROCESS_TYPE:
+          this.items.cols = [ "TicketCount" ];
+          break;
+        // case SPINAL_TICKET_SERVICE_STEP_TYPE:
+        //   this.items.cols = [ "TicketCount" ];
+        //   break;
+        default:
+          this.items.cols = [ ];
+      }
+      console.debug("cols :", this.items.cols)
     },
 
     updateNames()
