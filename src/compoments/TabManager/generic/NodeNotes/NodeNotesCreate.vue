@@ -286,10 +286,15 @@ export default {
             return;
           }
           this.attachment = {
-            type: "img",
+            type: "file",
             file: filelist[0],
             view: undefined
           };
+          if (this.attachment.file.name.endsWith(".png") ||
+            this.attachment.file.name.endsWith(".jpg") ||
+            this.attachment.file.name.endsWith(".jpeg")) {
+            this.attachment.type = 'img';
+          }
         },
         false
       );
