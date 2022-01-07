@@ -68,9 +68,6 @@
       <!-- Chart Component -->
       <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
       </endpoint-chart-viewer-panel> 
-      <!--<modal v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
-      </modal> -->
-
 
       <value-config v-if="isConfigModalVisible"
          :endpoint ="this.endpoint" :config="this.variableSelected.config" :dataType="this.variableSelected.dataType"

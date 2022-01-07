@@ -70,8 +70,9 @@ with this file. If not, see
 	import chartOptionDialog from "./chartOptionDialog.vue";
 	//import { clearInterval } from "timers";
 	import { timeSeriesMap } from "./map";
-
 	const globalType = typeof window === "undefined" ? global : window;
+
+	
 	export default {
 		name: "plotlyComponent",
 		components: { chartOptionDialog },

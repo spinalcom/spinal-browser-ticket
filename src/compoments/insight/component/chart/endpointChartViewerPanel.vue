@@ -29,14 +29,14 @@ with this file. If not, see
 			<div class="endpoint-chart-viewer-panel">
 				<div class="md-layout endpoint-chart-viewer-panel-topbtn-container">
 					<md-button v-for="value in buttons" :key="value" class="md-layout-item topbtn"
-						:disabled="value === btnSelected" :class="{'raise-disable': value === btnSelected }"
+						:disabled="value === btnSelected"
 						@click="onClick(value)">
 						{{ value }}
 					</md-button>
+
 					<md-button
 					class="md-layout-item topbtn"
 					:disabled="btnSelected==='CUSTOM'"
-					:class="{ 'raise-disable': 'CUSTOM' === btnSelected }"
 					@click="onClickCustom"
 					>CUSTOM</md-button>
 
@@ -49,7 +49,7 @@ with this file. If not, see
 				<div class="
 				md-layout md-alignment-center-center
 				endpoint-chart-viewer-panel-chart-container
-				" :class="{ autodeskv6: isviewerV6 }">
+				">
 					<plotlyCompoment :data="timeSeriesData" :reloadData="reloadData"></plotlyCompoment>
 				</div>
 				<customDateIntervalDialog
@@ -91,12 +91,6 @@ with this file. If not, see
 				timeSeriesData: [],
 				dateAvailable: []
 			};
-		},
-
-		computed: {
-			isviewerV6() {
-				return parseInt(window.LMV_VIEWER_VERSION) === 6;
-			},
 		},
 		methods: {
 			async toogleSelect(nodeId) {
@@ -210,14 +204,9 @@ with this file. If not, see
 		min-width: 3em;
 		
 	}
-
-
+	
 	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {
 		height: calc(100% - 36px);
-	}
-
-	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container.autodeskv6 {
-		height: calc(100% - 56px);
 	}
 
 	.raise-disable {

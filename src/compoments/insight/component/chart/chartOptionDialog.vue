@@ -42,8 +42,7 @@ with this file. If not, see
                     value="lines+markers">Lines + Markers</md-radio>
         </div>
         <div class="endpoint-chart-viewer-panel-dialog-chart-option-container">
-          <md-checkbox true-value="true"
-                       false-value="false"
+          <md-checkbox 
                        v-tooltip="'you may need to resize the panel.'"
                        v-model="rangeSlider">Use range slider</md-checkbox>
           <div v-if="rangeSlider">
@@ -52,9 +51,7 @@ with this file. If not, see
         </div>
         <div class="endpoint-chart-viewer-panel-dialog-chart-option-container"
              :class="{'endpoint-chart-viewer-panel-dialog-chart-option-container-border': showLegendComputed}">
-          <md-checkbox true-value="true"
-                       false-value="false"
-                       v-model="showLegendComputed">Show Legend</md-checkbox>
+          <md-checkbox  v-model="showLegendComputed">Show Legend</md-checkbox>
           <div v-if="showLegendComputed"
                class="endpoint-chart-viewer-panel-dialog-chart-option-container-legend">
             <div>
@@ -64,14 +61,12 @@ with this file. If not, see
                         value="v">Vertical</md-radio>
             </div>
             <div :class="{'endpoint-chart-viewer-panel-dialog-chart-option-container-legend-subcontainer': position}">
-              <md-checkbox true-value="true"
-                           false-value="false"
-                           v-model="position">Override default Position</md-checkbox>
+              <md-checkbox v-model="position">Override default Position</md-checkbox>
               <div v-if="position">
                 <hr>
                 <div>
                   <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Vertical
-                    Postion</h5>
+                    Position</h5>
                   <md-radio v-model="positionX"
                             value="0">left</md-radio>
                   <md-radio v-model="positionX"
@@ -82,7 +77,7 @@ with this file. If not, see
                 <hr>
                 <div>
                   <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Vertical
-                    Anchor Postion</h5>
+                    Anchor Position</h5>
                   <md-radio v-model="positionAnchorX"
                             value="auto">auto</md-radio>
                   <md-radio v-model="positionAnchorX"
@@ -95,7 +90,7 @@ with this file. If not, see
                 <hr>
                 <div>
                   <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Horizontal
-                    Postion</h5>
+                    Position</h5>
                   <md-radio v-model="positionY"
                             value="1">top</md-radio>
                   <md-radio v-model="positionY"
@@ -106,7 +101,7 @@ with this file. If not, see
                 <hr>
                 <div>
                   <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Horizontal
-                    Anchor Postion</h5>
+                    Anchor Position</h5>
                   <md-radio v-model="positionAnchorY"
                             value="auto">auto</md-radio>
                   <md-radio v-model="positionAnchorY"
