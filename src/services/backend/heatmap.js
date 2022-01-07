@@ -38,7 +38,7 @@ import { REFERENCE_OBJECT_RELATION_NAME, BIM_OBJECT_TYPE } from 'spinal-env-view
 // import { SpinalForgeViewer } from 'spinal-env-viewer-plugin-forge'
 
 import q from "q";
-import { EQUIPMENT_RELATION, EQUIPMENT_TYPE, ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
+import { EQUIPMENT_RELATION, EQUIPMENT_TYPE, ROOM_TYPE, FLOOR_TYPE , ROOM_RELATION, FLOOR_RELATION, BUILDING_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
 import {SpinalServiceTimeseries} from 'spinal-model-timeseries';
 
 
@@ -373,10 +373,34 @@ export default class Heatmap {
 
     if (info && info.type.get() === BIM_OBJECT_TYPE) {
       references = [info];
-    } else {
-      references = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]);
-    }
+    } 
 
+    else if (info && info.type.get() === BUILDING_TYPE){
+      const floors = await SpinalGraphService.getChildren(roomId,[FLOOR_RELATION]);
+      for (const floor of floors){
+        const rooms = await SpinalGraphService.getChildren(floor.id.get(),[ROOM_RELATION]);
+        for (const room of rooms){
+          let refs = await SpinalGraphService.getChildren(room.id.get(), ["hasReferenceObject.ROOM"]);
+          for( const ref of refs){
+            references.push(ref);
+          }
+        }
+      }
+
+    }
+    else if( info && info.type.get() === FLOOR_TYPE) {
+      const tmp = await SpinalGraphService.getChildren(roomId,[ROOM_RELATION])
+      for (const room of tmp){
+        let refs = await SpinalGraphService.getChildren(room.id.get(), ["hasReferenceObject.ROOM"]);
+        for( const ref of refs){
+          references.push(ref);
+        }
+      }
+    }
+    else {
+      references = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]);
+      //console.log("je suis ",info.type.get()," ",references);
+    }
 
     const bims = references.map(el => el.get());
     const bimMap = new Map();
