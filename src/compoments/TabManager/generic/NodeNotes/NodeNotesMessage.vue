@@ -52,7 +52,7 @@ with this file. If not, see
 
     <div>
       <el-button
-        v-if="type == 'img' || type == 'view'"
+        v-if="type == 'img' || type == 'view' || type == 'file'"
         v-on:click.native="downloadImage()"
         type="primary"
         square
