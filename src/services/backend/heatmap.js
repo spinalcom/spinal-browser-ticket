@@ -38,7 +38,7 @@ import { REFERENCE_OBJECT_RELATION_NAME, BIM_OBJECT_TYPE } from 'spinal-env-view
 // import { SpinalForgeViewer } from 'spinal-env-viewer-plugin-forge'
 
 import q from "q";
-import { EQUIPMENT_RELATION, EQUIPMENT_TYPE, ROOM_TYPE, FLOOR_TYPE , ROOM_RELATION, FLOOR_RELATION, BUILDING_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
+import { EQUIPMENT_RELATION, EQUIPMENT_TYPE, ROOM_TYPE, FLOOR_TYPE , ROOM_RELATION, FLOOR_RELATION, BUILDING_TYPE, REFERENCE_RELATION } from "spinal-env-viewer-context-geographic-service/build/constants";
 import {SpinalServiceTimeseries} from 'spinal-model-timeseries';
 
 
@@ -378,6 +378,10 @@ export default class Heatmap {
     else if (info && info.type.get() === BUILDING_TYPE){
       const floors = await SpinalGraphService.getChildren(roomId,[FLOOR_RELATION]);
       for (const floor of floors){
+        let refs = await SpinalGraphService.getChildren(floor.id.get(),[REFERENCE_RELATION]);
+        for(const ref of refs){
+          references.push(ref);
+        }
         const rooms = await SpinalGraphService.getChildren(floor.id.get(),[ROOM_RELATION]);
         for (const room of rooms){
           let refs = await SpinalGraphService.getChildren(room.id.get(), ["hasReferenceObject.ROOM"]);
@@ -386,8 +390,14 @@ export default class Heatmap {
           }
         }
       }
+      let refs = await SpinalGraphService.getChildren(roomId,[REFERENCE_RELATION]);
+      for( const ref of refs){
+        references.push(ref);
+      }
+      //references = await SpinalGraphService.getChildren(roomId,[REFERENCE_RELATION]);
 
     }
+
     else if( info && info.type.get() === FLOOR_TYPE) {
       const tmp = await SpinalGraphService.getChildren(roomId,[ROOM_RELATION])
       for (const room of tmp){
@@ -396,6 +406,11 @@ export default class Heatmap {
           references.push(ref);
         }
       }
+      let refs = await SpinalGraphService.getChildren(roomId,[REFERENCE_RELATION]);
+      for( const ref of refs){
+        references.push(ref);
+      }
+      //references = await SpinalGraphService.getChildren(roomId,[REFERENCE_RELATION]);
     }
     else {
       references = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]);
