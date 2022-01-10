@@ -23,8 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
+  <div>
+    <div class="spl-button-bar">
       <el-tooltip
         :content="$t('spinal-twin.CategoryAdd')"
         style="float: right"
@@ -37,9 +37,9 @@ with this file. If not, see
           circle
         ></el-button>
       </el-tooltip>
-    </el-header>
+    </div>
 
-    <el-main>
+    <div>
       <el-table
         v-if="Categories"
         :data="Categories"
@@ -182,8 +182,8 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-    </el-main>
-  </el-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -376,3 +376,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+.spl-button-bar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 5px 5px 5px;
+}
+
+</style>

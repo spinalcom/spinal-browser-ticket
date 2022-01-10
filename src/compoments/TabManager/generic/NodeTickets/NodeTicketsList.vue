@@ -23,13 +23,13 @@ with this file. If not, see
 -->
 
 <template>
-  <el-main>
+  <div style="height: 100%">
     <el-table
       v-if="tickets"
       :data="tickets"
       :header-cell-style="{'background-color': '#f0f2f5'}"
       border
-      style="overflow: auto;"
+      height="100%"
     >
       <el-table-column label="Ticket">
         <div slot-scope="scope">
@@ -61,7 +61,7 @@ with this file. If not, see
         </div>
       </el-table-column>
     </el-table>
-  </el-main>
+  </div>
 </template>
 
 <script>

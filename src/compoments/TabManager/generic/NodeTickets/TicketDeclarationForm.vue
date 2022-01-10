@@ -25,9 +25,9 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <h2>
+      <h5 style="margin: 20px">
         {{ $t('spinal-twin.TicketDeclare') }}
-      </h2>
+      </h5>
     </el-header>
 
     <el-main>
@@ -39,8 +39,9 @@ with this file. If not, see
         <el-form-item label="Context">
           <el-select
             v-model="newTicket.context"
-            placeholder="placeholder"
+            :placeholder="$t('spinal-twin.SelectContext')"
             @change="setProcesses()"
+            style="width: 500px"
           >
             <el-option
               v-for="context in contexts"
@@ -57,8 +58,9 @@ with this file. If not, see
         >
           <el-select
             v-model="newTicket.process"
-            placeholder="placeholder"
+            :placeholder="$t('spinal-twin.SelectProcess')"
             @change="setIncidents()"
+            style="width: 500px"
           >
             <el-option
               v-for="process in processes"
@@ -77,7 +79,8 @@ with this file. If not, see
             v-model="newTicket.incident"
             :fetch-suggestions="suggestIncidents"
             @select="selected"
-            placeholder="placeholder"
+            style="width: 500px"
+            :placeholder="$t('spinal-twin.SelectIncident')"
           >
             <div slot-scope="{ item }">
               <div>{{ item }}</div>
@@ -99,7 +102,13 @@ with this file. If not, see
           v-show="newTicket.incident != '' && newTicket.incident != undefined"
           :label="$t('spinal-twin.Description')"
         >
-          <el-input v-model="newTicket.description" placeholder="Placeholder"></el-input>
+          <el-input
+            v-model="newTicket.description"
+            :placeholder="$t('spinal-twin.Description')"
+            autosize
+            type="textarea"
+            style="width: 500px"
+          ></el-input>
         </el-form-item>
       </el-form>
     </el-main>

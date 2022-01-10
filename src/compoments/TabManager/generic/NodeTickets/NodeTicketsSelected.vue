@@ -242,6 +242,10 @@ export default {
 
       var ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"));
       var d = moment.duration(ms);
+      if (d.asDays() < 1)
+      {
+        return this.$t("spinal-twin.Today");
+      }
       return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
     
