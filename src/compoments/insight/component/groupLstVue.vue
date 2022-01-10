@@ -43,6 +43,7 @@ with this file. If not, see
           <el-button class="boutton-barre"
                      icon="el-icon-view"
                      circle
+                     :disabled="true"
                      @click="SeeAll"></el-button>
 
         </el-row> 
