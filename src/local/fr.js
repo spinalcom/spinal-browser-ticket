@@ -69,7 +69,7 @@ export default {
   "node-type.BIMObjectGroupContext" : "Contextes de groupes d'objets BIM",
   "node-type.BIMObjectGroup" : "Groupes d'objets BIM",
   "node-type.BIMObject" : "Objets BIM",
-  "node-type.geographicContext" : "Contextes géographiques",
+  "node-type.geographicContext" : "Contexte géographique",
   "node-type.geographicBuilding" : "Bâtiments",
   "node-type.geographicFloor" : "Etages",
   "node-type.geographicRoom" : "Salles",
@@ -126,6 +126,7 @@ export default {
 
   "spinal-twin.Tickets": "Tickets",
   "spinal-twin.TicketAuthor": "Crée par",
+  "spinal-twin.TicketNotes": "Notes du ticket",
   "spinal-twin.TicketInspect": "Inspecter le ticket",
   "spinal-twin.TicketArchive": "Archiver/désarchiver le ticket",
   "spinal-twin.TicketAdd": "Ajouter un ticket",
@@ -150,13 +151,14 @@ export default {
   "spinal-twin.EventAdd": "Ajouter an événement",
   
   "spinal-twin.Today": "Aujourd'hui",
+  "spinal-twin.Yesterday": "Hier",
   "spinal-twin.DaysAgo": " jours",
   "spinal-twin.StartDate": "Date de début",
   "spinal-twin.EndDate": "Date de fin",
   
   "spinal-twin.Name": "Nom",
-  "spinal-twin.Endpoints": "Tableau de bord",
-  "spinal-twin.ControlEndpoints": "Points de terminaison",
+  "spinal-twin.Endpoints": "Données brutes",
+  "spinal-twin.ControlEndpoints": "Indicateurs",
   "spinal-twin.ErrorFileTooLarge": "Le fichier sélectionné est trop lourd. La taille maximale est de ",
   "explorer.Name": "Nom",
   "SpaceManagement.Nom": "Nom",

@@ -39,10 +39,11 @@ with this file. If not, see
         <el-form-item label="Context">
           <el-select
             v-model="newTicket.context"
-            :placeholder="$t('spinal-twin.SelectContext')"
             @change="setProcesses()"
+            placeholder="---"
             style="width: 500px"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectContext')" -->
             <el-option
               v-for="context in contexts"
               :key="context.id"
@@ -58,10 +59,11 @@ with this file. If not, see
         >
           <el-select
             v-model="newTicket.process"
-            :placeholder="$t('spinal-twin.SelectProcess')"
+            placeholder="---"
             @change="setIncidents()"
             style="width: 500px"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectProcess')" -->
             <el-option
               v-for="process in processes"
               :key="process.id.get()"
@@ -80,8 +82,9 @@ with this file. If not, see
             :fetch-suggestions="suggestIncidents"
             @select="selected"
             style="width: 500px"
-            :placeholder="$t('spinal-twin.SelectIncident')"
+            placeholder="---"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectIncident')" -->
             <div slot-scope="{ item }">
               <div>{{ item }}</div>
             </div>
@@ -104,11 +107,11 @@ with this file. If not, see
         >
           <el-input
             v-model="newTicket.description"
-            :placeholder="$t('spinal-twin.Description')"
             autosize
+            placeholder="---"
             type="textarea"
-            style="width: 500px"
           ></el-input>
+            <!-- :placeholder="$t('spinal-twin.Description')" -->
         </el-form-item>
       </el-form>
     </el-main>

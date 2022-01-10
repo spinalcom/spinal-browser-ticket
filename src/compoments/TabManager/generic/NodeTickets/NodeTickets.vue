@@ -190,6 +190,10 @@ export default {
       {
         return this.$t("spinal-twin.Today");
       }
+      else if (d.asDays() < 2)
+      {
+        return this.$t("spinal-twin.Yesterday");
+      }
       return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
 

@@ -125,6 +125,7 @@ export default {
 
   "spinal-twin.Tickets": "Tickets",
   "spinal-twin.TicketAuthor": "Created by",
+  "spinal-twin.TicketNotes": "Ticket's notes",
   "spinal-twin.TicketInspect": "Inspect ticket",
   "spinal-twin.TicketArchive": "Toggle archive ticket",
   "spinal-twin.TicketAdd": "Adding ticket",
@@ -148,13 +149,14 @@ export default {
   "spinal-twin.EventAdd": "Add an event",
   
   "spinal-twin.Today": "Today",
+  "spinal-twin.Yesterday": "Yesterday",
   "spinal-twin.DaysAgo": " days ago",
   "spinal-twin.StartDate": "Date de début",
   "spinal-twin.EndDate": "Date de fin",
   
   "spinal-twin.Name": "Name",
   "spinal-twin.Endpoints": "Endpoints",
-  "spinal-twin.ControlEndpoints": "ControlEndpoints",
+  "spinal-twin.ControlEndpoints": "Insights",
   "spinal-twin.ErrorFileTooLarge": "The selected file(s) is too large. The maximum size must not exceed ",
   "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",
