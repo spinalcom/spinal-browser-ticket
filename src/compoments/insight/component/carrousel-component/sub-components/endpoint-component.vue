@@ -248,6 +248,8 @@ export default {
          return result;
          });
 
+         
+         
          return allBimObjects.map(el => el.get());
       },
 
@@ -381,10 +383,6 @@ export default {
 .absolute{
    position:absolute;
 }
-
-
-
-
 .fixed{
    position: fixed;
 }

@@ -135,7 +135,7 @@ export default {
    justify-content: space-around;
    flex-direction: row;
    flex-wrap: wrap;
-   z-index: 999;
+   z-index: 998;
 }
 
 .heatmap_legends_container .legend {

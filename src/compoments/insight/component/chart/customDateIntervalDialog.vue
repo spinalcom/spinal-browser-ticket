@@ -23,36 +23,22 @@ with this file. If not, see
 -->
 <template>
   <md-dialog class="endpoint-chart-viewer-panel-dialog-custom-interval" :md-active.sync="isOpenComputed"
-    :md-close-on-esc=true :md-click-outside-to-close=true :md-closed=onClose>
+    :md-close-on-esc=true :md-click-outside-to-close=true :md-closed="onClose">
     <md-dialog-content class="md-scrollbar">
+
       <div class="md-layout">
-      </div>
-      <div class="md-layout">
-        <div class="md-layout-item endpoint-chart-viewer-panel-dialog-custom-interval-calendar-container">
-          <md-field>
-            <label for="start">Start</label>
-            <md-select v-model="startCompu" name="start" id="start">
-              <md-option value="Other">Other</md-option>
-              <md-option v-for="date in dateAvailableCompu" :key="date" :value="selectDateStart(date)">
-                {{formatDate(date)}} </md-option>
-            </md-select>
-          </md-field>
-          <!--<VueCtkDateTimePicker :max-date="endPickerCompu" :dark=true :hint="hint" :format="format" :noButtonNow=false
-            v-model="startPickerCompu" :inline=true>
-          </VueCtkDateTimePicker> -->
-        </div>
-        <div class="md-layout-item endpoint-chart-viewer-panel-dialog-custom-interval-calendar-container">
-          <md-field>
-            <label for="end">End</label>
-            <md-select v-model="endCompu" name="end" id="end">
-              <md-option value="Other">Other</md-option>
-              <md-option v-for="date in dateAvailableCompu" :key="date" :value="selectDateStart(date)">
-                {{formatDate(date)}}</md-option>
-            </md-select>
-          </md-field>
-          <!--<VueCtkDateTimePicker :max-date="today" :min-date="endStart" :dark=true :hint="hint" :format="format"
-            :noButtonNow=false v-model="endPickerCompu" :inline=true>
-          </VueCtkDateTimePicker> -->
+        <div class="endpoint-chart-viewer-panel-dialog-custom-interval-calendar-container ">
+          <h4> Start Date </h4>
+
+          <b-form-datepicker class="mb-3" v-model="startPickerCompu" right locale="en-US" aria-controls="example-input">
+          </b-form-datepicker>
+
+          <h4> End Date </h4>
+
+
+          <b-form-datepicker v-model="endPickerCompu" right locale="en-US" aria-controls="example-input">
+          </b-form-datepicker>
+
         </div>
       </div>
     </md-dialog-content>
@@ -83,10 +69,27 @@ with this file. If not, see
         today: today.toISOString(),
         start: null,
         end: null,
-        valid: false
+        valid: false,
+        value: null
       };
     },
     computed: {
+      pickerModel: {
+        // YYYY-MM-DD
+        get() {
+          const value = (this.value || '').trim()
+          if (/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/.test(value)) {
+            return value.split('-').reverse().join('-')
+          }
+          return ''
+        },
+        set(val) {
+          if (!val) {
+            this.value = ''
+          }
+          this.value = val.split('-').reverse().join('-')
+        }
+      },
       startCompu: {
         get() {
           if (this.start === null) return 'Other';
@@ -144,7 +147,7 @@ with this file. If not, see
           }
         },
         set(value) {
-          this.end = moment.utc(value, 'YYYY-MM-DD HH:mm:ss');
+          this.end = moment.utc(value+ " 23-59-59", 'YYYY-MM-DD HH:mm:ss');
         }
       },
       dateAvailableCompu() {
@@ -168,8 +171,8 @@ with this file. If not, see
       }
     },
     methods: {
+
       selectDateStart(date) {
-        console.log(date);
         let m_date = new Date(date);
         return new Date(m_date.setUTCHours(0, 0, 0, 0)).toISOString();
       },
@@ -203,7 +206,7 @@ with this file. If not, see
 
 <style>
   .endpoint-chart-viewer-panel-dialog-custom-interval {
-    width: 80vw;
+    width: 100vw;
   }
 
   .endpoint-chart-viewer-panel-dialog-custom-interval>.md-dialog-container {
@@ -220,11 +223,16 @@ with this file. If not, see
 
   .endpoint-chart-viewer-panel-dialog-custom-interval-calendar-container {
     border: 5px double #cbcbcb;
-    margin: 20px;
+    margin: auto;
+    min-height: 400px;
+    width: 500px;
+    text-align: center;
   }
 
-  .endpoint-chart-viewer-panel-dialog-custom-interval-calendar-container>h2 {
+  
+  .endpoint-chart-viewer-panel-dialog-custom-interval-calendar-container>h4 {
     text-align: center;
+
   }
 
   .endpoint-chart-viewer-panel-dialog-custom-interval .md-field {
@@ -233,5 +241,9 @@ with this file. If not, see
 
   .endpoint-chart-viewer-panel-dialog-custom-interval .md-field label {
     padding-left: 8px;
+  }
+
+  .endpoint-chart-viewer-panel-dialog-custom-interval .mb-3 {
+    padding-bottom: 150px;
   }
 </style>

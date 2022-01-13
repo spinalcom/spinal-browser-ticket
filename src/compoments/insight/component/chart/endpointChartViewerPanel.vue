@@ -28,22 +28,16 @@ with this file. If not, see
 		<div class="modale">
 			<div class="endpoint-chart-viewer-panel">
 				<div class="md-layout endpoint-chart-viewer-panel-topbtn-container">
-					<md-button v-for="value in buttons" :key="value" class="md-layout-item topbtn"
-						:disabled="value === btnSelected"
-						@click="onClick(value)">
+					<md-button v-for="value in buttons" :key="value" class="md-layout-item topbtn" :md-ripple=false
+						:disabled="value === btnSelected" @click="onClick(value)">
 						{{ value }}
 					</md-button>
 
-					<md-button
-					class="md-layout-item topbtn"
-					:disabled="btnSelected==='CUSTOM'"
-					@click="onClickCustom"
-					>CUSTOM</md-button>
+					<md-button class="md-layout-item topbtn" :disabled="btnSelected==='CUSTOM'" @click="onClickCustom" :md-ripple=false> 
+						CUSTOM</md-button>
 
-					<md-button style="background:red"
-					class="md-layout-item topbtn"
-					@click="openChartModal"
-					>X</md-button>
+					<md-button style="background:red" class="md-layout-item topbtn" @click="openChartModal">X
+					</md-button>
 				</div>
 
 				<div class="
@@ -52,11 +46,10 @@ with this file. If not, see
 				">
 					<plotlyCompoment :data="timeSeriesData" :reloadData="reloadData"></plotlyCompoment>
 				</div>
-				<customDateIntervalDialog
-			@closeDialog="closeDialogCustom"
-			:dateAvailable="dateAvailable"
-			:isOpen="isDialogCustomOpen"
-		></customDateIntervalDialog>
+				<customDateIntervalDialog @closeDialog="closeDialogCustom" :dateAvailable="dateAvailable"
+					:isOpen="isDialogCustomOpen"></customDateIntervalDialog>
+
+
 			</div>
 
 		</div>
@@ -97,7 +90,7 @@ with this file. If not, see
 				const index = this.timeSeriesData.findIndex((elem) => {
 					return elem === nodeId;
 				});
-				console.log("index : ",index);
+				console.log("index : ", index);
 				if (index === -1) {
 					let data;
 					if (this.btnSelected === "CUSTOM") {
@@ -147,6 +140,7 @@ with this file. If not, see
 					end,
 					valid
 				} = value;
+				console.log(start,end,valid);
 				this.isDialogCustomOpen = false;
 				if (valid) {
 					this.lastStart = start;
@@ -171,14 +165,13 @@ with this file. If not, see
 			},
 			closed() {},
 		},
-		watch:{
-			isChartModalVisible(){
-				if(this.isChartModalVisible){
+		watch: {
+			isChartModalVisible() {
+				if (this.isChartModalVisible) {
 					this.toogleSelect(this.selectedNode.id.get());
-				}
-				else this.removed();
-				
-				
+				} else this.removed();
+
+
 			}
 		}
 	};
@@ -202,9 +195,9 @@ with this file. If not, see
 	.endpoint-chart-viewer-panel .topbtn {
 		margin: unset;
 		min-width: 3em;
-		
+
 	}
-	
+
 	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {
 		height: calc(100% - 36px);
 	}
@@ -223,17 +216,14 @@ with this file. If not, see
 		top: 0;
 		bottom: 0;
 		left: 0;
-		right: 0;
 		width: 100%;
 		height: 100%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		background-color: white;
-		overflow: hidden;
-		overflow-y: auto;
 		z-index: 2;
-		
+
 
 	}
 
