@@ -278,12 +278,12 @@ export default {
       this.currentView = view;
       this.setColumns(view);
       
-      if (this.isolated == true)
-      {
-        viewerState.changeIsolation();
-        EventBus.$emit("viewer-reset-isolate");
-        this.isolated = false;
-      }
+      // if (this.isolated == true)
+      // {
+      //   viewerState.changeIsolation();
+      //   EventBus.$emit("viewer-reset-isolate");
+      //   this.isolated = false;
+      // }
 
       // Update tabs
       this.tabs[0].props.items = this.items;

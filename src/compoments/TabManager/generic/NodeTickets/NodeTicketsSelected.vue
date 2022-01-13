@@ -38,9 +38,17 @@ with this file. If not, see
         >
         </el-button>
       </el-tooltip>
-      <h2 style="margin: 0 50px">
+      <el-button
+        @click.stop="debug(ticket)"
+        class="spl-el-button"
+        style="float: right"
+        icon="el-icon-search"
+        circle
+      >
+      </el-button>
+      <h5 style="padding: 5px 55px">
         {{ ticket.name }}
-      </h2>
+      </h5>
       <div v-if="doStepping" style="float:right">
         <el-tooltip :content="$t('spinal-twin.TicketPrev')">
           <el-button
@@ -86,6 +94,20 @@ with this file. If not, see
           </div>
         </el-collapse-item>
 
+        <el-collapse-item v-if="ticket.comments.length > 0" name="Description" title="Description">
+          <p>
+            {{ ticket.comments[0].element.message.get() }}
+          </p>
+          <!-- <node-notes-message
+            :username="ticket.comments[0].element.username.get()"
+            :date="ticket.comments[0].element.date.get()"
+            :message="ticket.comments[0].element.message.get()"
+            :type="ticket.comments[0].element.type.get()"
+            :file="ticket.comments[0].element.file ? ticket.comments[0].element.file : {}"
+            :viewPoint="ticket.comments[0].element.viewPoint ? ticket.comments[0].element.viewPoint : null"
+          ></node-notes-message> -->
+        </el-collapse-item>
+
         <el-collapse-item name="Events" :title="$t('spinal-twin.Events')">
           <el-table
             :data="ticket.events"
@@ -111,7 +133,7 @@ with this file. If not, see
           </el-table>
         </el-collapse-item>
 
-        <el-collapse-item name="Notes" title="Notes">
+        <el-collapse-item name="Notes" :title="$t('spinal-twin.TicketNotes')">
           <el-container>
             <el-header>
               <node-notes-create
@@ -121,28 +143,12 @@ with this file. If not, see
               ></node-notes-create>
             </el-header>
 
-            <el-main class="note-feed">
+            <div class="note-feed">
               <el-container
                 v-for="note of ticket.comments"
                 :key="note._server_id"
+                style="display: flex; flex-direction: row; align-items: flex-start; margin-bottom: 10px"
               >
-                <el-header class="delete-button">
-                  <el-tooltip :content="$t('spinal-twin.DeleteNote')">
-                    <el-popconfirm
-                      @confirm="delNote(ticket.ticket)"
-                      :title="$t('spinal-twin.DeleteConfirm')">
-                      <el-button
-                        class="spl-input-button"
-                        icon="el-icon-delete"
-                        type="danger"
-                        size="small"
-                        circle
-                        slot="reference"
-                      ></el-button>
-                    </el-popconfirm>
-                  </el-tooltip>
-                </el-header>
-
                 <el-main style="padding: 0 0 10px 0">
                   <node-notes-message
                     :username="note.element.username.get()"
@@ -153,8 +159,25 @@ with this file. If not, see
                     :viewPoint="note.element.viewPoint ? note.element.viewPoint : null"
                   ></node-notes-message>
                 </el-main>
+                <el-tooltip
+                  :content="$t('spinal-twin.DeleteNote')"
+                  class="delete-button"
+                >
+                  <el-popconfirm
+                    @confirm="delNote(ticket.ticket)"
+                    :title="$t('spinal-twin.DeleteConfirm')">
+                    <el-button
+                      class="spl-input-button"
+                      icon="el-icon-delete"
+                      type="danger"
+                      size="small"
+                      circle
+                      slot="reference"
+                    ></el-button>
+                  </el-popconfirm>
+                </el-tooltip>
               </el-container>
-            </el-main>
+            </div>
           </el-container>
         </el-collapse-item>
       </el-collapse>
@@ -168,7 +191,7 @@ import NodeNotesMessage from "../NodeNotes/NodeNotesMessage.vue";
 import NodeNotesCreate from "../NodeNotes/NodeNotesCreate.vue";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
-import { LOGS_EVENTS } from "spinal-service-ticket/src/Constants"
+import { LOGS_EVENTS_STRING } from "spinal-service-ticket/src/Constants"
 import { spinalServiceTicket } from "spinal-service-ticket"
 import { ViewManager } from "../../../../services/ViewManager/ViewManager";
 import { getTicketDescription } from './Ticket';
@@ -242,6 +265,14 @@ export default {
 
       var ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"));
       var d = moment.duration(ms);
+      if (d.asDays() < 1)
+      {
+        return this.$t("spinal-twin.Today");
+      }
+      else if (d.asDays() < 2)
+      {
+        return this.$t("spinal-twin.Yesterday");
+      }
       return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
     
@@ -286,7 +317,7 @@ export default {
 
     logFormat(n)
     {
-      return LOGS_EVENTS[n];
+      return LOGS_EVENTS_STRING[n];
     },
 
     debug(what)
@@ -306,13 +337,11 @@ export default {
 .note-feed {
   overflow: auto;
   display: flex;
-  flex-direction: column-reverse
+  flex-direction: column-reverse;
+  flex-wrap: wrap;
 }
 
 .delete-button {
-  padding: 10px 0 0 0;
-  display: flex;
-  flex-direction: row-reverse;
-  height: min-content;
+  padding: 25px 10px 10px 10px;
 }
 </style>

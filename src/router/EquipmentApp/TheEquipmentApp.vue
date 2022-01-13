@@ -110,7 +110,6 @@ import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeC
 import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
 import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue'
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue'
-import { CONTEXT_TYPE } from 'spinal-env-viewer-task-service';
 
 const EQUIPMENT_APP_RELATIONS = EQUIPMENT_RELATION_LIST.concat(EQUIPMENT_RELATION);
 const VIEW_KEY = "EquipmentApp";
@@ -259,7 +258,7 @@ export default {
 
       // Get children
       for (const [nodeType, items] of mapItems) {
-        this.items.nodeType = nodeType
+        this.items.nodeType = nodeType;
         this.items.items = items;
       }
 

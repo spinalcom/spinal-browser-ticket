@@ -23,8 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
+  <div>
+    <div class="spl-button-bar">
       <el-tooltip
         :content="$t('spinal-twin.CategoryAdd')"
         style="float: right"
@@ -37,9 +37,9 @@ with this file. If not, see
           circle
         ></el-button>
       </el-tooltip>
-    </el-header>
+    </div>
 
-    <el-main>
+    <div>
       <el-table
         v-if="Categories"
         :data="Categories"
@@ -53,7 +53,6 @@ with this file. If not, see
               :data="cat.row.attributes"
               :header-cell-style="{'background-color': '#f0f2f5'}"
               border
-              style="overflow: auto; height: auto"
             >
               <el-table-column :label="$t('node-type.Attribute')">
                 <editable-text
@@ -156,8 +155,7 @@ with this file. If not, see
 
         <el-table-column
           label="Actions"
-          fixed="right"
-          width=200
+          width=120
         >
           <div slot-scope="cat">
             <el-tooltip :content="$t('spinal-twin.CategoryEdit') + cat.row.name">
@@ -184,8 +182,8 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-    </el-main>
-  </el-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -335,6 +333,11 @@ export default {
     },
 
     async delCategory(category){
+      if (category.isEditing)
+      {
+        category.isEditing = false;
+        this.isEditing = false;
+      }
       await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id);
       this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id));
     },
@@ -373,3 +376,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+.spl-button-bar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 5px 5px 5px;
+}
+
+</style>

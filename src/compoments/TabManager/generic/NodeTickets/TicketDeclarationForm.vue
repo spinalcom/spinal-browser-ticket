@@ -25,9 +25,9 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <h2>
+      <h5 style="margin: 20px">
         {{ $t('spinal-twin.TicketDeclare') }}
-      </h2>
+      </h5>
     </el-header>
 
     <el-main>
@@ -39,9 +39,11 @@ with this file. If not, see
         <el-form-item label="Context">
           <el-select
             v-model="newTicket.context"
-            placeholder="placeholder"
             @change="setProcesses()"
+            placeholder="---"
+            style="width: 500px"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectContext')" -->
             <el-option
               v-for="context in contexts"
               :key="context.id"
@@ -57,9 +59,11 @@ with this file. If not, see
         >
           <el-select
             v-model="newTicket.process"
-            placeholder="placeholder"
+            placeholder="---"
             @change="setIncidents()"
+            style="width: 500px"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectProcess')" -->
             <el-option
               v-for="process in processes"
               :key="process.id.get()"
@@ -77,8 +81,10 @@ with this file. If not, see
             v-model="newTicket.incident"
             :fetch-suggestions="suggestIncidents"
             @select="selected"
-            placeholder="placeholder"
+            style="width: 500px"
+            placeholder="---"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectIncident')" -->
             <div slot-scope="{ item }">
               <div>{{ item }}</div>
             </div>
@@ -99,7 +105,13 @@ with this file. If not, see
           v-show="newTicket.incident != '' && newTicket.incident != undefined"
           :label="$t('spinal-twin.Description')"
         >
-          <el-input v-model="newTicket.description" placeholder="Placeholder"></el-input>
+          <el-input
+            v-model="newTicket.description"
+            autosize
+            placeholder="---"
+            type="textarea"
+          ></el-input>
+            <!-- :placeholder="$t('spinal-twin.Description')" -->
         </el-form-item>
       </el-form>
     </el-main>

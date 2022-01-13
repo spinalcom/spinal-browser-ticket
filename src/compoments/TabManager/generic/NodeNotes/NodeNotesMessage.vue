@@ -44,11 +44,15 @@ with this file. If not, see
         alt="image"
         class="spl-message-image"
       />
+      <i
+        v-else-if="(type == 'img' || type == 'view')"
+        class="el-icon-document-delete"
+      ></i>
     </el-main>
 
     <div>
       <el-button
-        v-if="type == 'img' || type == 'view'"
+        v-if="type == 'img' || type == 'view' || type == 'file'"
         v-on:click.native="downloadImage()"
         type="primary"
         square
@@ -115,11 +119,15 @@ export default {
     getImage()
     {
       if (!this.file.load)
+      {
         return;
+      }
       this.file.load((f) =>
       {
         if (typeof f === "undefined")
+        {
           return;
+        }
         f.load(async (l) => {
           await this.waitimageReady(l);
           this.image = f._ptr.data.value;

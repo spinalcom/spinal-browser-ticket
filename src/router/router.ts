@@ -28,24 +28,24 @@ import Vue from "vue";
 Vue.use(VueRouter);
 
 const AppList = () => import('./AppList/AppList.vue');
-//const TicketCenter = () => import('./TicketCenter/TicketCenter.vue');
+// const TicketCenter = () => import('./TicketCenter/TicketCenter.vue');
 const InsightCenter = () => import('./InsightCenter/InsightCenter.vue');
 const SpaceCenter = () => import('./Space Center/spacecenter.vue');
 const SpaceCenterGestion = () => import('../compoments/space/component/categoryLstVue.vue');
 //const DataRoom = () => import("./DataRoom/DataRoom.vue")
 const EquipmentApp = () => import("./EquipmentApp/TheEquipmentApp.vue")
 const DataApp = () => import("./DataApp/TheDataApp.vue")
-//const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
+const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
 export const routes = [
   { path: '*', redirect: { name: 'AppList' } },
   { path: '/AppList', name: 'AppList', component: AppList },
   // { path: '/DataRoom', name: 'Data Room', component: DataRoom },
-  // { path: '/TicketCenter', name: 'Ticket Center', component: TicketCenter },
+  // { path: '/TicketCenter', name: 'TicketCenter', component: TicketCenter },
   { path: '/DataApp', name: 'DataApp', component: DataApp },
   { path: '/InsightCenter', name: 'InsightCenter', component: InsightCenter },
   { path: '/Spacecenter', name: 'SpaceCenter', component: SpaceCenter },
   { path: '/EquipmentApp', name: 'EquipmentApp', component: EquipmentApp },
-  // { path: '/TicketApp', name: 'Ticket App', component: TicketApp },
+  { path: '/TicketApp', name: 'TicketApp', component: TicketApp },
 ];
 const realroutes = [...routes,
 { path: '/Spacecenter/Gestion', name: 'gestion', component: SpaceCenterGestion },

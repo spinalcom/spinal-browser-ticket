@@ -42,6 +42,7 @@ export default {
   "Routes.InsightCenter": "Visualize the activity",
   "Routes.SpaceCenter": "Inspect the spaces",
   "Routes.EquipmentApp": "Inspect the equipments",
+  "Routes.TicketApp": "Handle the tickets",
   "DataRoom.geographicContext": "Contextes", // Could be generic
   "DataRoom.geographicBuilding": "Bâtiments", // Could be generic
   "DataRoom.geographicFloor": "Etages", // Could be generic
@@ -86,13 +87,21 @@ export default {
   "spinal-twin.Select": "Select",
   "spinal-twin.Area": "Area (m²)",
   "spinal-twin.children": "Child node number",
+
   "spinal-twin.BuildingCount": "Buildings number",
   "spinal-twin.FloorCount": "Level number",
   "spinal-twin.RoomCount": "Room number",
+
   "spinal-twin.CategoryCount": "Category number",
   "spinal-twin.GroupCount": "Group number",
   "spinal-twin.EquipmentCount": "Equipment number",
   "spinal-twin.TotalEquipments": "Total equipment number",
+  
+  "spinal-twin.ProcessCount": "Process number",
+  "spinal-twin.StepCount": "Step number",
+  "spinal-twin.TicketCount": "Ticket number",
+  "spinal-twin.TotalTickets": "Total ticket number",
+
   "spinal-twin.hasCategoryAttributes": "Attributes",
   "spinal-twin.CategoryAdd": "Add attribute category",
   "spinal-twin.CategoryEdit": "Edit category ",
@@ -113,15 +122,21 @@ export default {
   "spinal-twin.NotesAddScreenshot": "Add a screenshot of the viewer as attachment",
   "spinal-twin.NotesAddFile": "Add file as attachment",
   "spinal-twin.NotesDeleteAttachment": "Delete attachment",
+
   "spinal-twin.Tickets": "Tickets",
   "spinal-twin.TicketAuthor": "Created by",
+  "spinal-twin.TicketNotes": "Ticket's notes",
   "spinal-twin.TicketInspect": "Inspect ticket",
   "spinal-twin.TicketArchive": "Toggle archive ticket",
   "spinal-twin.TicketAdd": "Adding ticket",
-  "spinal-twin.TicketDeclare": "Declare ticket",
+  "spinal-twin.TicketDeclare": "Declare a ticket",
+  "spinal-twin.SelectContext": "Select a context",
+  "spinal-twin.SelectProcess": "Select a process",
+  "spinal-twin.SelectIncident": "Select an incident or write a title",
   "spinal-twin.TicketPriority.Occasion": "Occasional",
   "spinal-twin.TicketPriority.Normal": "Normal",
   "spinal-twin.TicketPriority.Urgent": "Urgent",
+
   "spinal-twin.CurrentStep": "Current step",
   "spinal-twin.Step": "Step",
   "spinal-twin.Priority": "Priority",
@@ -129,15 +144,19 @@ export default {
   "spinal-twin.CreationTime": "Creation time",
   "spinal-twin.Events": "Events",
   "spinal-twin.User": "User",
-  "spinal-twin.DaysAgo": " days ago",
   "spinal-twin.Calendar": "Calendar",
   "spinal-twin.EventDelete": "Delete event",
   "spinal-twin.EventAdd": "Add an event",
+  
+  "spinal-twin.Today": "Today",
+  "spinal-twin.Yesterday": "Yesterday",
+  "spinal-twin.DaysAgo": " days ago",
   "spinal-twin.StartDate": "Date de début",
   "spinal-twin.EndDate": "Date de fin",
+  
   "spinal-twin.Name": "Name",
   "spinal-twin.Endpoints": "Endpoints",
-  "spinal-twin.ControlEndpoints": "ControlEndpoints",
+  "spinal-twin.ControlEndpoints": "Insights",
   "spinal-twin.ErrorFileTooLarge": "The selected file(s) is too large. The maximum size must not exceed ",
   "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",

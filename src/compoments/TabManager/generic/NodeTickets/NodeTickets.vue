@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
+  <div style="height: 100%">
     <el-container v-if="selected">
       <node-tickets-selected
         :selected="selected"
@@ -45,8 +45,11 @@ with this file. If not, see
       ></ticket-declaration-form>
     </el-container>
 
-    <el-container v-if="!selected && !addingTicket">
-      <el-header>
+    <div
+      v-else
+      style="height: 100%"
+    >
+      <div class="spl-button-bar">
         <el-tooltip
           :content="$t('spinal-twin.TicketDeclare')"
           style="float: right"
@@ -58,18 +61,19 @@ with this file. If not, see
             circle
           ></el-button>
         </el-tooltip>
-      </el-header>
+      </div>
 
-      <el-main>
+      <div style="height: calc(100% - 42px)">
         <node-tickets-list
           v-if="tickets"
           :tickets="tickets"
           @select="select"
           @archive="archive"
+          style="height: 100%"
         >
         </node-tickets-list>
-      </el-main>
-    </el-container>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -182,6 +186,14 @@ export default {
 
       var ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"));
       var d = moment.duration(ms);
+      if (d.asDays() < 1)
+      {
+        return this.$t("spinal-twin.Today");
+      }
+      else if (d.asDays() < 2)
+      {
+        return this.$t("spinal-twin.Yesterday");
+      }
       return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
 
@@ -217,6 +229,14 @@ export default {
 </script>
 
 <style scoped>
+
+.spl-button-bar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 5px 5px 5px;
+}
+
 .detail-row {
   display: flex;
   flex-direction: row;

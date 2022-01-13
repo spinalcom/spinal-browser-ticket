@@ -23,8 +23,8 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
+  <div>
+    <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.DocumentAdd')">
         <el-button
           :disabled="ctxNode == false"
@@ -35,9 +35,9 @@ with this file. If not, see
           style="float: right"
         ></el-button>
       </el-tooltip>
-    </el-header>
+    </div>
 
-    <el-main>
+    <div>
       <el-table
         :data="documents"
         :header-cell-style="{'background-color': '#f0f2f5'}"
@@ -51,7 +51,6 @@ with this file. If not, see
         </el-table-column>
         <el-table-column
           label="Actions"
-          fixed="right"
           width=120
         >
           <div slot-scope="scope">
@@ -77,8 +76,8 @@ with this file. If not, see
           </div>
         </el-table-column>
       </el-table>
-    </el-main>
-  </el-container>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -247,3 +246,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+.spl-button-bar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 5px 5px 5px;
+}
+
+</style>
