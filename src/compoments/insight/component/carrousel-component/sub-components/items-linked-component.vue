@@ -33,7 +33,6 @@
          :variableSelected="variableSelected"
          :room="room"
          @select="onSelect"
-         @isolate="onIsolate"
       ></endpoint-component>
    </div>
 
@@ -118,25 +117,13 @@ export default {
          return colorHex;
       },
 
-      onIsolate(data){
-         if(this.isIsolate && data.id == this.isolated ){
-            EventBus.$emit("view-show-all");
-            this.isIsolate=false;
-         }
-         else{
-         EventBus.$emit("insight-isolate", data);
-         this.isIsolate=true;
-         }
-         this.isolated= data.id;
-      },
-
       onSelect(data){
          if(this.isSelect && data.id == this.selected ){
             EventBus.$emit("insight-clear-select");
             this.isSelect=false;
          }
          else{
-         EventBus.$emit("insight-select", data);
+         EventBus.$emit("sidebar-mouseover-item", data);
          this.isSelect=true;
          }
          this.selected= data.id;

@@ -15,17 +15,10 @@
 
 
 
-         <el-tooltip content="Isolate" effect="light"
-             :open-delay="300"
-             placement="right">
-         <el-button v-on:click="isolate()" class="custom-icon circled-button position_right" circle icon="el-icon-location"></el-button>
-         </el-tooltip>
-
-
          <el-tooltip content="Focus" effect="light"
              :open-delay="300"
              placement="right">
-         <el-button v-on:click="focus()" class="custom-icon circled-button position_right3" circle icon="el-icon-zoom-in"></el-button>
+         <el-button v-on:click="focus()" class="custom-icon circled-button position_right" circle icon="el-icon-zoom-in"></el-button>
          </el-tooltip>
 
          <el-tooltip content="Select" effect="light"
@@ -210,22 +203,16 @@ export default {
 
 
       async focus() {
-         
-         let data = { rooms: [this.room]}
-         const allBimObjects = await this.getAllBimObjects(data);
-         EventBus.$emit("insight-focus", {
-         id: data.id,
-         ids: allBimObjects,
-         });
+         let a = await SpinalGraphService.getRealNode(this.room.id);
+         const item = {id:this.room.id,server_id : a._server_id}
+         EventBus.$emit("sidebar-selected-item",item);
       },
-      async select() {
-         let data = { rooms: [this.room]}
-         const allBimObjects = await this.getAllBimObjects(data);
 
-         this.$emit('select',{
-         id: this.room.id,
-         ids: allBimObjects,
-         });
+      async select() {
+         let a = await SpinalGraphService.getRealNode(this.room.id);
+         const item = {id:this.room.id,server_id : a._server_id}
+         this.$emit('select',item);
+        
       },
       async isolate() {
          
