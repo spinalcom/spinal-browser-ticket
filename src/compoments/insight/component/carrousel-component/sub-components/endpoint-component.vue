@@ -43,7 +43,7 @@
       </div>
 
       <div class="relative">
-      <el-button  v-on:click="openChartModal" class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button> 
+      <el-button  v-on:click="openChartModal" :disabled='this.variableSelected.saveTimeSeries===0' class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button> 
 
       <el-button v-if="displayBoolButton" 
       v-on:click="flip()" class="config-btn-position custom-icon circled-button" circle icon="el-icon-refresh">
@@ -58,9 +58,6 @@
 
 
       </div>
-      <!-- Chart Component -->
-      <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="isChartModalVisible" v-bind:openChartModal="openChartModal">
-      </endpoint-chart-viewer-panel> 
 
       <value-config v-if="isConfigModalVisible"
          :endpoint ="this.endpoint" :config="this.variableSelected.config" :dataType="this.variableSelected.dataType"
@@ -79,10 +76,9 @@ import valueConfig from "./value-config";
 import { EventBus } from "../../../../../services/event";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import endpointChartViewerPanel from "../../chart/endpointChartViewerPanel.vue"
 
 export default {
-   components: { valueConfig ,	endpointChartViewerPanel },
+   components: { valueConfig },
    name: "endpoint-component",
    props: { name: {}, endpoints: {}, variableSelected: {}, room:{} },
    data() {
@@ -93,7 +89,6 @@ export default {
          endpoint: undefined,
          displayBoolButton: undefined,
          isConfigModalVisible: false,
-         isChartModalVisible : false,
          isInsightIsolate: false,
          selectedNode : undefined,
       };
@@ -245,11 +240,13 @@ export default {
       },*/
 
       openChartModal(){
-         this.isChartModalVisible=!this.isChartModalVisible;
+         //this.isChartModalVisible=!this.isChartModalVisible;
+         EventBus.$emit('data-mode',this.selectedNode);
       },
 
       openConfigModal() {
       this.isConfigModalVisible=!this.isConfigModalVisible;
+      
       },
       onMouseOver(){
          //console.log(this.room);

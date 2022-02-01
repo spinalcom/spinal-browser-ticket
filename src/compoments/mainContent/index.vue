@@ -27,7 +27,7 @@ with this file. If not, see
     <div class="spinal-main-container-left">
       <spinalNavbar class="main-navbar"></spinalNavbar>
       <div
-        v-show="!absviewer"
+        v-show="!absviewer && !dataMode"
         ref="viewerContainer"
         class="spinal-viewer-container"
         :class="{ 'abs-viewer': absviewer }"
@@ -42,19 +42,28 @@ with this file. If not, see
             </appViewer>
             <el-button-group class="btn-abs-viewer-popio" v-show="!absviewer">
               <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
-              <el-button icon="el-icon-copy-document" @click="onPopClick">
-              </el-button>
+              <el-button icon="el-icon-copy-document" @click="onPopClick"></el-button>
+              <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
             </el-button-group>
           </div>
         </div>
       </div>
+
+      <div v-show="dataMode" class="test">
+        <div class="viewer-content">
+
+        <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="dataMode" v-bind:openChartModal="openDataMode">
+        </endpoint-chart-viewer-panel>
+        </div>
+      </div>
+
     </div>
     <div class="spinal-other-container">
       <router-view></router-view>
     </div>
     <transition name="el-fade-in-linear">
       <div
-        v-show="absviewer"
+        v-show="absviewer && !dataMode"
         ref="viewerContainerMini"
         class="viewer-container-mini"
         :class="{ hideViewer }"
@@ -63,8 +72,7 @@ with this file. If not, see
           <div ref="headerViewer" class="spinal-viewer-header-drag-elm"></div>
           <el-button-group class="btn-abs-viewer-popio">
             <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
-            <el-button icon="el-icon-copy-document" @click="onPopClick">
-            </el-button>
+            <el-button icon="el-icon-copy-document" @click="onPopClick"> </el-button>
           </el-button-group>
         </div>
       </div>
@@ -76,23 +84,31 @@ with this file. If not, see
 import createDragElement from "../../services/utlils/createDragElement";
 import appViewer from "./viewer/viewer.vue";
 import spinalNavbar from "../navbar/spinalNavbar.vue";
+import { EventBus } from "../../services/event"
+import endpointChartViewerPanel from "./chart/endpointChartViewerPanel.vue"
 
 export default {
   name: "MainContent",
   components: {
     appViewer,
-    spinalNavbar
+    spinalNavbar,
+    endpointChartViewerPanel 
   },
   data() {
     return {
       showLoadingModel: true,
       absviewer: false,
-      hideViewer: false
+      hideViewer: false,
+      dataMode: false,
+      selectedNode : undefined
     };
   },
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
-    // eva.replace();
+    EventBus.$on('data-mode', (data) => {
+      this.dataMode=true;
+      this.selectedNode = data;
+    });
   },
   methods: {
     onPopClick(event) {
@@ -117,7 +133,17 @@ export default {
       } else {
         this.$refs.viewerItem.handleMinized(false);
       }
+    },
+    
+    onDataClick(event) {
+      this.dataMode=!this.dataMode;
+    },
+
+    openDataMode(){
+      this.dataMode=!this.dataMode;
     }
+
+
   }
 };
 </script>
@@ -176,6 +202,17 @@ export default {
   display: flex;
   overflow: auto;
 }
+.test {
+  height: 150%;
+  width: 100%;
+  background-color: #fdfdfd;
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+}
+
+
+
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {
     height: 100%;

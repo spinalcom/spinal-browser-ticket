@@ -23,36 +23,32 @@ with this file. If not, see
 -->
 
 <template>
-	<div class="bloc-modal" v-if="isChartModalVisible">
-		<div class="overlay" v-on:click="openChartModal"></div>
-		<div class="modale">
-			<div class="endpoint-chart-viewer-panel">
-				<div class="md-layout endpoint-chart-viewer-panel-topbtn-container">
-					<md-button v-for="value in buttons" :key="value" class="md-layout-item topbtn" :md-ripple=false
-						:disabled="value === btnSelected" @click="onClick(value)">
-						{{ value }}
-					</md-button>
 
-					<md-button class="md-layout-item topbtn" :disabled="btnSelected==='CUSTOM'" @click="onClickCustom" :md-ripple=false> 
-						CUSTOM</md-button>
+	<div class="endpoint-chart-viewer-panel" v-if="isChartModalVisible">
+		<div class="md-layout endpoint-chart-viewer-panel-topbtn-container">
+			<md-button v-for="value in buttons" :key="value" class="md-layout-item topbtn" :md-ripple=false
+				:disabled="value === btnSelected" @click="onClick(value)">
+				{{ value }}
+			</md-button>
 
-					<md-button style="background:red" class="md-layout-item topbtn" @click="openChartModal">X
-					</md-button>
-				</div>
+			<md-button class="md-layout-item topbtn" :disabled="btnSelected==='CUSTOM'" @click="onClickCustom"
+				:md-ripple=false>
+				CUSTOM</md-button>
 
-				<div class="
+			<md-button style="background:red" class="md-layout-item topbtn" @click="openChartModal">X
+			</md-button>
+		</div>
+
+		<div class="
 				md-layout md-alignment-center-center
 				endpoint-chart-viewer-panel-chart-container
 				">
-					<plotlyCompoment :data="timeSeriesData" :reloadData="reloadData"></plotlyCompoment>
-				</div>
-				<customDateIntervalDialog @closeDialog="closeDialogCustom" :dateAvailable="dateAvailable"
-					:isOpen="isDialogCustomOpen"></customDateIntervalDialog>
-
-
-			</div>
-
+			<plotlyCompoment :data="timeSeriesData" :reloadData="reloadData"></plotlyCompoment>
 		</div>
+		<customDateIntervalDialog @closeDialog="closeDialogCustom" :dateAvailable="dateAvailable"
+			:isOpen="isDialogCustomOpen"></customDateIntervalDialog>
+
+
 	</div>
 
 </template>
@@ -140,7 +136,7 @@ with this file. If not, see
 					end,
 					valid
 				} = value;
-				console.log(start,end,valid);
+				console.log(start, end, valid);
 				this.isDialogCustomOpen = false;
 				if (valid) {
 					this.lastStart = start;
@@ -180,6 +176,7 @@ with this file. If not, see
 <style>
 	.endpoint-chart-viewer-panel {
 		height: 100%;
+		position: relative;
 	}
 
 	.endpoint-chart-viewer-panel,
@@ -198,8 +195,11 @@ with this file. If not, see
 
 	}
 
-	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {
-		height: calc(100% - 36px);
+	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {}
+
+	.test {
+		background-color: black;
+		width: 100%;
 	}
 
 	.raise-disable {
@@ -209,37 +209,5 @@ with this file. If not, see
 
 	.endpoint-chart-viewer-panel .md-content {
 		background-color: rgba(66, 66, 66, 0.4);
-	}
-
-	.bloc-modal {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background-color: white;
-		z-index: 2;
-
-
-	}
-
-	.overlay {
-		background: rgba(255, 255, 255, 0.5);
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-	}
-
-	.modale {
-		background-color: white;
-		width: 95%;
-		height: 95%;
-		position: fixed;
 	}
 </style>
