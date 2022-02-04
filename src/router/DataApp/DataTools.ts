@@ -28,7 +28,8 @@ import { ROOM_TYPE } from "../../constants";
 
 async function getSurfaceFromNode(node: SpinalNode<any>)
 {
-  return (await findSurface(node)).toFixed(2);
+  const surface = await findSurface(node);
+  return surface.toFixed(2);
 }
 
 async function findSurface(node) : Promise<number>
