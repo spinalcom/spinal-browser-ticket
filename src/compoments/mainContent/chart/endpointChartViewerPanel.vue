@@ -195,7 +195,9 @@ with this file. If not, see
 
 	}
 
-	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {}
+	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {
+		height: 100%;
+	}
 
 	.test {
 		background-color: black;

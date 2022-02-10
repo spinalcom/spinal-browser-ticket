@@ -51,7 +51,6 @@ with this file. If not, see
 
       <div v-show="dataMode" class="test">
         <div class="viewer-content">
-
         <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="dataMode" v-bind:openChartModal="openDataMode">
         </endpoint-chart-viewer-panel>
         </div>
@@ -203,7 +202,7 @@ export default {
   overflow: auto;
 }
 .test {
-  height: 150%;
+  height: 100%;
   width: 100%;
   background-color: #fdfdfd;
   position: relative;
