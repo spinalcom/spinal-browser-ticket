@@ -49,7 +49,7 @@ with this file. If not, see
         </div>
       </div>
 
-      <div v-show="dataMode" class="test">
+      <div v-show="dataMode" class="spinal-viewer-container ">
         <div class="viewer-content">
         <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="dataMode" v-bind:openChartModal="openDataMode">
         </endpoint-chart-viewer-panel>
@@ -201,16 +201,6 @@ export default {
   display: flex;
   overflow: auto;
 }
-.test {
-  height: 100%;
-  width: 100%;
-  background-color: #fdfdfd;
-  position: relative;
-  display: flex;
-  flex-grow: 1;
-}
-
-
 
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {

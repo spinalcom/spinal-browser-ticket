@@ -166,8 +166,10 @@ with this file. If not, see
 				if (this.isChartModalVisible) {
 					this.toogleSelect(this.selectedNode.id.get());
 				} else this.removed();
-
-
+			},
+			selectedNode(){
+				console.log("ah ! ça a changé !")
+				this.toogleSelect(this.selectedNode.id.get());
 			}
 		}
 	};
@@ -196,12 +198,7 @@ with this file. If not, see
 	}
 
 	.endpoint-chart-viewer-panel .endpoint-chart-viewer-panel-chart-container {
-		height: 100%;
-	}
-
-	.test {
-		background-color: black;
-		width: 100%;
+		height: 90%;
 	}
 
 	.raise-disable {
