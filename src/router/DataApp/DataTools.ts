@@ -22,46 +22,47 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { SpinalNode } from "spinal-model-graph";
-import { FileSystem } from 'spinal-core-connectorjs_type'
-import { ROOM_TYPE } from "../../constants";
+import { SpinalNode } from 'spinal-model-graph';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { ROOM_TYPE } from '../../constants';
+import type { SpinalAttribute } from 'spinal-models-documentation';
+import type { AppItem } from '../../services/backend/AppItem';
 
-async function getSurfaceFromNode(node: SpinalNode<any>)
-{
-  return (await findSurface(node)).toFixed(2);
+async function getSurfaceFromNode(node: AppItem): Promise<string> {
+  const surface = await findSurface(node);
+  return surface.toFixed(2);
 }
 
-async function findSurface(node) : Promise<number>
-{
+async function findSurface(node: AppItem): Promise<number> {
   let area = 0;
-  const info = FileSystem._objects[node.serverId];
-  if (info === undefined)
-  {
+  const info = <SpinalNode<any>>FileSystem._objects[node.serverId];
+
+  if (info === undefined) {
     return 0;
   }
   if (info.getType().get() === ROOM_TYPE) {
-    let attr = await getAttrByKey(info, "area");
-    return attr.value.get();
+    let attr = await getAttrByKey(info, 'area');
+    return parseFloat(attr.value.get());
   }
-  if (node.children === undefined)
-  {
+  if (node.children === undefined) {
     return 0;
   }
-  for (let [_, childList] of node.children)
-  {
-    for (let child of childList)
-    {
+  for (let [_, childList] of node.children) {
+    for (let child of childList) {
       area += await findSurface(child);
     }
   }
   return area;
 }
 
-async function getAttrByKey(node, key) {
+async function getAttrByKey(
+  node: SpinalNode<any>,
+  key: string
+): Promise<SpinalAttribute> {
   if (node && node instanceof SpinalNode) {
-    const cats = await node.getChildren("hasCategoryAttributes");
+    const cats = await node.getChildren('hasCategoryAttributes');
     for (const cat of cats) {
-      const attrLst = await cat.getElement();
+      const attrLst: SpinalAttribute = await cat.getElement();
       for (let idx = 0; idx < attrLst.length; idx++) {
         const attr = attrLst[idx];
         if (attr.label.get() === key) {
@@ -74,4 +75,4 @@ async function getAttrByKey(node, key) {
 
 module.exports = {
   getSurfaceFromNode: getSurfaceFromNode,
-}
+};
