@@ -30,10 +30,11 @@ import BtnMapDate from "./BtnMappingDate";
 import {spinalServiceTimeseries} from "./timeseriesServiceInstance.js";
 
 class ChartDataEndpoint {
-  constructor(nodeId, timeIntervalStr = "1h", start = null, end = null) {
+  constructor(nodeId,elemName,unit, timeIntervalStr = "1h", start = null, end = null) {
     this.nodeId = nodeId;
     this.currentValue = 0;
-    this.name = "";
+    this.name = elemName;
+    this.unit = unit
     this.timeIntervalStr = timeIntervalStr;
     this.x = [];
     this.y = [];
@@ -63,7 +64,7 @@ class ChartDataEndpoint {
 
   async prom_update() {
     const element = await this.getElement();
-    this.name = element.name.get();
+    this.name = element.name.get() + "-" + this.name + " ("+this.unit +")";
     this.currentValue = element.currentValue.get();
     if (
       typeof this.currentValue === "number" ||

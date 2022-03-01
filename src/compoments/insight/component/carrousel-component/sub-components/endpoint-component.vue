@@ -43,7 +43,11 @@
       </div>
 
       <div class="relative">
-      <el-button  v-on:click="openChartModal" :disabled='this.variableSelected.saveTimeSeries===0' class="dashboard-btn-position custom-icon circled-button" circle icon="el-icon-menu"></el-button> 
+      <el-button  v-on:click="openChartModal" :disabled='this.variableSelected.saveTimeSeries===0' 
+      class="dashboard-btn custom-icon circled-button"
+      :class="{'dashboard-btn-activated': isDataMode,  'dashboard-btn-desactivated': !isDataMode}"
+      circle icon="el-icon-menu">
+      </el-button> 
 
       <el-button v-if="displayBoolButton" 
       v-on:click="flip()" class="config-btn-position custom-icon circled-button" circle icon="el-icon-refresh">
@@ -91,6 +95,7 @@ export default {
          isConfigModalVisible: false,
          isInsightIsolate: false,
          selectedNode : undefined,
+         isDataMode: false
       };
    },
    async mounted() {
@@ -235,24 +240,19 @@ export default {
          return allBimObjects.map(el => el.get());
       },
 
-      /*toggleModal: function(){
-         this.isChartModalVisible=!this.isChartModalVisible;
-      },*/
-
       openChartModal(){
-         //this.isChartModalVisible=!this.isChartModalVisible;
-         EventBus.$emit('data-mode',this.selectedNode);
+         let data = this.selectedNode;
+         data.objectName = this.name;
+         data.unit= this.unit;
+         EventBus.$emit('data-mode',data);
+         this.isDataMode = !this.isDataMode;
+
       },
 
       openConfigModal() {
       this.isConfigModalVisible=!this.isConfigModalVisible;
-      
       },
-      onMouseOver(){
-         //console.log(this.room);
-         //EventBus.$emit('view-show-all');
-      }
-   
+
    },
    computed:{
       
@@ -399,12 +399,30 @@ export default {
 
 }
 
-.dashboard-btn-position{
+.dashboard-btn{
    position: absolute;
    left:5%
-  
+   
 }
 
+
+.dashboard-btn:focus{
+   display: none;
+}
+
+.dashboard-btn-activated {
+   color:rgb(255, 174, 0);
+}
+.dashboard-btn-desactivated{
+   color: rgb(0, 0, 0);
+}
+
+.dashboard-btn-activated:hover {
+   color:rgb(255, 174, 0);
+}
+.dashboard-btn-desactivated:hover{
+   color: rgb(0, 0, 0);
+}
 .custom-icon {
    font-size: 20px;
 }

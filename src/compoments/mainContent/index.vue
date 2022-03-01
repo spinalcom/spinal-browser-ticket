@@ -51,7 +51,7 @@ with this file. If not, see
 
       <div v-show="dataMode" class="spinal-viewer-container ">
         <div class="viewer-content">
-        <endpoint-chart-viewer-panel v-bind:selectedNode="selectedNode" v-bind:isChartModalVisible="dataMode" v-bind:openChartModal="openDataMode">
+        <endpoint-chart-viewer-panel ref="chart" v-bind:isChartModalVisible="dataMode" v-bind:openChartModal="openDataMode">
         </endpoint-chart-viewer-panel>
         </div>
       </div>
@@ -99,14 +99,14 @@ export default {
       absviewer: false,
       hideViewer: false,
       dataMode: false,
-      selectedNode : undefined
     };
   },
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
     EventBus.$on('data-mode', (data) => {
       this.dataMode=true;
-      this.selectedNode = data;
+      
+      this.$refs.chart.toogleSelect(data);
     });
   },
   methods: {

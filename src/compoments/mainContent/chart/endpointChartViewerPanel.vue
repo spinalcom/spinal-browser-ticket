@@ -24,7 +24,7 @@ with this file. If not, see
 
 <template>
 
-	<div class="endpoint-chart-viewer-panel" v-if="isChartModalVisible">
+	<div class="endpoint-chart-viewer-panel" v-show="isChartModalVisible">
 		<div class="md-layout endpoint-chart-viewer-panel-topbtn-container">
 			<md-button v-for="value in buttons" :key="value" class="md-layout-item topbtn" :md-ripple=false
 				:disabled="value === btnSelected" @click="onClick(value)">
@@ -70,7 +70,7 @@ with this file. If not, see
 			plotlyCompoment,
 			customDateIntervalDialog,
 		},
-		props: ["isChartModalVisible", "openChartModal", "selectedNode"],
+		props: ["isChartModalVisible", "openChartModal"],
 		data() {
 			return {
 				reloadData: 0,
@@ -82,7 +82,11 @@ with this file. If not, see
 			};
 		},
 		methods: {
-			async toogleSelect(nodeId) {
+			async toogleSelect(data) {
+				const nodeId = data.id.get();
+				console.log(nodeId)
+				const name = data.objectName;
+				const unit = data.unit;
 				const index = this.timeSeriesData.findIndex((elem) => {
 					return elem === nodeId;
 				});
@@ -92,12 +96,14 @@ with this file. If not, see
 					if (this.btnSelected === "CUSTOM") {
 						data = new ChartDataEndpoint(
 							nodeId,
+							name,
+							unit,
 							this.btnSelected,
 							this.lastStart,
 							this.lastEnd
 						);
 					} else {
-						data = new ChartDataEndpoint(nodeId, this.btnSelected);
+						data = new ChartDataEndpoint(nodeId,name,unit, this.btnSelected);
 					}
 					await data.init();
 					timeSeriesMap.set(nodeId, data);
@@ -160,17 +166,8 @@ with this file. If not, see
 				resetTimeSeriesMap();
 			},
 			closed() {},
-		},
-		watch: {
-			isChartModalVisible() {
-				if (this.isChartModalVisible) {
-					this.toogleSelect(this.selectedNode.id.get());
-				} else this.removed();
-			},
-			selectedNode(){
-				console.log("ah ! ça a changé !")
-				this.toogleSelect(this.selectedNode.id.get());
-			}
+
+
 		}
 	};
 </script>
