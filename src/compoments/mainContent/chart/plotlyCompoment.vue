@@ -80,6 +80,8 @@ with this file. If not, see
 			return {
 				chartData: [],
 				selectedNames: "",
+				colors : ['#17becf','#bcbd22','#7f7f7f','#e377c2','#8c564b','#9467bd','#d62728','#2ca02c','#ff7f0e','1f77b4'],
+				color_map : {},
 				optionOpen: false,
 				isReady: false,
 				haveData: false,
@@ -220,7 +222,7 @@ with this file. If not, see
 						if (element.nodeId === myElement.nodeId) {
 							if (
 								element.x.length !== myElement.x.length ||
-								(element.x[0] && element.x[0] !== myElement.x[0])
+								(element.x[0] && element.x[0] !== myElement.x[0])	
 							) {
 								(myElement.x = element.x), (myElement.y = element.y);
 							}
@@ -229,6 +231,8 @@ with this file. If not, see
 						}
 					}
 					if (found === false) {
+						let col = this.colors.length !=0 ? this.colors.pop() : "black"
+						this.color_map[element.nodeId] = col
 						this.my_chartData.push({
 							nodeId: element.nodeId,
 							mode: this.lineMode,
@@ -236,6 +240,11 @@ with this file. If not, see
 							name: element.name,
 							x: element.x,
 							y: element.y,
+							line : {
+								color: col
+							}
+
+							// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						});
 					}
 				}
@@ -256,6 +265,10 @@ with this file. If not, see
 
 				for (let index = 0; index < toDelete.length; index++) {
 					const element = toDelete[index];
+					if (this.color_map[element.nodeId] != 'black'){
+						this.colors.push(this.color_map[element.nodeId])
+					}
+					delete this.color_map[element.nodeId];
 					const idx = this.my_chartData.indexOf(element);
 					this.my_chartData.splice(idx, 1);
 				}
