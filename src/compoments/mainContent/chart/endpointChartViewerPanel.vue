@@ -176,6 +176,7 @@ with this file. If not, see
 	.endpoint-chart-viewer-panel {
 		height: 100%;
 		position: relative;
+		background-color: rgba(10, 10, 10, 0.1);
 	}
 
 	.endpoint-chart-viewer-panel,

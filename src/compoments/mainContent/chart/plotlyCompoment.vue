@@ -55,6 +55,7 @@ with this file. If not, see
 		>
 			<md-icon>settings</md-icon>
 		</md-button>
+		
 		<chartOptionDialog
 			:isOpen="optionOpen"
 			:layoutOption="this.layout"
@@ -96,8 +97,8 @@ with this file. If not, see
 						size: 15,
 						color: "#000000",
 					},
-					paper_bgcolor: "rgba(0,0,0,0)",
-					plot_bgcolor: "rgba(10,10,10,0.1)",
+					paper_bgcolor: "rgba(10,10,10,0.1)",
+					plot_bgcolor: "rgba(10,10,10,0)",
 					xaxis: {
 						rangeslider: null,
 						showgrid: true,
@@ -349,6 +350,7 @@ with this file. If not, see
 	.chart-data-endpoint-graph-container {
 		height: 100%;
 		width: 100%;
+		background-color: rgba(10, 10, 10, 0.1);
 	}
 	.chart-data-endpoint-graph-container-empty {
 		top: 0;
