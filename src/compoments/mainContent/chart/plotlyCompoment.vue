@@ -97,16 +97,16 @@ with this file. If not, see
 						color: "#000000",
 					},
 					paper_bgcolor: "rgba(0,0,0,0)",
-					plot_bgcolor: "rgba(0,0,0,0)",
+					plot_bgcolor: "rgba(10,10,10,0.1)",
 					xaxis: {
 						rangeslider: null,
-						showgrid: false,
+						showgrid: true,
 						showline: true,
 						type: "date",
 						tickformat: "%d/%m/%Y %H:%M",
 					},
 					yaxis: {
-						showgrid: false,
+						showgrid: true,
 						showline: true,
 					},
 					showlegend: true,
@@ -114,7 +114,7 @@ with this file. If not, see
 						xanchor: "auto",
 						yanchor: "auto",
 						orientation: "v",
-						x: null,
+						x: 0,
 						y: null,
 						traceorder: "normal",
 						font: {
