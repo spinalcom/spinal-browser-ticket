@@ -34,11 +34,11 @@ with this file. If not, see
     </el-tooltip>
     <div class="spl-button-bar">
       <el-tooltip
-        :disabled="!isNode"
+        :disabled="!isSelectable"
         :content="$t('spinal-twin.Isolate')"
       >
         <el-button
-          :disabled="!isNode"
+        :disabled="!isSelectable"
           @click.stop="isolateAll()"
           circle
           class="spl-el-button"
@@ -47,11 +47,11 @@ with this file. If not, see
         </el-button>
       </el-tooltip>
       <el-tooltip
-        :disabled="!isNode"
+        :disabled="!isSelectable"
         :content="$t('spinal-twin.Select')"
       >
         <el-button
-          :disabled="!isNode"
+        :disabled="!isSelectable"
           @click.stop="selectInView()"
           circle
           class="spl-el-button"
@@ -60,11 +60,11 @@ with this file. If not, see
         </el-button>
       </el-tooltip>
       <el-tooltip
-        :disabled="!isNode"
+        :disabled="!isSelectable"
         content="Zoom"
       >
         <el-button
-          :disabled="!isNode"
+        :disabled="!isSelectable"
           @click.stop="zoomOn()"
           circle
           class="spl-el-button"
@@ -92,6 +92,7 @@ import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
 import { getTicketNumber } from "./TicketTools";
+import getItemsFromNode from "./ViewerTicketContextSetup";
 import {
   SERVICE_TYPE,
   PROCESS_TYPE,
@@ -131,8 +132,10 @@ export default {
     return {
       viewKey: VIEW_KEY,
       items: {},
+      nodeItems: [],
       currentView: false,
       isNode: false,
+      isSelectable: false,
       tabs: [
         {
           name: "node-type.context",
@@ -206,12 +209,14 @@ export default {
   methods: {
     async onViewChange(view) {
 
+      this.nodeItems = [];
       // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
         mapItems = await AppBack.getInstance().getContexts("SpinalSystemServiceTicketTypeTicket");
         this.isNode = false;
+        this.isSelectable = false;
       } else {
         this.isNode = true;
         if (this.contextServId === 0) {
@@ -222,6 +227,13 @@ export default {
           this.contextServId,
           "SpinalSystemServiceTicketTypeTicket"
         );
+      }
+
+      if (FileSystem._objects[view.serverId] && (FileSystem._objects[view.serverId].info.type.get() === SPINAL_TICKET_SERVICE_STEP_TYPE
+          || FileSystem._objects[view.serverId].info.type.get() === SPINAL_TICKET_SERVICE_TICKET_TYPE)) {
+        this.isSelectable = true;
+      } else {
+        this.isSelectable = false;
       }
 
       // Get children
@@ -333,16 +345,25 @@ export default {
       ViewManager.getInstance(this.viewKey).pop()
     },
 
-    zoomOn() {
-      EventBus.$emit("ticket-viewer-zoom", { server_id: this.currentView.serverId });
+    async zoomOn() {
+      if (this.nodeItems.length === 0) {
+        this.nodeItems = await getItemsFromNode(FileSystem._objects[this.currentView.serverId]);
+      }
+      EventBus.$emit('ticket-viewer-zoom', this.nodeItems);
     },
 
-    isolateAll() {
-      EventBus.$emit("ticket-viewer-isolate", { server_id: this.currentView.serverId });
+    async isolateAll() {
+      if (this.nodeItems.length === 0) {
+        this.nodeItems = await getItemsFromNode(FileSystem._objects[this.currentView.serverId]);
+      }
+      EventBus.$emit("ticket-viewer-isolate", this.nodeItems);
     },
 
-    selectInView() {
-      EventBus.$emit("ticket-viewer-select", FileSystem._objects[this.currentView.serverId] );
+    async selectInView() {
+      if (this.nodeItems.length === 0) {
+        this.nodeItems = await getItemsFromNode(FileSystem._objects[this.currentView.serverId]);
+      }
+      EventBus.$emit("ticket-viewer-select", this.nodeItems);
     },
 
     formatData() {

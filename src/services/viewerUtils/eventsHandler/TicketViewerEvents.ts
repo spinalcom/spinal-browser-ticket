@@ -25,39 +25,35 @@
 import { EventBus } from "../../event";
 import { viewerUtils } from "../viewerUtils";
 import { spinalBackEnd } from '../../spinalBackend';
-import addObjectToTicket from "../../../router/TicketApp/ViewerTicketContextSetup";
 
-EventBus.$on('ticket-viewer-zoom', async (root, relation) => {
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
-  await viewerUtils.rotateTo('front,top,right');
+EventBus.$on('ticket-viewer-zoom', async (items) => {
+  await viewerUtils.waitInitialized();
   viewerUtils.fitToView(items);
 });
 
-EventBus.$on('ticket-viewer-isolate', async (root, relation) => {
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
+EventBus.$on('ticket-viewer-isolate', async (items) => {
+  await viewerUtils.waitInitialized();
   viewerUtils.isolateObjects(items);
 });
 
-EventBus.$on('ticket-viewer-select', async (root) => {
-  // spinal.spinalGraphService.getContextWithType("geographicContext")
-  // const items = await spinalBackEnd.spatialBack.getObjectByTicket(root);
-  addObjectToTicket(root);
-  
-  // const items = await spinalBackEnd.spatialBack.getObjectsByTicketGroup(root);
-  // console.debug("items :", items)
-  // viewerUtils.selectObjects(items);
+EventBus.$on('ticket-viewer-select', async (items) => {
+  await viewerUtils.waitInitialized();
+  viewerUtils.selectObjects(items);
 });
 
-EventBus.$on('ticket-viewer-reset-color', () => {
+EventBus.$on('ticket-viewer-reset-color', async () => {
+  await viewerUtils.waitInitialized();
   viewerUtils.restoreColorThemingItems();
 });
 
-EventBus.$on('ticket-viewer-color', async (items, relation) => {
+EventBus.$on('ticket-viewer-color', async (items) => {
+  await viewerUtils.waitInitialized();
   viewerUtils.restoreColorThemingItems()
-  items.map( async (item) => {
-    const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true);
-    for (const { selection, model } of list) {
-      viewerUtils.colorThemingItems(model, item.color, selection);
-    }
-  });
+  console.debug('items : ', items);
+  // items.map( async (item) => {
+  //   const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true);
+  //   for (const { selection, model } of list) {
+  //     viewerUtils.colorThemingItems(model, item.color, selection);
+  //   }
+  // });
 });
