@@ -200,6 +200,8 @@ export default class Heatmap {
     let attributesLst = await serviceDocumentation.getAllAttributes(realnode);
     let espace = this.getsurface(attributesLst);
     let itemLinked = await this.getElementLinkedToProfil(profil);
+    //remove duplicates tagged with undefined
+    itemLinked = itemLinked.filter( el => el)
     let endpointsProfils = await this.getEndpointsProfil(contextId, profil);
 
     return {
@@ -221,26 +223,32 @@ export default class Heatmap {
   }
 
   getElementLinkedToProfil(profil) {
+    
     const id = profil.id.get();
     return spinalControlPointService.loadElementLinked(id).then((result) => {
       const promises = []
-
       for (let i = 0; i < result.length; i++) {
+        
         SpinalGraphService._addNode(result[i])
         const groupId = result[i].getId().get()
         promises.push(spinalControlPointService.getDataFormated(groupId))
       }
-
       return Promise.all(promises).then((result) => {
-        const profilFound = result.flat().find(el => el.id === id);
-
-        if (!profilFound) return [];
-
-        const prom = profilFound.rooms.map(async room => {
-          room.references = await this._getRoomReferences(room.id);
-          return room
-        });
-
+        const profilFound = result.flat().filter(el => el.id === id);
+        if (profilFound.length ==0) return [];
+        let prom = [];
+        let ids = [];
+        for (let i = 0; i < profilFound.length; i++) {
+          let tmp = profilFound[i].rooms.map(async room => {
+            if(!ids.includes(room.id)){
+              ids.push(room.id)
+              room.references = await this._getRoomReferences(room.id);
+              return room
+            }
+            else return undefined
+          })          
+          prom = prom.concat(tmp)
+        }
         return Promise.all(prom).then((references) => {
           return references.flat();
         })
