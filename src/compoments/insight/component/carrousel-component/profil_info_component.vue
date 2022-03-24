@@ -49,6 +49,15 @@ export default {
    },
    mounted() {
       this.filteredObjects= this.profil.rooms;
+      if(this.filterObjects == 0){
+            this.filteredObjects=this.profil.rooms;
+         }
+         else{
+            this.filteredObjects = this.profil.rooms.filter(room => {
+            return this.filterObjects.includes(room.id);
+            });
+         }
+      
    },
    methods: {
       updateAverage() {
