@@ -104,7 +104,7 @@ export default class Heatmap {
       for (const cat of d.categories) {
         for (const grp of cat.groups) {
           for (const profil of grp.rooms) {
-            for(const obj of profil.rooms){ //obj is either a room or a bimobject at this point
+            for(const obj of profil.rooms) { //obj is either a room or a bimobject at this point
               // if obj is a room we just have to filter with idAGarder
               // if obj is a BIMOBJECT we filter depending on the room it is in
               if (obj.type == ROOM_TYPE){
@@ -200,6 +200,8 @@ export default class Heatmap {
     let attributesLst = await serviceDocumentation.getAllAttributes(realnode);
     let espace = this.getsurface(attributesLst);
     let itemLinked = await this.getElementLinkedToProfil(profil);
+    //remove duplicates tagged with undefined
+    itemLinked = itemLinked.filter( el => el)
     let endpointsProfils = await this.getEndpointsProfil(contextId, profil);
 
     return {
@@ -221,26 +223,32 @@ export default class Heatmap {
   }
 
   getElementLinkedToProfil(profil) {
+    
     const id = profil.id.get();
     return spinalControlPointService.loadElementLinked(id).then((result) => {
       const promises = []
-
       for (let i = 0; i < result.length; i++) {
+        
         SpinalGraphService._addNode(result[i])
         const groupId = result[i].getId().get()
         promises.push(spinalControlPointService.getDataFormated(groupId))
       }
-
       return Promise.all(promises).then((result) => {
-        const profilFound = result.flat().find(el => el.id === id);
-
-        if (!profilFound) return [];
-
-        const prom = profilFound.rooms.map(async room => {
-          room.references = await this._getRoomReferences(room.id);
-          return room
-        });
-
+        const profilFound = result.flat().filter(el => el.id === id);
+        if (profilFound.length ==0) return [];
+        let prom = [];
+        let ids = [];
+        for (let i = 0; i < profilFound.length; i++) {
+          let tmp = profilFound[i].rooms.map(async room => {
+            if(!ids.includes(room.id)){
+              ids.push(room.id)
+              room.references = await this._getRoomReferences(room.id);
+              return room
+            }
+            else return undefined
+          })          
+          prom = prom.concat(tmp)
+        }
         return Promise.all(prom).then((references) => {
           return references.flat();
         })
@@ -414,7 +422,6 @@ export default class Heatmap {
     }
     else {
       references = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]);
-      //console.log("je suis ",info.type.get()," ",references);
     }
 
     const bims = references.map(el => el.get());
