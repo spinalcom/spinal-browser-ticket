@@ -47,6 +47,7 @@ with this file. If not, see
         :relation="Properties.relation"
         :depth="Properties.depth"
         :context="Properties.context"
+        :hasEvent="Properties.hasEvent"
         @select="Select"
         @isolate="Isolate"
         style="height:100%"

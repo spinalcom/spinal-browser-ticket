@@ -22,10 +22,21 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-
 import { FileSystem } from 'spinal-core-connectorjs_type';
 import { AppItem } from "../../services/backend/AppItem";
 import { SPINAL_TICKET_SERVICE_TICKET_TYPE } from 'spinal-service-ticket/dist/Constants.js';
+import { EventBus } from "../../services/event";
+import getItemsFromNode from "./ViewerTicketContextSetup";
+
+// EventBus.$on('app-viewer-color', async (items, relation) => {
+//   // let list = items.map(item => {
+//   //   return { server_id: item.serverId, color: item.getColor() };
+//   // });
+//   let list = await getItemsFromNode(FileSystem._objects[this.currentView.serverId]);
+//   console.debug("Ticket tools event; items :", list)
+//   console.debug(" relation :", relation)
+//   EventBus.$emit("ticket-viewer-color", list, relation);
+// })
 
 async function getTicketNumber(item: AppItem) {
   const node = FileSystem._objects[item.serverId];

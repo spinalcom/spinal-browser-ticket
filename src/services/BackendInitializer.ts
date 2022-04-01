@@ -59,7 +59,6 @@ export default class BackendInitializer {
     if (rootModel instanceof SpinalGraph) { this.graph = rootModel; }
     else if (typeof rootModel.graph !== 'undefined') { this.graph = rootModel.graph; }
     else return rootModel;
-    console.debug(this.graph)
     return this.graph;
   }
   waitInit() {

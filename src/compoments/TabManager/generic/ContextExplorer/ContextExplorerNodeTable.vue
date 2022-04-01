@@ -108,6 +108,7 @@ export default {
     relation: { required: true, type: Array },
     context: { required: true, type: Number },
     depth: { required: false, type: Number, default: 5 },
+    hasEvent: { required: false, type: Boolean, default: false },
   },
 
   data() {
@@ -145,8 +146,15 @@ export default {
     },
 
     Color() {
-      EventBus.$emit('viewer-color', this.data, this.relation);
       this.isColored = true;
+      console.debug("context explorer table color; hasEvent : ", this.hasEvent)
+      if (this.hasEvent)
+      {
+        EventBus.$emit('app-viewer-color', this.data, this.relation)
+        return
+      }
+      EventBus.$emit('viewer-color', this.data, this.relation);
+      // EventBus.$emit('viewer-color', this.data, this.relation);
     },
 
     onSelectItem(item) {

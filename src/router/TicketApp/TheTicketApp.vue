@@ -91,6 +91,7 @@ import BackendInitializer from "../../services/BackendInitializer";
 import { EventBus } from "../../services/event";
 import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
 import fileSaver from "file-saver";
+import "./TicketTools";
 import { getTicketNumber } from "./TicketTools";
 import getItemsFromNode from "./ViewerTicketContextSetup";
 import {
@@ -146,6 +147,7 @@ export default {
             view: false,
             relation: TICKET_APP_RELATIONS,
             context: false,
+            hasEvent: true,
           },
           ignore: false,
         },
@@ -204,6 +206,15 @@ export default {
       this.onViewChange.bind(this),
       0
     );
+    EventBus.$on('app-viewer-color', async (items, relation) => {
+      // let list = items.map(item => {
+      //   return { server_id: item.serverId, color: item.getColor() };
+      // });
+      let list = await getItemsFromNode(FileSystem._objects[this.currentView.serverId]);
+      console.debug("Ticket tools event; items :", list)
+      console.debug(" relation :", relation)
+      EventBus.$emit("ticket-viewer-color", list, relation);
+    })
   },
 
   methods: {
@@ -432,7 +443,7 @@ export default {
       let items = this.items.items.map(item => {
         return { server_id: item.serverId, color: item.getColor() };
       });
-      EventBus.$emit("test-color-all", items, { server_id: this.currentView.serverId });
+      EventBus.$emit("ticket-viewer-color", items, { server_id: this.currentView.serverId });
     },
 
     ShowAll() {

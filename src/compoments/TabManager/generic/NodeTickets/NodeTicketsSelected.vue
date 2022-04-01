@@ -21,18 +21,21 @@ You should have received a copy of the license along
 with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
+<!-- 
+
+          style="float: left"
+
+-->
 
 <template>
   <el-container v-if="ticket">
     <el-header
-      class="rowify"
-      style="height:max-content;"
+      style="height:max-content; display: flex"
     >
-      <el-tooltip :content="$t('spinal-twin.Back')">
+      <el-tooltip v-if="Properties.viewKey != 'TicketApp'" :content="$t('spinal-twin.Back')">
         <el-button
           @click.stop="back()"
           class="spl-el-button"
-          style="float: left"
           icon="el-icon-arrow-left"
           circle
         >
@@ -46,9 +49,9 @@ with this file. If not, see
         circle
       >
       </el-button>
-      <h5 style="padding: 5px 55px">
+      <p style="">
         {{ ticket.name }}
-      </h5>
+      </p>
       <div v-if="doStepping" style="float:right">
         <el-tooltip :content="$t('spinal-twin.TicketPrev')">
           <el-button
@@ -74,7 +77,7 @@ with this file. If not, see
     </el-header>
 
     <el-main>
-      <el-collapse>
+      <el-collapse v-model="activeCollapses">
         <el-collapse-item name="Details" title="Details">
           <div class="separate">
             <div> {{ $t('spinal-twin.CurrentStep') }} </div>
@@ -94,7 +97,7 @@ with this file. If not, see
           </div>
         </el-collapse-item>
 
-        <el-collapse-item v-if="ticket.comments.length > 0" name="Description" title="Description">
+        <el-collapse-item v-if="ticket.comments && ticket.comments.length > 0" name="Description" title="Description">
           <p>
             {{ ticket.comments[0].element.message.get() }}
           </p>
@@ -221,11 +224,13 @@ export default {
     return {
       ticket: false,
       doStepping: true,
+      activeCollapses: ["Details"]
     };
   },
 
   async mounted() {
     await this.update();
+    console.debug(this.ticket)
   },
 
   methods: {
