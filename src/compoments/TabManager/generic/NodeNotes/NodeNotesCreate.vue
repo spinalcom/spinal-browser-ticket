@@ -23,90 +23,89 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
+  <form @submit.prevent="sendNote">
     <el-container style="overflow: hidden">
       <el-dropdown class="spl-input-button">
         <el-button type="primary">
           Options
-          <i class="el-icon-arrow-up el-icon--right"/>
+          <i class="el-icon-arrow-up el-icon--right" />
         </el-button>
-        <el-dropdown-menu
-          slot="dropdown"
-          style="overflow: hidden"
-        >
-          <el-tooltip
-            :content="$t('spinal-twin.NotesAddPosition')"
-            placement="right"
-          >
-            <el-dropdown-item
-              v-on:click.native="addPostion()"
-              icon="el-icon-position"
-            ></el-dropdown-item>
+        <el-dropdown-menu slot="dropdown"
+                          style="overflow: hidden">
+          <el-tooltip :content="$t('spinal-twin.NotesAddPosition')"
+                      placement="right">
+            <el-dropdown-item v-on:click.native="addPostion()"
+                              icon="el-icon-position"></el-dropdown-item>
           </el-tooltip>
-          <el-tooltip
-            :content="$t('spinal-twin.NotesAddScreenshot')"
-            placement="right"
-          >
-            <el-dropdown-item
-              v-on:click.native="addScreenshot()"
-              icon="el-icon-camera"
-            ></el-dropdown-item>
+          <el-tooltip :content="$t('spinal-twin.NotesAddScreenshot')"
+                      placement="right">
+            <el-dropdown-item v-on:click.native="addScreenshot()"
+                              icon="el-icon-camera"></el-dropdown-item>
           </el-tooltip>
-          <el-tooltip
-            :content="$t('spinal-twin.NotesAddFile')"
-            placement="right"
-          >
-            <el-dropdown-item
-              v-on:click.native="addFile()"
-              icon="el-icon-paperclip"
-            ></el-dropdown-item>
+          <el-tooltip :content="$t('spinal-twin.NotesAddFile')"
+                      placement="right">
+            <el-dropdown-item v-on:click.native="addFile()"
+                              icon="el-icon-paperclip"></el-dropdown-item>
           </el-tooltip>
         </el-dropdown-menu>
       </el-dropdown>
 
-      <el-input
-        v-model="new_note"
-        v-on:keydown.enter.native="enterHandler"
-        type="textarea"
-        resize="none"
-      ></el-input>
+      <el-input v-model="new_note"
+                v-on:keydown.enter.native="enterHandler"
+                type="textarea"
+                resize="none"></el-input>
 
       <el-tooltip :content="$t('spinal-twin.NoteSend')">
-        <el-button
-          v-on:click.native="sendNote()"
-          class="spl-input-button"
-          icon="el-icon-s-promotion"
-          type="primary"
-        >
+        <!-- v-on:click.native="sendNote()" -->
+        <el-button native-type="submit"
+                   class="spl-input-button"
+                   icon="el-icon-s-promotion"
+                   type="primary">
           {{ $t('spinal-twin.NoteSend') }}
         </el-button>
       </el-tooltip>
     </el-container>
 
-    <el-card
-      v-if="attachment"
-      style="margin: 20px; position: relative; width: 90%"
-    >
+    <el-container
+                  style="height: 90px; margin-top: 5px; max-height: 90px; overflow: auto; border: 1px solid grey">
+      <el-card v-for="attachment in attachments"
+               :key="attachment.name"
+               style="margin: 20px; position: relative; width: 90%">
+        {{ attachment.name }}
+        <el-tooltip :content="$t('spinal-twin.NotesDeleteAttachment')">
+          <el-button v-on:click.native="delAttachment(attachment)"
+                     class="spl-input-button"
+                     icon="el-icon-circle-close"
+                     type="danger"
+                     circle
+                     size="small"
+                     style="position: absolute; top: 15px; right: 0">
+          </el-button>
+        </el-tooltip>
+      </el-card>
+
+    </el-container>
+
+    <!-- <el-card v-if="attachment"
+             style="margin: 20px; position: relative; width: 90%">
       {{ attachment.file.name }}
       <el-tooltip :content="$t('spinal-twin.NotesDeleteAttachment')">
-        <el-button
-          v-on:click.native="delAttachment()"
-          class="spl-input-button"
-          icon="el-icon-circle-close"
-          type="danger"
-          circle
-          size="small"
-          style="position: absolute; top: 15px; right: 0"
-        >
+        <el-button v-on:click.native="delAttachment()"
+                   class="spl-input-button"
+                   icon="el-icon-circle-close"
+                   type="danger"
+                   circle
+                   size="small"
+                   style="position: absolute; top: 15px; right: 0">
         </el-button>
       </el-tooltip>
-    </el-card>
-  </div>
+    </el-card> -->
+  </form>
 </template>
 
 <script>
 import moment from "moment";
-import { FileSystem } from 'spinal-core-connectorjs_type'
+import { FileSystem } from "spinal-core-connectorjs_type";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 
 export default {
@@ -118,81 +117,103 @@ export default {
     },
   },
 
-  computed:
-  {
-    user()
-    {
+  computed: {
+    user() {
       return {
         username: "admin",
-        userId: FileSystem._user_id,
+        userId: FileSystem._userid || "",
       };
-    }
+    },
   },
 
   data() {
     return {
       new_note: "",
-      attachment: undefined,
+      attachments: [],
     };
   },
 
   methods: {
-    enterHandler: function (e)
-    {
+    enterHandler: function (e) {
       if (e.ctrlKey) this.sendNote();
     },
 
-    async $_sendnote(text, type, file = undefined, state = undefined, contextID = undefined, groupID = undefined)
-    {
-      return await serviceDocumentation.twinAddNote(
-        this.node,
-        this.user,
-        text,
-        type,
-        file,
-        state,
-        contextID,
-        groupID,
-      );
-    },
+    // async $_sendnote(
+    //   text,
+    //   type,
+    //   file = undefined,
+    //   state = undefined,
+    //   contextID = undefined,
+    //   groupID = undefined
+    // ) {
+    //   return await serviceDocumentation.twinAddNote(
+    //     this.node,
+    //     this.user,
+    //     text,
+    //     type,
+    //     file,
+    //     state,
+    //     contextID,
+    //     groupID
+    //   );
+    // },
 
-    async sendNote()
-    {
-      let pack = {
-        type: "text",
-        file: undefined,
-        view: undefined,
-      };
-      if (this.attachment)
-      {
-        if (this.new_note.trim() === "")
-        {
-          this.new_note = this.attachment.file.name;
-        }
-        pack.type = this.attachment.type;
-        pack.file = this.attachment.file;
-        pack.view = this.attachment.view;
+    async sendNote() {
+      await this.sendAttachments();
+
+      if (this.new_note.trim().length !== 0) {
+        await serviceDocumentation.addNote(this.node, this.user, this.new_note);
+        this.new_note = "";
       }
-      await this.$_sendnote(this.new_note, pack.type, pack.file, pack.view);
-      this.$emit("send-note", this.new_note, pack);
-      this.new_note = "";
-      this.attachment = undefined;
+
+      this.$emit("send-note");
+      // let pack = {
+      //   type: "text",
+      //   file: undefined,
+      //   view: undefined,
+      // };
+      // if (this.attachment) {
+      //   if (this.new_note.trim() === "") {
+      //     this.new_note = this.attachment.file.name;
+      //   }
+      //   pack.type = this.attachment.type;
+      //   pack.file = this.attachment.file;
+      //   pack.view = this.attachment.view;
+      // }
+      // await this.$_sendnote(this.new_note, pack.type, pack.file, pack.view);
+      // this.$emit("send-note", this.new_note, pack);
+      // this.new_note = "";
+      // this.attachment = undefined;
     },
 
-    delAttachment()
-    {
-      this.attachment = undefined;
+    async sendAttachments() {
+      if (this.attachments.length === 0) return;
+      await serviceDocumentation.addFileAsNote(
+        this.node,
+        this.attachments,
+        this.user
+      );
+
+      this.attachments = [];
+    },
+
+    delAttachment(attachment) {
+      this.attachments = this.attachments.filter(
+        (el) => el.name !== attachment.name
+      );
     },
 
     getScreenShotFile(isViewPoint = false) {
       return new Promise(async (resolve) => {
         window.spinal.SpinalForgeViewer.viewerManager.viewer.getScreenShot(
-          0, 0,
+          0,
+          0,
           async (url) => {
             let blob = await fetch(url).then((r) => r.blob());
-            let fileName = (isViewPoint ? "viewPoint" : "screenshot")
-              + ` of ${this.node.getName().get()} from `
-              + `${moment().format("L")}.png`;
+            let fileName =
+              (isViewPoint ? "viewPoint" : "screenshot") +
+              ` of ${this.node.getName().get()} from ` +
+              `${moment().format("L")}.png`;
             blob.lastModifiedDate = new Date();
             blob.name = fileName;
             resolve(blob);
@@ -224,10 +245,6 @@ export default {
         renderOptions: true,
       };
       const file = await this.getScreenShotFile(true);
-      let state = {
-        viewState: undefined,
-        objectState: undefined
-      };
       const viewerState = viewer.getState(filter);
       const objectState = {
         isolated: viewer
@@ -237,37 +254,41 @@ export default {
           .getAggregateSelection()
           .map((el) => ({ modelId: el.model.id, selection: el.selection })),
       };
-      state.viewState = JSON.stringify(viewerState, getCircularReplacer());
-      state.objectState = JSON.stringify(objectState, getCircularReplacer());
-      return {file, state};
+      // let state = {
+      //   viewState: undefined,
+      //   objectState: undefined,
+      // };
+
+      file.viewState = JSON.stringify(viewerState, getCircularReplacer());
+      file.objectState = JSON.stringify(objectState, getCircularReplacer());
+      return file;
     },
 
-    async addPostion()
-    {
+    async addPostion() {
       const viewPoint = await this.getViewPoint();
-      this.attachment = {
-        type: "view",
-        file: viewPoint.file,
-        view: viewPoint.state
-      };
+      this.attachments.push(viewPoint);
+      // this.attachment = {
+      //   type: "view",
+      //   file: viewPoint.file,
+      //   view: viewPoint.state,
+      // };
     },
 
-    async addScreenshot()
-    {
+    async addScreenshot() {
       const file = await this.getScreenShotFile();
-      this.attachment = {
-        type: "img",
-        file: file,
-        view: undefined
-      };
+      this.attachments.push(file);
+      // this.attachment = {
+      //   type: "img",
+      //   file: file,
+      //   view: undefined,
+      // };
     },
 
-    addFile()
-    {
+    addFile() {
       const maxSize = 25000000;
       const input = document.createElement("input");
       input.type = "file";
-      input.multiple = false;
+      input.multiple = true;
       input.click();
       input.addEventListener(
         "change",
@@ -280,33 +301,34 @@ export default {
           const sizes = filelist.map((el) => el.size);
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
-            alert(
-              $t('spinal-twin.ErrorFileTooLarge') + "25 MB"
-            );
+            alert($t("spinal-twin.ErrorFileTooLarge") + "25 MB");
             return;
           }
-          this.attachment = {
-            type: "file",
-            file: filelist[0],
-            view: undefined
-          };
-          if (this.attachment.file.name.endsWith(".png") ||
-            this.attachment.file.name.endsWith(".jpg") ||
-            this.attachment.file.name.endsWith(".jpeg")) {
-            this.attachment.type = 'img';
-          }
+
+          this.attachments.push(...filelist);
+
+          // this.attachment = {
+          //   type: "file",
+          //   file: filelist[0],
+          //   view: undefined,
+          // };
+          // if (
+          //   this.attachment.file.name.endsWith(".png") ||
+          //   this.attachment.file.name.endsWith(".jpg") ||
+          //   this.attachment.file.name.endsWith(".jpeg")
+          // ) {
+          //   this.attachment.type = "img";
+          // }
         },
         false
       );
     },
   },
-}
+};
 </script>
 
 <style scoped>
-
-.spl-input-button
-{
+.spl-input-button {
   height: min-content;
   margin: auto 10px auto 10px;
   width: min-content;
