@@ -26,9 +26,11 @@ with this file. If not, see
   <div style="height: 100%">
     <el-container v-if="selected">
       <node-tickets-selected :selected="selected"
-                             :stepping="Properties.stepping"
+                             :stepping="stepping"
+                             :Properties="Properties"
                              @update="update(Properties.view.serverId, true)"
-                             @back="selected = false"></node-tickets-selected>
+                             @back="selected = false">
+      </node-tickets-selected>
     </el-container>
 
     <el-container v-else-if="addingTicket">
@@ -91,6 +93,7 @@ export default {
       tickets: false,
       selected: false,
       addingTicket: false,
+      stepping: false,
     };
   },
 
@@ -130,7 +133,7 @@ export default {
       const node = await SpinalGraphService.findNode(
         this.ctxNode.info.id.get()
       );
-
+      if (this.Properties && this.Properties.stepping) { this.stepping = this.Properties.stepping }
       let ticketList = await spinalServiceTicket.getTicketsFromNode(
         node.id.get()
       );
