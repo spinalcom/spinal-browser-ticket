@@ -78,6 +78,7 @@ with this file. If not, see
 </template>
 
 <script>
+import { spinalBackEnd } from "../../../services/spinalBackend"
 export default {
   data() {
     return {
@@ -96,7 +97,12 @@ export default {
     seeHeatmap:function(info){
       this.$emit('profilSelectEvent', info);
     },
-    SelectProfil(profil){
+    async SelectProfil(profil){
+      console.log(profil)
+    
+      let itemLinked = await spinalBackEnd.heatmapBack.getElementLinkedToProfil(profil);
+      itemLinked = itemLinked.filter( el => el) //remove duplicates tagged with undefined
+      profil.rooms = itemLinked;
       this.$emit("selectprofil",profil)
     }
   },
