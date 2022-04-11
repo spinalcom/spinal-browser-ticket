@@ -67,7 +67,8 @@ with this file. If not, see
     </el-container>
 
     <el-container
-                  style="height: 90px; margin-top: 5px; max-height: 90px; overflow: auto; border: 1px solid grey">
+                v-if="attachments.length > 0"
+                  style="max-height: 90px; overflow: auto;">
       <el-card v-for="attachment in attachments"
                :key="attachment.name"
                style="margin: 20px; position: relative; width: 90%">
