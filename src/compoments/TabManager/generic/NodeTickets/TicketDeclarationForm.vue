@@ -123,7 +123,7 @@ with this file. If not, see
       <el-button
         @click="confirm()"
         type="primary"
-        :disabled="newTicket.priority == ''"
+        :disabled="newTicket.priority == '' || newTicket.incident == ''"
       >
         {{ $t('Confirm') }}
       </el-button>
@@ -235,7 +235,7 @@ export default {
       let ticketId = await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
       if (this.newTicket.description != undefined && this.newTicket.description != "") {
         let ticketnode = await SpinalGraphService.getRealNode(ticketId);
-        await serviceDocumentation.twinAddNote(ticketnode, this.user, this.newTicket.description, "text");
+        await serviceDocumentation.addNote(ticketnode, this.user, this.newTicket.description, "text");
       }
       this.$emit("update");
     },
