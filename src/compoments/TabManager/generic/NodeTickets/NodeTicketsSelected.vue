@@ -135,7 +135,7 @@ with this file. If not, see
         <el-collapse-item name="Notes"
                           :title="$t('spinal-twin.TicketNotes')">
           <el-container>
-            <el-header>
+            <el-header style="height: 140">
               <node-notes-create v-if="ticket.ticket"
                                  :node="getTicketRealNode(ticket.ticket)"
                                  @send-note="sendNote"></node-notes-create>
