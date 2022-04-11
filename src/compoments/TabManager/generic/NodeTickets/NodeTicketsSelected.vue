@@ -138,7 +138,8 @@ with this file. If not, see
             <el-header style="height: 140">
               <node-notes-create v-if="ticket.ticket"
                                  :node="getTicketRealNode(ticket.ticket)"
-                                 @send-note="sendNote"></node-notes-create>
+                                 @send-note="sendNote">
+              </node-notes-create>
             </el-header>
 
             <div class="note-feed">
@@ -225,7 +226,8 @@ export default {
   },
 
   methods: {
-    sendNote() {
+    async sendNote() {
+      await this.update()
       this.$emit("update");
     },
 
