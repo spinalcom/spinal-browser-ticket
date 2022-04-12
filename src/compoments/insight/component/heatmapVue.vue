@@ -35,6 +35,7 @@
             v-for="(slide, i) in slides"
             :key="i"
          >
+            <!-- Profil info component -->
             <template v-slot:content>
                <component
                   :is="renderComponent(i)"

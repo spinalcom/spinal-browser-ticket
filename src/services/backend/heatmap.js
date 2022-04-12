@@ -102,7 +102,7 @@ export default class Heatmap {
       for (const cat of d.categories) {
         for (const grp of cat.groups) {
           for (const profil of grp.rooms) {
-            for(const obj of profil.rooms){ //obj is either a room or a bimobject at this point
+            for(const obj of profil.rooms) { //obj is either a room or a bimobject at this point
               // if obj is a room we just have to filter with idAGarder
               // if obj is a BIMOBJECT we filter depending on the room it is in
               if (obj.type == ROOM_TYPE){
@@ -420,7 +420,6 @@ export default class Heatmap {
     }
     else {
       references = await SpinalGraphService.getChildren(roomId, ["hasReferenceObject.ROOM"]);
-      //console.log("je suis ",info.type.get()," ",references);
     }
 
     const bims = references.map(el => el.get());
