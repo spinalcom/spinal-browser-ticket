@@ -21,18 +21,22 @@ with this file. If not, see
 <template>
   <div style="height:100%">
     <div class="spl-button-bar">
-      <button-switch
-        :active="colored"
-        @click.native="Color"
-        class="spl-el-button"
-        icon="el-icon-picture-outline-round"
-      ></button-switch>
-      <el-button
-        @click.stop="exportToExcel()"
-        class="spl-el-button"
-        icon="el-icon-download"
-        circle
-      ></el-button>
+      <el-tooltip :content="$t('spinal-twin.ColorSwitch')">
+        <button-switch
+          :active="colored"
+          @click.native="Color"
+          class="spl-el-button"
+          icon="el-icon-picture-outline-round"
+        ></button-switch>
+      </el-tooltip>
+      <el-tooltip :content="$t('spinal-twin.DownloadList')">
+        <el-button
+          @click.stop="exportToExcel()"
+          class="spl-el-button"
+          icon="el-icon-download"
+          circle
+        ></el-button>
+      </el-tooltip>
     </div>
     
     <div

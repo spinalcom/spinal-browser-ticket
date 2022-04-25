@@ -156,6 +156,11 @@ export default {
   "spinal-twin.StartDate": "Date de début",
   "spinal-twin.EndDate": "Date de fin",
   
+  "spinal-twin.ColorSwitch": "Activate or deactivate colors",
+  "spinal-twin.DownloadList": "Download data as excel",
+  "spinal-twin.NextNode": "Follow this node",
+  "spinal-twin.Inspect": "Inspect this node",
+
   "spinal-twin.Name": "Name",
   "spinal-twin.Endpoints": "Endpoints",
   "spinal-twin.ControlEndpoints": "Insights",

@@ -156,6 +156,11 @@ export default {
   "spinal-twin.StartDate": "Date de début",
   "spinal-twin.EndDate": "Date de fin",
   
+  "spinal-twin.ColorSwitch": "Activer ou désactiver les couleurs",
+  "spinal-twin.DownloadList": "Télécharger les données en excel",
+  "spinal-twin.NextNode": "Suivre ce noeud",
+  "spinal-twin.Inspect": "Inspecter ce noeud",
+
   "spinal-twin.Name": "Nom",
   "spinal-twin.Endpoints": "Données brutes",
   "spinal-twin.ControlEndpoints": "Indicateurs",

@@ -70,18 +70,26 @@ with this file. If not, see
         key="isGroup"
       >
         <div slot-scope="scope">
-          <el-button
-            v-if="scope.row.haveChild"
-            @click="onSelectItem(scope.row)"
-            icon="el-icon-arrow-right"
-            circle
-          ></el-button>
-          <el-button
-            v-else
-            @click="onSelectItem(scope.row)"
-            icon="el-icon-search"
-            circle
-          ></el-button>
+          <el-tooltip 
+              v-if="scope.row.haveChild"
+              :content="$t('spinal-twin.NextNode')"
+          >
+            <el-button
+              @click="onSelectItem(scope.row)"
+              icon="el-icon-arrow-right"
+              circle
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip 
+              v-else
+              :content="$t('spinal-twin.Inspect')"
+          >
+            <el-button
+              @click="onSelectItem(scope.row)"
+              icon="el-icon-search"
+              circle
+            ></el-button>
+          </el-tooltip>
         </div>
       </el-table-column>
     </el-table>
