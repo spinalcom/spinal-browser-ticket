@@ -222,13 +222,14 @@ export default {
 
   async mounted() {
     await this.update();
-    console.debug(this.ticket);
+    console.debug(this.getTicketRealNode(this.ticket.ticket));
   },
 
   methods: {
     async sendNote() {
+      // this.$emit("update");
+      await this.$parent.$parent.update(this.Properties.view.serverId, true)
       await this.update()
-      this.$emit("update");
     },
 
     async update() {
@@ -330,7 +331,7 @@ export default {
     getTicketRealNode(ticket) {
       if (ticket instanceof SpinalNode) return ticket;
       if (ticket.id instanceof Model)
-        return SpinalGraphService.getRealNode(ticket.id.get());
+        return SpinalGraphService.getRealNode(ticket.id);
     },
   },
 };
