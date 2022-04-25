@@ -39,13 +39,13 @@ with this file. If not, see
       </el-tooltip>
     </div>
 
-    <div>
+    <div style="overflow: auto; height: inherit">
       <el-table
         v-if="Categories"
         :data="Categories"
         :header-cell-style="{'background-color': '#f0f2f5'}"
         border
-        style="overflow: auto; height: auto"
+        style="overflow: auto; height: inherit"
       >
         <el-table-column type=expand>
           <div slot-scope="cat">
@@ -380,7 +380,7 @@ export default {
 <style scoped>
 
 .spl-button-bar {
-  overflow: hidden;
+  /* overflow: hidden; */
   display: flex;
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
