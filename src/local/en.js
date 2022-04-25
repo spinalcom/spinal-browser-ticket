@@ -108,6 +108,8 @@ export default {
   "spinal-twin.AttributeEdit": "Edit attribute ",
   "spinal-twin.AttributeRemove": "Remove attribute ",
   "spinal-twin.CategoryAddAttribute": "Add attribute to ",
+  "spinal-twin.CategoryEdit": "Edit categorie ",
+  "spinal-twin.CategoryRemove": "Remove category ",
   "spinal-twin.Explorer": "Explorer",
   "spinal-twin.Documentation": "Documentation",
   "spinal-twin.DocumentAdd": "Add document",

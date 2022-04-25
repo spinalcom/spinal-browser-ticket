@@ -106,7 +106,7 @@ export default {
   "spinal-twin.hasCategoryAttributes": "Attributs",
   "spinal-twin.CategoryAdd": "Ajouter une categorie d'attributs",
   "spinal-twin.CategoryEdit": "Editer la categorie ",
-  "spinal-twin.CategoryRemove": "Remove category ",
+  "spinal-twin.CategoryRemove": "Supprimer la categorie ",
   "spinal-twin.CategoryAddAttribute": "Ajouter un attribut à ",
   "spinal-twin.AttributeEdit": "Editer l'attribut ",
   "spinal-twin.AttributeRemove": "Supprimer l'attribut ",
