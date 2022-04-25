@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
+  <div style="height: inherit;">
     <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.DocumentAdd')">
         <el-button
@@ -37,7 +37,7 @@ with this file. If not, see
       </el-tooltip>
     </div>
 
-    <div>
+    <div style="height: inherit;">
       <el-table
         :data="documents"
         :header-cell-style="{'background-color': '#f0f2f5'}"
