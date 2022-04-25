@@ -98,14 +98,6 @@ with this file. If not, see
           <p>
             {{ ticket.comments[0].element.message.get() }}
           </p>
-          <!-- <node-notes-message
-            :username="ticket.comments[0].element.username.get()"
-            :date="ticket.comments[0].element.date.get()"
-            :message="ticket.comments[0].element.message.get()"
-            :type="ticket.comments[0].element.type.get()"
-            :file="ticket.comments[0].element.file ? ticket.comments[0].element.file : {}"
-            :viewPoint="ticket.comments[0].element.viewPoint ? ticket.comments[0].element.viewPoint : null"
-          ></node-notes-message> -->
         </el-collapse-item>
 
         <el-collapse-item name="Events"
