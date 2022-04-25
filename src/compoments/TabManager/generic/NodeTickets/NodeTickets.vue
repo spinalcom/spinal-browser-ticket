@@ -129,14 +129,12 @@ export default {
       console.debug("TICKET start");
       // this.ctxNode = SpinalGraphService.getNode(id);
       this.ctxNode = FileSystem._objects[id];
-      console.debug("TICKET end" + typeof this.ctxNode);
+      console.debug("TICKET end");
       const node = await SpinalGraphService.findNode(
         this.ctxNode.info.id.get()
       );
       if (this.Properties && this.Properties.stepping) { this.stepping = this.Properties.stepping }
-      let ticketList = await spinalServiceTicket.getTicketsFromNode(
-        node.id.get()
-      );
+      let ticketList = await spinalServiceTicket.getTicketsFromNode(node.id.get());
       this.tickets = [];
       let arrayId = 0;
       for (let ticket of ticketList) {
