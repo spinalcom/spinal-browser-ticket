@@ -135,6 +135,8 @@ export default {
   "spinal-twin.SelectContext": "Select a context",
   "spinal-twin.SelectProcess": "Select a process",
   "spinal-twin.SelectIncident": "Select an incident or write a title",
+  "spinal-twin.TicketPrev": "Move ticket a step back",
+  "spinal-twin.TicketNext": "Move ticket to the next step",
   "spinal-twin.TicketPriority.Occasion": "Occasional",
   "spinal-twin.TicketPriority.Normal": "Normal",
   "spinal-twin.TicketPriority.Urgent": "Urgent",
