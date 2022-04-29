@@ -19,29 +19,22 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs
-    :value="activetab"
-    @tab-click="handleClick"
-    class="tab-manager-tabs"
-    type="border-card"
-  >
-    <template
-        v-for="tab in tabsprop"
-      >
-      <template v-if="!tab.ignore" style="height:calc(100% - 120px)">
-        <el-tab-pane
-          :key="$t(tab.name)"
-          :label="$t(tab.name)"
-          :name="tab.name"
-          :closable="false"
-          style="height:calc(100%); overflow: hidden"
-        >
+  <el-tabs :value="activetab"
+           @tab-click="handleClick"
+           class="tab-manager-tabs"
+           type="border-card">
+    <template v-for="tab in tabsprop">
+      <template v-if="!tab.ignore"
+                style="height:calc(100% - 120px)">
+        <el-tab-pane :key="$t(tab.name)"
+                     :label="$t(tab.name)"
+                     :name="tab.name"
+                     :closable="false"
+                     style="height:calc(100%); overflow: hidden">
           <keep-alive>
-            <component
-              :is="tab.content"
-              :Properties="tab.props"
-              style="height:calc(100% - 20px)"
-            ></component>
+            <component :is="tab.content"
+                       :Properties="tab.props"
+                       style="height:calc(100% - 20px)"></component>
           </keep-alive>
         </el-tab-pane>
       </template>
@@ -50,7 +43,7 @@ with this file. If not, see
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 export default {
   name: "TabManager",
   components: {},
@@ -68,8 +61,8 @@ export default {
           return false;
         }
         return true;
-      }
-    }
+      },
+    },
   },
 
   data() {
@@ -81,7 +74,9 @@ export default {
   watch: {
     tabsprop: {
       handler(oldTabs, newTabs) {
-        if (!newTabs.some(tab => !tab.ignore && tab.name === this.activetab)) {
+        if (
+          !newTabs.some((tab) => !tab.ignore && tab.name === this.activetab)
+        ) {
           this.activetab = newTabs[0].name;
         }
       },

@@ -23,16 +23,16 @@
  */
 
 export default {
-  "Cancel": "Cancel",
-  "Confirm": "Confirm",
-  "Table": "Table",
-  "True": "True",
-  "False": "False",
-  "Min": "Minimum",
-  "Max": "Maximum",
-  "Average": "Average",
-  "Value": "Value",
-  
+  Cancel: "Cancel",
+  Confirm: "Confirm",
+  Table: "Table",
+  True: "True",
+  False: "False",
+  Min: "Minimum",
+  Max: "Maximum",
+  Average: "Average",
+  Value: "Value",
+
   "sidebar.topButton.buildingNameDefault": "Building",
   "error.returntodrive.confirmbtntext": "Retrun to drive",
   "error.returntodrive.text": "Imposible to load the digital twin.",
@@ -43,6 +43,7 @@ export default {
   "Routes.SpaceCenter": "Inspect the spaces",
   "Routes.EquipmentApp": "Inspect the equipments",
   "Routes.TicketApp": "Handle the tickets",
+
   "DataRoom.geographicContext": "Contextes", // Could be generic
   "DataRoom.geographicBuilding": "Bâtiments", // Could be generic
   "DataRoom.geographicFloor": "Etages", // Could be generic
@@ -63,19 +64,19 @@ export default {
   "DataRoom.PJ": "Add attachments",
   "DataRoom.Endpoints": "Endpoints",
   "DataRoom.Insight": "Insight",
-  "node-type.context" : "Contexts",
-  "node-type.groupingCategory" : "Categories",
-  "node-type.BIMObjectGroupContext" : "BIM objects groups contexts",
-  "node-type.BIMObjectGroup" : "BIM Object Groups",
-  "node-type.BIMObject" : " BIM Objects",
-  "node-type.geographicContext" : "Geographic contexts",
-  "node-type.geographicBuilding" : "Buildings",
-  "node-type.geographicFloor" : "Floors",
-  "node-type.geographicRoom" : "Rooms",
-  "node-type.SpinalSystemServiceTicket" : "Tickets contexts",
-  "node-type.SpinalServiceTicketProcess" : "Processes",
-  "node-type.SpinalSystemServiceTicketTypeStep" : "Steps",
-  "node-type.SpinalSystemServiceTicketTypeTicket" : "Tickets",
+  "node-type.context": "Contexts",
+  "node-type.groupingCategory": "Categories",
+  "node-type.BIMObjectGroupContext": "BIM objects groups contexts",
+  "node-type.BIMObjectGroup": "BIM Object Groups",
+  "node-type.BIMObject": " BIM Objects",
+  "node-type.geographicContext": "Geographic contexts",
+  "node-type.geographicBuilding": "Buildings",
+  "node-type.geographicFloor": "Floors",
+  "node-type.geographicRoom": "Rooms",
+  "node-type.SpinalSystemServiceTicket": "Tickets contexts",
+  "node-type.SpinalServiceTicketProcess": "Processes",
+  "node-type.SpinalSystemServiceTicketTypeStep": "Steps",
+  "node-type.SpinalSystemServiceTicketTypeTicket": "Tickets",
   "node-type.hasFiles": "Documentation",
   "node-type.hasCategoryAttributes": "Attributes", // TODO replace references for spinal-twin
   "node-type.Sum": "Count",
@@ -96,7 +97,7 @@ export default {
   "spinal-twin.GroupCount": "Group number",
   "spinal-twin.EquipmentCount": "Equipment number",
   "spinal-twin.TotalEquipments": "Total equipment number",
-  
+
   "spinal-twin.ProcessCount": "Process number",
   "spinal-twin.StepCount": "Step number",
   "spinal-twin.TicketCount": "Ticket number",
@@ -119,7 +120,8 @@ export default {
   "spinal-twin.NoteDownload": "Download file",
   "spinal-twin.NoteRestore": "Restore position",
   "spinal-twin.NotesAddPosition": "Add current position as attachment",
-  "spinal-twin.NotesAddScreenshot": "Add a screenshot of the viewer as attachment",
+  "spinal-twin.NotesAddScreenshot":
+    "Add a screenshot of the viewer as attachment",
   "spinal-twin.NotesAddFile": "Add file as attachment",
   "spinal-twin.NotesDeleteAttachment": "Delete attachment",
 
@@ -147,17 +149,18 @@ export default {
   "spinal-twin.Calendar": "Calendar",
   "spinal-twin.EventDelete": "Delete event",
   "spinal-twin.EventAdd": "Add an event",
-  
+
   "spinal-twin.Today": "Today",
   "spinal-twin.Yesterday": "Yesterday",
   "spinal-twin.DaysAgo": " days ago",
   "spinal-twin.StartDate": "Date de début",
   "spinal-twin.EndDate": "Date de fin",
-  
+
   "spinal-twin.Name": "Name",
   "spinal-twin.Endpoints": "Endpoints",
   "spinal-twin.ControlEndpoints": "Insights",
-  "spinal-twin.ErrorFileTooLarge": "The selected file(s) is too large. The maximum size must not exceed ",
+  "spinal-twin.ErrorFileTooLarge":
+    "The selected file(s) is too large. The maximum size must not exceed ",
   "explorer.Name": "Name",
   "SpaceManagement.Nom": "Name",
   "SpaceManagement.Categories": "Categories",
@@ -176,13 +179,21 @@ export default {
   "HeatmapCenter.Nb_profils": "Profils",
   "HeatmapCenter.lst_profils": "List of profils",
   "HeatmapCenter.Surface": "Area(M²)",
-  "HeatmapCenter.Groupes":"Groups",
+  "HeatmapCenter.Groupes": "Groups",
   "HeatmapCenter.Indicateurs": "Indicator",
   "HeatmapCenter.Profil": "Profil",
   "HeatmapCenter.Valeur": "Value",
   "HeatmapCenter.Heatmap_bool": "Display Heatmap",
   "HeatmapCenter.Courbe_bool": "Display graph",
   "HeatmapCenter.GO": "Go",
-  "HeatmapCenter.ModifyAll": "Modify all values"
+  "HeatmapCenter.ModifyAll": "Modify all values",
+  // Alarms
+  "Routes.AlarmApp": "Alarm App",
+  "spinal-twin.AlarmProcessCount": "Process count",
+  "spinal-twin.TotalAlarms": "Total Alarm count",
+  "spinal-twin.AlarmCount": "Alarm count",
+  "node-type.SpinalSystemServiceTicket.Alarm": "Alarm contexts",
+  "node-type.SpinalServiceTicketProcess.Alarm": "Alarm Processes",
+  "node-type.SpinalSystemServiceTicketTypeStep.Alarm": "Steps",
+  "node-type.SpinalSystemServiceTicketTypeTicket.Alarm": "Alarms",
 };
-

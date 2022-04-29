@@ -29,24 +29,26 @@ with this file. If not, see
 
 <template>
   <el-container v-if="ticket">
-    <el-header style="height:max-content; display: flex">
-      <el-tooltip v-if="Properties.viewKey != 'TicketApp'"
-                  :content="$t('spinal-twin.Back')">
-        <el-button @click.stop="back()"
+    <el-header class="ticketSelectedHeader">
+      <div class="name">
+        <el-tooltip v-if="Properties.viewKey != 'TicketApp'"
+                    :content="$t('spinal-twin.Back')">
+          <el-button @click.stop="back()"
+                     class="spl-el-button"
+                     icon="el-icon-arrow-left"
+                     circle>
+          </el-button>
+        </el-tooltip>
+        <!-- <el-button @click.stop="debug(ticket)"
                    class="spl-el-button"
-                   icon="el-icon-arrow-left"
+                   style="float: right"
+                   icon="el-icon-search"
                    circle>
-        </el-button>
-      </el-tooltip>
-      <el-button @click.stop="debug(ticket)"
-                 class="spl-el-button"
-                 style="float: right"
-                 icon="el-icon-search"
-                 circle>
-      </el-button>
-      <p style="">
-        {{ ticket.name }}
-      </p>
+        </el-button> -->
+        <p class="name">
+          {{ ticket.name }}
+        </p>
+      </div>
       <div v-if="doStepping"
            style="float:right">
         <el-tooltip :content="$t('spinal-twin.TicketPrev')">
@@ -335,6 +337,18 @@ export default {
 </script>
 
 <style scoped>
+.ticketSelectedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ticketSelectedHeader .name {
+  width: 150px;
+  display: flex;
+  align-items: center;
+}
+
 .separate {
   display: flex;
   justify-content: space-between;

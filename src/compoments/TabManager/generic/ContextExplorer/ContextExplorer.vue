@@ -21,37 +21,29 @@ with this file. If not, see
 <template>
   <div style="height:100%">
     <div class="spl-button-bar">
-      <button-switch
-        :active="colored"
-        @click.native="Color"
-        class="spl-el-button"
-        icon="el-icon-picture-outline-round"
-      ></button-switch>
-      <el-button
-        @click.stop="exportToExcel()"
-        class="spl-el-button"
-        icon="el-icon-download"
-        circle
-      ></el-button>
+      <button-switch :active="colored"
+                     @click.native="Color"
+                     class="spl-el-button"
+                     icon="el-icon-picture-outline-round"></button-switch>
+      <el-button @click.stop="exportToExcel()"
+                 class="spl-el-button"
+                 icon="el-icon-download"
+                 circle></el-button>
     </div>
-    
-    <div
-      v-if="Properties.items !== false"
-      style="height:calc(100% - 52px)"
-    >
-      <context-explorer-node-table
-        :ref="'Explorer-table'"
-        :view-key="Properties.viewKey"
-        :items="itemsComputed"
-        :columns="cols"
-        :relation="Properties.relation"
-        :depth="Properties.depth"
-        :context="Properties.context"
-        :hasEvent="Properties.hasEvent"
-        @select="Select"
-        @isolate="Isolate"
-        style="height:100%"
-      >
+
+    <div v-if="Properties.items !== false"
+         style="height:calc(100% - 52px)">
+      <context-explorer-node-table :ref="'Explorer-table'"
+                                   :view-key="Properties.viewKey"
+                                   :items="itemsComputed"
+                                   :columns="cols"
+                                   :relation="Properties.relation"
+                                   :depth="Properties.depth"
+                                   :context="Properties.context"
+                                   :hasEvent="Properties.hasEvent"
+                                   @select="Select"
+                                   @isolate="Isolate"
+                                   style="height:100%">
       </context-explorer-node-table>
     </div>
   </div>
@@ -60,23 +52,23 @@ with this file. If not, see
 <script>
 // Tools
 import { EventBus } from "../../../../services/event";
-import { viewerState } from "./viewerState"
+import { viewerState } from "./viewerState";
 
 // Components
-import ButtonSwitch from '../../../../compoments/ButtonSwitch'
+import ButtonSwitch from "../../../../compoments/ButtonSwitch";
 import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
 
 export default {
   name: "ContextExplorer",
   components: {
     ContextExplorerNodeTable,
-    ButtonSwitch
+    ButtonSwitch,
   },
   props: {
     Properties: {
       type: Object,
       required: true,
-      validator: function(value) {
+      validator: function (value) {
         if (!value.viewKey instanceof String) {
           return false;
         }
@@ -103,7 +95,8 @@ export default {
       return [];
     },
     cols() {
-      if (this.Properties &&
+      if (
+        this.Properties &&
         this.Properties.items &&
         this.Properties.items.cols
       )
@@ -117,30 +110,26 @@ export default {
       viewerState.changeColoration();
       EventBus.$emit("viewer-reset-color");
       this.$refs["Explorer-table"].isColored = false;
-      if (viewerState.colored())
-      {
+      if (viewerState.colored()) {
         this.$refs["Explorer-table"].Color();
       }
       this.colored = viewerState.colored();
     },
 
-    Select(item)
-    {
+    Select(item) {
       EventBus.$emit("viewer-select", item, this.Properties.relation);
     },
 
-    Isolate(item)
-    {
+    Isolate(item) {
       viewerState.changeIsolation();
       EventBus.$emit("viewer-reset-isolate");
-      if (viewerState.isolated())
-        this.$refs["Explorer-table"].Isolate();
+      if (viewerState.isolated()) this.$refs["Explorer-table"].Isolate();
     },
 
     exportToExcel() {
       this.$refs["Explorer-table"].exportToExcel();
     },
-    
+
     async debug(what) {
       console.debug("Debugging", what);
     },
@@ -164,7 +153,7 @@ export default {
 }
 
 .primary {
-  background: 'blue';
+  background: "blue";
   color: blue;
 }
 </style>

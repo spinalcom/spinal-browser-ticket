@@ -24,11 +24,6 @@ with this file. If not, see
 
 <template>
   <el-container style="overflow: hidden">
-    <el-header class="header">
-      <node-notes-create v-if="ctxNode"
-                         :node="ctxNode"
-                         @send-note="sendNote"></node-notes-create>
-    </el-header>
 
     <el-main style="">
       <div class="note-feed">
@@ -59,6 +54,12 @@ with this file. If not, see
         </el-container>
       </div>
     </el-main>
+
+    <el-header class="header">
+      <node-notes-create v-if="ctxNode"
+                         :node="ctxNode"
+                         @send-note="sendNote"></node-notes-create>
+    </el-header>
   </el-container>
 </template>
 
