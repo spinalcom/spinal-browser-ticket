@@ -112,3 +112,7 @@ export const GROUP_RELATION_NAME = 'hasGroup';
 export const GROUP_EQUIPMENT_RELATION_NAME = 'groupHasBIMObject';
 
 export const EQUIPMENT_RELATION_LIST = [ CATEGORY_RELATION_NAME, GROUP_RELATION_NAME, GROUP_EQUIPMENT_RELATION_NAME ];
+
+export const GEO_ROOM_TYPE = "geographicRoom";
+export const GEO_FLOOR_TYPE = "geographicFloor";
+export const GEO_BUILDING_TYPE = "geographicBuilding";
