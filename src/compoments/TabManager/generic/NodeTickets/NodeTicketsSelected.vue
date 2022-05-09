@@ -38,19 +38,13 @@ with this file. If not, see
                    circle>
         </el-button>
       </el-tooltip>
-      <el-button @click.stop="debug(ticket)"
-                 class="spl-el-button"
-                 style="float: right"
-                 icon="el-icon-search"
-                 circle>
-      </el-button>
       <p style="">
         {{ ticket.name }}
       </p>
       <div v-if="doStepping"
            style="float:right">
         <el-tooltip :content="$t('spinal-twin.TicketPrev')">
-          <el-button title="PreviousStep"
+          <el-button
                      icon="el-icon-caret-left"
                      circle
                      plain
@@ -58,7 +52,7 @@ with this file. If not, see
                      @click.stop="changeStep(-1, ticket)"></el-button>
         </el-tooltip>
         <el-tooltip :content="$t('spinal-twin.TicketNext')">
-          <el-button title="NextStep"
+          <el-button
                      icon="el-icon-caret-right"
                      type="primary"
                      circle
@@ -98,6 +92,22 @@ with this file. If not, see
           <p>
             {{ ticket.comments[0].element.message.get() }}
           </p>
+        </el-collapse-item>
+
+        <el-collapse-item name="Target" :title="$t('spinal-twin.Target')">
+          <div class="separate">
+            <div> {{ $t('spinal-twin.Name') }} </div>
+            <div> {{ getTarget().name }} </div>
+          </div>
+          <div class="separate">
+            <div> {{ $t('spinal-twin.Type') }} </div>
+            <div> {{ getTarget().type }} </div>
+          </div>
+          <div v-if="getTarget().path !== ''" class="separate">
+            <div v-if="getTarget().ispath"> {{ $t('spinal-twin.Path') }} </div>
+            <div v-else> {{ $t('spinal-twin.Parent') }} </div>
+            <div> {{ getTarget().path }} </div>
+          </div>
         </el-collapse-item>
 
         <el-collapse-item name="Events"
@@ -214,7 +224,6 @@ export default {
 
   async mounted() {
     await this.update();
-    console.debug(this.getTicketRealNode(this.ticket.ticket));
   },
 
   methods: {
@@ -314,6 +323,10 @@ export default {
 
     logFormat(n) {
       return LOGS_EVENTS_STRING[n];
+    },
+
+    getTarget() {
+      return this.ticket.target
     },
 
     debug(what) {
