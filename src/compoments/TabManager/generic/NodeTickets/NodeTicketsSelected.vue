@@ -21,11 +21,6 @@ You should have received a copy of the license along
 with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
-<!-- 
-
-          style="float: left"
-
--->
 
 <template>
   <el-container v-if="ticket">
@@ -192,6 +187,7 @@ import { spinalServiceTicket } from "spinal-service-ticket";
 import { ViewManager } from "../../../../services/ViewManager/ViewManager";
 import { getTicketDescription } from "./Ticket";
 import { Model } from "spinal-core-connectorjs_type";
+import EventBus from "../../../space/component/js/event";
 
 export default {
   name: "NodeTicketSelected",
@@ -225,12 +221,18 @@ export default {
   async mounted() {
     await this.update();
   },
+  
+  async created() {
+    EventBus.$on('note-added', async function () {
+      await this.update(this.Properties.view.serverId);
+    }.bind(this));
+  },
 
   methods: {
     async sendNote() {
-      // this.$emit("update");
-      await this.$parent.$parent.update(this.Properties.view.serverId, true)
-      await this.update()
+      this.$emit("update");
+      EventBus.$emit('note-added');
+      await this.update();
     },
 
     async update() {
