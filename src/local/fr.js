@@ -164,6 +164,10 @@ export default {
   "spinal-twin.Inspect": "Inspecter ce noeud",
 
   "spinal-twin.Name": "Nom",
+  "spinal-twin.Type": "Type",
+  "spinal-twin.Path": "Chemin",
+  "spinal-twin.Target": "Cible",
+  "spinal-twin.Parent": "Parent de la cible",
   "spinal-twin.Endpoints": "Données brutes",
   "spinal-twin.ControlEndpoints": "Indicateurs",
   "spinal-twin.ErrorFileTooLarge": "Le fichier sélectionné est trop lourd. La taille maximale est de ",

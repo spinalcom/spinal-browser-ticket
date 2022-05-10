@@ -164,6 +164,10 @@ export default {
   "spinal-twin.Inspect": "Inspect this node",
 
   "spinal-twin.Name": "Name",
+  "spinal-twin.Type": "Type",
+  "spinal-twin.Path": "Path",
+  "spinal-twin.Target": "Target",
+  "spinal-twin.Parent": "Target's parent",
   "spinal-twin.Endpoints": "Endpoints",
   "spinal-twin.ControlEndpoints": "Insights",
   "spinal-twin.ErrorFileTooLarge": "The selected file(s) is too large. The maximum size must not exceed ",
