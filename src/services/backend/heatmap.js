@@ -54,8 +54,6 @@ export default class Heatmap {
   }
 
   async init(graph) {
-
-
     //"SpinalControlPointGroupContext"
     //ROOM_TYPE
     await SpinalGraphService.waitForInitialization();
@@ -74,7 +72,7 @@ export default class Heatmap {
 
     const res = await Promise.all(Icontexts);
     this.initDefer.resolve(res);
-
+    
 
   }
 
@@ -199,16 +197,16 @@ export default class Heatmap {
     let realnode = SpinalGraphService.getRealNode(profil.id.get());
     let attributesLst = await serviceDocumentation.getAllAttributes(realnode);
     let espace = this.getsurface(attributesLst);
-    let itemLinked = await this.getElementLinkedToProfil(profil);
+    //let itemLinked = await this.getElementLinkedToProfil(profil);
     //remove duplicates tagged with undefined
-    itemLinked = itemLinked.filter( el => el)
+    //itemLinked = itemLinked.filter( el => el)
     let endpointsProfils = await this.getEndpointsProfil(contextId, profil);
 
     return {
       name: profil.name.get(),
       id: profil.id.get(),
       surface: espace,
-      rooms: itemLinked,
+      //rooms: itemLinked,
       endpointsProfils: endpointsProfils
     };
   }
@@ -224,7 +222,7 @@ export default class Heatmap {
 
   getElementLinkedToProfil(profil) {
     
-    const id = profil.id.get();
+    const id = profil.id;
     return spinalControlPointService.loadElementLinked(id).then((result) => {
       const promises = []
       for (let i = 0; i < result.length; i++) {
@@ -441,9 +439,9 @@ export default class Heatmap {
     const res = []
 
     for (const [key, value] of bimMap.entries()) {
-      while (!window.spinal.BimObjectService.getModelByBimfile(key)){
+      /*while (!window.spinal.BimObjectService.getModelByBimfile(key)){
         await this.timeout(1000);
-      }
+      }*/
       res.push({
         model: window.spinal.BimObjectService
           .getModelByBimfile(key),

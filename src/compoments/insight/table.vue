@@ -96,9 +96,9 @@ import groupLstVue from "./component/groupLstVue";
 import profilLstVue from "./component/profilLstVue";
 import tableauContext from "./tableaucontext";
 import tableauCategory from "./tableaucategory";
-
 import { EventBus } from "../../services/event";
 import HeatmapVue from "./component/heatmapVue.vue";
+import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
 
 export default {
   components: {
@@ -122,6 +122,7 @@ export default {
     }; 
   },
   async mounted() {
+    await viewerUtils.waitInitialized();
     this.profilSelected = null;
     this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts and children
     this.loading=false;
