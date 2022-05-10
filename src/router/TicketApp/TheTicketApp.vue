@@ -19,7 +19,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="hide-overflow">
+  <div>
     <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
     <el-tooltip :content="$t('spinal-twin.Back')">
       <el-button
@@ -77,7 +77,7 @@ with this file. If not, see
       :tabsprop="tabs"
       ref="tab-manager"
       class="tab-manager"
-    ><tab-manager>
+    ></tab-manager>
   </div>
 </template>
 
