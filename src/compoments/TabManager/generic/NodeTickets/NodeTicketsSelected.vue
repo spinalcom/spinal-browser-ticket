@@ -224,18 +224,20 @@ export default {
   
   async created() {
     EventBus.$on('note-added', async function () {
-      await this.update(this.Properties.view.serverId);
+      await this.update();
+      console.debug("note successfully added");
     }.bind(this));
   },
 
   methods: {
     async sendNote() {
-      this.$emit("update");
       EventBus.$emit('note-added');
+      this.$emit("update");
       await this.update();
     },
 
     async update() {
+      this.ticket = undefined;
       if (typeof this.selected == "undefined") {
         let ticketinfo = SpinalGraphService.getRealNode(
           this.Properties.selected
@@ -337,8 +339,7 @@ export default {
 
     getTicketRealNode(ticket) {
       if (ticket instanceof SpinalNode) return ticket;
-      if (ticket.id instanceof Model)
-        return SpinalGraphService.getRealNode(ticket.id);
+      return SpinalGraphService.getRealNode(ticket.id);
     },
   },
 };
