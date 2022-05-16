@@ -78,7 +78,7 @@ with this file. If not, see
       :tabsprop="tabs"
       ref="tab-manager"
       class="tab-manager"
-    ><tab-manager>
+    ></tab-manager>
   </div>
 </template>
 
