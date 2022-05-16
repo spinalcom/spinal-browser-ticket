@@ -225,7 +225,6 @@ export default {
   async created() {
     EventBus.$on('note-added', async function () {
       await this.update();
-      console.debug("note successfully added");
     }.bind(this));
   },
 
@@ -233,6 +232,7 @@ export default {
     async sendNote() {
       EventBus.$emit('note-added');
       this.$emit("update");
+      await new Promise(r => setTimeout(r, 300));
       await this.update();
     },
 
