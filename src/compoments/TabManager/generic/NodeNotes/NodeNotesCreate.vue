@@ -24,6 +24,24 @@ with this file. If not, see
 
 <template>
   <form @submit.prevent="sendNote">
+    <el-container class="attachments">
+      <el-card v-for="attachment in attachments"
+               :key="attachment.name"
+               style="margin: 20px; position: relative; width: 90%">
+        {{ attachment.name }}
+        <el-tooltip :content="$t('spinal-twin.NotesDeleteAttachment')">
+          <el-button v-on:click.native="delAttachment(attachment)"
+                     class="spl-input-button"
+                     icon="el-icon-circle-close"
+                     type="danger"
+                     circle
+                     size="small"
+                     style="position: absolute; top: 15px; right: 0">
+          </el-button>
+        </el-tooltip>
+      </el-card>
+
+    </el-container>
     <el-container style="overflow: hidden">
       <el-dropdown class="spl-input-button">
         <el-button type="primary">
@@ -52,7 +70,6 @@ with this file. If not, see
 
       <el-input v-model="new_note"
                 v-on:keydown.enter.native="enterHandler"
-                type="textarea"
                 resize="none"></el-input>
 
       <el-tooltip :content="$t('spinal-twin.NoteSend')">
@@ -333,5 +350,13 @@ export default {
   height: min-content;
   margin: auto 10px auto 10px;
   width: min-content;
+}
+
+.attachments {
+  height: 80px;
+  margin: 5px 0;
+  max-height: 90px;
+  overflow: auto;
+  border: 1px solid grey;
 }
 </style>

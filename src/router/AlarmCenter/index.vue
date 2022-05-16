@@ -59,19 +59,16 @@ with this file. If not, see
         </el-button>
       </el-tooltip>
     </div>
-    
-    <tab-manager
-      :tabsprop="tabs"
-      ref="tab-manager"
-      class="tab-manager"
-    ></tab-manager>
+    <tab-manager :tabsprop="tabs"
+                 ref="tab-manager"
+                 class="tab-manager">
+      <tab-manager>
   </div>
 </template>
 
 <script>
 // Script & tools
 
-import Vue from "vue";
 import { ViewManager } from "../../services/ViewManager/ViewManager";
 import { AppBack } from "../../services/backend/AppBack";
 import BackendInitializer from "../../services/BackendInitializer";
@@ -86,7 +83,7 @@ import {
   PROCESS_TYPE,
   SPINAL_TICKET_SERVICE_STEP_TYPE,
   SPINAL_TICKET_SERVICE_TICKET_TYPE,
-} from "spinal-service-ticket/dist/Constants.js";
+} from "spinal-service-ticket";
 
 // Generic components
 import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
@@ -107,13 +104,13 @@ export const TICKET_APP_RELATIONS = [
   SPINAL_TICKET_SERVICE_STEP_TYPE,
   SPINAL_TICKET_SERVICE_TICKET_TYPE,
 ];
-const VIEW_KEY = "TicketApp";
+const VIEW_KEY = "AlarmApp";
 
 const AppBackInstance = AppBack.getInstance();
 
 // Component exports
 export default {
-  name: "TheTicketApp",
+  name: "AlarmComponent",
   components: {
     SpinalBreadcrumb,
     TabManager,
@@ -191,7 +188,7 @@ export default {
 
   async mounted() {
     const graph = await BackendInitializer.getInstance().getGraph();
-    await AppBackInstance.init(graph, "SpinalSystemServiceTicket");
+    await AppBackInstance.init(graph, SERVICE_TYPE);
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it
     await ViewManager.getInstance(this.viewKey).init(
       this.onViewChange.bind(this),
@@ -211,10 +208,10 @@ export default {
   },
 
   methods: {
-    getTicketOnly(liste) {
+    getAlarmOnly(liste) {
       return liste.filter((appItem) => {
         const node = FileSystem._objects[appItem.serverId];
-        return !node.info.subType || node.info.subType.get() === "Ticket";
+        return node.info.subType && node.info.subType.get() === "Alarm";
       });
     },
     async onViewChange(view) {
@@ -227,8 +224,7 @@ export default {
 
         const value = copy_mapItems.get(SERVICE_TYPE) || [];
 
-        mapItems = new Map([[SERVICE_TYPE, this.getTicketOnly(value)]]);
-
+        mapItems = new Map([[SERVICE_TYPE, this.getAlarmOnly(value)]]);
         this.isNode = false;
         this.isSelectable = false;
       } else {
@@ -257,7 +253,7 @@ export default {
 
       // Get children
       for (const [nodeType, items] of mapItems) {
-        this.items.nodeType = nodeType;
+        this.items.nodeType = `${nodeType}.Alarm`;
         this.items.items = items;
       }
 
@@ -277,12 +273,13 @@ export default {
 
       await Promise.all(
         this.items.items.map(async function (item) {
-          item["TotalTickets"] = await getTicketNumber(item);
+          item["TotalAlarms"] = await getTicketNumber(item);
         })
       );
 
       this.setColumns(view);
 
+      console.log(this.items);
       // Update tabs
       this.tabs[0].props.items = this.items;
       this.updateNames();
@@ -329,17 +326,17 @@ export default {
       let node = FileSystem._objects[view.serverId];
       this.items.cols = [];
       if (!node) {
-        this.items.cols = ["ProcessCount", "TotalTickets"];
+        this.items.cols = ["AlarmProcessCount", "TotalAlarms"];
         return;
       }
       let nodeType = node.info.type.get();
       console.debug("nodeType :", nodeType, TICKET_APP_RELATIONS);
       switch (nodeType) {
         case SERVICE_TYPE:
-          this.items.cols = ["StepCount", "TotalTickets"];
+          this.items.cols = ["StepCount", "TotalAlarms"];
           break;
         case PROCESS_TYPE:
-          this.items.cols = ["TicketCount"];
+          this.items.cols = ["AlarmCount"];
           break;
         // case SPINAL_TICKET_SERVICE_STEP_TYPE:
         //   this.items.cols = [ "TicketCount" ];

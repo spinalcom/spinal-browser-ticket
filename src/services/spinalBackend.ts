@@ -68,6 +68,7 @@ class SpinalBackEnd {
     else if (typeof rootModel.graph !== 'undefined') { this.graph = rootModel.graph; }
     return this.graph;
   }
+
   waitInit() {
     return this.initDefer.promise;
   }

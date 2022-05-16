@@ -34,7 +34,8 @@ with this file. If not, see
                   :content="$t('spinal-twin.Back')">
         <el-button @click.stop="back()"
                    class="spl-el-button"
-                   icon="el-icon-arrow-left"
+                   style="float: right"
+                   icon="el-icon-search"
                    circle>
         </el-button>
       </el-tooltip>
@@ -343,6 +344,18 @@ export default {
 </script>
 
 <style scoped>
+.ticketSelectedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ticketSelectedHeader .name {
+  width: 150px;
+  display: flex;
+  align-items: center;
+}
+
 .separate {
   display: flex;
   justify-content: space-between;

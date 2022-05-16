@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 SpinalCom - www.spinalcom.com
  *
@@ -24,16 +23,16 @@
  */
 
 export default {
-  "Cancel": "Annuler",
-  "Confirm": "Confirmer",
-  "Table": "Tableau",
-  "True": "Vrai",
-  "False": "Faux",
-  "Min": "Minimum",
-  "Max": "Maximum",
-  "Average": "Moyenne",
-  "Value": "Valeur",
-  
+  Cancel: "Annuler",
+  Confirm: "Confirmer",
+  Table: "Tableau",
+  True: "Vrai",
+  False: "Faux",
+  Min: "Minimum",
+  Max: "Maximum",
+  Average: "Moyenne",
+  Value: "Valeur",
+
   "sidebar.topButton.buildingNameDefault": "Batiment",
   "error.returntodrive.confirmbtntext": "Retourner au drive",
   "error.returntodrive.text": "Imposible de charger le Jumeau numérique.",
@@ -64,25 +63,26 @@ export default {
   "DataRoom.PJ": "Joindre un fichier",
   "DataRoom.Endpoints": "Points de terminaison",
   "DataRoom.Insight": "Tableau de bord",
-  "node-type.context" : "Contextes",
-  "node-type.groupingCategory" : "Catégories",
-  "node-type.BIMObjectGroupContext" : "Contextes de groupes d'objets BIM",
-  "node-type.BIMObjectGroup" : "Groupes d'objets BIM",
-  "node-type.BIMObject" : "Objets BIM",
-  "node-type.geographicContext" : "Contexte géographique",
-  "node-type.geographicBuilding" : "Bâtiments",
-  "node-type.geographicFloor" : "Etages",
-  "node-type.geographicRoom" : "Salles",
-  "node-type.SpinalSystemServiceTicket" : "Contextes de tickets",
-  "node-type.SpinalServiceTicketProcess" : "Processus",
-  "node-type.SpinalSystemServiceTicketTypeStep" : "Etape",
-  "node-type.SpinalSystemServiceTicketTypeTicket" : "Tickets",
+  "node-type.context": "Contextes",
+  "node-type.groupingCategory": "Catégories",
+  "node-type.BIMObjectGroupContext": "Contextes de groupes d'objets BIM",
+  "node-type.BIMObjectGroup": "Groupes d'objets BIM",
+  "node-type.BIMObject": "Objets BIM",
+  "node-type.geographicContext": "Contexte géographique",
+  "node-type.geographicBuilding": "Bâtiments",
+  "node-type.geographicFloor": "Etages",
+  "node-type.geographicRoom": "Salles",
+  "node-type.SpinalSystemServiceTicket": "Contextes de tickets",
+  "node-type.SpinalServiceTicketProcess": "Processus",
+  "node-type.SpinalSystemServiceTicketTypeStep": "Etape",
+  "node-type.SpinalSystemServiceTicketTypeTicket": "Tickets",
   "node-type.hasFiles": "Documentation",
   "node-type.hasCategoryAttributes": "Attributs",
   "node-type.Sum": "Quantité",
   "node-type.Category": "Catégorie",
   "node-type.Attribute": "Attribut",
-  "spinal-twin.DeleteConfirm": "Êtes vous sûr de vouloir supprimer cet element ?",
+  "spinal-twin.DeleteConfirm":
+    "Êtes vous sûr de vouloir supprimer cet element ?",
   "spinal-twin.Back": "Retour",
   "spinal-twin.Isolate": "Isoler",
   "spinal-twin.Select": "Sélectionner",
@@ -92,7 +92,7 @@ export default {
   "spinal-twin.BuildingCount": "Nombre de bâtiments",
   "spinal-twin.FloorCount": "Nombre d'étages",
   "spinal-twin.RoomCount": "Nombre de salles",
-  
+
   "spinal-twin.CategoryCount": "Nombre de catégories",
   "spinal-twin.GroupCount": "Nombre de groupes",
   "spinal-twin.EquipmentCount": "Nombre d'équipements",
@@ -119,8 +119,10 @@ export default {
   "spinal-twin.NoteSend": "Envoyer la note",
   "spinal-twin.NoteDownload": "Télécharger le fichier",
   "spinal-twin.NoteRestore": "Restorer la position",
-  "spinal-twin.NotesAddPosition": "Ajouter la position actuelle en pièce-jointe",
-  "spinal-twin.NotesAddScreenshot": "Ajouter une capture d'écran en pièce jointe",
+  "spinal-twin.NotesAddPosition":
+    "Ajouter la position actuelle en pièce-jointe",
+  "spinal-twin.NotesAddScreenshot":
+    "Ajouter une capture d'écran en pièce jointe",
   "spinal-twin.NotesAddFile": "Ajouter un fichier en pièce jointe",
   "spinal-twin.NotesDeleteAttachment": "Supprimer la pièce jointe",
 
@@ -151,7 +153,7 @@ export default {
   "spinal-twin.Calendar": "Calendrier",
   "spinal-twin.EventDelete": "Supprimer l'événement",
   "spinal-twin.EventAdd": "Ajouter an événement",
-  
+
   "spinal-twin.Today": "Aujourd'hui",
   "spinal-twin.Yesterday": "Hier",
   "spinal-twin.DaysAgo": " jours",
@@ -170,7 +172,8 @@ export default {
   "spinal-twin.Parent": "Parent de la cible",
   "spinal-twin.Endpoints": "Données brutes",
   "spinal-twin.ControlEndpoints": "Indicateurs",
-  "spinal-twin.ErrorFileTooLarge": "Le fichier sélectionné est trop lourd. La taille maximale est de ",
+  "spinal-twin.ErrorFileTooLarge":
+    "Le fichier sélectionné est trop lourd. La taille maximale est de ",
   "explorer.Name": "Nom",
   "SpaceManagement.Nom": "Nom",
   "SpaceManagement.Categories": "Categories",
@@ -190,12 +193,22 @@ export default {
   "HeatmapCenter.Nb_profils": "Profils",
   "HeatmapCenter.lst_profils": "Liste des profiles",
   "HeatmapCenter.Surface": "Surface(M²)",
-  "HeatmapCenter.Groupes":"Groupes",
+  "HeatmapCenter.Groupes": "Groupes",
   "HeatmapCenter.Indicateurs": "Indicateurs",
   "HeatmapCenter.Profil": "Profil",
   "HeatmapCenter.Valeur": "Valeur",
   "HeatmapCenter.Heatmap_bool": "Afficher Heatmap",
   "HeatmapCenter.Courbe_bool": "Afficher courbe",
   "HeatmapCenter.GO": "Go",
-  "HeatmapCenter.ModifyAll": "Modifier toutes les valeurs"
+  "HeatmapCenter.ModifyAll": "Modifier toutes les valeurs",
+
+  // Alarms
+  "Routes.AlarmApp": "Gérer les alarmes",
+  "spinal-twin.AlarmProcessCount": "Nombre de processus",
+  "spinal-twin.TotalAlarms": "Nombre total d'alarmes",
+  "spinal-twin.AlarmCount": "Nombre d'alarmes",
+  "node-type.SpinalSystemServiceTicket.Alarm": "Contextes d'alarmes",
+  "node-type.SpinalServiceTicketProcess.Alarm": "Processus d'alarmes",
+  "node-type.SpinalSystemServiceTicketTypeStep.Alarm": "Etapes",
+  "node-type.SpinalSystemServiceTicketTypeTicket.Alarm": "Alarmes",
 };

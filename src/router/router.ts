@@ -36,6 +36,8 @@ const SpaceCenterGestion = () => import('../compoments/space/component/categoryL
 const EquipmentApp = () => import("./EquipmentApp/TheEquipmentApp.vue")
 const DataApp = () => import("./DataApp/TheDataApp.vue")
 const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
+const AlarmApp = () => import("./AlarmCenter/index.vue")
+
 export const routes = [
   { path: '*', redirect: { name: 'AppList' } },
   { path: '/AppList', name: 'AppList', component: AppList },
@@ -46,6 +48,7 @@ export const routes = [
   { path: '/Spacecenter', name: 'SpaceCenter', component: SpaceCenter },
   { path: '/EquipmentApp', name: 'EquipmentApp', component: EquipmentApp },
   { path: '/TicketApp', name: 'TicketApp', component: TicketApp },
+  { path: '/AlarmApp', name: 'AlarmApp', component: AlarmApp }
 ];
 const realroutes = [...routes,
 { path: '/Spacecenter/Gestion', name: 'gestion', component: SpaceCenterGestion },

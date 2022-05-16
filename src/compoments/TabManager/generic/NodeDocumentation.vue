@@ -26,14 +26,12 @@ with this file. If not, see
   <div style="height: inherit;">
     <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.DocumentAdd')">
-        <el-button
-          :disabled="ctxNode == false"
-          @click.native="addDocument()"
-          icon="el-icon-plus"
-          circle
-          type="primary"
-          style="float: right"
-        ></el-button>
+        <el-button :disabled="ctxNode == false"
+                   @click.native="addDocument()"
+                   icon="el-icon-plus"
+                   circle
+                   type="primary"
+                   style="float: right"></el-button>
       </el-tooltip>
     </div>
 
@@ -49,28 +47,21 @@ with this file. If not, see
             {{ scope.row.name }}
           </div>
         </el-table-column>
-        <el-table-column
-          label="Actions"
-          width=120
-        >
+        <el-table-column label="Actions"
+                         width=120>
           <div slot-scope="scope">
             <el-tooltip :content="$t('spinal-twin.DocumentDownload')">
-              <el-button
-                @click.native="downloadDocument(scope.row._server_id)"
-                icon="el-icon-download"
-                circle
-              ></el-button>
+              <el-button @click.native="downloadDocument(scope.row._server_id)"
+                         icon="el-icon-download"
+                         circle></el-button>
             </el-tooltip>
             <el-tooltip :content="$t('spinal-twin.DocumentRemove')">
-              <el-popconfirm
-                @confirm="delDocument(scope.row._server_id)"
-                :title="$t('spinal-twin.DeleteConfirm')">
-                <el-button
-                  icon="el-icon-delete"
-                  circle
-                  type=danger
-                  slot="reference"
-                ></el-button>
+              <el-popconfirm @confirm="delDocument(scope.row._server_id)"
+                             :title="$t('spinal-twin.DeleteConfirm')">
+                <el-button icon="el-icon-delete"
+                           circle
+                           type=danger
+                           slot="reference"></el-button>
               </el-popconfirm>
             </el-tooltip>
           </div>
@@ -81,12 +72,12 @@ with this file. If not, see
 </template>
 
 <script>
-import { FileSystem } from 'spinal-core-connectorjs_type'
+import { FileSystem } from "spinal-core-connectorjs_type";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 
 export default {
   name: "NodeDocumentation",
-  components: {  },
+  components: {},
   props: {
     Properties: {
       required: true,
@@ -102,23 +93,17 @@ export default {
     };
   },
 
-  watch:
-  {
-    Properties:
-    {
-      handler: async function(oldProp, newProp)
-      {
-        if (newProp.view.serverId != 0)
-        {
+  watch: {
+    Properties: {
+      handler: async function (oldProp, newProp) {
+        if (newProp.view.serverId != 0) {
           await this.update(newProp.view.serverId);
-        }
-        else
-        {
+        } else {
           this.ctxNode = false;
         }
       },
       deep: true,
-    }
+    },
   },
 
   async mounted() {
@@ -126,8 +111,7 @@ export default {
   },
 
   methods: {
-    async update(id)
-    {
+    async update(id) {
       console.debug("DOC start");
       this.ctxNode = FileSystem._objects[id];
       console.debug("DOC end");
@@ -135,36 +119,28 @@ export default {
       await this.getDocuments();
     },
 
-    docAt(serverId)
-    {
-      for (const doc of this.documents)
-      {
-        if (doc._server_id == serverId)
-        {
+    docAt(serverId) {
+      for (const doc of this.documents) {
+        if (doc._server_id == serverId) {
           return doc;
         }
       }
       return null;
     },
 
-    async getDocuments()
-    {
+    async getDocuments() {
       this.documents = [];
-      if (!this.directory)
-        return;
-      for (let i = 0; i < this.directory.length; ++i)
-      {
+      if (!this.directory) return;
+      for (let i = 0; i < this.directory.length; ++i) {
         this.documents.push(this.directory[i]);
       }
     },
 
-    async addDocument()
-    {
+    async addDocument() {
       const maxSize = 25000000;
       const input = document.createElement("input");
 
-      if (!this.directory)
-      {
+      if (!this.directory) {
         this.directory = await FileExplorer.createDirectory(this.ctxNode);
       }
       input.type = "file";
@@ -172,17 +148,19 @@ export default {
       input.click();
       input.addEventListener(
         "change",
-        event => {
+        (event) => {
           const files = event.target.files;
           let filelist = [];
           for (const file of files) {
             filelist.push(file);
           }
-          const sizes = filelist.map(el => el.size);
+          const sizes = filelist.map((el) => el.size);
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              this.$t("spinal-twin.ErrorFileTooLarge") + (maxSize / 1000000) + " MB"
+              this.$t("spinal-twin.ErrorFileTooLarge") +
+                maxSize / 1000000 +
+                " MB"
             );
             return;
           }
@@ -195,51 +173,49 @@ export default {
       );
     },
 
-    async delDocument(id)
-    {
-      if (!this.directory)
-        return;
-      for (let i = 0; i < this.directory.length; ++i)
-      {
-        if (this.directory[i]._server_id == id)
-        {
+    async delDocument(id) {
+      if (!this.directory) return;
+      for (let i = 0; i < this.directory.length; ++i) {
+        if (this.directory[i]._server_id == id) {
           this.directory.splice(i, 1);
           this.documents.splice(i, 1);
         }
       }
     },
 
-    downloadDocument(id)
-    {
+    downloadDocument(id) {
       const file = this.docAt(id);
-      if (file._info.model_type.get() != "Directory") {
-        file._ptr.load(path => {
-          if (file._info.model_type.get() == "HttpPath") {
-            const element = document.createElement("a");
-            const _path =
-              path.host.get() +
-              "/file/" +
-              encodeURIComponent(path.httpRootPath.get()) +
-              "/" +
-              encodeURIComponent(path.httpPath.get());
-            element.setAttribute("href", _path);
-            element.setAttribute("download", file.name.get());
-            element.style.display = "none";
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-          } else {
-            var element = document.createElement("a");
-            element.setAttribute("href", "/sceen/_?u=" + path._server_id);
-            element.setAttribute("download", file.name);
-            element.click();
-          }
-        });
-      } else {
-        // check recursive directory & create a ZIP
-      }
+      // console.log(file);
+
+      // if (file._info.model_type.get() != "Directory") {
+      file._ptr.load((path) => {
+        // if (file._info.model_type.get() == "HttpPath") {
+        //   const element = document.createElement("a");
+        //   console.log(path);
+        //   const _path =
+        //     path.host.get() +
+        //     "/file/" +
+        //     encodeURIComponent(path.httpRootPath.get()) +
+        //     "/" +
+        //     encodeURIComponent(path.httpPath.get());
+        //   element.setAttribute("href", _path);
+        //   element.setAttribute("download", file.name.get());
+        //   element.style.display = "none";
+        //   document.body.appendChild(element);
+        //   element.click();
+        //   document.body.removeChild(element);
+        // } else {
+        var element = document.createElement("a");
+        element.setAttribute("href", "/sceen/_?u=" + path._server_id);
+        element.setAttribute("download", file.name);
+        element.click();
+        //   }
+      });
+      // } else {
+      //   // check recursive directory & create a ZIP
+      // }
     },
-  
+
     async debug(what) {
       console.debug("Debugging", what);
     },
@@ -248,12 +224,10 @@ export default {
 </script>
 
 <style scoped>
-
 .spl-button-bar {
   overflow: hidden;
   display: flex;
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
 }
-
 </style>

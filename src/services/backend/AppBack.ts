@@ -91,7 +91,7 @@ export class AppBack {
     return AppBack.instance
   }
 
-  async init(graph: SpinalGraph<any>, type: string){
+  async init(graph: SpinalGraph<any>, type: string) {
     this.contexts = []
     this.type = type;
     // const children = await graph.getChildren("BIMObjectGroupContext");
@@ -104,10 +104,10 @@ export class AppBack {
     this.initDefer.resolve(this.contexts);
   }
 
-  async getContexts(type:string): Promise<Map<string, AppItem[]>> {
+  async getContexts(type: string): Promise<Map<string, AppItem[]>> {
     const result: Map<string, AppItem[]> = new Map()
 
-      await Promise.all(this.contexts.map(async (item) => {
+    await Promise.all(this.contexts.map(async (item) => {
       return this.getItemsInContext(item, item, type, true).then((map) => {
         for (const [key, value] of map) {
           if (!result.has(key)) result.set(key, []);
@@ -119,7 +119,7 @@ export class AppBack {
     return result;
   }
 
-  getItems(serverId: number, contextServerId: number, type:string): Promise<mapAppItem> {
+  getItems(serverId: number, contextServerId: number, type: string): Promise<mapAppItem> {
     const node = <SpinalNode<any>>(FileSystem._objects[serverId]);
     const context = <SpinalContext<any>>(FileSystem._objects[contextServerId]);
     if (!node || !context) return Promise.resolve(new Map());
@@ -173,8 +173,7 @@ export class AppBack {
       }
     }
     if (giveSelf) return res;
-    if (typeof item.children !== "undefined")
-    {
+    if (typeof item.children !== "undefined") {
       return item.children
     } else {
       return new Map();
