@@ -28,7 +28,7 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container v-if="ticket">
+  <el-container v-if="ticket" style="height:100%">
     <el-header style="height:max-content; display: flex">
       <el-tooltip v-if="Properties.viewKey != 'TicketApp'"
                   :content="$t('spinal-twin.Back')">

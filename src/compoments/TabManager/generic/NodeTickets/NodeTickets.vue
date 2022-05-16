@@ -24,7 +24,7 @@ with this file. If not, see
 
 <template>
   <div style="height: 100%">
-    <el-container v-if="selected">
+    <el-container v-if="selected" style="height: 100%">
       <node-tickets-selected :selected="selected"
                              :stepping="stepping"
                              :Properties="Properties"
