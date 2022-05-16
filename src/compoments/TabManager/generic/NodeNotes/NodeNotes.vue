@@ -68,6 +68,7 @@ import { FileSystem } from "spinal-core-connectorjs_type";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import NodeNotesMessage from "./NodeNotesMessage.vue";
 import NodeNotesCreate from "./NodeNotesCreate.vue";
+import EventBus from "../../../space/component/js/event";
 
 export default {
   name: "NodeNotes",
@@ -104,6 +105,12 @@ export default {
   mounted() {
     this.update(this.Properties.view.serverId);
   },
+  
+  async created() {
+    EventBus.$on('note-added', async function () {
+      await this.update(this.Properties.view.serverId);
+    }.bind(this));
+  },
 
   methods: {
     async update(id) {
@@ -118,6 +125,7 @@ export default {
 
     async sendNote(text, pack) {
       this.update(this.Properties.view.serverId);
+      EventBus.$emit('note-added');
     },
 
     async delNote(note) {

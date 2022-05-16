@@ -146,7 +146,7 @@ export default {
         arrayId += 1;
       }
       if (keepSelected) {
-        this.selected = this.tickets[this.selected.id];
+        this.select(this.tickets[this.selected.id]);
         return;
       }
       this.selected = false;
