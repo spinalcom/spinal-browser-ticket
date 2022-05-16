@@ -28,7 +28,7 @@ with this file. If not, see
       <el-dropdown class="spl-input-button">
         <el-button type="primary">
           Options
-          <i class="el-icon-arrow-up el-icon--right">
+          <i class="el-icon-arrow-up el-icon--right"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown"
                           style="overflow: hidden">
