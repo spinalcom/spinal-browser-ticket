@@ -24,29 +24,11 @@ with this file. If not, see
 
 <template>
   <form @submit.prevent="sendNote">
-    <el-container class="attachments">
-      <el-card v-for="attachment in attachments"
-               :key="attachment.name"
-               style="margin: 20px; position: relative; width: 90%">
-        {{ attachment.name }}
-        <el-tooltip :content="$t('spinal-twin.NotesDeleteAttachment')">
-          <el-button v-on:click.native="delAttachment(attachment)"
-                     class="spl-input-button"
-                     icon="el-icon-circle-close"
-                     type="danger"
-                     circle
-                     size="small"
-                     style="position: absolute; top: 15px; right: 0">
-          </el-button>
-        </el-tooltip>
-      </el-card>
-
-    </el-container>
     <el-container style="overflow: hidden">
       <el-dropdown class="spl-input-button">
         <el-button type="primary">
           Options
-          <i class="el-icon-arrow-up el-icon--right" />
+          <i class="el-icon-arrow-up el-icon--right">
         </el-button>
         <el-dropdown-menu slot="dropdown"
                           style="overflow: hidden">
