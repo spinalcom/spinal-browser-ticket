@@ -87,6 +87,7 @@ export default class Heatmap {
     if (!item){
       return res;
     }
+    
     const itemNode = FileSystem._objects[item.server_id];
     if (itemNode.getType().get() === ROOM_TYPE) {
       res.push(itemNode.info.id.get());
@@ -96,34 +97,19 @@ export default class Heatmap {
       }
       return res;
     }
-    
-    const idsAGarder = item.children.map(obj => obj.id);
-    for (const d of data) {
-      for (const cat of d.categories) {
-        for (const grp of cat.groups) {
-          for (const profil of grp.rooms) {
-            for(const obj of profil.rooms) { //obj is either a room or a bimobject at this point
-              // if obj is a room we just have to filter with idAGarder
-              // if obj is a BIMOBJECT we filter depending on the room it is in
-              if (obj.type == ROOM_TYPE){
-                if (idsAGarder.includes(obj.id)){
-                  res.push(obj.id);
-                }
-              }
-              if (obj.type == EQUIPMENT_TYPE) {
-                const node = SpinalGraphService.getRealNode(obj.id);
-                const parents = await node.getParents(EQUIPMENT_RELATION);
-                for (const parent of parents){
-                  if (parent.info.type.get() == ROOM_TYPE && idsAGarder.includes(parent.info.id.get())){
-                    res.push(obj.id);
 
-                  }
-                }
-              }
-            }
-          }
+    if(itemNode.getType().get() === FLOOR_TYPE){
+      console.log("floor filter")
+      res.push(itemNode.info.id.get());
+      const rooms = await itemNode.getChildren(ROOM_RELATION);
+      for(const room of rooms){
+        res.push(room.info.id.get());
+        const equipments = await room.getChildren(EQUIPMENT_RELATION);
+        for (const equipment of equipments){
+          res.push(equipment.info.id.get());
         }
       }
+      return res;
     }
     return res;
 
