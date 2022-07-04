@@ -24,20 +24,20 @@ with this file. If not, see
 
 <template>
   <div class="applist-main-container">
-    <div class="app-list-header">Application List <el-button
-                 icon="el-icon-s-grid"
-                 circle
-                 @click="openDrawer"></el-button>
+    <div class="app-list-header"
+      >Application List
+      <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
     </div>
     <div class="applist-container spinal-scrollbar">
-      <router-link v-for="route in routes"
-                   :key="route.path"
-                   v-ripple
-                   :index="route.name"
-                   :to="route.path"
-                   class="router-link-btn">
-        <el-card :body-style="{ padding: '0px' }"
-                 shadow="always">
+      <router-link
+        v-for="route in routes"
+        :key="route.path"
+        v-ripple
+        :index="route.name"
+        :to="route.path"
+        class="router-link-btn"
+      >
+        <el-card :body-style="{ padding: '0px' }" shadow="always">
           <!-- <div class="app-item-image-container">
             <svg class="app-item-image"></svg>
           </div> -->
@@ -50,32 +50,32 @@ with this file. If not, see
   </div>
 </template>
 
-<script lang="ts">
-import { routes } from "../router";
-import { EventBus } from "../../services/event";
+<script>
+import { routes } from '../router';
+import { EventBus } from '../../services/event';
+
 export default {
-  name: "AppList",
+  name: 'AppList',
   data() {
     return {};
   },
   computed: {
     routes() {
-      return routes.filter(e => !e.redirect && this.$route.name !== e.name);
-      // return routes;
-    }
+      return routes.filter((e) => !e.redirect && this.$route.name !== e.name);
+    },
   },
   methods: {
     menuSelect(index) {
       if (this.$route.name !== index) {
         this.$router.push({
-          name: index
+          name: index,
         });
       }
     },
     openDrawer() {
-      EventBus.$emit("open-drawer");
-    }
-  }
+      EventBus.$emit('open-drawer');
+    },
+  },
 };
 </script>
 

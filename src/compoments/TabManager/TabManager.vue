@@ -19,22 +19,27 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs :value="activetab"
-           @tab-click="handleClick"
-           class="tab-manager-tabs"
-           type="border-card">
+  <el-tabs
+    :value="activetab"
+    @tab-click="handleClick"
+    class="tab-manager-tabs"
+    type="border-card"
+  >
     <template v-for="tab in tabsprop">
-      <template v-if="!tab.ignore"
-                style="height:calc(100% - 120px)">
-        <el-tab-pane :key="$t(tab.name)"
-                     :label="$t(tab.name)"
-                     :name="tab.name"
-                     :closable="false"
-                     style="height:calc(100%); overflow: hidden">
+      <template v-if="!tab.ignore" style="height: calc(100% - 120px)">
+        <el-tab-pane
+          :key="$t(tab.name)"
+          :label="$t(tab.name)"
+          :name="tab.name"
+          :closable="false"
+          style="height: calc(100%); overflow: hidden"
+        >
           <keep-alive>
-            <component :is="tab.content"
-                       :Properties="tab.props"
-                       style="height:calc(100% - 20px)"></component>
+            <component
+              :is="tab.content"
+              :Properties="tab.props"
+              style="height: calc(100% - 20px)"
+            ></component>
           </keep-alive>
         </el-tab-pane>
       </template>
@@ -43,9 +48,9 @@ with this file. If not, see
 </template>
 
 <script>
-import Vue from "vue";
+import Vue from 'vue';
 export default {
-  name: "TabManager",
+  name: 'TabManager',
   components: {},
   props: {
     tabsprop: {
@@ -53,11 +58,11 @@ export default {
       required: true,
       validator: function (value) {
         if (!value.name instanceof String) {
-          console.error("Invalid tab name");
+          console.error('Invalid tab name');
           return false;
         }
         if (!value.content instanceof Vue) {
-          console.error("Invalid component for tab content");
+          console.error('Invalid component for tab content');
           return false;
         }
         return true;
@@ -91,10 +96,6 @@ export default {
   methods: {
     handleClick(tab, event) {
       this.activetab = tab._props.name;
-    },
-
-    debug(item) {
-      console.debug("Debugging", item);
     },
   },
 };

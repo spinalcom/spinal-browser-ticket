@@ -25,41 +25,50 @@ with this file. If not, see
 <template>
   <div style="height: 100%">
     <el-container v-if="selected" style="height: 100%">
-      <node-tickets-selected :selected="selected"
-                             :stepping="stepping"
-                             :Properties="Properties"
-                             @update="update(Properties.view.serverId, true)"
-                             @back="selected = false">
+      <node-tickets-selected
+        :selected="selected"
+        :stepping="stepping"
+        :Properties="Properties"
+        @update="update(Properties.view.serverId, true)"
+        @back="selected = false"
+      >
       </node-tickets-selected>
     </el-container>
 
     <el-container v-else-if="addingTicket">
-      <ticket-declaration-form v-if="this.ctxNode"
-                               :node="this.ctxNode"
-                               :active.sync="addingTicket"
-                               @close="addingTicket = false"
-                               @update="update(Properties.view.serverId)">
+      <ticket-declaration-form
+        v-if="this.ctxNode"
+        :node="this.ctxNode"
+        :active.sync="addingTicket"
+        @close="addingTicket = false"
+        @update="update(Properties.view.serverId)"
+      >
       </ticket-declaration-form>
     </el-container>
 
-    <div v-else
-         style="height: 100%">
+    <div v-else style="height: 100%">
       <div class="spl-button-bar">
-        <el-tooltip :content="$t('spinal-twin.TicketDeclare')"
-                    style="float: right">
-          <el-button @click.native="addingTicket = true"
-                     icon="el-icon-plus"
-                     type="primary"
-                     circle></el-button>
+        <el-tooltip
+          :content="$t('spinal-twin.TicketDeclare')"
+          style="float: right"
+        >
+          <el-button
+            @click.native="addingTicket = true"
+            icon="el-icon-plus"
+            type="primary"
+            circle
+          ></el-button>
         </el-tooltip>
       </div>
 
       <div style="height: calc(100% - 42px)">
-        <node-tickets-list v-if="tickets"
-                           :tickets="tickets"
-                           @select="select"
-                           @archive="archive"
-                           style="height: 100%">
+        <node-tickets-list
+          v-if="tickets"
+          :tickets="tickets"
+          @select="select"
+          @archive="archive"
+          style="height: 100%"
+        >
         </node-tickets-list>
       </div>
     </div>
@@ -67,18 +76,18 @@ with this file. If not, see
 </template>
 
 <script>
-import moment from "moment";
-import { spinalServiceTicket } from "spinal-service-ticket";
-import { LOGS_EVENTS } from "spinal-service-ticket/src/Constants";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import NodeTicketsList from "./NodeTicketsList.vue";
-import NodeTicketsSelected from "./NodeTicketsSelected.vue";
-import TicketDeclarationForm from "./TicketDeclarationForm.vue";
-import { getTicketDescription } from "./Ticket";
+import moment from 'moment';
+import { spinalServiceTicket } from 'spinal-service-ticket';
+import { LOGS_EVENTS } from 'spinal-service-ticket/src/Constants';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import NodeTicketsList from './NodeTicketsList.vue';
+import NodeTicketsSelected from './NodeTicketsSelected.vue';
+import TicketDeclarationForm from './TicketDeclarationForm.vue';
+import { getTicketDescription } from './Ticket';
 
 export default {
-  name: "NodeTickets",
+  name: 'NodeTickets',
   components: { NodeTicketsList, NodeTicketsSelected, TicketDeclarationForm },
   props: {
     Properties: {
@@ -100,8 +109,8 @@ export default {
   computed: {
     userInfo() {
       return {
-        username: "admin",
-        userId: FileSystem._user_id || "",
+        username: 'admin',
+        userId: FileSystem._user_id || '',
       };
     },
   },
@@ -126,15 +135,16 @@ export default {
   methods: {
     async update(id, keepSelected = false) {
       // update tab infos from current node
-      console.debug("TICKET start");
-      // this.ctxNode = SpinalGraphService.getNode(id);
       this.ctxNode = FileSystem._objects[id];
-      console.debug("TICKET end");
       const node = await SpinalGraphService.findNode(
         this.ctxNode.info.id.get()
       );
-      if (this.Properties && this.Properties.stepping) { this.stepping = this.Properties.stepping }
-      let ticketList = await spinalServiceTicket.getTicketsFromNode(node.id.get());
+      if (this.Properties && this.Properties.stepping) {
+        this.stepping = this.Properties.stepping;
+      }
+      let ticketList = await spinalServiceTicket.getTicketsFromNode(
+        node.id.get()
+      );
       this.tickets = [];
       let arrayId = 0;
       for (let ticket of ticketList) {
@@ -156,23 +166,23 @@ export default {
     DateFormat(time) {
       const date = new Date(time);
 
-      return moment(date, "DD/MM/YYYY HH:mm:ss");
+      return moment(date, 'DD/MM/YYYY HH:mm:ss');
     },
 
     elapsedTimeFormat(time) {
       const now = new Date();
       const then = new Date(time);
 
-      var ms = moment(now, "DD/MM/YYYY HH:mm:ss").diff(
-        moment(then, "DD/MM/YYYY HH:mm:ss")
+      var ms = moment(now, 'DD/MM/YYYY HH:mm:ss').diff(
+        moment(then, 'DD/MM/YYYY HH:mm:ss')
       );
       var d = moment.duration(ms);
       if (d.asDays() < 1) {
-        return this.$t("spinal-twin.Today");
+        return this.$t('spinal-twin.Today');
       } else if (d.asDays() < 2) {
-        return this.$t("spinal-twin.Yesterday");
+        return this.$t('spinal-twin.Yesterday');
       }
-      return Math.floor(d.asDays()) + this.$t("spinal-twin.DaysAgo");
+      return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
 
     logFormat(n) {
@@ -188,7 +198,7 @@ export default {
       let contextId = await spinalServiceTicket.getTicketContextId(
         realTicket.id
       );
-      if (ticket.step == "Archived") {
+      if (ticket.step == 'Archived') {
         await spinalServiceTicket.unarchiveTicket(
           contextId,
           realTicket.processId,
@@ -205,10 +215,6 @@ export default {
         this.userInfo
       );
       this.update(this.Properties.view.serverId);
-    },
-
-    async debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };

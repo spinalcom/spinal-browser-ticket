@@ -26,45 +26,48 @@ with this file. If not, see
     :height="`${data.length > 15 ? 100 : 100 * data.length}%`"
 -->
 <template>
-  <div style="height:100%">
-    <el-table v-loading="loading"
-              :data="data"
-              :header-cell-style="{'background-color': '#f0f2f5'}"
-              @row-click="selectInView"
-              @row-dblclick="SeeEvent"
-              height="100%"
-              border
-              show-summary
-              sum-text="Total">
+  <div style="height: 100%">
+    <el-table
+      v-loading="loading"
+      :data="data"
+      :header-cell-style="{ 'background-color': '#f0f2f5' }"
+      @row-click="selectInView"
+      @row-dblclick="SeeEvent"
+      height="100%"
+      border
+      show-summary
+      sum-text="Total"
+    >
       <el-table-column :label="$t('explorer.Name')">
         <div slot-scope="scope">
-          <div v-if="scope.row.color && isColored"
-               :style="getColor(scope.row.color)"
-               class="spinal-table-cell-color"></div>
+          <div
+            v-if="scope.row.color && isColored"
+            :style="getColor(scope.row.color)"
+            class="spinal-table-cell-color"
+          ></div>
           <div>
             {{ scope.row.name }}
           </div>
         </div>
       </el-table-column>
 
-      <el-table-column v-for="column of columns"
-                       :key="column"
-                       :prop="column"
-                       :label="$t(`spinal-twin.${column}`)"
-                       align="center">
+      <el-table-column
+        v-for="column of columns"
+        :key="column"
+        :prop="column"
+        :label="$t(`spinal-twin.${column}`)"
+        align="center"
+      >
         <div slot-scope="scope">
           {{ columnValue(scope.row, column) }}
         </div>
       </el-table-column>
 
-      <el-table-column label=""
-                       width="65"
-                       align="center"
-                       key="isGroup">
+      <el-table-column label="" width="65" align="center" key="isGroup">
         <div slot-scope="scope">
-          <el-tooltip 
-              v-if="scope.row.haveChild"
-              :content="$t('spinal-twin.NextNode')"
+          <el-tooltip
+            v-if="scope.row.haveChild"
+            :content="$t('spinal-twin.NextNode')"
           >
             <el-button
               @click="onSelectItem(scope.row)"
@@ -72,10 +75,7 @@ with this file. If not, see
               circle
             ></el-button>
           </el-tooltip>
-          <el-tooltip 
-              v-else
-              :content="$t('spinal-twin.Inspect')"
-          >
+          <el-tooltip v-else :content="$t('spinal-twin.Inspect')">
             <el-button
               @click="onSelectItem(scope.row)"
               icon="el-icon-search"
@@ -89,30 +89,30 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../../services/ViewManager/ViewManager";
-import { ColorGenerator } from "../../../../services/utlils/ColorGenerator";
-import { EventBus } from "../../../../services/event";
-import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
-import fileSaver from "file-saver";
-import { viewerState } from "./viewerState";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { ViewManager } from '../../../../services/ViewManager/ViewManager';
+import { ColorGenerator } from '../../../../services/utlils/ColorGenerator';
+import { EventBus } from '../../../../services/event';
+import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
+import fileSaver from 'file-saver';
+import { viewerState } from './viewerState';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 const CountNames = [
-  "BuildingCount",
-  "FloorCount",
-  "RoomCount",
-  "CategoryCount",
-  "GroupCount",
-  "EquipmentCount",
-  "ProcessCount",
-  "StepCount",
-  "TicketCount",
-  "AlarmCount",
-  "AlarmProcessCount",
+  'BuildingCount',
+  'FloorCount',
+  'RoomCount',
+  'CategoryCount',
+  'GroupCount',
+  'EquipmentCount',
+  'ProcessCount',
+  'StepCount',
+  'TicketCount',
+  'AlarmCount',
+  'AlarmProcessCount',
 ];
 
 export default {
-  name: "ContextExplorerNodeTable",
+  name: 'ContextExplorerNodeTable',
   props: {
     viewKey: { required: true, type: String },
     items: { required: true, type: Array },
@@ -128,7 +128,7 @@ export default {
       data: [],
       loading: true,
       loadingArea: true,
-      haveChildren: false,
+      // haveChildren: false,
       isColored: false,
     };
   },
@@ -145,25 +145,25 @@ export default {
 
   methods: {
     selectInView(item) {
-      this.$emit("select", item);
+      this.$emit('select', item);
     },
 
     SeeEvent(item) {
-      this.$emit("isolate", item);
+      this.$emit('isolate', item);
     },
 
     Isolate() {
-      EventBus.$emit("isolate", this.data, this.relation);
+      EventBus.$emit('isolate', this.data, this.relation);
     },
 
     Color() {
       this.isColored = true;
-      console.debug("context explorer table color; hasEvent : ", this.hasEvent);
+      console.debug('context explorer table color; hasEvent : ', this.hasEvent);
       if (this.hasEvent) {
-        EventBus.$emit("app-viewer-color", this.data, this.relation);
+        EventBus.$emit('app-viewer-color', this.data, this.relation);
         return;
       }
-      EventBus.$emit("viewer-color", this.data, this.relation);
+      EventBus.$emit('viewer-color', this.data, this.relation);
       // EventBus.$emit('viewer-color', this.data, this.relation);
     },
 
@@ -185,15 +185,10 @@ export default {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
 
-    debug(item) {
-      console.debug("Debugging", item);
-    },
-
-    async update() {
+    update() {
       this.loading = true;
-      const res = [];
+      this.data = [];
       const colorUsed = [];
-      let haveChild = false;
       for (const item of this.items) {
         const resItem = {
           name: item.name,
@@ -207,12 +202,11 @@ export default {
         }
         if (item.children) {
           for (const [_, childItems] of item.children) {
-            resItem["children"] = childItems.length;
+            resItem['children'] = childItems.length;
             resItem.haveChild = true;
-            haveChild = true;
           }
         } else if (FileSystem._objects[item.serverId] !== undefined) {
-          resItem["children"] = 0;
+          resItem['children'] = 0;
           let thisnode = FileSystem._objects[item.serverId];
           if (thisnode.children.PtrLst !== undefined) {
             for (const name of thisnode.children.PtrLst._attribute_names) {
@@ -222,20 +216,17 @@ export default {
             }
           }
         }
-        res.push(resItem);
+        this.data.push(resItem);
       }
-      this.data = res;
-      this.haveChildren = haveChild;
       this.loading = false;
-      // this.updateIsolation();
       this.updateColor(this.data, colorUsed);
       this.isColored = viewerState.colored();
     },
 
     updateIsolation() {
-      EventBus.$emit("viewer-reset-isolate");
+      EventBus.$emit('viewer-reset-isolate');
       if (viewerState.isolated())
-        EventBus.$emit("viewer-isolate", this.data, this.relation);
+        EventBus.$emit('viewer-isolate', this.data, this.relation);
     },
 
     updateColor(res, colorUsed) {
@@ -248,9 +239,9 @@ export default {
           Object.assign(itm, { color });
         }
       }
-      EventBus.$emit("viewer-reset-color");
+      EventBus.$emit('viewer-reset-color');
       if (viewerState.colored()) {
-        EventBus.$emit("viewer-color", this.data, this.relation);
+        EventBus.$emit('viewer-color', this.data, this.relation);
       }
     },
 
@@ -264,12 +255,12 @@ export default {
 
     getColor(color) {
       return {
-        backgroundColor: color[0] === "#" ? color : `#${color}`,
+        backgroundColor: color[0] === '#' ? color : `#${color}`,
       };
     },
 
     columnValue(item, key) {
-      if (CountNames.includes(key)) return item["children"];
+      if (CountNames.includes(key)) return item['children'];
       if (item[key]) return item[key];
       return 0;
     },
@@ -277,14 +268,14 @@ export default {
     exportToExcel() {
       let headers = [
         {
-          key: "name",
-          header: this.$t("name"),
+          key: 'name',
+          header: this.$t('name'),
           width: 20,
         },
       ];
       for (const column of this.columns) {
         let name = column;
-        if (CountNames.includes(column)) name = "children";
+        if (CountNames.includes(column)) name = 'children';
         headers.push({
           key: name,
           header: this.$t(name),
@@ -293,11 +284,11 @@ export default {
       }
       let excelData = [
         {
-          name: "Tableau",
-          author: "",
+          name: 'Tableau',
+          author: '',
           data: [
             {
-              name: "Tableau",
+              name: 'Tableau',
               header: headers,
               rows: this.data,
             },

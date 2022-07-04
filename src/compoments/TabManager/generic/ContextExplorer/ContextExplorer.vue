@@ -19,7 +19,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div style="height:100%">
+  <div style="height: 100%">
     <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.ColorSwitch')">
         <button-switch
@@ -39,6 +39,19 @@ with this file. If not, see
       </el-tooltip>
     </div>
 
+    <div v-if="Properties.items !== false" style="height: calc(100% - 52px)">
+      <context-explorer-node-table
+        :ref="'Explorer-table'"
+        :view-key="Properties.viewKey"
+        :items="itemsComputed"
+        :columns="cols"
+        :relation="Properties.relation"
+        :depth="Properties.depth"
+        :context="Properties.context"
+        @select="Select"
+        @isolate="Isolate"
+        style="height: 100%"
+      >
     <div v-if="Properties.items !== false"
          style="height:calc(100% - 52px)">
       <context-explorer-node-table :ref="'Explorer-table'"
@@ -67,7 +80,7 @@ import ButtonSwitch from "../../../../compoments/ButtonSwitch";
 import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
 
 export default {
-  name: "ContextExplorer",
+  name: 'ContextExplorer',
   components: {
     ContextExplorerNodeTable,
     ButtonSwitch,

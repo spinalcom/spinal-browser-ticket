@@ -23,22 +23,24 @@ with this file. If not, see
 -->
 
 <template>
-  <div style="height: inherit;">
+  <div style="height: inherit">
     <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.DocumentAdd')">
-        <el-button :disabled="ctxNode == false"
-                   @click.native="addDocument()"
-                   icon="el-icon-plus"
-                   circle
-                   type="primary"
-                   style="float: right"></el-button>
+        <el-button
+          :disabled="ctxNode == false"
+          @click.native="addDocument()"
+          icon="el-icon-plus"
+          circle
+          type="primary"
+          style="float: right"
+        ></el-button>
       </el-tooltip>
     </div>
 
-    <div style="height: inherit;">
+    <div style="height: inherit">
       <el-table
         :data="documents"
-        :header-cell-style="{'background-color': '#f0f2f5'}"
+        :header-cell-style="{ 'background-color': '#f0f2f5' }"
         border
         style="overflow: auto; height: 100%"
       >
@@ -47,21 +49,26 @@ with this file. If not, see
             {{ scope.row.name }}
           </div>
         </el-table-column>
-        <el-table-column label="Actions"
-                         width=120>
+        <el-table-column label="Actions" width="120">
           <div slot-scope="scope">
             <el-tooltip :content="$t('spinal-twin.DocumentDownload')">
-              <el-button @click.native="downloadDocument(scope.row._server_id)"
-                         icon="el-icon-download"
-                         circle></el-button>
+              <el-button
+                @click.native="downloadDocument(scope.row._server_id)"
+                icon="el-icon-download"
+                circle
+              ></el-button>
             </el-tooltip>
             <el-tooltip :content="$t('spinal-twin.DocumentRemove')">
-              <el-popconfirm @confirm="delDocument(scope.row._server_id)"
-                             :title="$t('spinal-twin.DeleteConfirm')">
-                <el-button icon="el-icon-delete"
-                           circle
-                           type=danger
-                           slot="reference"></el-button>
+              <el-popconfirm
+                @confirm="delDocument(scope.row._server_id)"
+                :title="$t('spinal-twin.DeleteConfirm')"
+              >
+                <el-button
+                  icon="el-icon-delete"
+                  circle
+                  type="danger"
+                  slot="reference"
+                ></el-button>
               </el-popconfirm>
             </el-tooltip>
           </div>
@@ -72,11 +79,11 @@ with this file. If not, see
 </template>
 
 <script>
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { FileExplorer } from 'spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer';
 
 export default {
-  name: "NodeDocumentation",
+  name: 'NodeDocumentation',
   components: {},
   props: {
     Properties: {
@@ -112,9 +119,7 @@ export default {
 
   methods: {
     async update(id) {
-      console.debug("DOC start");
       this.ctxNode = FileSystem._objects[id];
-      console.debug("DOC end");
       this.directory = await FileExplorer.getDirectory(this.ctxNode);
       await this.getDocuments();
     },
@@ -138,16 +143,16 @@ export default {
 
     async addDocument() {
       const maxSize = 25000000;
-      const input = document.createElement("input");
+      const input = document.createElement('input');
 
       if (!this.directory) {
         this.directory = await FileExplorer.createDirectory(this.ctxNode);
       }
-      input.type = "file";
+      input.type = 'file';
       input.multiple = true;
       input.click();
       input.addEventListener(
-        "change",
+        'change',
         (event) => {
           const files = event.target.files;
           let filelist = [];
@@ -158,15 +163,14 @@ export default {
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              this.$t("spinal-twin.ErrorFileTooLarge") +
+              this.$t('spinal-twin.ErrorFileTooLarge') +
                 maxSize / 1000000 +
-                " MB"
+                ' MB'
             );
             return;
           }
-          console.log(filelist);
           FileExplorer.addFileUpload(this.directory, filelist);
-          this.$emit("reload");
+          this.$emit('reload');
           this.update(this.Properties.view.serverId);
         },
         false
@@ -185,39 +189,16 @@ export default {
 
     downloadDocument(id) {
       const file = this.docAt(id);
-      // console.log(file);
-
-      // if (file._info.model_type.get() != "Directory") {
       file._ptr.load((path) => {
-        // if (file._info.model_type.get() == "HttpPath") {
-        //   const element = document.createElement("a");
-        //   console.log(path);
-        //   const _path =
-        //     path.host.get() +
-        //     "/file/" +
-        //     encodeURIComponent(path.httpRootPath.get()) +
-        //     "/" +
-        //     encodeURIComponent(path.httpPath.get());
-        //   element.setAttribute("href", _path);
-        //   element.setAttribute("download", file.name.get());
-        //   element.style.display = "none";
-        //   document.body.appendChild(element);
-        //   element.click();
-        //   document.body.removeChild(element);
-        // } else {
-        var element = document.createElement("a");
-        element.setAttribute("href", "/sceen/_?u=" + path._server_id);
-        element.setAttribute("download", file.name);
+        var element = document.createElement('a');
+        element.setAttribute('href', '/sceen/_?u=' + path._server_id);
+        element.setAttribute('download', file.name);
         element.click();
-        //   }
       });
-      // } else {
-      //   // check recursive directory & create a ZIP
-      // }
     },
 
     async debug(what) {
-      console.debug("Debugging", what);
+      console.debug('Debugging', what);
     },
   },
 };

@@ -23,33 +23,25 @@
  */
 
 // export const DISABLE_VIEWER = true // for dev
-export const DISABLE_VIEWER = false
+export const DISABLE_VIEWER = false;
 
 export {
   CONTEXT_TYPE as SPATIAL_CONTEXT_TYPE,
-
   SITE_RELATION,
   SITE_TYPE,
-
   BUILDING_REFERENCE_CONTEXT,
   BUILDING_RELATION,
   BUILDING_TYPE,
-
   FLOOR_REFERENCE_CONTEXT,
   FLOOR_RELATION,
   FLOOR_TYPE,
-
   ZONE_RELATION,
   ZONE_TYPE,
-
   ROOM_RELATION,
   ROOM_TYPE,
-
-
   REFERENCE_RELATION,
-
   EQUIPMENT_RELATION,
-  EQUIPMENT_TYPE
+  EQUIPMENT_TYPE,
 } from 'spinal-env-viewer-context-geographic-service/build/constants.js';
 
 import {
@@ -59,7 +51,7 @@ import {
   ZONE_RELATION,
   ROOM_RELATION,
   EQUIPMENT_RELATION,
-  REFERENCE_RELATION
+  REFERENCE_RELATION,
 } from 'spinal-env-viewer-context-geographic-service/build/constants.js';
 
 export {
@@ -72,9 +64,8 @@ export {
   TICKET_RELATION_STEP_TICKET,
   TICKET_TICKET_TYPE,
   TICKET_RELATION_PROCESS_OBJET,
-  TICKET_OBJECT_TYPE
+  TICKET_OBJECT_TYPE,
 } from 'spinal-service-ticket/dist/Constants.js';
-
 
 // export {
 //   TICKET_CONTEXT_NAME as SERVICE_NAME,
@@ -89,7 +80,6 @@ export {
 //   TICKET_OBJECT_TYPE as SPINAL_TICKET_SERVICE_INCIDENT_SECTION_TYPE
 // } from 'spinal-service-ticket/dist/Constants.js';
 
-
 export const GEO_RELATIONS = [
   SITE_RELATION,
   BUILDING_RELATION,
@@ -99,9 +89,9 @@ export const GEO_RELATIONS = [
   EQUIPMENT_RELATION,
   REFERENCE_RELATION,
   // OLD RELATION NAMES
-  "hasBIMObject",
-  "hasReference",
-  "hasReferenceObject"
+  'hasBIMObject',
+  'hasReference',
+  'hasReferenceObject',
 ];
 export const SCENE_RELATION_CONTEXT_TYPE = 'SpinalService';
 export const SCENE_RELATION_NAME = 'hasScene';
@@ -111,8 +101,12 @@ export const CATEGORY_RELATION_NAME = 'hasCategory';
 export const GROUP_RELATION_NAME = 'hasGroup';
 export const GROUP_EQUIPMENT_RELATION_NAME = 'groupHasBIMObject';
 
-export const EQUIPMENT_RELATION_LIST = [ CATEGORY_RELATION_NAME, GROUP_RELATION_NAME, GROUP_EQUIPMENT_RELATION_NAME ];
+export const EQUIPMENT_RELATION_LIST = [
+  CATEGORY_RELATION_NAME,
+  GROUP_RELATION_NAME,
+  GROUP_EQUIPMENT_RELATION_NAME,
+];
 
-export const GEO_ROOM_TYPE = "geographicRoom";
-export const GEO_FLOOR_TYPE = "geographicFloor";
-export const GEO_BUILDING_TYPE = "geographicBuilding";
+export const GEO_ROOM_TYPE = 'geographicRoom';
+export const GEO_FLOOR_TYPE = 'geographicFloor';
+export const GEO_BUILDING_TYPE = 'geographicBuilding';

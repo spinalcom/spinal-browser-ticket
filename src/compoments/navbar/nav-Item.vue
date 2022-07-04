@@ -24,22 +24,29 @@ with this file. If not, see
 
 <template>
   <div class="navbar-item">
-    <el-dropdown :class="{ 'spinal-dropdown-disabled': itemsComputed.length === 0}"
-                 split-button
-                 type="default"
-                 trigger="click"
-                 @click="focusItem">
+    <el-dropdown
+      :class="{ 'spinal-dropdown-disabled': itemsComputed.length === 0 }"
+      split-button
+      type="default"
+      trigger="click"
+      @click="focusItem"
+    >
       <span class="el-dropdown-link">
         {{ selectCompu }}
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="(item) in itemsComputed"
-                          :key="item.server_id"
-                          :label="item.name"
-                          :value="item">
-          <span class="dropdown-item-container"
-                @click="handleCommand(item)"
-                @mouseover="onMouseOver(item)">{{ item.name }}</span>
+        <el-dropdown-item
+          v-for="item in itemsComputed"
+          :key="item.server_id"
+          :label="item.name"
+          :value="item"
+        >
+          <span
+            class="dropdown-item-container"
+            @click="handleCommand(item)"
+            @mouseover="onMouseOver(item)"
+            >{{ item.name }}</span
+          >
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -48,8 +55,8 @@ with this file. If not, see
 
 <script>
 export default {
-  name: "NavItem",
-  props: ["label", "items", "select", "icon"],
+  name: 'NavItem',
+  props: ['label', 'items', 'select', 'icon'],
   data() {
     return {};
   },
@@ -57,40 +64,38 @@ export default {
     selectCompu: {
       get() {
         try {
-          console.log("this.select", this.select);
-          if (this.select.name === "") return this.label;
+          if (this.select.name === '') return this.label;
           return this.select.name;
         } catch (e) {
           return this.label;
         }
       },
       set(value) {
-        this.$emit("select", value);
-      }
+        this.$emit('select', value);
+      },
     },
     itemsComputed() {
       const res = [];
-      this.items.forEach(e => {
+      this.items.forEach((e) => {
         if (e) res.push(e);
       });
       return res;
-    }
+    },
   },
   mounted() {
     eva.replace();
   },
   methods: {
     onMouseOver(item) {
-      this.$emit("onMouseOver", item);
+      this.$emit('onMouseOver', item);
     },
     handleCommand(value) {
-      console.log("handleCommand", value);
-      this.$emit("select", value);
+      this.$emit('select', value);
     },
     focusItem() {
-      this.$emit("focusItem", this.select);
-    }
-  }
+      this.$emit('focusItem', this.select);
+    },
+  },
 };
 </script>
 
@@ -115,60 +120,10 @@ export default {
   cursor: not-allowed !important;
   color: #bbb !important;
 }
-
-/* .navbar-item {
-  flex-grow: 1;
-  display: flex;
-  align-self: center;
-  padding: 1px 0;
-}
-.navbar-item > * {
-  display: flex;
-  align-self: center;
-}
-.navbar-item > .arrow-left-icon {
-  flex-grow: 0;
-}
-
-.navbar-item > div {
-  flex-grow: 1;
-}
-.navbar-item > div > * {
-  align-self: center;
-}
-.navbar-item .button-icon-left-focus {
-  background: white;
-  color: #1d4b5e;
-  padding: 5px !important;
-  font-size: 20px;
-}
-
-.navbar-item > div > .el-button {
-  margin-left: 8px;
-}
-.navbar-item > div > .el-select,
-.navbar-item > div > h4 {
-  flex-grow: 1;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.navbar-item:first-child > .arrow-left-icon {
-  display: none;
-}
-
-@media screen and (max-width: 567px) {
-  .navbar-item > .arrow-left-icon {
-    display: none;
-  }
-} */
 </style>
 
 <style>
 .navbar-item .el-input__inner {
-  /* background-color: #114b5f; */
-  /* border-color: #114b5f; */
-  /* color: #ededed; */
   color: #1d4b5e;
 }
 .navbar-item .el-button-group {
@@ -214,8 +169,6 @@ export default {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-
-
 
 .spinal-dropdown-disabled * {
   cursor: not-allowed !important;

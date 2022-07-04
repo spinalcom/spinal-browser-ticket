@@ -25,10 +25,7 @@ with this file. If not, see
 <template>
   <div>
     <div class="spl-button-bar">
-      <el-tooltip
-        :content="$t('spinal-twin.CategoryAdd')"
-        style="float: right"
-      >
+      <el-tooltip :content="$t('spinal-twin.CategoryAdd')" style="float: right">
         <el-button
           @click.native="addCategory()"
           :disabled="ctxNode == false || isEditing"
@@ -43,15 +40,15 @@ with this file. If not, see
       <el-table
         v-if="Categories"
         :data="Categories"
-        :header-cell-style="{'background-color': '#f0f2f5'}"
+        :header-cell-style="{ 'background-color': '#f0f2f5' }"
         border
         style="overflow: auto; height: inherit"
       >
-        <el-table-column type=expand>
+        <el-table-column type="expand">
           <div slot-scope="cat">
             <el-table
               :data="cat.row.attributes"
-              :header-cell-style="{'background-color': '#f0f2f5'}"
+              :header-cell-style="{ 'background-color': '#f0f2f5' }"
               border
             >
               <el-table-column :label="$t('node-type.Attribute')">
@@ -102,27 +99,29 @@ with this file. If not, see
                 </editable-text>
               </el-table-column>
 
-              <el-table-column
-                fixed="right"
-                label="Options"
-                width="120"
-              >
+              <el-table-column fixed="right" label="Options" width="120">
                 <div slot-scope="scope">
-                  <el-tooltip :content="$t('spinal-twin.AttributeEdit') + scope.row.label">
+                  <el-tooltip
+                    :content="$t('spinal-twin.AttributeEdit') + scope.row.label"
+                  >
                     <el-button
                       @click.native="editAttribute(scope.row, cat.row)"
-                      :icon="scope.row.isEditing ? 'el-icon-success' : 'el-icon-edit'"
+                      :icon="
+                        scope.row.isEditing ? 'el-icon-success' : 'el-icon-edit'
+                      "
                       :disabled="!scope.row.isEditing && isEditing"
                       circle
                     ></el-button>
                   </el-tooltip>
-                  <el-tooltip :content="$t('Remove attribute ') + scope.row.label">
+                  <el-tooltip
+                    :content="$t('Remove attribute ') + scope.row.label"
+                  >
                     <el-popconfirm
                       @confirm="delAttribute(cat.row, scope.row)"
                       :title="$t('spinal-twin.DeleteConfirm')"
                     >
                       <el-button
-                        type=danger
+                        type="danger"
                         icon="el-icon-delete"
                         circle
                         slot="reference"
@@ -132,14 +131,16 @@ with this file. If not, see
                 </div>
               </el-table-column>
             </el-table>
-          <el-tooltip :content="$t('spinal-twin.CategoryAddAttribute') + cat.row.name">
-            <el-button
-              @click.native="addAttribute(cat.row)"
-              :disabled="isEditing"
-              icon="el-icon-plus"
-              circle
-            ></el-button>
-          </el-tooltip>
+            <el-tooltip
+              :content="$t('spinal-twin.CategoryAddAttribute') + cat.row.name"
+            >
+              <el-button
+                @click.native="addAttribute(cat.row)"
+                :disabled="isEditing"
+                icon="el-icon-plus"
+                circle
+              ></el-button>
+            </el-tooltip>
           </div>
         </el-table-column>
 
@@ -153,12 +154,11 @@ with this file. If not, see
           </editable-text>
         </el-table-column>
 
-        <el-table-column
-          label="Actions"
-          width=120
-        >
+        <el-table-column label="Actions" width="120">
           <div slot-scope="cat">
-            <el-tooltip :content="$t('spinal-twin.CategoryEdit') + cat.row.name">
+            <el-tooltip
+              :content="$t('spinal-twin.CategoryEdit') + cat.row.name"
+            >
               <el-button
                 @click.native="editCategory(cat.row)"
                 :disabled="!cat.row.isEditing && isEditing"
@@ -166,14 +166,16 @@ with this file. If not, see
                 circle
               ></el-button>
             </el-tooltip>
-            <el-tooltip :content="$t('spinal-twin.CategoryRemove') + cat.row.name">
+            <el-tooltip
+              :content="$t('spinal-twin.CategoryRemove') + cat.row.name"
+            >
               <el-popconfirm
                 @confirm="delCategory(cat.row)"
                 :title="$t('spinal-twin.DeleteConfirm')"
               >
                 <el-button
                   slot="reference"
-                  type=danger
+                  type="danger"
                   icon="el-icon-delete"
                   circle
                 ></el-button>
@@ -187,13 +189,13 @@ with this file. If not, see
 </template>
 
 <script>
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
-import { FileSystem } from 'spinal-core-connectorjs_type'
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
 
-import EditableText from "../../../compoments/EditableText.vue";
+import EditableText from '../../../compoments/EditableText.vue';
 import { spinalIO } from '../../../services/spinalIO';
 export default {
-  name: "Attributes",
+  name: 'Attributes',
   components: { EditableText },
   props: {
     Properties: {
@@ -210,103 +212,111 @@ export default {
     };
   },
 
-  watch:
-  {
-    Properties:
-    {
-      handler: async function(oldProp, newProp)
-      {
-        if (newProp.view.serverId != 0)
-        {
+  watch: {
+    Properties: {
+      handler: async function (oldProp, newProp) {
+        if (newProp.view.serverId != 0) {
           this.update(newProp.view.serverId);
-        }
-        else
-        {
+        } else {
           this.Categories = [];
           this.ctxNode = false;
         }
       },
       deep: true,
-    }
+    },
   },
 
-  mounted()
-  {
+  mounted() {
     this.update(this.Properties.view.serverId);
   },
 
   methods: {
-    async update(id)
-    {
-      console.debug("CATATT start");
+    async update(id) {
       this.ctxNode = FileSystem._objects[id];
-      console.debug("CATATT end");
       serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
         this.Categories = [];
-        for(const category of Categories)
-        {
-          serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat).then((attributes) =>
-          {
-            let attrs = [];
-            for (const attribute of attributes)
-            {
-              attrs.push({
-                label: attribute.label._data,
-                value: attribute.value._data,
-                type: attribute.type._data,
-                unit: attribute.unit._data,
+        for (const category of Categories) {
+          serviceDocumentation
+            .getAttributesByCategory(this.ctxNode, category.nameCat)
+            .then((attributes) => {
+              let attrs = [];
+              for (const attribute of attributes) {
+                attrs.push({
+                  label: attribute.label._data,
+                  value: attribute.value._data,
+                  type: attribute.type._data,
+                  unit: attribute.unit._data,
+                  isEditing: false,
+                  serverId: attribute._server_id,
+                });
+              }
+              let cat = {
+                cat: category,
+                name: category.nameCat,
+                attributes: attrs,
                 isEditing: false,
-                serverId: attribute._server_id,
-              });
-            }
-            let cat = {
-              cat: category,
-              name: category.nameCat,
-              attributes: attrs,
-              isEditing: false,
-            }
-            this.Categories.push(cat);
-          })
+              };
+              this.Categories.push(cat);
+            });
         }
-      })
+      });
     },
-    
-    async addAttribute(category){
-      const node = await serviceDocumentation.addAttributeByCategory(this.ctxNode, category.cat, "newAttribute", "newValue", "newType", "newUnit");
+
+    async addAttribute(category) {
+      const node = await serviceDocumentation.addAttributeByCategory(
+        this.ctxNode,
+        category.cat,
+        'newAttribute',
+        'newValue',
+        'newType',
+        'newUnit'
+      );
       await spinalIO.waitNodeReady(node);
       category.attributes.push({
-        label: "newAttribute",
-        value: "newValue",
-        type: "newType",
-        unit: "newUnit",
+        label: 'newAttribute',
+        value: 'newValue',
+        type: 'newType',
+        unit: 'newUnit',
         isEditing: true,
         serverId: node._server_id,
       });
       this.isEditing = true;
     },
-    
-    async delAttribute(category, attribute){
-      if (attribute.isEditing)
-      {
+
+    async delAttribute(category, attribute) {
+      if (attribute.isEditing) {
         attribute.isEditing = false;
         this.isEditing = false;
       }
-      await serviceDocumentation.removeAttributesById(category.cat.node, attribute.serverId);
-      category.attributes = category.attributes.filter(attr => (attr.serverId != attribute.serverId));
+      await serviceDocumentation.removeAttributesById(
+        category.cat.node,
+        attribute.serverId
+      );
+      category.attributes = category.attributes.filter(
+        (attr) => attr.serverId != attribute.serverId
+      );
     },
 
-    async editAttribute(attribute, category){
-      if (!attribute.isEditing)
-      {
+    async editAttribute(attribute, category) {
+      if (!attribute.isEditing) {
         attribute.isEditing = true;
         this.isEditing = true;
         return;
       }
-      if (category.attributes.some(attr => {
-        return attr.label == attribute.label && attr.serverId != attribute.serverId;
-      }))
-      {
-        alert("Attribute '" + attribute.label + "' already exists in '" + category.name + "'");
+      if (
+        category.attributes.some((attr) => {
+          return (
+            attr.label == attribute.label && attr.serverId != attribute.serverId
+          );
+        })
+      ) {
+        alert(
+          "Attribute '" +
+            attribute.label +
+            "' already exists in '" +
+            category.name +
+            "'"
+        );
         return;
       }
       await serviceDocumentation.setAttributeById(
@@ -321,69 +331,75 @@ export default {
       this.isEditing = false;
     },
 
-    async addCategory(){
-      const category = await serviceDocumentation.addCategoryAttribute(this.ctxNode, "NewCategory");
+    async addCategory() {
+      const category = await serviceDocumentation.addCategoryAttribute(
+        this.ctxNode,
+        'NewCategory'
+      );
       this.Categories.push({
         cat: category,
-        name: "NewCategory",
+        name: 'NewCategory',
         attributes: [],
         isEditing: true,
       });
       this.isEditing = true;
     },
 
-    async delCategory(category){
-      if (category.isEditing)
-      {
+    async delCategory(category) {
+      if (category.isEditing) {
         category.isEditing = false;
         this.isEditing = false;
       }
-      await serviceDocumentation.delCategoryAttribute(this.ctxNode, category.cat.node._server_id);
-      this.Categories = this.Categories.filter(cat => !(cat.cat.node._server_id == category.cat.node._server_id));
+      await serviceDocumentation.delCategoryAttribute(
+        this.ctxNode,
+        category.cat.node._server_id
+      );
+      this.Categories = this.Categories.filter(
+        (cat) => !(cat.cat.node._server_id == category.cat.node._server_id)
+      );
     },
 
-    async editCategory(category){
-      if (!category.isEditing)
-      {
+    async editCategory(category) {
+      if (!category.isEditing) {
         category.isEditing = true;
         this.isEditing = true;
         return;
       }
-      if (this.Categories.some((cat) => {
-          return cat.name == category.name && cat.cat.node._server_id != category.cat.node._server_id;
-        }))
-      {
+      if (
+        this.Categories.some((cat) => {
+          return (
+            cat.name == category.name &&
+            cat.cat.node._server_id != category.cat.node._server_id
+          );
+        })
+      ) {
         alert("Category '" + category.name + "' already exists");
         return;
       }
-      await serviceDocumentation.editCategoryAttribute(this.ctxNode, category.cat.node._server_id, category.name);
+      await serviceDocumentation.editCategoryAttribute(
+        this.ctxNode,
+        category.cat.node._server_id,
+        category.name
+      );
       category.isEditing = false;
       this.isEditing = false;
     },
 
-    httpify(url)
-    {
-      if (!url.startsWith("http"))
-      {
-        return "http://" + url;
+    httpify(url) {
+      if (!url.startsWith('http')) {
+        return 'http://' + url;
       }
       return url;
-    },
-    
-    async debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };
 </script>
 
 <style scoped>
-
 .spl-button-bar {
   /* overflow: hidden; */
   display: flex;
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
 }
-
 </style>

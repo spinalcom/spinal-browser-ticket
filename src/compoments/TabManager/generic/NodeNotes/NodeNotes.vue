@@ -24,31 +24,47 @@ with this file. If not, see
 
 <template>
   <el-container style="overflow: hidden">
-
     <el-main style="">
       <div class="note-feed">
-        <el-container v-for="note of notes"
-                      :key="note._server_id"
-                      style="display: flex; flex-direction: row; align-items: flex-start; margin-bottom: 10px">
+        <el-container
+          v-for="note of notes"
+          :key="note._server_id"
+          style="
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-bottom: 10px;
+          "
+        >
           <el-main style="padding: 0 0 10px 0">
-            <node-notes-message :username="note.element.username.get()"
-                                :date="note.element.date.get()"
-                                :message="note.element.message.get()"
-                                :type="note.element.type.get()"
-                                :file="note.element.file ? note.element.file : {}"
-                                :viewPoint="note.element.viewPoint ? note.element.viewPoint : null">
+            <node-notes-message
+              :username="note.element.username.get()"
+              :date="note.element.date.get()"
+              :message="note.element.message.get()"
+              :type="note.element.type.get()"
+              :file="note.element.file ? note.element.file : {}"
+              :viewPoint="
+                note.element.viewPoint ? note.element.viewPoint : null
+              "
+            >
             </node-notes-message>
           </el-main>
-          <el-tooltip :content="$t('spinal-twin.DeleteNote')"
-                      class="delete-button">
-            <el-popconfirm @confirm="delNote(note.selectedNode)"
-                           :title="$t('spinal-twin.DeleteConfirm')">
-              <el-button class="spl-input-button"
-                         icon="el-icon-delete"
-                         type="danger"
-                         size="small"
-                         circle
-                         slot="reference"></el-button>
+          <el-tooltip
+            :content="$t('spinal-twin.DeleteNote')"
+            class="delete-button"
+          >
+            <el-popconfirm
+              @confirm="delNote(note.selectedNode)"
+              :title="$t('spinal-twin.DeleteConfirm')"
+            >
+              <el-button
+                class="spl-input-button"
+                icon="el-icon-delete"
+                type="danger"
+                size="small"
+                circle
+                slot="reference"
+              ></el-button>
             </el-popconfirm>
           </el-tooltip>
         </el-container>
@@ -56,22 +72,24 @@ with this file. If not, see
     </el-main>
 
     <el-header class="header">
-      <node-notes-create v-if="ctxNode"
-                         :node="ctxNode"
-                         @send-note="sendNote"></node-notes-create>
+      <node-notes-create
+        v-if="ctxNode"
+        :node="ctxNode"
+        @send-note="sendNote"
+      ></node-notes-create>
     </el-header>
   </el-container>
 </template>
 
 <script>
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import NodeNotesMessage from "./NodeNotesMessage.vue";
-import NodeNotesCreate from "./NodeNotesCreate.vue";
-import EventBus from "../../../space/component/js/event";
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import NodeNotesMessage from './NodeNotesMessage.vue';
+import NodeNotesCreate from './NodeNotesCreate.vue';
+import EventBus from '../../../space/component/js/event';
 
 export default {
-  name: "NodeNotes",
+  name: 'NodeNotes',
   components: { NodeNotesMessage, NodeNotesCreate },
   props: {
     Properties: {
@@ -84,7 +102,7 @@ export default {
     return {
       ctxNode: false,
       notes: false,
-      new_note: "",
+      new_note: '',
       attachment: false,
     };
   },
@@ -105,21 +123,22 @@ export default {
   mounted() {
     this.update(this.Properties.view.serverId);
   },
-  
+
   async created() {
-    EventBus.$on('note-added', async function () {
-      await this.update(this.Properties.view.serverId);
-    }.bind(this));
+    EventBus.$on(
+      'note-added',
+      async function () {
+        await this.update(this.Properties.view.serverId);
+      }.bind(this)
+    );
   },
 
   methods: {
     async update(id) {
-      console.debug("NOTE start");
       this.ctxNode = FileSystem._objects[id];
-      console.debug("NOTE end");
       this.notes = [];
       this.notes = await serviceDocumentation.getNotes(this.ctxNode);
-      this.new_note = "";
+      this.new_note = '';
       this.attachment = false;
     },
 
@@ -134,7 +153,7 @@ export default {
     },
 
     debug(what) {
-      console.debug("Debugging", what);
+      console.debug('Debugging', what);
     },
   },
 };

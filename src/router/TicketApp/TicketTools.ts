@@ -23,35 +23,21 @@
  */
 
 import { FileSystem } from 'spinal-core-connectorjs_type';
-import { AppItem } from "../../services/backend/AppItem";
 import { SPINAL_TICKET_SERVICE_TICKET_TYPE } from 'spinal-service-ticket/dist/Constants.js';
-import { EventBus } from "../../services/event";
-import getItemsFromNode from "./ViewerTicketContextSetup";
+import { AppItem } from '../../services/backend/AppItem';
 
-// EventBus.$on('app-viewer-color', async (items, relation) => {
-//   // let list = items.map(item => {
-//   //   return { server_id: item.serverId, color: item.getColor() };
-//   // });
-//   let list = await getItemsFromNode(FileSystem._objects[this.currentView.serverId]);
-//   console.debug("Ticket tools event; items :", list)
-//   console.debug(" relation :", relation)
-//   EventBus.$emit("ticket-viewer-color", list, relation);
-// })
-
-async function getTicketNumber(item: AppItem) {
+export async function getTicketNumber(item: AppItem): Promise<number> {
   const node = FileSystem._objects[item.serverId];
-  if (node && node.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE) return 1;
-  if (typeof item.children === "undefined") return 0;
-  const prom = [];
+  if (node && node.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE)
+    return 1;
+  if (typeof item.children === 'undefined') return 0;
+  const prom: Promise<number>[] = [];
   for (const [, arrayItem] of item.children) {
     for (const i of arrayItem) {
       prom.push(getTicketNumber(i));
     }
   }
-  return Promise.all(prom)
-    .then((resArr) => resArr.reduce((prev, curr) => prev + curr, 0));
-}
-
-module.exports = {
-  getTicketNumber: getTicketNumber,
+  return Promise.all(prom).then((resArr) =>
+    resArr.reduce((prev, curr) => prev + curr, 0)
+  );
 }

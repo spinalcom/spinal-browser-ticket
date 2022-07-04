@@ -22,10 +22,8 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import {SpinalServiceTimeseries} from 'spinal-model-timeseries';
+import { SpinalServiceTimeseries } from 'spinal-model-timeseries';
 
 const spinalServiceTimeseries = new SpinalServiceTimeseries();
 export default spinalServiceTimeseries;
-export {
-  spinalServiceTimeseries
-};
+export { spinalServiceTimeseries };

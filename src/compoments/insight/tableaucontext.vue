@@ -22,80 +22,98 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-
 <template>
   <el-row>
-    
     <el-tabs type="border-card">
-
       <el-tab-pane :label="$t('Table')">
+        <header-bar
+          :header="getHeader()"
+          :content="getRow()"
+          :data="contextLst"
+        />
 
-        <header-bar :header="getHeader()"
-                    :content="getRow()"
-                    :data="contextLst"></header-bar>
-
-        <el-table :data="contextLst"
-                  border
-                  style="width: 100%"
-                  :header-cell-style="{'background-color': '#f0f2f5'}">
-          <el-table-column :min-width="200" :label="$t('HeatmapCenter.Contextes')">
-            <template slot-scope="scope" >
-                <div v-if="scope.row.color"
-                     class="spinal-table-cell-color"
-                     :style="getColor(scope.row.color)"></div>
-                <div class = "name"> {{ scope.row.name }}</div>
+        <el-table
+          :data="contextLst"
+          border
+          style="width: 100%"
+          :header-cell-style="{ 'background-color': '#f0f2f5' }"
+        >
+          <el-table-column
+            :min-width="200"
+            :label="$t('HeatmapCenter.Contextes')"
+          >
+            <template slot-scope="scope">
+              <div
+                v-if="scope.row.color"
+                class="spinal-table-cell-color"
+                :style="getColor(scope.row.color)"
+              />
+              <div class="name">
+                {{ scope.row.name }}
+              </div>
             </template>
           </el-table-column>
 
-          <el-table-column prop="categories.length"
-                           :label="$t('HeatmapCenter.Categories')"
-                           align="center">
-                           
-          </el-table-column>
+          <el-table-column
+            prop="categories.length"
+            :label="$t('HeatmapCenter.Categories')"
+            align="center"
+          />
 
-          <el-table-column :label="$t('HeatmapCenter.Nb_groupes')"
-                           align="center">
+          <el-table-column
+            :label="$t('HeatmapCenter.Nb_groupes')"
+            align="center"
+          >
             <template slot-scope="scope">
-              {{getContextGroup(scope.row)}}
+              {{ getContextGroup(scope.row) }}
             </template>
           </el-table-column>
 
-          <el-table-column :label="$t('HeatmapCenter.Nb_profils')"
-                           align="center">
+          <el-table-column
+            :label="$t('HeatmapCenter.Nb_profils')"
+            align="center"
+          >
             <template slot-scope="scope">
-              {{getRoomsCount(scope.row)}}
+              {{ getRoomsCount(scope.row) }}
             </template>
           </el-table-column>
 
-          <el-table-column 
-                           width="65"
-                           align="center">
+          <el-table-column width="65" align="center">
             <template slot-scope="scope">
-              <el-button icon="el-icon-arrow-right"
-                         circle
-                         @click="SelectContext(scope.row)"></el-button>
+              <el-button
+                icon="el-icon-arrow-right"
+                circle
+                @click="SelectContext(scope.row)"
+              />
             </template>
           </el-table-column>
         </el-table>
-
+      </el-tab-pane>
+    </el-tabs>
+  </el-row>
 </template>
 
 <script>
-import SpinalBackend from "../../services/spinalBackend";
+import SpinalBackend from '../../services/spinalBackend';
 
-import headerBar from "./component/headerBar.vue";
+import headerBar from './component/headerBar.vue';
 
 export default {
+  components: {
+    'header-bar': headerBar,
+  },
+  props: ['contextLst'],
   data() {
     return {};
   },
-  components: {
-    "header-bar": headerBar
+  watch: {
+    contextLst() {},
   },
-  props: ["contextLst"],
+  async mounted() {},
+  beforeDestroy() {},
   methods: {
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return { backgroundColor: color[0] === '#' ? color : `#${color}` };
     },
     getRoomsCount(context) {
       return SpinalBackend.heatmapBack.getContextRoomCount(context);
@@ -114,51 +132,49 @@ export default {
     },
 
     SelectContext(context) {
-      this.$emit("select", context);
+      this.$emit('select', context);
     },
     async SeeAll() {
-      let promises = this.data.map(async el => {
+      let promises = this.data.map(async (el) => {
         return {
           id: el.id,
           ids: await this.getAllBimObjects(el.id),
-          color: el.color
+          color: el.color,
         };
       });
 
       let allBimObjects = await Promise.all(promises);
 
-      EventBus.$emit("seeAll", allBimObjects);
+      EventBus.$emit('seeAll', allBimObjects);
     },
 
     getHeader() {
       return [
         {
-          key: "name",
-          header: "name",
-          width: 10
+          key: 'name',
+          header: 'name',
+          width: 10,
         },
         {
-          key: "categories",
-          header: "Categories",
-          width: 10
+          key: 'categories',
+          header: 'Categories',
+          width: 10,
         },
         {
-          key: "groups",
-          header: "Groupes",
-          width: 10
+          key: 'groups',
+          header: 'Groupes',
+          width: 10,
         },
         {
-          key: "profils",
-          header: "Nombre de profils",
-          width: 10
-        }
+          key: 'profils',
+          header: 'Nombre de profils',
+          width: 10,
+        },
       ];
-      
     },
 
     getRow() {
-
-      return this.contextLst.map(el => {
+      return this.contextLst.map((el) => {
         return {
           name: el.name,
           categories: el.categories.length,
@@ -166,15 +182,8 @@ export default {
           profils: this.getRoomsCount(el),
         };
       });
-    }
+    },
   },
-  async mounted() {},
-  watch: {
-    contextLst() {
-      //console.log("context", this.contextLst);
-    }
-  },
-  beforeDestroy() {}
 };
 </script>
 
@@ -194,7 +203,4 @@ export default {
 .name {
   word-break: normal;
 }
-
-
 </style>
-

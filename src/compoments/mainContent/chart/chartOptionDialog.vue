@@ -23,93 +23,121 @@ with this file. If not, see
 -->
 
 <template>
-  <md-dialog class="endpoint-chart-viewer-panel-dialog-chart-option"
-             :md-active.sync="isOpenComputed"
-             :md-close-on-esc=true
-             :md-click-outside-to-close=true
-             :md-closed=onClose>
+  <md-dialog
+    class="endpoint-chart-viewer-panel-dialog-chart-option"
+    :md-active.sync="isOpenComputed"
+    :md-close-on-esc="true"
+    :md-click-outside-to-close="true"
+    :md-closed="onClose"
+  >
     <md-dialog-title>Chart Preferences</md-dialog-title>
     <md-dialog-content class="md-scrollbar">
       <div>
         <div class="endpoint-chart-viewer-panel-dialog-chart-option-container">
-          <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">
-            Line Mode</h5>
-          <md-radio v-model="lineModeComputed"
-                    value="lines">Lines</md-radio>
-          <md-radio v-model="lineModeComputed"
-                    value="markers">Markers</md-radio>
-          <md-radio v-model="lineModeComputed"
-                    value="lines+markers">Lines + Markers</md-radio>
+          <h5
+            class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header"
+          >
+            Line Mode</h5
+          >
+          <md-radio v-model="lineModeComputed" value="lines">Lines</md-radio>
+          <md-radio v-model="lineModeComputed" value="markers"
+            >Markers</md-radio
+          >
+          <md-radio v-model="lineModeComputed" value="lines+markers"
+            >Lines + Markers</md-radio
+          >
         </div>
         <div class="endpoint-chart-viewer-panel-dialog-chart-option-container">
-          <md-checkbox 
-                       v-tooltip="'you may need to resize the panel.'"
-                       v-model="rangeSlider">Use range slider</md-checkbox>
+          <md-checkbox
+            v-tooltip="'you may need to resize the panel.'"
+            v-model="rangeSlider"
+            >Use range slider</md-checkbox
+          >
           <div v-if="rangeSlider">
             <em>If the pannel is too small the range slider may not showup.</em>
           </div>
         </div>
-        <div class="endpoint-chart-viewer-panel-dialog-chart-option-container"
-             :class="{'endpoint-chart-viewer-panel-dialog-chart-option-container-border': showLegendComputed}">
-          <md-checkbox  v-model="showLegendComputed">Show Legend</md-checkbox>
-          <div v-if="showLegendComputed"
-               class="endpoint-chart-viewer-panel-dialog-chart-option-container-legend">
+        <div
+          class="endpoint-chart-viewer-panel-dialog-chart-option-container"
+          :class="{
+            'endpoint-chart-viewer-panel-dialog-chart-option-container-border':
+              showLegendComputed,
+          }"
+        >
+          <md-checkbox v-model="showLegendComputed">Show Legend</md-checkbox>
+          <div
+            v-if="showLegendComputed"
+            class="endpoint-chart-viewer-panel-dialog-chart-option-container-legend"
+          >
             <div>
-              <md-radio v-model="orientation"
-                        value="h">Horizontal</md-radio>
-              <md-radio v-model="orientation"
-                        value="v">Vertical</md-radio>
+              <md-radio v-model="orientation" value="h">Horizontal</md-radio>
+              <md-radio v-model="orientation" value="v">Vertical</md-radio>
             </div>
-            <div :class="{'endpoint-chart-viewer-panel-dialog-chart-option-container-legend-subcontainer': position}">
-              <md-checkbox v-model="position">Override default Position</md-checkbox>
+            <div
+              :class="{
+                'endpoint-chart-viewer-panel-dialog-chart-option-container-legend-subcontainer':
+                  position,
+              }"
+            >
+              <md-checkbox v-model="position"
+                >Override default Position</md-checkbox
+              >
               <div v-if="position">
-                <hr>
+                <hr />
                 <div>
-                  <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Vertical
-                    Position</h5>
-                  <md-radio v-model="positionX"
-                            value="0">left</md-radio>
-                  <md-radio v-model="positionX"
-                            value="0.5">center</md-radio>
-                  <md-radio v-model="positionX"
-                            value="1">right</md-radio>
+                  <h5
+                    class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header"
+                    >Vertical Position</h5
+                  >
+                  <md-radio v-model="positionX" value="0">left</md-radio>
+                  <md-radio v-model="positionX" value="0.5">center</md-radio>
+                  <md-radio v-model="positionX" value="1">right</md-radio>
                 </div>
-                <hr>
+                <hr />
                 <div>
-                  <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Vertical
-                    Anchor Position</h5>
-                  <md-radio v-model="positionAnchorX"
-                            value="auto">auto</md-radio>
-                  <md-radio v-model="positionAnchorX"
-                            value="left">left</md-radio>
-                  <md-radio v-model="positionAnchorX"
-                            value="center">center</md-radio>
-                  <md-radio v-model="positionAnchorX"
-                            value="right">right</md-radio>
+                  <h5
+                    class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header"
+                    >Vertical Anchor Position</h5
+                  >
+                  <md-radio v-model="positionAnchorX" value="auto"
+                    >auto</md-radio
+                  >
+                  <md-radio v-model="positionAnchorX" value="left"
+                    >left</md-radio
+                  >
+                  <md-radio v-model="positionAnchorX" value="center"
+                    >center</md-radio
+                  >
+                  <md-radio v-model="positionAnchorX" value="right"
+                    >right</md-radio
+                  >
                 </div>
-                <hr>
+                <hr />
                 <div>
-                  <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Horizontal
-                    Position</h5>
-                  <md-radio v-model="positionY"
-                            value="1">top</md-radio>
-                  <md-radio v-model="positionY"
-                            value="0.5">middle</md-radio>
-                  <md-radio v-model="positionY"
-                            value="0">bottom</md-radio>
+                  <h5
+                    class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header"
+                    >Horizontal Position</h5
+                  >
+                  <md-radio v-model="positionY" value="1">top</md-radio>
+                  <md-radio v-model="positionY" value="0.5">middle</md-radio>
+                  <md-radio v-model="positionY" value="0">bottom</md-radio>
                 </div>
-                <hr>
+                <hr />
                 <div>
-                  <h5 class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header">Horizontal
-                    Anchor Position</h5>
-                  <md-radio v-model="positionAnchorY"
-                            value="auto">auto</md-radio>
-                  <md-radio v-model="positionAnchorY"
-                            value="top">top</md-radio>
-                  <md-radio v-model="positionAnchorY"
-                            value="middle">middle</md-radio>
-                  <md-radio v-model="positionAnchorY"
-                            value="bottom">bottom</md-radio>
+                  <h5
+                    class="endpoint-chart-viewer-panel-dialog-chart-option-postion-header"
+                    >Horizontal Anchor Position</h5
+                  >
+                  <md-radio v-model="positionAnchorY" value="auto"
+                    >auto</md-radio
+                  >
+                  <md-radio v-model="positionAnchorY" value="top">top</md-radio>
+                  <md-radio v-model="positionAnchorY" value="middle"
+                    >middle</md-radio
+                  >
+                  <md-radio v-model="positionAnchorY" value="bottom"
+                    >bottom</md-radio
+                  >
                 </div>
               </div>
             </div>
@@ -118,29 +146,28 @@ with this file. If not, see
       </div>
     </md-dialog-content>
     <md-dialog-actions>
-      <md-button class="md-primary"
-                 @click="closeDialog">Close</md-button>
+      <md-button class="md-primary" @click="closeDialog">Close</md-button>
     </md-dialog-actions>
   </md-dialog>
 </template>
 
 <script>
 export default {
-  name: "chartOptionDialog",
+  name: 'chartOptionDialog',
   data() {
     return {
-      something: true
+      something: true,
     };
   },
-  props: ["isOpen", "layoutOption", "lineMode"],
+  props: ['isOpen', 'layoutOption', 'lineMode'],
   computed: {
     lineModeComputed: {
       get() {
         return this.lineMode;
       },
       set(value) {
-        this.$emit("updateLineMode", value);
-      }
+        this.$emit('updateLineMode', value);
+      },
     },
     isOpenComputed: {
       get() {
@@ -150,23 +177,23 @@ export default {
         if (value === false) {
           this.onClose();
         }
-      }
+      },
     },
     showLegendComputed: {
       get() {
         return this.layoutOption.showlegend;
       },
       set(value) {
-        this.$emit("updateOptions", { showlegend: value });
-      }
+        this.$emit('updateOptions', { showlegend: value });
+      },
     },
     orientation: {
       get() {
         return this.layoutOption.legend.orientation;
       },
       set(value) {
-        this.$emit("updateOptions", { legend: { orientation: value } });
-      }
+        this.$emit('updateOptions', { legend: { orientation: value } });
+      },
     },
     position: {
       get() {
@@ -180,18 +207,18 @@ export default {
       },
       set(value) {
         if (value === true) {
-          this.$emit("updateOptions", this.getOptionPosition(0, 1));
+          this.$emit('updateOptions', this.getOptionPosition(0, 1));
         } else {
-          this.$emit("updateOptions", {
+          this.$emit('updateOptions', {
             legend: {
               x: null,
               y: null,
-              xanchor: "auto",
-              yanchor: "auto"
-            }
+              xanchor: 'auto',
+              yanchor: 'auto',
+            },
           });
         }
-      }
+      },
     },
     positionX: {
       get() {
@@ -201,8 +228,8 @@ export default {
         let x = value,
           y = this.layoutOption.legend.y;
         if (this.layoutOption.legend.y === null) y = 0;
-        this.$emit("updateOptions", this.getOptionPosition(x, y));
-      }
+        this.$emit('updateOptions', this.getOptionPosition(x, y));
+      },
     },
     positionY: {
       get() {
@@ -212,32 +239,32 @@ export default {
         let x = this.layoutOption.legend.x,
           y = value;
         if (this.layoutOption.legend.x === null) x = 0;
-        this.$emit("updateOptions", this.getOptionPosition(x, y));
-      }
+        this.$emit('updateOptions', this.getOptionPosition(x, y));
+      },
     },
     positionAnchorX: {
       get() {
         return this.layoutOption.legend.xanchor;
       },
       set(value) {
-        this.$emit("updateOptions", {
+        this.$emit('updateOptions', {
           legend: {
-            xanchor: value
-          }
+            xanchor: value,
+          },
         });
-      }
+      },
     },
     positionAnchorY: {
       get() {
         return this.layoutOption.legend.yanchor;
       },
       set(value) {
-        this.$emit("updateOptions", {
+        this.$emit('updateOptions', {
           legend: {
-            yanchor: value
-          }
+            yanchor: value,
+          },
         });
-      }
+      },
     },
     rangeSlider: {
       get() {
@@ -245,28 +272,28 @@ export default {
         return true;
       },
       set(value) {
-        this.$emit("updateOptions", {
-          xaxis: { rangeslider: value ? {} : null }
+        this.$emit('updateOptions', {
+          xaxis: { rangeslider: value ? {} : null },
         });
-      }
-    }
+      },
+    },
   },
   methods: {
     getOptionPosition(x, y) {
       return {
         legend: {
           x,
-          y
-        }
+          y,
+        },
       };
     },
     closeDialog() {
       this.isOpenComputed = false;
     },
     onClose() {
-      this.$emit("closeDialog");
-    }
-  }
+      this.$emit('closeDialog');
+    },
+  },
 };
 </script>
 

@@ -25,23 +25,18 @@ with this file. If not, see
 <template>
   <div>
     <table-vue></table-vue>
-    
   </div>
-  
 </template>
 
 <script>
-import Table from "../../compoments/insight/table.vue";
+import Table from '../../compoments/insight/table.vue';
 
 export default {
-  components : {
-    "table-vue" : Table
+  components: {
+    'table-vue': Table,
   },
   data() {
     return {};
-
-  }
+  },
 };
 </script>
-
-

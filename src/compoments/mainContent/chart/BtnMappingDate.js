@@ -25,10 +25,10 @@
 import { spinalServiceTimeseries } from './timeseriesServiceInstance.js';
 
 export default {
-  "1h": [spinalServiceTimeseries.getDataFromLastHours, 1],
-  "3h": [spinalServiceTimeseries.getDataFromLastHours, 3],
-  "24h": [spinalServiceTimeseries.getDataFromLast24Hours, null],
-  "J-1": [spinalServiceTimeseries.getDataFromYesterday, null],
-  "3J": [spinalServiceTimeseries.getDataFromLastHours, 3*24],
-  "7J": [spinalServiceTimeseries.getDataFromLastHours, 7*24]
+  '1h': [spinalServiceTimeseries.getDataFromLastHours, 1],
+  '3h': [spinalServiceTimeseries.getDataFromLastHours, 3],
+  '24h': [spinalServiceTimeseries.getDataFromLast24Hours, null],
+  'J-1': [spinalServiceTimeseries.getDataFromYesterday, null],
+  '3J': [spinalServiceTimeseries.getDataFromLastHours, 3 * 24],
+  '7J': [spinalServiceTimeseries.getDataFromLastHours, 7 * 24],
 };

@@ -37,9 +37,7 @@ with this file. If not, see
         ></insight-control-endpoint-box>
       </div>
 
-      <h4>
-        Room's equipment
-      </h4>
+      <h4> Room's equipment </h4>
       <div class="control-endpoint-grid">
         <insight-control-endpoint-box
           v-for="endpoint of childrenEndpoints"
@@ -54,14 +52,14 @@ with this file. If not, see
 
 <script>
 // Tools
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 
 // Components
-import InsightControlEndpointBox from './InsightControlEndpointBox.vue'
+import InsightControlEndpointBox from './InsightControlEndpointBox.vue';
 
 export default {
-  name: "InsightEndpoint",
+  name: 'InsightEndpoint',
   components: { InsightControlEndpointBox },
   props: {
     Properties: {
@@ -78,23 +76,17 @@ export default {
     };
   },
 
-  watch:
-  {
-    Properties:
-    {
-      handler: async function(oldProp, newProp)
-      {
-        if (newProp && newProp.view && newProp.view.serverId != 0)
-        {
+  watch: {
+    Properties: {
+      handler: async function (oldProp, newProp) {
+        if (newProp && newProp.view && newProp.view.serverId != 0) {
           await this.update(newProp.view.serverId);
-        }
-        else
-        {
+        } else {
           this.ctxNode = false;
         }
       },
       deep: true,
-    }
+    },
   },
 
   async mounted() {
@@ -102,33 +94,37 @@ export default {
   },
 
   methods: {
-    async update()
-    {
+    async update() {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[this.Properties.view.serverId];
-      if (this.ctxNode.info.type.get() == "geographicRoom")
-      {
+      if (this.ctxNode.info.type.get() == 'geographicRoom') {
         let children = await SpinalGraphService.getChildrenInContext(
           this.ctxNode.info.id.get(),
           FileSystem._objects[this.Properties.context].info.id.get()
         );
-        for (const child of children)
-        {
-          let temp = await this.getNodeEndpointsInfo(child.id.get(), "hasEndPoint");
-          if (typeof temp !== 'undefined')
-          {
+        for (const child of children) {
+          let temp = await this.getNodeEndpointsInfo(
+            child.id.get(),
+            'hasEndPoint'
+          );
+          if (typeof temp !== 'undefined') {
             this.childrenEndpoints = this.childrenEndpoints.concat(temp);
           }
         }
       }
-      this.endpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id.get(), "hasEndPoint");
+      this.endpoints = await this.getNodeEndpointsInfo(
+        this.ctxNode.info.id.get(),
+        'hasEndPoint'
+      );
     },
 
     // return infos from an endpointNodeId
-    async getEndpointInfo(endpointNodeId){
+    async getEndpointInfo(endpointNodeId) {
       const realnode = SpinalGraphService.getRealNode(endpointNodeId);
-      const attributesLstModels = await serviceDocumentation.getAllAttributes(realnode);
-      const attributes = attributesLstModels.map(el => el.get());
+      const attributesLstModels = await serviceDocumentation.getAllAttributes(
+        realnode
+      );
+      const attributes = attributesLstModels.map((el) => el.get());
       const endpointInfo = {};
       for (const attr of attributes) {
         endpointInfo[attr.label] = attr.value;
@@ -140,33 +136,34 @@ export default {
       endpointInfo.unit = infos.unit.get();
       return endpointInfo;
     },
-    
+
     async getNodeEndpointsInfo(nodeId, endpointRelation) {
-      const endpointProfilsModel = await SpinalGraphService.getChildren(nodeId, endpointRelation);
-      if (endpointProfilsModel.length == 0) return // si la node n'a pas d'endpoints on quitte la fonction
+      const endpointProfilsModel = await SpinalGraphService.getChildren(
+        nodeId,
+        endpointRelation
+      );
+      if (endpointProfilsModel.length == 0) return; // si la node n'a pas d'endpoints on quitte la fonction
       const res = [];
       // premier automate associé ( à changer si besoin )
-      if (endpointProfilsModel[0].type.get() == "BmsDevice")
-      {
-        const endpointsModels = await SpinalGraphService.getChildren(endpointProfilsModel[0].id.get(), "hasBmsEndpoint");
-        const endpoints = endpointsModels.map(el => el.get());
-        for (const endpoint of endpoints) { // pour chaque endpoint
+      if (endpointProfilsModel[0].type.get() == 'BmsDevice') {
+        const endpointsModels = await SpinalGraphService.getChildren(
+          endpointProfilsModel[0].id.get(),
+          'hasBmsEndpoint'
+        );
+        const endpoints = endpointsModels.map((el) => el.get());
+        for (const endpoint of endpoints) {
+          // pour chaque endpoint
           const info = await this.getEndpointInfo(endpoint.id);
           res.push(info);
         }
-      }
-      else
-      {
-        for (const endpoint of endpointProfilsModel) { // pour chaque endpoint
+      } else {
+        for (const endpoint of endpointProfilsModel) {
+          // pour chaque endpoint
           const info = await this.getEndpointInfo(endpoint.id);
           res.push(info);
         }
       }
       return res;
-    },
-
-    async debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };

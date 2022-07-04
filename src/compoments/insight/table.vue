@@ -26,79 +26,88 @@ with this file. If not, see
   <div class="spacecon">
     <div class="spinal-space-header">
       <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
-        <el-breadcrumb class="breadcrumb-style"
-                       separator="/">
+        <el-breadcrumb class="breadcrumb-style" separator="/">
           <el-breadcrumb-item>
-            <a @click="ResetBreadCrumb()">{{$t("Routes.InsightCenter")}}</a>
+            <a @click="ResetBreadCrumb()">{{ $t('Routes.InsightCenter') }}</a>
           </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
-                              :key="index">
+          <el-breadcrumb-item
+            v-for="(breadcrumb, index) in breadcrumbs"
+            :key="index"
+          >
             <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
           </el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      
-      <el-button icon="el-icon-s-grid"
-                 circle
-                 @click="openDrawer"></el-button>
+
+      <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
     </div>
     <!-- Si on a pas encore choisi de catégorie -->
-    <div v-if="selectCategorie == null"
-         class="root" style="margin-top:11px;">
-
+    <div v-if="selectCategorie == null" class="root" style="margin-top: 11px">
       <!-- Si on a pas encore choisi de contexte -->
-      <tableau-context v-if="contextSelected == null"
-                        v-loading="loading"
-                       :context-lst="contextLst"
-                       @select="SelectContext">
+      <tableau-context
+        v-if="contextSelected == null"
+        v-loading="loading"
+        :context-lst="contextLst"
+        @select="SelectContext"
+      >
       </tableau-context>
 
       <!-- Si on a choisi un contexte -->
-      <tableau-category v-else
-                        :context-selected="contextSelected"
-                        @seeGroups="SelectCategorie"
-                        @reset="ResetBreadCrumb">
+      <tableau-category
+        v-else
+        :context-selected="contextSelected"
+        @seeGroups="SelectCategorie"
+        @reset="ResetBreadCrumb"
+      >
       </tableau-category>
     </div>
 
     <!-- Si on a choisi une catégorie  -->
-    <groupLstVue v-if="selectCategorie != null && profilSelected==null && groupSelected ==null"
-                 ref="categoryListe"
-                 :select-categorie="selectCategorie"
-                 @selectgroup="SelectGroup"
-                 @goBackCategory="BackToCategory"
-                 style="margin-top:11px;">
+    <groupLstVue
+      v-if="
+        selectCategorie != null &&
+        profilSelected == null &&
+        groupSelected == null
+      "
+      ref="categoryListe"
+      :select-categorie="selectCategorie"
+      @selectgroup="SelectGroup"
+      @goBackCategory="BackToCategory"
+      style="margin-top: 11px"
+    >
     </groupLstVue>
 
-    <profilLstVue v-if="groupSelected != null && profilSelected ==null"
-                  :profils="groupSelected.profils"
-                  :color="groupSelected.color"
-                  @selectprofil="SelectProfil"
-                  @goBackGroup="BackToGroup"
-                  style="margin-top:11px;">
+    <profilLstVue
+      v-if="groupSelected != null && profilSelected == null"
+      :profils="groupSelected.profils"
+      :color="groupSelected.color"
+      @selectprofil="SelectProfil"
+      @goBackGroup="BackToGroup"
+      style="margin-top: 11px"
+    >
     </profilLstVue>
 
-    <heatmap-vue class="heatmapContainer"
-                 v-if="profilSelected!=null"
-                 :profil="profilSelected"
-                 :filter="filterObjects"
-                 @goBackProfil="BackToProfil"
-                 style="margin-top:11px;">
-
+    <heatmap-vue
+      class="heatmapContainer"
+      v-if="profilSelected != null"
+      :profil="profilSelected"
+      :filter="filterObjects"
+      @goBackProfil="BackToProfil"
+      style="margin-top: 11px"
+    >
     </heatmap-vue>
-
   </div>
 </template>
 
 <script>
-import { spinalBackEnd } from "../../services/spinalBackend";
-import groupLstVue from "./component/groupLstVue";
-import profilLstVue from "./component/profilLstVue";
-import tableauContext from "./tableaucontext";
-import tableauCategory from "./tableaucategory";
-import { EventBus } from "../../services/event";
-import HeatmapVue from "./component/heatmapVue.vue";
-import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
+import { spinalBackEnd } from '../../services/spinalBackend';
+import groupLstVue from './component/groupLstVue';
+import profilLstVue from './component/profilLstVue';
+import tableauContext from './tableaucontext';
+import tableauCategory from './tableaucategory';
+import { EventBus } from '../../services/event';
+import HeatmapVue from './component/heatmapVue.vue';
+import { viewerUtils } from '../../services/viewerUtils/viewerUtils';
 
 export default {
   components: {
@@ -117,29 +126,27 @@ export default {
       contextSelected: null,
       profilSelected: null,
       groupSelected: null,
-      loading:true,
-      filterObjects: []
-    }; 
+      loading: true,
+      filterObjects: [],
+    };
   },
   async mounted() {
     await viewerUtils.waitInitialized();
     this.profilSelected = null;
     this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts and children
-    this.loading=false;
-    EventBus.$on("sidebar-homeSelect", item => {
-      console.log("Fitrage dans table.vue")
+    this.loading = false;
+    EventBus.$on('sidebar-homeSelect', (item) => {
       spinalBackEnd.heatmapBack
         .getDataFilterItem(item)
-        .then(result => {
+        .then((result) => {
           this.filterObjects = result;
         })
-        .catch(err => {
-            console.error(err);
-        })
+        .catch((err) => {
+          console.error(err);
+        });
     });
   },
 
-  
   methods: {
     ResetBreadCrumb() {
       this.profilSelected = null;
@@ -150,7 +157,6 @@ export default {
     },
 
     addbreadcrumb(resultat) {
-      console.log("appelle de add breadcrubm");
       this.breadcrumbs = [...this.breadcrumbs, resultat];
     },
 
@@ -166,7 +172,7 @@ export default {
         name: context.name,
         click: () => {
           this.SelectContext(context);
-        }
+        },
       };
       this.breadcrumbs = [...this.breadcrumbs, obj];
       this.contextSelected = context;
@@ -188,16 +194,21 @@ export default {
           click: () => {
             this.SelectCategorie(categorie);
             //this.$refs.categoryListe.resetRoomSelected();
-          }
-        }
+          },
+        },
       ];
     },
 
     //choix d'une catégorie (niveau 3)
     SelectGroup(group) {
       //on enregistre le groupe choisi
-      this.profilSelected=null;
-      this.groupSelected = { name :group.name ,profils: group.rooms, color: group.color, rooms:group.rooms };
+      this.profilSelected = null;
+      this.groupSelected = {
+        name: group.name,
+        profils: group.rooms,
+        color: group.color,
+        rooms: group.rooms,
+      };
       this.breadcrumbs = [
         ...this.breadcrumbs,
         {
@@ -207,8 +218,8 @@ export default {
             this.groupSelected = null;
             this.breadcrumbs.splice(2);
             this.SelectGroup(group);
-          }
-        }
+          },
+        },
       ];
     },
 
@@ -223,35 +234,34 @@ export default {
             this.profilSelected = null;
             this.breadcrumbs.splice(3);
             this.SelectProfil(profil);
-          }
-        }
+          },
+        },
       ];
     },
 
-    BackToCategory(){
+    BackToCategory() {
       this.SelectContext(this.contextSelected);
     },
 
-    BackToGroup(){
-      this.profilSelected=null;
-      this.groupSelected=null;
+    BackToGroup() {
+      this.profilSelected = null;
+      this.groupSelected = null;
       this.SelectCategorie(this.selectCategorie);
     },
 
-    BackToProfil(){
+    BackToProfil() {
       this.SelectGroup(this.groupSelected);
       this.breadcrumbs.splice(3);
     },
 
     addbreadcrumb(resultat) {
-      console.log("appelle de add breadcrubm");
       this.breadcrumbs = [...this.breadcrumbs, resultat];
     },
 
     openDrawer() {
-      EventBus.$emit("open-drawer");
-    }
-  }
+      EventBus.$emit('open-drawer');
+    },
+  },
 };
 </script>
 

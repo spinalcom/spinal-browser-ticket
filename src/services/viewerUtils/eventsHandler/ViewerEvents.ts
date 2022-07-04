@@ -22,13 +22,16 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { EventBus } from "../../event";
-import { viewerUtils } from "../viewerUtils";
+import { EventBus } from '../../event';
 import { spinalBackEnd } from '../../spinalBackend';
+import { viewerUtils } from '../viewerUtils';
 
 EventBus.$on('viewer-zoom', async (root, relation) => {
   await viewerUtils.waitInitialized();
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: root.serverId }, relation);
+  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
+    { server_id: root.serverId },
+    relation
+  );
   await viewerUtils.fitToView(items);
 });
 
@@ -39,12 +42,21 @@ EventBus.$on('viewer-reset-isolate', async () => {
 
 EventBus.$on('viewer-isolate', async (items, relation) => {
   await viewerUtils.waitInitialized();
-  viewerUtils.showAll()
-  let list = [];
-  await Promise.all(items.map( async (item) => {
-    const test = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true)
-    list = list.concat(test);
-  }));
+  viewerUtils.showAll();
+  let list: {
+    selection: number[];
+    model: any;
+  }[] = [];
+  await Promise.all(
+    items.map(async (item) => {
+      const test = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
+        { server_id: item.serverId },
+        relation,
+        true
+      );
+      list.push(...test);
+    })
+  );
   viewerUtils.isolateObjects(list);
 });
 
@@ -55,7 +67,10 @@ EventBus.$on('viewer-reset-select', async () => {
 
 EventBus.$on('viewer-select', async (root, relation) => {
   await viewerUtils.waitInitialized();
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: root.serverId }, relation);
+  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
+    { server_id: root.serverId },
+    relation
+  );
   viewerUtils.selectObjects(items);
 });
 
@@ -67,8 +82,12 @@ EventBus.$on('viewer-reset-color', async () => {
 EventBus.$on('viewer-color', async (items, relation) => {
   await viewerUtils.waitInitialized();
   viewerUtils.restoreColorThemingItems();
-  items.map( async (item) => {
-    const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true);
+  items.map(async (item) => {
+    const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
+      { server_id: item.serverId },
+      relation,
+      true
+    );
     for (const { selection, model } of list) {
       viewerUtils.colorThemingItems(model, item.color, selection);
     }

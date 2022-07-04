@@ -42,20 +42,26 @@ with this file. If not, see
             </appViewer>
             <el-button-group class="btn-abs-viewer-popio" v-show="!absviewer">
               <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
-              <el-button icon="el-icon-copy-document" @click="onPopClick"></el-button>
+              <el-button
+                icon="el-icon-copy-document"
+                @click="onPopClick"
+              ></el-button>
               <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
             </el-button-group>
           </div>
         </div>
       </div>
 
-      <div v-show="dataMode" class="spinal-viewer-container ">
+      <div v-show="dataMode" class="spinal-viewer-container">
         <div class="viewer-content">
-        <endpoint-chart-viewer-panel ref="chart" v-bind:isChartModalVisible="dataMode" v-bind:openChartModal="openDataMode">
-        </endpoint-chart-viewer-panel>
+          <endpoint-chart-viewer-panel
+            ref="chart"
+            v-bind:isChartModalVisible="dataMode"
+            v-bind:openChartModal="openDataMode"
+          >
+          </endpoint-chart-viewer-panel>
         </div>
       </div>
-
     </div>
     <div class="spinal-other-container">
       <router-view></router-view>
@@ -71,7 +77,8 @@ with this file. If not, see
           <div ref="headerViewer" class="spinal-viewer-header-drag-elm"></div>
           <el-button-group class="btn-abs-viewer-popio">
             <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
-            <el-button icon="el-icon-copy-document" @click="onPopClick"> </el-button>
+            <el-button icon="el-icon-copy-document" @click="onPopClick">
+            </el-button>
           </el-button-group>
         </div>
       </div>
@@ -80,18 +87,18 @@ with this file. If not, see
 </template>
 
 <script>
-import createDragElement from "../../services/utlils/createDragElement";
-import appViewer from "./viewer/viewer.vue";
-import spinalNavbar from "../navbar/spinalNavbar.vue";
-import { EventBus } from "../../services/event"
-import endpointChartViewerPanel from "./chart/endpointChartViewerPanel.vue"
+import createDragElement from '../../services/utlils/createDragElement';
+import appViewer from './viewer/viewer.vue';
+import spinalNavbar from '../navbar/spinalNavbar.vue';
+import { EventBus } from '../../services/event';
+import endpointChartViewerPanel from './chart/endpointChartViewerPanel.vue';
 
 export default {
-  name: "MainContent",
+  name: 'MainContent',
   components: {
     appViewer,
     spinalNavbar,
-    endpointChartViewerPanel 
+    endpointChartViewerPanel,
   },
   data() {
     return {
@@ -104,8 +111,8 @@ export default {
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
     EventBus.$on('data-mode', (data) => {
-      this.dataMode=true;
-      
+      this.dataMode = true;
+
       this.$refs.chart.toogleSelect(data);
     });
   },
@@ -133,17 +140,13 @@ export default {
         this.$refs.viewerItem.handleMinized(false);
       }
     },
-    
     onDataClick(event) {
-      this.dataMode=!this.dataMode;
+      this.dataMode = !this.dataMode;
     },
-
-    openDataMode(){
-      this.dataMode=!this.dataMode;
-    }
-
-
-  }
+    openDataMode() {
+      this.dataMode = !this.dataMode;
+    },
+  },
 };
 </script>
 

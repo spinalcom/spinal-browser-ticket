@@ -24,45 +24,43 @@ with this file. If not, see
 
 <template>
   <div class="spinal-navbar-main-container spinal-scrollbar">
-
     <el-collapse-transition>
-      <div v-if="openMenu"
-           class="nav-list-selector-container">
-
-        <el-button class="button-icon-left-focus"
-                   type="default"
-                   icon="el-icon-office-building"
-                   @click="focusItem(building)"></el-button>
-        <!-- :disabled="!select" -->
-        <!-- <el-collapse-transition> -->
-        <navItem icon="el-icon-office-building"
-                 label="Etage"
-                 :items="levels"
-                 :select="selectedLevel"
-                 @focusItem="focusItem"
-                 @select="onLevelChange"
-                 @onMouseOver="onMouseOver"></navItem>
-        <!-- </el-collapse-transition> -->
-        <!-- <el-collapse-transition> -->
-        <navItem icon="el-icon-receiving"
-                 label="Local"
-                 :items="selectedLevelRooms"
-                 :select="selectedRoom"
-                 @focusItem="focusItem"
-                 @select="onRoomChange"
-                 @onMouseOver="onMouseOver"></navItem>
-        <!-- </el-collapse-transition> -->
+      <div v-if="openMenu" class="nav-list-selector-container">
+        <el-button
+          class="button-icon-left-focus"
+          type="default"
+          icon="el-icon-office-building"
+          @click="focusItem(building)"
+        ></el-button>
+        <navItem
+          icon="el-icon-office-building"
+          label="Etage"
+          :items="levels"
+          :select="selectedLevel"
+          @focusItem="focusItem"
+          @select="onLevelChange"
+          @onMouseOver="onMouseOver"
+        ></navItem>
+        <navItem
+          icon="el-icon-receiving"
+          label="Local"
+          :items="selectedLevelRooms"
+          :select="selectedRoom"
+          @focusItem="focusItem"
+          @select="onRoomChange"
+          @onMouseOver="onMouseOver"
+        ></navItem>
       </div>
     </el-collapse-transition>
   </div>
 </template>
 
 <script>
-import { EventBus } from "../../services/event";
-import navItem from "./nav-Item.vue";
+import { EventBus } from '../../services/event';
+import navItem from './nav-Item.vue';
 
 export default {
-  name: "SpinalNavbar",
+  name: 'SpinalNavbar',
   components: { navItem },
   data() {
     return {
@@ -71,16 +69,16 @@ export default {
       building: null,
       selectedLevel: null,
       selectedRoom: null,
-      openMenu: true
+      openMenu: true,
     };
   },
   mounted() {
     this.sideBarChangeBinded = this.sideBarChange.bind(this);
-    EventBus.$on("side-bar-change", this.sideBarChangeBinded);
-    EventBus.$emit("get-side-bar-floors-data");
+    EventBus.$on('side-bar-change', this.sideBarChangeBinded);
+    EventBus.$emit('get-side-bar-floors-data');
   },
   beforeDestroy() {
-    EventBus.$off("side-bar-change", this.sideBarChangeBinded);
+    EventBus.$off('side-bar-change', this.sideBarChangeBinded);
   },
   methods: {
     sideBarChange(data, building) {
@@ -103,13 +101,13 @@ export default {
       if (this.building === item) {
         this.selectedLevel = null;
         this.selectedRoom = null;
-        EventBus.$emit("sidebar-homeSelect");
-      } else EventBus.$emit("sidebar-homeSelect", item);
+        EventBus.$emit('sidebar-homeSelect');
+      } else EventBus.$emit('sidebar-homeSelect', item);
     },
     onMouseOver(item) {
-      EventBus.$emit("sidebar-mouseover-item", item);
-    }
-  }
+      EventBus.$emit('sidebar-mouseover-item', item);
+    },
+  },
 };
 </script>
 

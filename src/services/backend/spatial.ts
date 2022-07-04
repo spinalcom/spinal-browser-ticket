@@ -22,61 +22,59 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
+import throttle from 'lodash.throttle';
+import { FileSystem } from 'spinal-core-connectorjs_type';
 import {
-  SPATIAL_CONTEXT_TYPE,
-  // BUILDING_REFERENCE_CONTEXT,
-  // FLOOR_REFERENCE_CONTEXT,
-  SITE_RELATION,
+  SpinalGraphService,
+  SpinalNode,
+} from 'spinal-env-viewer-graph-service';
+import {
   BUILDING_RELATION,
-  FLOOR_RELATION,
-  ZONE_RELATION,
-  ROOM_RELATION,
-
   BUILDING_TYPE,
-  FLOOR_TYPE,
-  ROOM_TYPE,
-  EQUIPMENT_TYPE,
-  GEO_RELATIONS,
   EQUIPMENT_RELATION,
+  EQUIPMENT_TYPE,
+  FLOOR_RELATION,
+  FLOOR_TYPE,
+  GEO_RELATIONS,
+  ROOM_RELATION,
+  ROOM_TYPE,
+  SITE_RELATION,
+  SPATIAL_CONTEXT_TYPE,
   TICKET_TICKET_TYPE,
+  ZONE_RELATION,
 } from '../../constants';
 import { EventBus } from '../event';
-import { FileSystem } from 'spinal-core-connectorjs_type';
 import ProcessOnChange from '../utlils/ProcessOnChange';
-import throttle from 'lodash.throttle';
-import { SpinalGraphService, SpinalNode } from 'spinal-env-viewer-graph-service';
-import obj from 'spinal-model-bmsnetwork/dist/SpinalBms';
 const anyWin: any = window;
 type nodeRef = {
-  name: string,
-  id: string,
-  server_id: number
-}
+  name: string;
+  id: string;
+  server_id: number;
+};
 type roomObject = {
   items: Set<nodeRef>;
   process: ProcessOnChange;
-}
-
+};
 
 export default class BackEndSpatial {
   buildingNode: SpinalNode<any>;
   handleFloorsBinded: () => void;
   floorsProcess: ProcessOnChange;
-  roomsProcess: Map<string, roomObject>
-  floorSelected: nodeRef
+  roomsProcess: Map<string, roomObject>;
+  floorSelected: nodeRef;
   floors: nodeRef[];
-  building: nodeRef
-  handleFloorProm: Promise<void> = null;
+  building: nodeRef;
+  handleFloorProm: Promise<void>;
 
   constructor() {
-    this.buildingNode = null;
     this.handleFloorsBinded = this.handleFloors.bind(this);
-    this.floorsProcess = new ProcessOnChange(this.handleFloorsBinded, { type: 'throttle', timeout: 2000 });
+    this.floorsProcess = new ProcessOnChange(this.handleFloorsBinded, {
+      type: 'throttle',
+      timeout: 2000,
+    });
     this.roomsProcess = new Map();
-    this.floorSelected = null;
     this.floors = [];
   }
-
 
   async getContextSpatial(graph) {
     const children = await graph.getChildren();
@@ -90,35 +88,40 @@ export default class BackEndSpatial {
   }
 
   async getBuilding(contextgeo) {
-    const buildings = await contextgeo.find([SITE_RELATION, BUILDING_RELATION],
+    const buildings = await contextgeo.find(
+      [SITE_RELATION, BUILDING_RELATION],
       (obj) => {
         return obj.info.type.get() === BUILDING_TYPE;
-      });
+      }
+    );
     return buildings[0];
   }
 
   async getFloors(buildingNode) {
-    const floors = await buildingNode.find([ZONE_RELATION, FLOOR_RELATION],
+    const floors = await buildingNode.find(
+      [ZONE_RELATION, FLOOR_RELATION],
       (obj) => {
         this.floorsProcess.add(obj, false);
         return obj.info.type.get() === FLOOR_TYPE;
-      });
+      }
+    );
     return floors;
   }
-
 
   async init(graph) {
     const contextgeo = await this.getContextSpatial(graph);
     this.buildingNode = await this.getBuilding(contextgeo);
     this.building = this.getBuildingJSON(this.buildingNode);
     this.floorsProcess.add(this.buildingNode, true);
-    EventBus.$on("get-side-bar-floors-data", () => {
+    EventBus.$on('get-side-bar-floors-data', () => {
       if (this.floors.length === 0) this.floorsProcess.fctOnChange();
-      else EventBus.$emit("side-bar-change", this.floors, this.building);
+      else EventBus.$emit('side-bar-change', this.floors, this.building);
     });
-    EventBus.$on("get-side-bar-rooms-data", (floorSelected) => {
+    EventBus.$on('get-side-bar-rooms-data', (floorSelected) => {
       this.floorSelected = floorSelected;
-      this.getRoomProcess(FileSystem._objects[floorSelected.server_id]).process.fctOnChange();
+      this.getRoomProcess(
+        FileSystem._objects[floorSelected.server_id]
+      )?.process.fctOnChange();
     });
   }
 
@@ -126,13 +129,13 @@ export default class BackEndSpatial {
     return {
       name: buildingNode.info.name.get(),
       id: buildingNode.info.id.get(),
-      server_id: buildingNode._server_id
+      server_id: buildingNode._server_id,
     };
   }
 
   async handleFloors() {
     if (this.handleFloorProm) {
-      return this.handleFloorProm
+      return this.handleFloorProm;
     }
     this.handleFloorProm = this._handleFloors();
     return this.handleFloorProm;
@@ -140,9 +143,16 @@ export default class BackEndSpatial {
 
   private async _handleFloors() {
     const floors = await this.getFloors(this.buildingNode);
-    const res = [];
+    interface IItem {
+      name: string;
+      id: string;
+      server_id: number;
+      children: nodeRef[];
+    }
+
+    const res: IItem[] = [];
     const updatefloor = throttle((floor, building) => {
-      EventBus.$emit("side-bar-change", floor, building);
+      EventBus.$emit('side-bar-change', floor, building);
     }, 1000);
     const roomsProm: Promise<Set<nodeRef>>[] = [];
     for (const floor of floors) {
@@ -154,7 +164,7 @@ export default class BackEndSpatial {
         name: floor.info.name.get(),
         id: floor.info.id.get(),
         server_id: floor._server_id,
-        children: []
+        children: [],
       });
       updatefloor(res, this.building);
     }
@@ -164,19 +174,19 @@ export default class BackEndSpatial {
       const floorsChild = floorsChildren[idx];
       const floor = res[idx];
       for (const child of floorsChild) {
-        floor.children.push(child)
+        floor.children.push(child);
       }
     }
     this.floors = res;
     updatefloor(res, this.building);
   }
 
-
-
   async handleFloorRooms(floorModel) {
     let roomsProcess = this.getRoomProcess(floorModel);
-    const roomsModels = await floorModel.find([ZONE_RELATION, ROOM_RELATION],
-      (obj) => obj.info.type.get() === ROOM_TYPE);
+    const roomsModels = await floorModel.find(
+      [ZONE_RELATION, ROOM_RELATION],
+      (obj) => obj.info.type.get() === ROOM_TYPE
+    );
 
     roomsProcess.process.add(floorModel, false);
     for (const room of roomsModels) {
@@ -186,13 +196,17 @@ export default class BackEndSpatial {
       this.existInSet(roomsProcess.items, 'id', {
         name: room.info.name.get(),
         id: room.info.id.get(),
-        server_id: room._server_id
+        server_id: room._server_id,
       });
     }
-    EventBus.$emit("side-bar-room-change", roomsProcess.items, floorModel.info.id.get());
+    EventBus.$emit(
+      'side-bar-room-change',
+      roomsProcess.items,
+      floorModel.info.id.get()
+    );
     return roomsProcess.items;
   }
-  existInSet<T>(setObj: Set<T>, key, objToAdd: T): T {
+  existInSet<T extends Object>(setObj: Set<T>, key, objToAdd: T): T {
     for (const obj of setObj) {
       if (obj[key] === objToAdd[key]) {
         for (const key1 in objToAdd) {
@@ -210,13 +224,16 @@ export default class BackEndSpatial {
   getRoomProcess(floorModel) {
     const floorId = floorModel.info.id.get();
     if (this.roomsProcess.has(floorId)) {
-      return this.roomsProcess.get(floorId);
+      return this.roomsProcess.get(floorId)!;
     } else {
       const item: roomObject = {
         items: new Set(),
-        process: new ProcessOnChange(() => {
-          return this.handleFloorRooms(floorModel);
-        }, { type: 'throttle', timeout: 1000 })
+        process: new ProcessOnChange(
+          () => {
+            return this.handleFloorRooms(floorModel);
+          },
+          { type: 'throttle', timeout: 1000 }
+        ),
       };
       this.roomsProcess.set(floorId, item);
       return item;
@@ -230,9 +247,12 @@ export default class BackEndSpatial {
    */
   async getLstByModel(item, addRoomRef = false) {
     const node = getNodeFromItem(item);
-    const relations = [...GEO_RELATIONS, "hasReferenceObject.ROOM"]
+    const relations = [...GEO_RELATIONS, 'hasReferenceObject.ROOM'];
     const listNode = await node.find(relations, (n) => {
-      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+      return (
+        n.getType().get() === EQUIPMENT_TYPE ||
+        n.getType().get() === 'BimObject'
+      );
     });
     return sortBIMObjectByModel(listNode);
   }
@@ -244,9 +264,12 @@ export default class BackEndSpatial {
    */
   async getLstByModelEquipment(item, addRoomRef = false) {
     const node = getNodeFromItem(item);
-    const relations = [...EQUIPMENT_RELATION]
+    const relations = [...EQUIPMENT_RELATION];
     const listNode = await node.find(relations, (n) => {
-      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+      return (
+        n.getType().get() === EQUIPMENT_TYPE ||
+        n.getType().get() === 'BimObject'
+      );
     });
     return sortBIMObjectByModel(listNode);
   }
@@ -258,9 +281,13 @@ export default class BackEndSpatial {
    */
   async getLstByModelAndRelation(item, relation, addRoomRef = false) {
     const node = getNodeFromItem(item);
-    const relations = [...relation]
+    const relations = [...relation];
     const listNode = await node.find(relations, (n) => {
-      return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject" || n.getType().get() === "groupHasBIMObject");
+      return (
+        n.getType().get() === EQUIPMENT_TYPE ||
+        n.getType().get() === 'BimObject' ||
+        n.getType().get() === 'groupHasBIMObject'
+      );
     });
     return sortBIMObjectByModel(listNode);
   }
@@ -272,21 +299,25 @@ export default class BackEndSpatial {
    */
   async getObjectsByTicketGroup(ticketGroup, addRoomRef = false) {
     let node = getNodeFromItem(ticketGroup);
-    const relations = [..."SpinalSystemServiceTicketHasTicket"]
+    const relations = [...'SpinalSystemServiceTicketHasTicket'];
     const listTicket = await node.find(relations, (n) => {
       return (
-        n.getType().get() === TICKET_TICKET_TYPE
-        || n.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+        n.getType().get() === TICKET_TICKET_TYPE ||
+        n.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
       );
     });
-    let objects = [];
+    let objects: any[] = [];
     for (const ticket of listTicket) {
-      let test = Object.keys(ticket.objects).map(function(key) {
+      let test = Object.keys(ticket.objects).map(function (key) {
         if (parseInt(key) || parseInt(key) === 0) {
-          return ticket.objects[key]
+          return ticket.objects[key];
         }
-      })
-      objects = objects.concat(test.filter(e => { return typeof e !== "undefined" }));
+      });
+      objects.push(
+        ...test.filter((e) => {
+          return typeof e !== 'undefined';
+        })
+      );
     }
     return sortBIMObjectByModel(objects);
   }
@@ -298,58 +329,72 @@ export default class BackEndSpatial {
    */
   async getObjectsByTicketGroup_Legacy(ticketGroup, addRoomRef = false) {
     let node = getNodeFromItem(ticketGroup);
-  const relations = [..."SpinalSystemServiceTicketHasTicket"]
+    const relations = [...'SpinalSystemServiceTicketHasTicket'];
     const listTicket = await node.find(relations, (n) => {
       return (
-        n.getType().get() === TICKET_TICKET_TYPE
-        || n.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+        n.getType().get() === TICKET_TICKET_TYPE ||
+        n.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
       );
     });
 
     let listNode = [];
     for (const ticket of listTicket) {
-      const parents = await ticket.getParents("SpinalSystemServiceTicketHasTicket")
+      const parents = await ticket.getParents(
+        'SpinalSystemServiceTicketHasTicket'
+      );
       for (const parent of parents) {
-        if (parent.getType().get() != "SpinalSystemServiceTicketTypeStep")
+        if (parent.getType().get() != 'SpinalSystemServiceTicketTypeStep')
           node = parent;
       }
       const objects = await node.find(relations, (n) => {
-        return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+        return (
+          n.getType().get() === EQUIPMENT_TYPE ||
+          n.getType().get() === 'BimObject'
+        );
       });
-      listNode = listNode.concat(objects)
+      listNode = listNode.concat(objects);
     }
     return sortBIMObjectByModel(listNode);
   }
 
   async addObjectToTicket(ticketGroup) {
     let node = getNodeFromItem(ticketGroup);
-    const relations = [..."SpinalSystemServiceTicketHasTicket"]
-    const listTicket : spinal.Model[] = await node.find(relations, (n) => {
+    const relations = [...'SpinalSystemServiceTicketHasTicket'];
+    const listTicket: spinal.Model[] = await node.find(relations, (n) => {
       return (
-        n.getType().get() === TICKET_TICKET_TYPE
-        || n.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+        n.getType().get() === TICKET_TICKET_TYPE ||
+        n.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
       );
     });
 
     let listNode = [];
     for (const ticket of listTicket) {
-      const parents = await ticket.getParents("SpinalSystemServiceTicketHasTicket")
+      const parents = await ticket.getParents(
+        'SpinalSystemServiceTicketHasTicket'
+      );
       for (const parent of parents) {
-        if (parent.getType().get() != "SpinalSystemServiceTicketTypeStep")
+        if (parent.getType().get() != 'SpinalSystemServiceTicketTypeStep')
           node = parent;
       }
-      const objects = {
+      const objects: {
+        BIMObjects: SpinalNode[];
+        BIMIds: number[];
+        nameAttr: string[];
+      } = {
         BIMObjects: [],
         BIMIds: [],
-        nameAttr: ["objects"],
+        nameAttr: ['objects'],
       };
       objects.BIMObjects = await node.find(relations, (n) => {
-        return (n.getType().get() === EQUIPMENT_TYPE || n.getType().get() === "BimObject");
+        return (
+          n.getType().get() === EQUIPMENT_TYPE ||
+          n.getType().get() === 'BimObject'
+        );
       });
       for (const obj of objects.BIMObjects) {
-        objects.BIMIds.push(obj.info.bimFileId.get())
+        objects.BIMIds.push(obj.info.bimFileId.get());
       }
-      ticket.add_attr({objects: objects.BIMIds})
+      ticket.add_attr({ objects: objects.BIMIds });
     }
     return sortBIMObjectByModel(listNode);
   }
@@ -363,7 +408,9 @@ function getNodeFromItem(item) {
   return FileSystem._objects[item.server_id];
 }
 
-function sortBIMObjectByModel(arrayOfBIMObject): { selection: number[], model }[] {
+function sortBIMObjectByModel(
+  arrayOfBIMObject
+): { selection: number[]; model }[] {
   let arrayModel = [];
   for (const nodeBIMObject of arrayOfBIMObject) {
     const bimFileId = nodeBIMObject.info.bimFileId.get();
@@ -377,7 +424,7 @@ function sortBIMObjectByModel(arrayOfBIMObject): { selection: number[], model }[
   return arrayModel;
 }
 
-function getOrAddModelIfMissing(array, model): { selection: number[], model } {
+function getOrAddModelIfMissing(array, model): { selection: number[]; model } {
   for (const obj of array) {
     if (obj.model === model) {
       return obj;
@@ -385,7 +432,7 @@ function getOrAddModelIfMissing(array, model): { selection: number[], model } {
   }
   const obj = {
     selection: [],
-    model
+    model,
   };
   array.push(obj);
   return obj;

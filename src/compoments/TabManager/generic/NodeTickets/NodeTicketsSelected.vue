@@ -23,45 +23,49 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container v-if="ticket" style="height:100%">
-    <el-header style="height:max-content; display: flex">
-      <el-tooltip v-if="Properties.viewKey != 'TicketApp'"
-                  :content="$t('spinal-twin.Back')">
-        <el-button @click.stop="back()"
-                   class="spl-el-button"
-                   style="float: right"
-                   icon="el-icon-search"
-                   circle>
+  <el-container v-if="ticket" style="height: 100%">
+    <el-header style="height: max-content; display: flex">
+      <el-tooltip
+        v-if="Properties.viewKey != 'TicketApp'"
+        :content="$t('spinal-twin.Back')"
+      >
+        <el-button
+          @click.stop="back()"
+          class="spl-el-button"
+          style="float: right"
+          icon="el-icon-search"
+          circle
+        >
         </el-button>
       </el-tooltip>
       <p style="">
         {{ ticket.name }}
       </p>
-      <div v-if="doStepping"
-           style="float:right">
+      <div v-if="doStepping" style="float: right">
         <el-tooltip :content="$t('spinal-twin.TicketPrev')">
           <el-button
-                     icon="el-icon-caret-left"
-                     circle
-                     plain
-                     type="primary"
-                     @click.stop="changeStep(-1, ticket)"></el-button>
+            icon="el-icon-caret-left"
+            circle
+            plain
+            type="primary"
+            @click.stop="changeStep(-1, ticket)"
+          ></el-button>
         </el-tooltip>
         <el-tooltip :content="$t('spinal-twin.TicketNext')">
           <el-button
-                     icon="el-icon-caret-right"
-                     type="primary"
-                     circle
-                     plain
-                     @click.stop="changeStep(1, ticket)"></el-button>
+            icon="el-icon-caret-right"
+            type="primary"
+            circle
+            plain
+            @click.stop="changeStep(1, ticket)"
+          ></el-button>
         </el-tooltip>
       </div>
     </el-header>
 
     <el-main>
       <el-collapse v-model="activeCollapses">
-        <el-collapse-item name="Details"
-                          title="Details">
+        <el-collapse-item name="Details" title="Details">
           <div class="separate">
             <div> {{ $t('spinal-twin.CurrentStep') }} </div>
             <div> {{ ticket.step }} </div>
@@ -77,14 +81,20 @@ with this file. If not, see
           <div class="separate">
             <div> {{ $t('spinal-twin.TicketAuthor') }} </div>
             <div>
-              {{ (ticket.ticket.user && (ticket.ticket.user.name || ticket.ticket.user.username)) || "unknow" }}
+              {{
+                (ticket.ticket.user &&
+                  (ticket.ticket.user.name || ticket.ticket.user.username)) ||
+                'unknow'
+              }}
             </div>
           </div>
         </el-collapse-item>
 
-        <el-collapse-item v-if="ticket.comments && ticket.comments.length > 0"
-                          name="Description"
-                          title="Description">
+        <el-collapse-item
+          v-if="ticket.comments && ticket.comments.length > 0"
+          name="Description"
+          title="Description"
+        >
           <p>
             {{ ticket.comments[0].element.message.get() }}
           </p>
@@ -106,12 +116,13 @@ with this file. If not, see
           </div>
         </el-collapse-item>
 
-        <el-collapse-item name="Events"
-                          :title="$t('spinal-twin.Events')">
-          <el-table :data="ticket.events"
-                    :header-cell-style="{'background-color': '#f0f2f5'}"
-                    border
-                    style="overflow: auto;">
+        <el-collapse-item name="Events" :title="$t('spinal-twin.Events')">
+          <el-table
+            :data="ticket.events"
+            :header-cell-style="{ 'background-color': '#f0f2f5' }"
+            border
+            style="overflow: auto"
+          >
             <el-table-column label="Date">
               <div slot-scope="scope">
                 {{ elapsedTimeFormat(scope.row.creationDate) }}
@@ -119,7 +130,11 @@ with this file. If not, see
             </el-table-column>
             <el-table-column :label="$t('spinal-twin.User')">
               <div slot-scope="scope">
-                {{ (scope.row.user && (scope.row.user.name || scope.row.user.username)) || "unknow"}}
+                {{
+                  (scope.row.user &&
+                    (scope.row.user.name || scope.row.user.username)) ||
+                  'unknow'
+                }}
               </div>
             </el-table-column>
             <el-table-column label="Action">
@@ -130,39 +145,57 @@ with this file. If not, see
           </el-table>
         </el-collapse-item>
 
-        <el-collapse-item name="Notes"
-                          :title="$t('spinal-twin.TicketNotes')">
+        <el-collapse-item name="Notes" :title="$t('spinal-twin.TicketNotes')">
           <el-container>
             <el-header style="height: 140">
-              <node-notes-create v-if="ticket.ticket"
-                                 :node="getTicketRealNode(ticket.ticket)"
-                                 @send-note="sendNote">
+              <node-notes-create
+                v-if="ticket.ticket"
+                :node="getTicketRealNode(ticket.ticket)"
+                @send-note="sendNote"
+              >
               </node-notes-create>
             </el-header>
 
             <div class="note-feed">
-              <el-container v-for="note of ticket.comments"
-                            :key="note._server_id"
-                            style="display: flex; flex-direction: row; align-items: flex-start; margin-bottom: 10px">
+              <el-container
+                v-for="note of ticket.comments"
+                :key="note._server_id"
+                style="
+                  display: flex;
+                  flex-direction: row;
+                  align-items: flex-start;
+                  margin-bottom: 10px;
+                "
+              >
                 <el-main style="padding: 0 0 10px 0">
-                  <node-notes-message :username="note.element.username.get()"
-                                      :date="note.element.date.get()"
-                                      :message="note.element.message.get()"
-                                      :type="note.element.type.get()"
-                                      :file="note.element.file ? note.element.file : {}"
-                                      :viewPoint="note.element.viewPoint ? note.element.viewPoint : null">
+                  <node-notes-message
+                    :username="note.element.username.get()"
+                    :date="note.element.date.get()"
+                    :message="note.element.message.get()"
+                    :type="note.element.type.get()"
+                    :file="note.element.file ? note.element.file : {}"
+                    :viewPoint="
+                      note.element.viewPoint ? note.element.viewPoint : null
+                    "
+                  >
                   </node-notes-message>
                 </el-main>
-                <el-tooltip :content="$t('spinal-twin.DeleteNote')"
-                            class="delete-button">
-                  <el-popconfirm @confirm="delNote(ticket.ticket)"
-                                 :title="$t('spinal-twin.DeleteConfirm')">
-                    <el-button class="spl-input-button"
-                               icon="el-icon-delete"
-                               type="danger"
-                               size="small"
-                               circle
-                               slot="reference"></el-button>
+                <el-tooltip
+                  :content="$t('spinal-twin.DeleteNote')"
+                  class="delete-button"
+                >
+                  <el-popconfirm
+                    @confirm="delNote(ticket.ticket)"
+                    :title="$t('spinal-twin.DeleteConfirm')"
+                  >
+                    <el-button
+                      class="spl-input-button"
+                      icon="el-icon-delete"
+                      type="danger"
+                      size="small"
+                      circle
+                      slot="reference"
+                    ></el-button>
                   </el-popconfirm>
                 </el-tooltip>
               </el-container>
@@ -175,23 +208,22 @@ with this file. If not, see
 </template>
 
 <script>
-import moment from "moment";
-import NodeNotesMessage from "../NodeNotes/NodeNotesMessage.vue";
-import NodeNotesCreate from "../NodeNotes/NodeNotesCreate.vue";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import moment from 'moment';
+import NodeNotesMessage from '../NodeNotes/NodeNotesMessage.vue';
+import NodeNotesCreate from '../NodeNotes/NodeNotesCreate.vue';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 import {
   SpinalGraphService,
   SpinalNode,
-} from "spinal-env-viewer-graph-service";
-import { LOGS_EVENTS_STRING } from "spinal-service-ticket";
-import { spinalServiceTicket } from "spinal-service-ticket";
-import { ViewManager } from "../../../../services/ViewManager/ViewManager";
-import { getTicketDescription } from "./Ticket";
-import { Model } from "spinal-core-connectorjs_type";
-import EventBus from "../../../space/component/js/event";
+} from 'spinal-env-viewer-graph-service';
+import { LOGS_EVENTS_STRING } from 'spinal-service-ticket';
+import { spinalServiceTicket } from 'spinal-service-ticket';
+import { ViewManager } from '../../../../services/ViewManager/ViewManager';
+import { getTicketDescription } from './Ticket';
+import EventBus from '../../../space/component/js/event';
 
 export default {
-  name: "NodeTicketSelected",
+  name: 'NodeTicketSelected',
   components: { NodeNotesMessage, NodeNotesCreate },
   props: {
     Properties: {
@@ -215,31 +247,34 @@ export default {
     return {
       ticket: false,
       doStepping: true,
-      activeCollapses: ["Details"],
+      activeCollapses: ['Details'],
     };
   },
 
   async mounted() {
     await this.update();
   },
-  
+
   async created() {
-    EventBus.$on('note-added', async function () {
-      await this.update();
-    }.bind(this));
+    EventBus.$on(
+      'note-added',
+      async function () {
+        await this.update();
+      }.bind(this)
+    );
   },
 
   methods: {
     async sendNote() {
       EventBus.$emit('note-added');
-      this.$emit("update");
-      await new Promise(r => setTimeout(r, 300));
+      this.$emit('update');
+      await new Promise((r) => setTimeout(r, 300));
       await this.update();
     },
 
     async update() {
       this.ticket = undefined;
-      if (typeof this.selected == "undefined") {
+      if (typeof this.selected == 'undefined') {
         let ticketinfo = SpinalGraphService.getRealNode(
           this.Properties.selected
         );
@@ -253,29 +288,29 @@ export default {
 
     async delNote(note) {
       await serviceDocumentation.delNote(this.ticket.ticket, note);
-      this.$emit("update");
+      this.$emit('update');
     },
 
     DateFormat(time) {
       const date = new Date(time);
 
-      return moment(date, "DD/MM/YYYY HH:mm:ss");
+      return moment(date, 'DD/MM/YYYY HH:mm:ss');
     },
 
     elapsedTimeFormat(time) {
       const now = new Date();
       const then = new Date(time);
 
-      var ms = moment(now, "DD/MM/YYYY HH:mm:ss").diff(
-        moment(then, "DD/MM/YYYY HH:mm:ss")
+      var ms = moment(now, 'DD/MM/YYYY HH:mm:ss').diff(
+        moment(then, 'DD/MM/YYYY HH:mm:ss')
       );
       var d = moment.duration(ms);
       if (d.asDays() < 1) {
-        return this.$t("spinal-twin.Today");
+        return this.$t('spinal-twin.Today');
       } else if (d.asDays() < 2) {
-        return this.$t("spinal-twin.Yesterday");
+        return this.$t('spinal-twin.Yesterday');
       }
-      return Math.floor(d.asDays()) + this.$t("spinal-twin.DaysAgo");
+      return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
     },
 
     async changeStep(step, ticket) {
@@ -318,12 +353,12 @@ export default {
       } else {
         return;
       }
-      this.$emit("update");
+      this.$emit('update');
       await this.update();
     },
 
     back() {
-      this.$emit("back");
+      this.$emit('back');
     },
 
     logFormat(n) {
@@ -331,11 +366,11 @@ export default {
     },
 
     getTarget() {
-      return this.ticket.target
+      return this.ticket.target;
     },
 
     debug(what) {
-      console.debug("debug", what);
+      console.debug('debug', what);
     },
 
     getTicketRealNode(ticket) {

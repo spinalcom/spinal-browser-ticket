@@ -22,19 +22,14 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
+import { File, FileSystem, spinalCore } from 'spinal-core-connectorjs_type';
+import axios from 'axios';
+import { decriAes, decriB64 } from './utlils/crypt';
+let $ = require('jquery');
 import {
-  File,
-  spinalCore,
-  FileSystem
-} from 'spinal-core-connectorjs_type';
-
-import {
-  decriAes,
-  decriB64
-} from './utlils/crypt';
-let $ = require("jquery");
-import axios from "axios";
-import Q from "q";
+  SpinalGraphService,
+  SpinalGraph,
+} from 'spinal-env-viewer-graph-service';
 
 function getParameterByName(name: string, url: string = window.location.href) {
   name = name.replace(/[[\]]/g, '\\$&');
@@ -49,20 +44,18 @@ class SpinalIO {
   loadPromise: Map<string, Promise<spinal.Model>>;
   loadedPtr: Map<number, Promise<spinal.Model>>;
   connectPromise: Promise<void>;
-  user: { username: string, password: string }
+  user: { username: string; password: string };
   conn: spinal.FileSystem;
 
   constructor() {
     this.loadPromise = new Map();
     this.loadedPtr = new Map();
-    this.connectPromise = null;
-    this.user = null;
     this.conn = null;
   }
   decriJson(encryptedHex) {
     try {
-      const k = [10, 95, 124, 68, 55, 24, 90, 57, 34, 65, 81, 22, 75, 7, 110,
-        1
+      const k = [
+        10, 95, 124, 68, 55, 24, 90, 57, 34, 65, 81, 22, 75, 7, 110, 1,
       ];
       const str = decriAes(k, encryptedHex);
       return JSON.parse(str);
@@ -76,39 +69,44 @@ class SpinalIO {
     }
   }
   getauth() {
-    if (this.user !== null) return this.user;
+    if (this.user != null) return this.user;
     const encryptedHex = window.localStorage.getItem('spinalhome_cfg');
     this.user = this.decriJson(encryptedHex);
     return this.user;
   }
   connect() {
-    if (this.connectPromise !== null) {
+    if (this.connectPromise != null) {
       return this.connectPromise;
     }
 
     this.connectPromise = new Promise((resolve, reject) => {
       $(document).ready(() => {
-        FileSystem.CONNECTOR_TYPE = "Browser";
+        FileSystem.CONNECTOR_TYPE = 'Browser';
         const user = this.getauth();
         if (this.user.username) {
           const serverHost = window.location.origin;
           // this.getServerConfig().then( => {
-          return axios.get(`${serverHost}/get_user_id`, {
-            params: {
-              u: user.username,
-              p: user.password
-            }
-          }).then(response => {
-            let id = parseInt(response.data);
-            const host = serverHost.replace(/https?:\/\//, "");
-            this.conn = spinalCore.connect(
-              `http://${id}:${user.password}@${host}/`
+          return axios
+            .get(`${serverHost}/get_user_id`, {
+              params: {
+                u: user.username,
+                p: user.password,
+              },
+            })
+            .then(
+              (response) => {
+                let id = parseInt(response.data);
+                const host = serverHost.replace(/https?:\/\//, '');
+                this.conn = spinalCore.connect(
+                  `http://${id}:${user.password}@${host}/`
+                );
+                resolve();
+              },
+              () => {
+                // window.location = "/html/drive/";
+                reject('Authentication Connection Error');
+              }
             );
-            resolve();
-          }, () => {
-            // window.location = "/html/drive/";
-            reject('Authentication Connection Error');
-          });
           // });
         } else {
           // window.location = '/html/drive/';
@@ -121,12 +119,10 @@ class SpinalIO {
   getModelPath(): string {
     const cryptedPath = getParameterByName('path');
     if (!cryptedPath) throw new Error('No "path" attribute found in the url');
-    const k = [10, 95, 124, 68, 55, 24, 90, 57, 34, 65, 81, 22, 75, 7, 110,
-      1
-    ];
+    const k = [10, 95, 124, 68, 55, 24, 90, 57, 34, 65, 81, 22, 75, 7, 110, 1];
     try {
       const decripted = decriAes(k, cryptedPath);
-      if (decripted[0] !== '/') throw "not a path";
+      if (decripted[0] !== '/') throw 'not a path';
       return decripted;
     } catch (e) {
       const decripted = decriB64(cryptedPath);
@@ -134,36 +130,45 @@ class SpinalIO {
     }
   }
 
-  getModel(): Promise<spinal.Model> {
+  async getModel(): Promise<SpinalGraph> {
     try {
       const path = this.getModelPath();
-      return this.load(path);
+      const m = await (<Promise<SpinalGraph>>this.load(path));
+      await SpinalGraphService.setGraph(m);
+      return m;
     } catch (e) {
-      return this.load('/__users__/public/digital_twin/default');
+      const m = await (<Promise<SpinalGraph>>(
+        this.load('/__users__/admin/Digital twin')
+      ));
+      await SpinalGraphService.setGraph(m);
+      return m;
     }
   }
 
   async load(path: string): Promise<spinal.Model> {
     await this.connect();
-    if (this.loadPromise.has(path)) {
-      return this.loadPromise.get(path);
+    const p = this.loadPromise.get(path);
+    if (p) {
+      return p;
     }
 
     const prom: Promise<spinal.Model> = new Promise((resolve, reject) => {
       try {
         spinalCore.load(
-          this.conn, path,
+          this.conn,
+          path,
           (model) => {
             resolve(model);
           },
           () => {
             reject(new Error(`Load Error path: '${path}'`));
-          });
+          }
+        );
       } catch (e) {
         reject(e);
       }
     });
-    this.loadPromise.set(path, prom)
+    this.loadPromise.set(path, prom);
     return prom;
   }
 
@@ -171,41 +176,41 @@ class SpinalIO {
     if (ptr instanceof File) return this.loadPtr(ptr._ptr);
     await this.connect();
     const server_id: number = ptr.data.value;
-    if (this.loadedPtr.has(server_id)) {
-      return this.loadedPtr.get(server_id)
+    const m = this.loadedPtr.get(server_id);
+    if (m) {
+      return m;
     }
     const prom: Promise<spinal.Model> = new Promise((resolve, reject) => {
       try {
-        this.conn.load_ptr(
-          server_id,
-          (model) => {
-            if (!model)
-              reject(new Error(`LoadedPtr Error server_id: '${server_id}'`));
-            else resolve(model);
-          });
-
+        this.conn.load_ptr(server_id, (model) => {
+          if (!model)
+            reject(new Error(`LoadedPtr Error server_id: '${server_id}'`));
+          else resolve(model);
+        });
       } catch (e) {
         reject(e);
       }
     });
-    this.loadedPtr.set(server_id, prom)
+    this.loadedPtr.set(server_id, prom);
     return prom;
   }
 
-  waitNodeReady(node: any) : Promise<void>
-  {
-    return new Promise(resolve => {
+  waitNodeReady(node: any): Promise<void> {
+    return new Promise((resolve) => {
       const aibe = setInterval(() => {
-        if (typeof(FileSystem._objects[node._server_id]) !== "undefined")
-        {
+        if (typeof FileSystem._objects[node._server_id] !== 'undefined') {
           clearInterval(aibe);
           return resolve();
         }
-      }, 500)
-    })
+      }, 500);
+    });
   }
 }
 export const spinalIO = new SpinalIO();
 var anyWin: any = window;
-if (!anyWin.spinal) { anyWin.spinal = {}; }
-if (!anyWin.spinal.spinalSystem) { anyWin.spinal.spinalSystem = spinalIO; }
+if (!anyWin.spinal) {
+  anyWin.spinal = {};
+}
+if (!anyWin.spinal.spinalSystem) {
+  anyWin.spinal.spinalSystem = spinalIO;
+}

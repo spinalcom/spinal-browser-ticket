@@ -23,28 +23,26 @@
  */
 
 export class ViewerState {
-
   public coloration: Boolean = false;
   public isolation: Boolean = false;
 
-  constructor() {
-  }
-  
-  public colored() : Boolean {
+  constructor() {}
+
+  public colored(): Boolean {
     return this.coloration;
   }
-  
+
   public changeColoration(): void {
-    this.coloration = ! this.coloration;
+    this.coloration = !this.coloration;
   }
 
-  public isolated() : Boolean {
+  public isolated(): Boolean {
     return this.isolation;
   }
-  
-  public changeIsolation() : void {
-    this.isolation = ! this.isolation;
-  }
-};
 
-export let viewerState : ViewerState = new ViewerState();
+  public changeIsolation(): void {
+    this.isolation = !this.isolation;
+  }
+}
+
+export let viewerState: ViewerState = new ViewerState();

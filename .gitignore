@@ -6,3 +6,4 @@ package-lock.json
 .config.json
 www
 old
+.parcel-cache

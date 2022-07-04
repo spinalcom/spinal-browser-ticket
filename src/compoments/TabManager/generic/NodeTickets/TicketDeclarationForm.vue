@@ -53,10 +53,7 @@ with this file. If not, see
           </el-select>
         </el-form-item>
 
-        <el-form-item
-          v-show="processes"
-          label="Process"
-        >
+        <el-form-item v-show="processes" label="Process">
           <el-select
             v-model="newTicket.process"
             placeholder="---"
@@ -73,10 +70,7 @@ with this file. If not, see
           </el-select>
         </el-form-item>
 
-        <el-form-item
-          v-show="incidents"
-          label="Incident"
-        >
+        <el-form-item v-show="incidents" label="Incident">
           <el-autocomplete
             v-model="newTicket.incident"
             :fetch-suggestions="suggestIncidents"
@@ -111,7 +105,7 @@ with this file. If not, see
             placeholder="---"
             type="textarea"
           ></el-input>
-            <!-- :placeholder="$t('spinal-twin.Description')" -->
+          <!-- :placeholder="$t('spinal-twin.Description')" -->
         </el-form-item>
       </el-form>
     </el-main>
@@ -132,12 +126,12 @@ with this file. If not, see
 </template>
 
 <script>
-import { spinalServiceTicket } from "spinal-service-ticket"
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import { spinalServiceTicket } from 'spinal-service-ticket';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 export default {
-  name: "TicketDeclarationForm",
+  name: 'TicketDeclarationForm',
   props: {
     node: {
       required: true,
@@ -149,30 +143,28 @@ export default {
     },
   },
 
-  computed:
-  {
-    user()
-    {
+  computed: {
+    user() {
       return {
-        username: "admin",
-        id: FileSystem._userid
+        username: 'admin',
+        id: FileSystem._userid,
       };
-    }
+    },
   },
-  
+
   data() {
     return {
       newTicket: {
-        context: "",
-        process: "",
-        incident: "",
-        priority: "",
-        description: "",
+        context: '',
+        process: '',
+        incident: '',
+        priority: '',
+        description: '',
       },
       contexts: false,
       processes: false,
       incidents: false,
-    }
+    };
   },
 
   async mounted() {
@@ -180,18 +172,19 @@ export default {
   },
 
   methods: {
-    async setProcesses()
-    {
-      this.processes = await spinalServiceTicket.getAllProcess(this.newTicket.context);
+    async setProcesses() {
+      this.processes = await spinalServiceTicket.getAllProcess(
+        this.newTicket.context
+      );
     },
 
-    async setIncidents()
-    {
-      this.incidents = await spinalServiceTicket.getCommonIncident(this.newTicket.process);
+    async setIncidents() {
+      this.incidents = await spinalServiceTicket.getCommonIncident(
+        this.newTicket.process
+      );
     },
 
-    async suggestIncidents(query = "", callback)
-    {
+    async suggestIncidents(query = '', callback) {
       let res = [];
       for (const incident of this.incidents) {
         if (incident.name.toLowerCase().includes(query.toLowerCase())) {
@@ -201,49 +194,53 @@ export default {
       callback(res);
     },
 
-    selected(item)
-    {
+    selected(item) {
       this.newTicket.incident = item;
     },
 
-    close()
-    {
-      this.$emit("close");
+    close() {
+      this.$emit('close');
     },
 
-    async confirm()
-    {
+    async confirm() {
       let infos = {
         processId: this.newTicket.process,
         name: this.newTicket.incident,
         user: this.user,
-      }
-      switch (this.newTicket.priority)
-      {
-        case "Occasionally":
+      };
+      switch (this.newTicket.priority) {
+        case 'Occasionally':
           infos.priority = 0;
           break;
-        case "Normal":
+        case 'Normal':
           infos.priority = 1;
           break;
-        case "Urgent":
+        case 'Urgent':
           infos.priority = 2;
           break;
         default:
           infos.priority = 0;
       }
-      let ticketId = await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
-      if (this.newTicket.description != undefined && this.newTicket.description != "") {
+      let ticketId = await spinalServiceTicket.addTicket(
+        infos,
+        this.newTicket.process,
+        this.newTicket.context,
+        this.node.info.id.get()
+      );
+      if (
+        this.newTicket.description != undefined &&
+        this.newTicket.description != ''
+      ) {
         let ticketnode = await SpinalGraphService.getRealNode(ticketId);
-        await serviceDocumentation.addNote(ticketnode, this.user, this.newTicket.description, "text");
+        await serviceDocumentation.addNote(
+          ticketnode,
+          this.user,
+          this.newTicket.description,
+          'text'
+        );
       }
-      this.$emit("update");
+      this.$emit('update');
     },
-
-    debug(item)
-    {
-      console.debug(item);
-    }
   },
-}
+};
 </script>

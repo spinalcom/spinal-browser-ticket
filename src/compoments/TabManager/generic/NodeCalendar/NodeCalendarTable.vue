@@ -45,31 +45,27 @@ with this file. If not, see
   </el-container>
 </template>
 <script>
-
-import VueCal from "vue-cal";
-import "vue-cal/dist/vuecal.css";
+import VueCal from 'vue-cal';
+import 'vue-cal/dist/vuecal.css';
 
 export default {
-  name: "NodeCalendarTable",
+  name: 'NodeCalendarTable',
   components: { VueCal },
   props: {
     events: {
       type: Array,
       required: true,
-    }
+    },
   },
 
   data() {
-    return {
-    };
+    return {};
   },
 
-  async mounted() {
-  },
+  async mounted() {},
   methods: {
-    focus(event, e)
-    {
-      this.$emit("select", event)
+    focus(event, e) {
+      this.$emit('select', event);
       e.stopPropagation();
     },
   },

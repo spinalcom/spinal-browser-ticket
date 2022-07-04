@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 SpinalCom - www.spinalcom.com
+ * Copyright 2022 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -22,30 +22,12 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-export function errorDialog(title, comfimText, msg, error) {
-  const h = this.$createElement;
-  const msgText = [h('span', null, msg)];
-  if (error) {
-    msgText.push(h('br', null, null), h('i', { style: 'color: teal' }, error));
-  }
-
-  this.$msgbox({
-    title,
-    message: h('p', null, msgText),
-    confirmButtonText: comfimText,
-    closeOnClickModal: false,
-    beforeClose: (action, instance, done) => {
-      if (action === 'confirm') {
-        // @ts-ignore
-        window.location =
-          '/html/spinaltwin/login.html' + location.hash + location.search;
-        // window.location = "/html/drive/";
-        done();
-      } else {
-        done();
-      }
-    },
-  });
+export interface IBimObject {
+  _server_id: number;
+  bimFileId: string;
+  dbid: number;
+  externalId: string;
+  id: string;
+  name: string;
+  type: string;
 }
-
-export default errorDialog;

@@ -27,7 +27,7 @@ with this file. If not, see
     <el-table
       v-if="tickets"
       :data="tickets"
-      :header-cell-style="{'background-color': '#f0f2f5'}"
+      :header-cell-style="{ 'background-color': '#f0f2f5' }"
       border
       height="100%"
     >
@@ -46,10 +46,7 @@ with this file. If not, see
           {{ scope.row.creation }}
         </div>
       </el-table-column>
-      <el-table-column
-          label="Actions"
-          fixed="right"
-          width=80>
+      <el-table-column label="Actions" fixed="right" width="80">
         <div slot-scope="scope">
           <el-tooltip :content="$t('spinal-twin.TicketInspect')">
             <el-button
@@ -66,7 +63,7 @@ with this file. If not, see
 
 <script>
 export default {
-  name: "NodeTicketsList.vue",
+  name: 'NodeTicketsList.vue',
   props: {
     tickets: {
       required: true,
@@ -74,18 +71,12 @@ export default {
     },
   },
   data() {
-    return {
-      
-    };
+    return {};
   },
   methods: {
-    debug(item) {
-      console.debug("Debugging", item);
-    },
-
     select(ticket) {
-      this.$emit("select", ticket);
+      this.$emit('select', ticket);
     },
   },
-}
+};
 </script>

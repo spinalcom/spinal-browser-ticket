@@ -21,20 +21,28 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-import {FileSystem} from "spinal-core-connectorjs_type";
-import {SpinalGraphService} from "spinal-env-viewer-graph-service";
 
-import {asyncGenToArray} from "./asyncGenToArray/asyncGenToArray";
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
-import BtnMapDate from "./BtnMappingDate";
-import {spinalServiceTimeseries} from "./timeseriesServiceInstance.js";
+import { asyncGenToArray } from './asyncGenToArray/asyncGenToArray';
+
+import BtnMapDate from './BtnMappingDate';
+import { spinalServiceTimeseries } from './timeseriesServiceInstance.js';
 
 class ChartDataEndpoint {
-  constructor(nodeId,elemName,unit, timeIntervalStr = "1h", start = null, end = null) {
+  constructor(
+    nodeId,
+    elemName,
+    unit,
+    timeIntervalStr = '1h',
+    start = null,
+    end = null
+  ) {
     this.nodeId = nodeId;
     this.currentValue = 0;
     this.name = elemName;
-    this.unit = unit
+    this.unit = unit;
     this.timeIntervalStr = timeIntervalStr;
     this.x = [];
     this.y = [];
@@ -64,16 +72,16 @@ class ChartDataEndpoint {
 
   async prom_update() {
     const element = await this.getElement();
-    this.name = element.name.get() + "-" + this.name + " ("+this.unit +")";
+    this.name = element.name.get() + '-' + this.name + ' (' + this.unit + ')';
     this.currentValue = element.currentValue.get();
     if (
-      typeof this.currentValue === "number" ||
-      typeof this.currentValue === "boolean"
+      typeof this.currentValue === 'number' ||
+      typeof this.currentValue === 'boolean'
     ) {
       const timeseries = await spinalServiceTimeseries.getOrCreateTimeSeries(
         this.nodeId
       );
-      if (this.timeIntervalStr === "CUSTOM") {
+      if (this.timeIntervalStr === 'CUSTOM') {
         const generator = await timeseries.getFromIntervalTime(
           this.start,
           this.end
@@ -81,7 +89,7 @@ class ChartDataEndpoint {
         this.handleTimeseries(generator);
       } else {
         const func = BtnMapDate[this.timeIntervalStr];
-        if (func && typeof func[0] === "function") {
+        if (func && typeof func[0] === 'function') {
           const timeseriesData = await func[0](timeseries, func[1]);
           const generator = await asyncGenToArray(timeseriesData);
           this.handleTimeseries(generator);
@@ -110,7 +118,7 @@ class ChartDataEndpoint {
   }
 
   changeCustomInterval(start, end) {
-    this.timeIntervalStr = "CUSTOM";
+    this.timeIntervalStr = 'CUSTOM';
     this.start = new Date(start);
     this.end = new Date(end);
     return this.update();
@@ -120,7 +128,7 @@ class ChartDataEndpoint {
     const node = SpinalGraphService.getRealNode(this.nodeId);
     const ptr = node.element.ptr;
     if (ptr.data.value && ptr.data.value !== 0) {
-      if (typeof FileSystem._objects[ptr.data.value] !== "undefined") {
+      if (typeof FileSystem._objects[ptr.data.value] !== 'undefined') {
         return Promise.resolve(FileSystem._objects[ptr.data.value]);
       }
     }
@@ -135,6 +143,4 @@ class ChartDataEndpoint {
   }
 }
 export default ChartDataEndpoint;
-export {
-  ChartDataEndpoint
-};
+export { ChartDataEndpoint };

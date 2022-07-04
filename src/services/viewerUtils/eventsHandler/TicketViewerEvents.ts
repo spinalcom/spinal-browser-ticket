@@ -22,9 +22,9 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { EventBus } from "../../event";
-import { viewerUtils } from "../viewerUtils";
+import { EventBus } from '../../event';
 import { spinalBackEnd } from '../../spinalBackend';
+import { viewerUtils } from '../viewerUtils';
 
 EventBus.$on('ticket-viewer-zoom', async (items) => {
   await viewerUtils.waitInitialized();
@@ -38,7 +38,6 @@ EventBus.$on('ticket-viewer-isolate', async (items) => {
 
 EventBus.$on('ticket-viewer-select', async (items) => {
   await viewerUtils.waitInitialized();
-  console.debug("selecting : ", items);
   viewerUtils.selectObjects(items);
 });
 
@@ -49,10 +48,13 @@ EventBus.$on('ticket-viewer-reset-color', async () => {
 
 EventBus.$on('ticket-viewer-color', async (items, relation) => {
   await viewerUtils.waitInitialized();
-  viewerUtils.restoreColorThemingItems()
-  console.debug('TICKET viewer color items : ', items);
-  items.map( async (item) => {
-    const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true);
+  viewerUtils.restoreColorThemingItems();
+  items.map(async (item) => {
+    const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
+      { server_id: item.serverId },
+      relation,
+      true
+    );
     for (const { selection, model } of list) {
       viewerUtils.colorThemingItems(model, item.color, selection);
     }

@@ -23,7 +23,7 @@
  */
 
 import VueRouter from 'vue-router';
-import Vue from "vue";
+import Vue from 'vue';
 
 Vue.use(VueRouter);
 
@@ -31,12 +31,13 @@ const AppList = () => import('./AppList/AppList.vue');
 // const TicketCenter = () => import('./TicketCenter/TicketCenter.vue');
 const InsightCenter = () => import('./InsightCenter/InsightCenter.vue');
 const SpaceCenter = () => import('./Space Center/spacecenter.vue');
-const SpaceCenterGestion = () => import('../compoments/space/component/categoryLstVue.vue');
+const SpaceCenterGestion = () =>
+  import('../compoments/space/component/categoryLstVue.vue');
 //const DataRoom = () => import("./DataRoom/DataRoom.vue")
-const EquipmentApp = () => import("./EquipmentApp/TheEquipmentApp.vue")
-const DataApp = () => import("./DataApp/TheDataApp.vue")
-const TicketApp = () => import("./TicketApp/TheTicketApp.vue")
-const AlarmApp = () => import("./AlarmCenter/index.vue")
+const EquipmentApp = () => import('./EquipmentApp/TheEquipmentApp.vue');
+const DataApp = () => import('./DataApp/TheDataApp.vue');
+const TicketApp = () => import('./TicketApp/TheTicketApp.vue');
+const AlarmApp = () => import('./AlarmCenter/index.vue');
 
 export const routes = [
   { path: '*', redirect: { name: 'AppList' } },
@@ -48,18 +49,21 @@ export const routes = [
   { path: '/Spacecenter', name: 'SpaceCenter', component: SpaceCenter },
   { path: '/EquipmentApp', name: 'EquipmentApp', component: EquipmentApp },
   { path: '/TicketApp', name: 'TicketApp', component: TicketApp },
-  { path: '/AlarmApp', name: 'AlarmApp', component: AlarmApp }
+  { path: '/AlarmApp', name: 'AlarmApp', component: AlarmApp },
 ];
-const realroutes = [...routes,
-{ path: '/Spacecenter/Gestion', name: 'gestion', component: SpaceCenterGestion },
-
-
-]
+const realroutes = [
+  ...routes,
+  {
+    path: '/Spacecenter/Gestion',
+    name: 'gestion',
+    component: SpaceCenterGestion,
+  },
+];
 export const router = new VueRouter({
-  routes: realroutes
+  routes: realroutes,
 });
 
 router.beforeResolve(function (to, from, next) {
-  document.title = `Spinal Twin - ${to.name}`
-  next()
-})
+  document.title = `Spinal Twin - ${to.name}`;
+  next();
+});

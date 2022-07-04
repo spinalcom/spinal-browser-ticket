@@ -42,7 +42,7 @@ async function findSurface(node: AppItem): Promise<number> {
   }
   if (info.getType().get() === ROOM_TYPE) {
     let attr = await getAttrByKey(info, 'area');
-    return parseFloat(attr.value.get());
+    return parseFloat(attr?.value.get() ?? 0);
   }
   if (node.children === undefined) {
     return 0;
@@ -58,7 +58,7 @@ async function findSurface(node: AppItem): Promise<number> {
 async function getAttrByKey(
   node: SpinalNode<any>,
   key: string
-): Promise<SpinalAttribute> {
+): Promise<SpinalAttribute | undefined> {
   if (node && node instanceof SpinalNode) {
     const cats = await node.getChildren('hasCategoryAttributes');
     for (const cat of cats) {

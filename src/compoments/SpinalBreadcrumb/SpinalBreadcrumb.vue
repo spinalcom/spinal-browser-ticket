@@ -34,11 +34,11 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../services/ViewManager/ViewManager";
-import { EventBus } from "../../services/event";
+import { ViewManager } from '../../services/ViewManager/ViewManager';
+import { EventBus } from '../../services/event';
 export default {
-  name: "SpinalBreadcrumb",
-  props: { viewKey: { require: true, type: String, default: "" } },
+  name: 'SpinalBreadcrumb',
+  props: { viewKey: { require: true, type: String, default: '' } },
   data() {
     return {
       breadcrumb: [],
@@ -55,11 +55,9 @@ export default {
     selectBreadcrumb(bc) {
       const viewManager = ViewManager.getInstance(this.viewKey);
       viewManager.move(bc.serverId);
-      // console.log("selectBreadcrumb", breadcrumb);
-      // this.$emit("selectHome");
     },
     openDrawer() {
-      EventBus.$emit("open-drawer");
+      EventBus.$emit('open-drawer');
     },
   },
 };

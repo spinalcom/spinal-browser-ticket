@@ -22,8 +22,8 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { EventBus } from "../../services/event";
-import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
+import { EventBus } from '../../services/event';
+import { viewerUtils } from '../../services/viewerUtils/viewerUtils';
 import { spinalBackEnd } from '../../services/spinalBackend';
 var debounce = require('lodash.debounce');
 
@@ -33,7 +33,7 @@ const sidebarHomeSelectDebounce = debounce(sidebarHomeSelect, 500);
 
 EventBus.$on('sidebar-selected-item', async (item) => {
   await viewerUtils.waitInitialized();
-  return sidebarSelectedItemDebounce(item)
+  return sidebarSelectedItemDebounce(item);
 });
 EventBus.$on('sidebar-mouseover-item', async (item) => {
   await viewerUtils.waitInitialized();
@@ -41,11 +41,11 @@ EventBus.$on('sidebar-mouseover-item', async (item) => {
 });
 EventBus.$on('sidebar-homeSelect', async (item) => {
   await viewerUtils.waitInitialized();
-  return sidebarHomeSelectDebounce(item)
+  return sidebarHomeSelectDebounce(item);
 });
 
 async function sidebarHomeSelect(item) {
-  viewerUtils.clearSelection()
+  viewerUtils.clearSelection();
   if (!item) {
     const face = 'front,top,right';
     viewerUtils.showAll();
@@ -57,7 +57,7 @@ async function sidebarHomeSelect(item) {
     await viewerUtils.rotateTo('front,top,right');
     await viewerUtils.fitToView(lstByModel);
   }
-  viewerUtils.clearSelection()
+  viewerUtils.clearSelection();
 }
 
 async function sidebarMouseoverItem(item) {
@@ -73,5 +73,4 @@ async function sidebarSelectedItem(item) {
     await viewerUtils.rotateTo('top');
     viewerUtils.fitToView(lstByModel);
   }
-
 }

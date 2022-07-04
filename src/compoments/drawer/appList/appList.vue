@@ -24,45 +24,49 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-menu class="drawer-app-list"
-             @select="menuSelect"
-             background-color="transparent"
-             :default-active="$route.name">
-      <el-menu-item v-for="route in routes"
-                    :index="route.name"
-                    :key="route.path"
-                    :route="route.path"
-                    class="drawer-list-item"
-                    v-ripple>
-        <span>{{ $t("Routes." + route.name)}}</span>
+    <el-menu
+      class="drawer-app-list"
+      @select="menuSelect"
+      background-color="transparent"
+      :default-active="$route.name"
+    >
+      <el-menu-item
+        v-for="route in routes"
+        :index="route.name"
+        :key="route.path"
+        :route="route.path"
+        class="drawer-list-item"
+        v-ripple
+      >
+        <span>{{ $t('Routes.' + route.name) }}</span>
       </el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
-import { routes } from "../../../router/router";
+import { routes } from '../../../router/router';
 export default {
   data() {
     return {
-      routerTrue: true
+      routerTrue: true,
     };
   },
-  name: "appList",
+  name: 'appList',
   computed: {
     routes() {
-      return routes.filter(e => !e.redirect);
-    }
+      return routes.filter((e) => !e.redirect);
+    },
   },
   methods: {
     menuSelect(index) {
       if (this.$route.name !== index) {
         this.$router.push({
-          name: index
+          name: index,
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

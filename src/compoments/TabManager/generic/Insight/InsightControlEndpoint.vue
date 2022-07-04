@@ -24,47 +24,46 @@ with this file. If not, see
 
 <template>
   <el-container
-    v-if="ctxNode
-      && (ctxNode.info.type.get() == 'geographicRoom'
-      && typeof endpoints !== 'undefined'
-      && endpoints.length != 0)"
+    v-if="
+      ctxNode &&
+      ctxNode.info.type.get() == 'geographicRoom' &&
+      typeof endpoints !== 'undefined' &&
+      endpoints.length != 0
+    "
   >
     <h4>
       {{ ctxNode.info.name.get() }}
     </h4>
     <div>
-    <div
-      v-for="eq of endpoints"
-      :key="eq.name"
-    >
-      <div class="control-endpoint-grid">
-        <insight-control-endpoint-box
-          v-for="end of eq.info"
-          :key="end.name"
-          :name="end.name"
-          :endpoint="end"
-        ></insight-control-endpoint-box>
+      <div v-for="eq of endpoints" :key="eq.name">
+        <div class="control-endpoint-grid">
+          <insight-control-endpoint-box
+            v-for="end of eq.info"
+            :key="end.name"
+            :name="end.name"
+            :endpoint="end"
+          ></insight-control-endpoint-box>
+        </div>
       </div>
-    </div>
     </div>
   </el-container>
 </template>
 
 <script>
 // imports
-import InsightControlEndpointBox from './InsightControlEndpointBox.vue'
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
+import InsightControlEndpointBox from './InsightControlEndpointBox.vue';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 
 export default {
-  name: "InsightControlEndpoint",
+  name: 'InsightControlEndpoint',
   components: { InsightControlEndpointBox },
   props: {
     Properties: {
       type: Object,
       required: true,
       default: undefined,
-      validator: function(value) {
+      validator: function (value) {
         if (!value.viewKey instanceof String) {
           return false;
         }
@@ -81,23 +80,17 @@ export default {
     };
   },
 
-  watch:
-  {
-    Properties:
-    {
-      handler: async function(oldProp, newProp)
-      {
-        if (newProp.view.serverId != 0)
-        {
+  watch: {
+    Properties: {
+      handler: async function (oldProp, newProp) {
+        if (newProp.view.serverId != 0) {
           await this.update(newProp.view.serverId);
-        }
-        else
-        {
+        } else {
           this.ctxNode = false;
         }
       },
       deep: true,
-    }
+    },
   },
 
   async mounted() {
@@ -105,18 +98,22 @@ export default {
   },
 
   methods: {
-    async update(id)
-    {
+    async update(id) {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[id];
-      this.endpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id.get(), "hasControlPoints");
+      this.endpoints = await this.getNodeEndpointsInfo(
+        this.ctxNode.info.id.get(),
+        'hasControlPoints'
+      );
     },
 
     // return infos from an endpointNodeId
-    async getEndpointInfo(endpointNodeId){
+    async getEndpointInfo(endpointNodeId) {
       const realnode = SpinalGraphService.getRealNode(endpointNodeId);
-      const attributesLstModels = await serviceDocumentation.getAllAttributes(realnode);
-      const attributes = attributesLstModels.map(el => el.get());
+      const attributesLstModels = await serviceDocumentation.getAllAttributes(
+        realnode
+      );
+      const attributes = attributesLstModels.map((el) => el.get());
       const endpointInfo = {};
       for (const attr of attributes) {
         endpointInfo[attr.label] = attr.value;
@@ -124,34 +121,38 @@ export default {
       return endpointInfo;
     },
 
-    async getNodeEndpointsInfo(nodeId, endpointRelation){
-      const endpointProfilsModel = await SpinalGraphService.getChildren(nodeId, endpointRelation);
-      if (endpointProfilsModel && endpointProfilsModel.length == 0)
-        return; // si la node n'a pas d'endpoints on quitte la fonction
-      if (endpointRelation == 'hasControlPoints') { // on cherche les control endpoints (onglet insight)
+    async getNodeEndpointsInfo(nodeId, endpointRelation) {
+      const endpointProfilsModel = await SpinalGraphService.getChildren(
+        nodeId,
+        endpointRelation
+      );
+      if (endpointProfilsModel && endpointProfilsModel.length == 0) return; // si la node n'a pas d'endpoints on quitte la fonction
+      if (endpointRelation == 'hasControlPoints') {
+        // on cherche les control endpoints (onglet insight)
         const res = [];
-        for(const endpointProfil of endpointProfilsModel) { // pour chaque profil de control endpoint
+        for (const endpointProfil of endpointProfilsModel) {
+          // pour chaque profil de control endpoint
           /** on récupère la data */
-          const endpointsModels = await SpinalGraphService.getChildren(endpointProfil.id.get(), "hasBmsEndpoint");
-          const endpoints = endpointsModels.map(el => el.get());
+          const endpointsModels = await SpinalGraphService.getChildren(
+            endpointProfil.id.get(),
+            'hasBmsEndpoint'
+          );
+          const endpoints = endpointsModels.map((el) => el.get());
           const infos = [];
 
-          for (const endpoint of endpoints) { // pour chaque control endpoint
-          /** on récupère la data */
+          for (const endpoint of endpoints) {
+            // pour chaque control endpoint
+            /** on récupère la data */
             const info = await this.getEndpointInfo(endpoint.id);
             infos.push(info);
           }
           res.push({
             name: endpointProfil.name.get(),
-            info:infos
+            info: infos,
           });
         }
         return res;
       }
-    },
-
-    async debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };

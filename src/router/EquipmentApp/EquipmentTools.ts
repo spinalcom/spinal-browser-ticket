@@ -22,25 +22,25 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { SpinalNode } from "spinal-model-graph";
 import { FileSystem } from 'spinal-core-connectorjs_type';
-import { AppItem } from "../../services/backend/AppItem";
-import { EQUIPMENT_TYPE } from "../../constants";
+import { AppItem } from '../../services/backend/AppItem';
+import { EQUIPMENT_TYPE } from '../../constants';
 
-async function getEquipmentNumber(item: AppItem) {
+async function getEquipmentNumber(item: AppItem): Promise<number> {
   const node = FileSystem._objects[item.serverId];
   if (node && node.getType().get() === EQUIPMENT_TYPE) return 1;
-  if (typeof item.children === "undefined") return 0;
-  const prom = [];
+  if (typeof item.children === 'undefined') return 0;
+  const prom: Promise<number>[] = [];
   for (const [, arrayItem] of item.children) {
     for (const i of arrayItem) {
       prom.push(getEquipmentNumber(i));
     }
   }
-  return Promise.all(prom)
-    .then((resArr) => resArr.reduce((prev, curr) => prev + curr, 0));
+  return Promise.all(prom).then((resArr) =>
+    resArr.reduce((prev, curr) => prev + curr, 0)
+  );
 }
 
 module.exports = {
   getEquipmentNumber: getEquipmentNumber,
-}
+};

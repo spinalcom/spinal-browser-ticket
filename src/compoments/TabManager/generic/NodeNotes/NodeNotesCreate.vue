@@ -30,60 +30,79 @@ with this file. If not, see
           Options
           <i class="el-icon-arrow-up el-icon--right"></i>
         </el-button>
-        <el-dropdown-menu slot="dropdown"
-                          style="overflow: hidden">
-          <el-tooltip :content="$t('spinal-twin.NotesAddPosition')"
-                      placement="right">
-            <el-dropdown-item v-on:click.native="addPostion()"
-                              icon="el-icon-position"></el-dropdown-item>
+        <el-dropdown-menu slot="dropdown" style="overflow: hidden">
+          <el-tooltip
+            :content="$t('spinal-twin.NotesAddPosition')"
+            placement="right"
+          >
+            <el-dropdown-item
+              v-on:click.native="addPostion()"
+              icon="el-icon-position"
+            ></el-dropdown-item>
           </el-tooltip>
-          <el-tooltip :content="$t('spinal-twin.NotesAddScreenshot')"
-                      placement="right">
-            <el-dropdown-item v-on:click.native="addScreenshot()"
-                              icon="el-icon-camera"></el-dropdown-item>
+          <el-tooltip
+            :content="$t('spinal-twin.NotesAddScreenshot')"
+            placement="right"
+          >
+            <el-dropdown-item
+              v-on:click.native="addScreenshot()"
+              icon="el-icon-camera"
+            ></el-dropdown-item>
           </el-tooltip>
-          <el-tooltip :content="$t('spinal-twin.NotesAddFile')"
-                      placement="right">
-            <el-dropdown-item v-on:click.native="addFile()"
-                              icon="el-icon-paperclip"></el-dropdown-item>
+          <el-tooltip
+            :content="$t('spinal-twin.NotesAddFile')"
+            placement="right"
+          >
+            <el-dropdown-item
+              v-on:click.native="addFile()"
+              icon="el-icon-paperclip"
+            ></el-dropdown-item>
           </el-tooltip>
         </el-dropdown-menu>
       </el-dropdown>
 
-      <el-input v-model="new_note"
-                v-on:keydown.enter.native="enterHandler"
-                resize="none"></el-input>
+      <el-input
+        v-model="new_note"
+        v-on:keydown.enter.native="enterHandler"
+        resize="none"
+      ></el-input>
 
       <el-tooltip :content="$t('spinal-twin.NoteSend')">
         <!-- v-on:click.native="sendNote()" -->
-        <el-button native-type="submit"
-                   class="spl-input-button"
-                   icon="el-icon-s-promotion"
-                   type="primary">
+        <el-button
+          native-type="submit"
+          class="spl-input-button"
+          icon="el-icon-s-promotion"
+          type="primary"
+        >
           {{ $t('spinal-twin.NoteSend') }}
         </el-button>
       </el-tooltip>
     </el-container>
 
     <el-container
-                v-if="attachments.length > 0"
-                  style="max-height: 90px; overflow: auto;">
-      <el-card v-for="attachment in attachments"
-               :key="attachment.name"
-               style="margin: 20px; position: relative; width: 90%">
+      v-if="attachments.length > 0"
+      style="max-height: 90px; overflow: auto"
+    >
+      <el-card
+        v-for="attachment in attachments"
+        :key="attachment.name"
+        style="margin: 20px; position: relative; width: 90%"
+      >
         {{ attachment.name }}
         <el-tooltip :content="$t('spinal-twin.NotesDeleteAttachment')">
-          <el-button v-on:click.native="delAttachment(attachment)"
-                     class="spl-input-button"
-                     icon="el-icon-circle-close"
-                     type="danger"
-                     circle
-                     size="small"
-                     style="position: absolute; top: 15px; right: 0">
+          <el-button
+            v-on:click.native="delAttachment(attachment)"
+            class="spl-input-button"
+            icon="el-icon-circle-close"
+            type="danger"
+            circle
+            size="small"
+            style="position: absolute; top: 15px; right: 0"
+          >
           </el-button>
         </el-tooltip>
       </el-card>
-
     </el-container>
 
     <!-- <el-card v-if="attachment"
@@ -104,12 +123,12 @@ with this file. If not, see
 </template>
 
 <script>
-import moment from "moment";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import moment from 'moment';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 
 export default {
-  name: "NodeNotesCreate",
+  name: 'NodeNotesCreate',
   props: {
     node: {
       required: true,
@@ -120,15 +139,15 @@ export default {
   computed: {
     user() {
       return {
-        username: "admin",
-        userId: FileSystem._userid || "",
+        username: 'admin',
+        userId: FileSystem._userid || '',
       };
     },
   },
 
   data() {
     return {
-      new_note: "",
+      new_note: '',
       attachments: [],
     };
   },
@@ -138,52 +157,15 @@ export default {
       if (e.ctrlKey) this.sendNote();
     },
 
-    // async $_sendnote(
-    //   text,
-    //   type,
-    //   file = undefined,
-    //   state = undefined,
-    //   contextID = undefined,
-    //   groupID = undefined
-    // ) {
-    //   return await serviceDocumentation.twinAddNote(
-    //     this.node,
-    //     this.user,
-    //     text,
-    //     type,
-    //     file,
-    //     state,
-    //     contextID,
-    //     groupID
-    //   );
-    // },
-
     async sendNote() {
       await this.sendAttachments();
 
       if (this.new_note.trim().length !== 0) {
         await serviceDocumentation.addNote(this.node, this.user, this.new_note);
-        this.new_note = "";
+        this.new_note = '';
       }
 
-      this.$emit("send-note");
-      // let pack = {
-      //   type: "text",
-      //   file: undefined,
-      //   view: undefined,
-      // };
-      // if (this.attachment) {
-      //   if (this.new_note.trim() === "") {
-      //     this.new_note = this.attachment.file.name;
-      //   }
-      //   pack.type = this.attachment.type;
-      //   pack.file = this.attachment.file;
-      //   pack.view = this.attachment.view;
-      // }
-      // await this.$_sendnote(this.new_note, pack.type, pack.file, pack.view);
-      // this.$emit("send-note", this.new_note, pack);
-      // this.new_note = "";
-      // this.attachment = undefined;
+      this.$emit('send-note');
     },
 
     async sendAttachments() {
@@ -211,9 +193,9 @@ export default {
           async (url) => {
             let blob = await fetch(url).then((r) => r.blob());
             let fileName =
-              (isViewPoint ? "viewPoint" : "screenshot") +
+              (isViewPoint ? 'viewPoint' : 'screenshot') +
               ` of ${this.node.getName().get()} from ` +
-              `${moment().format("L")}.png`;
+              `${moment().format('L')}.png`;
             blob.lastModifiedDate = new Date();
             blob.name = fileName;
             resolve(blob);
@@ -226,7 +208,7 @@ export default {
       const getCircularReplacer = () => {
         const seen = new WeakSet();
         return (key, value) => {
-          if (typeof value === "object" && value !== null) {
+          if (typeof value === 'object' && value !== null) {
             if (seen.has(value)) {
               return;
             }
@@ -254,11 +236,6 @@ export default {
           .getAggregateSelection()
           .map((el) => ({ modelId: el.model.id, selection: el.selection })),
       };
-      // let state = {
-      //   viewState: undefined,
-      //   objectState: undefined,
-      // };
-
       file.viewState = JSON.stringify(viewerState, getCircularReplacer());
       file.objectState = JSON.stringify(objectState, getCircularReplacer());
       return file;
@@ -267,31 +244,21 @@ export default {
     async addPostion() {
       const viewPoint = await this.getViewPoint();
       this.attachments.push(viewPoint);
-      // this.attachment = {
-      //   type: "view",
-      //   file: viewPoint.file,
-      //   view: viewPoint.state,
-      // };
     },
 
     async addScreenshot() {
       const file = await this.getScreenShotFile();
       this.attachments.push(file);
-      // this.attachment = {
-      //   type: "img",
-      //   file: file,
-      //   view: undefined,
-      // };
     },
 
     addFile() {
       const maxSize = 25000000;
-      const input = document.createElement("input");
-      input.type = "file";
+      const input = document.createElement('input');
+      input.type = 'file';
       input.multiple = true;
       input.click();
       input.addEventListener(
-        "change",
+        'change',
         (event) => {
           const files = event.target.files;
           let filelist = [];
@@ -301,24 +268,11 @@ export default {
           const sizes = filelist.map((el) => el.size);
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
-            alert($t("spinal-twin.ErrorFileTooLarge") + "25 MB");
+            alert($t('spinal-twin.ErrorFileTooLarge') + '25 MB');
             return;
           }
 
           this.attachments.push(...filelist);
-
-          // this.attachment = {
-          //   type: "file",
-          //   file: filelist[0],
-          //   view: undefined,
-          // };
-          // if (
-          //   this.attachment.file.name.endsWith(".png") ||
-          //   this.attachment.file.name.endsWith(".jpg") ||
-          //   this.attachment.file.name.endsWith(".jpeg")
-          // ) {
-          //   this.attachment.type = "img";
-          // }
         },
         false
       );

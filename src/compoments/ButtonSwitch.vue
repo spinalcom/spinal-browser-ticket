@@ -24,29 +24,21 @@ with this file. If not, see
 
 <template>
   <div v-if="active">
-    <el-button
-      :icon="icon"
-      type="primary"
-      circle
-    ></el-button>
+    <el-button :icon="icon" type="primary" circle></el-button>
   </div>
-  
+
   <div v-else>
-    <el-button
-      :icon="icon"
-      :disabled="disabled"
-      circle
-    ></el-button>
+    <el-button :icon="icon" :disabled="disabled" circle></el-button>
   </div>
 </template>
 
 <script>
 export default {
-  name: "ButtonSwitch",
+  name: 'ButtonSwitch',
   props: {
     icon: { type: String, required: true },
     active: { type: Boolean, required: true },
     disabled: { type: Boolean, required: false, default: false },
   },
-}
+};
 </script>

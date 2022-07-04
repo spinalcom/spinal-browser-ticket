@@ -59,16 +59,20 @@ with this file. If not, see
 
 <script>
 // imports
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
-import { SpinalEventService } from "spinal-env-viewer-task-service";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
 
-import NodeCalendarTable from "./NodeCalendarTable.vue";
-import NodeCalendarEventCreate from "./NodeCalendarEventCreate.vue";
-import NodeCalendarEventDetails from "./NodeCalendarEventDetails.vue";
+import NodeCalendarTable from './NodeCalendarTable.vue';
+import NodeCalendarEventCreate from './NodeCalendarEventCreate.vue';
+import NodeCalendarEventDetails from './NodeCalendarEventDetails.vue';
 
 export default {
-  name: "NodeCalendar",
-  components: { NodeCalendarTable, NodeCalendarEventCreate, NodeCalendarEventDetails },
+  name: 'NodeCalendar',
+  components: {
+    NodeCalendarTable,
+    NodeCalendarEventCreate,
+    NodeCalendarEventDetails,
+  },
   props: {
     Properties: {
       required: true,
@@ -85,23 +89,17 @@ export default {
     };
   },
 
-  watch:
-  {
-    Properties:
-    {
-      handler: async function(oldProp, newProp)
-      {
-        if (newProp.view.serverId != 0)
-        {
+  watch: {
+    Properties: {
+      handler: async function (oldProp, newProp) {
+        if (newProp.view.serverId != 0) {
           await this.update(newProp.view.serverId);
-        }
-        else
-        {
+        } else {
           this.ctxNode = false;
         }
       },
       deep: true,
-    }
+    },
   },
 
   async mounted() {
@@ -127,12 +125,9 @@ export default {
       });
     },
 
-    async update(id)
-    {
+    async update(id) {
       // update tab infos from current node
-      console.debug("CAL start");
       this.ctxNode = FileSystem._objects[id];
-      console.debug("CAL end");
       await this.loadCalendar();
       this.addingEvent = false;
       this.selectedEvent = false;
@@ -140,17 +135,13 @@ export default {
 
     _formatDate(argDate) {
       let date = new Date(argDate);
-      return `${date.getFullYear()}-${date.getMonth() +
-        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+      return `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
     },
 
-    select(event)
-    {
+    select(event) {
       this.selectedEvent = event;
-    },
-
-    async debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };

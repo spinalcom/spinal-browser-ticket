@@ -22,99 +22,119 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-
 <template>
-<el-row>
+  <el-row>
     <el-tabs type="border-card">
-      <!-- Onglet Tableau -->
+      
       <el-tab-pane :label="$t('Table')">
-
-        <el-button class="boutton-barre"
-               icon="el-icon-arrow-left"
-               circle
-               style ="position: fixed; z-index: 1;"
-               @click="goBack()"></el-button>
+        <el-button
+          class="boutton-barre"
+          icon="el-icon-arrow-left"
+          circle
+          style="position: fixed; z-index: 1"
+          @click="goBack()"
+        ></el-button>
 
         <el-row class="barre">
-          <el-button class="boutton-barre"
-                     icon="el-icon-download"
-                     circle
-                     ></el-button>
-          <el-button class="boutton-barre"
-                     icon="el-icon-view"
-                     circle
-                     :disabled="true"
-                     ></el-button>
+          <el-button
+            class="boutton-barre"
+            icon="el-icon-download"
+            circle
+          ></el-button>
+          <el-button
+            class="boutton-barre"
+            icon="el-icon-view"
+            circle
+            :disabled="true"
+          ></el-button>
+        </el-row>
+        
+        <el-table class="tab"
+          border
+          style="width: 100%"
+          :header-cell-style="{ 'background-color': '#f0f2f5' }"
+          :data="data"
+        >
+          <el-table-column align="center" :label="$t('HeatmapCenter.lst_profils')">
+            <template slot-scope="scope">
+              <div>
+                <div
+                  class="spinal-table-cell-color"
+                  :style="{ 'background-color': scope.row.color }"
+                ></div>
+                <div> {{ scope.row.name }} </div>
+              </div>
+            </template>
+          </el-table-column>
 
-        </el-row> 
-    <!-- On récupère la data à partir de props -->
-    <el-table 
-              :data="profils" 
-              class="tab"
-              border
-              style="width: 100%"
-              :header-cell-style='{"background-color": "#f0f2f5"}'
-              @row-click="SeeEvent">
+          <el-table-column width="65" align="center">
+            <template slot-scope="scope">
+              <el-button
+                @click="SelectProfil(scope.row)"
+                icon="el-icon-arrow-right"
+                circle
+              ></el-button>
+            </template>
+          </el-table-column>
 
-      <el-table-column prop=name
-                       label="Profil"
-                       align="center">
-      </el-table-column>
 
-      <el-table-column width="65"
-                       align="center">
+
+        </el-table>
+        
+        <!--<el-table-column width="65" align="center">
           <template slot-scope="scope">
-              <el-button v-on:click="SelectProfil(scope.row)"
-                         icon="el-icon-arrow-right"
-                         circle></el-button>
+            <el-button
+              v-on:click="SelectProfil(scope.row)"
+              icon="el-icon-arrow-right"
+              circle
+            ></el-button>
           </template>
-      </el-table-column>
-    </el-table>
-    </el-tab-pane>
+        </el-table-column>-->
+        
+      </el-tab-pane>
     </el-tabs>
-
   </el-row>
-
 </template>
 
 <script>
-import { spinalBackEnd } from "../../../services/spinalBackend"
+import { spinalBackEnd } from '../../../services/spinalBackend';
 export default {
   data() {
-    return {
-      //contextLst: []
-    };
+    return {};
   },
   components: {},
-  props: ["profils", "color"],
+  props: ['profils', 'color'],
   methods: {
+    
     SeeEvent(data) {
-      this.$emit("seeEvent", { ...data, color: this.color });
+      this.$emit('seeEvent', { ...data, color: this.color });
     },
-    goBack(){
-      this.$emit("goBackGroup");
+    goBack() {
+      this.$emit('goBackGroup');
     },
-    seeHeatmap:function(info){
+    seeHeatmap: function (info) {
       this.$emit('profilSelectEvent', info);
     },
-    async SelectProfil(profil){
-      console.log(profil)
-    
-      let itemLinked = await spinalBackEnd.heatmapBack.getElementLinkedToProfil(profil);
-      itemLinked = itemLinked.filter( el => el) //remove duplicates tagged with undefined
+    async SelectProfil(profil) {
+      let itemLinked = await spinalBackEnd.heatmapBack.getElementLinkedToProfil(
+        profil
+      );
+      itemLinked = itemLinked.filter((el) => el); //remove duplicates tagged with undefined
       profil.rooms = itemLinked;
-      this.$emit("selectprofil",profil)
-    }
+      this.$emit('selectprofil', profil);
+    },
   },
-
-
-  
-  async mounted() {
+  computed: {
+    data: function () {
+      return this.profils.map((obj) => {
+        return {
+          id: obj.id,
+          name: obj.name,
+          endpointsProfils: obj.endpointsProfils
+        };
+      });
+    },
   },
-  watch: {},
-  beforeDestroy() {
-
-  }
 };
 </script>
 
