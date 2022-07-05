@@ -96,13 +96,13 @@ export default {
   methods: {
     async toogleSelect(data) {
       const nodeId = data.id.get();
-      console.log(nodeId);
+      console.log(nodeId," ");
       const name = data.objectName;
       const unit = data.unit;
       const index = this.timeSeriesData.findIndex((elem) => {
         return elem === nodeId;
       });
-      console.log('index : ', index);
+      console.log('index:  ', index);
       if (index === -1) {
         let data;
         if (this.btnSelected === 'CUSTOM') {
@@ -210,6 +210,6 @@ export default {
 }
 
 .endpoint-chart-viewer-panel .md-content {
-  background-color: rgba(66, 66, 66, 0.4);
+  background-color: rgba(237, 236, 236, 0.4);
 }
 </style>
