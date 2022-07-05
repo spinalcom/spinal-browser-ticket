@@ -92,7 +92,7 @@ with this file. If not, see
 
     <div class="relative">
       <el-button
-        v-on:click="openChartModal"
+        v-on:click="openChartModal()"
         :disabled="this.variableSelected.saveTimeSeries === 0"
         class="dashboard-btn custom-icon circled-button"
         :class="{
@@ -302,53 +302,54 @@ export default {
 
       return allBimObjects.map((el) => el.get());
     },
-  },
-
-  async focus() {
+    async focus() {
     let a = await SpinalGraphService.getRealNode(this.room.id);
     const item = { id: this.room.id, server_id: a._server_id };
     EventBus.$emit('sidebar-selected-item', item);
+    },
+
+    async select() {
+      let a = await SpinalGraphService.getRealNode(this.room.id);
+      const item = { id: this.room.id, server_id: a._server_id };
+      this.$emit('select', item);
+    },
+    async isolate() {
+      let data = { rooms: [this.room] };
+      const allBimObjects = await this.getAllBimObjects(data);
+      this.$emit('isolate', {
+        id: this.room.id,
+        ids: allBimObjects,
+      });
+    },
+
+    async getAllBimObjects(data) {
+      // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
+      const promises = data.rooms.map((el) =>
+        groupManagerUtilities.getBimObjects(el.id)
+      );
+
+      const allBimObjects = await Promise.all(promises).then((result) => {
+        result = result.flat(10);
+        return result;
+      });
+
+      return allBimObjects.map((el) => el.get());
+    },
+
+    openChartModal() {
+      let data = this.selectedNode;
+      data.objectName = this.name;
+      data.unit = this.unit;
+      EventBus.$emit('data-mode', data);
+      this.isDataMode = !this.isDataMode;
+    },
+
+    openConfigModal() {
+      this.isConfigModalVisible = !this.isConfigModalVisible;
+    },
   },
 
-  async select() {
-    let a = await SpinalGraphService.getRealNode(this.room.id);
-    const item = { id: this.room.id, server_id: a._server_id };
-    this.$emit('select', item);
-  },
-  async isolate() {
-    let data = { rooms: [this.room] };
-    const allBimObjects = await this.getAllBimObjects(data);
-    this.$emit('isolate', {
-      id: this.room.id,
-      ids: allBimObjects,
-    });
-  },
-
-  async getAllBimObjects(data) {
-    // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
-    const promises = data.rooms.map((el) =>
-      groupManagerUtilities.getBimObjects(el.id)
-    );
-
-    const allBimObjects = await Promise.all(promises).then((result) => {
-      result = result.flat(10);
-      return result;
-    });
-
-    return allBimObjects.map((el) => el.get());
-  },
-
-  openChartModal() {
-    let data = this.selectedNode;
-    data.objectName = this.name;
-    data.unit = this.unit;
-    EventBus.$emit('data-mode', data);
-    this.isDataMode = !this.isDataMode;
-  },
-
-  openConfigModal() {
-    this.isConfigModalVisible = !this.isConfigModalVisible;
-  },
+  
 
   filters: {
     filterValue(value) {

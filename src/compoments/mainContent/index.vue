@@ -111,6 +111,7 @@ export default {
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
     EventBus.$on('data-mode', (data) => {
+      console.log("pinged my insight center")
       this.dataMode = true;
 
       this.$refs.chart.toogleSelect(data);
