@@ -96,8 +96,9 @@ with this file. If not, see
         :disabled="this.variableSelected.saveTimeSeries === 0"
         class="dashboard-btn custom-icon circled-button"
         :class="{
-          'dashboard-btn-activated': isDataMode,
-          'dashboard-btn-desactivated': !isDataMode,
+          'dashboard-btn-disabled': this.variableSelected.saveTimeSeries === 0,
+          'dashboard-btn-on': isDataMode,
+          'dashboard-btn-off': !isDataMode,
         }"
         circle
         icon="el-icon-menu"
@@ -492,18 +493,20 @@ export default {
   display: none;
 }
 
-.dashboard-btn-activated {
+.dashboard-btn-on {
   color: rgb(255, 174, 0);
 }
-.dashboard-btn-desactivated {
+.dashboard-btn-off {
   color: rgb(0, 0, 0);
 }
-
-.dashboard-btn-activated:hover {
+.dashboard-btn-on:hover {
   color: rgb(255, 174, 0);
 }
-.dashboard-btn-desactivated:hover {
+.dashboard-btn-off:hover {
   color: rgb(0, 0, 0);
+}
+.dashboard-btn-disabled {
+  color: rgba(97, 97, 97, 0.483);
 }
 .custom-icon {
   font-size: 20px;
