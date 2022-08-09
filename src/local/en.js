@@ -132,6 +132,8 @@ export default {
   'node-type.SpinalServiceTicketProcess': 'Processes',
   'node-type.SpinalSystemServiceTicketTypeStep': 'Steps',
   'node-type.SpinalSystemServiceTicketTypeTicket': 'Tickets',
+  'node-type.geographicRoomGroupContext': 'Room group contexts',
+  'node-type.geographicRoomGroup': 'Room groups',
   'node-type.hasFiles': 'Documentation',
   'node-type.hasCategoryAttributes': 'Attributes', // TODO replace references for spinal-twin
   'node-type.Sum': 'Count',
@@ -163,6 +165,7 @@ export default {
   'spinal-twin.CategoryEdit': 'Edit categorie ',
   'spinal-twin.CategoryRemove': 'Remove category ',
   'spinal-twin.Explorer': 'Explorer',
+  'spinal-twin.Chart': 'Chart',
   'spinal-twin.Documentation': 'Documentation',
   'spinal-twin.DocumentAdd': 'Add document',
   'spinal-twin.DocumentDownload': 'Download document',
