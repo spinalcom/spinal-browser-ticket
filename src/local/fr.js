@@ -99,10 +99,6 @@ export default {
   'spinal-twin.EquipmentCount': "Nombre d'équipements",
   'spinal-twin.TotalEquipments': "Nombre total d'équipements",
 
-  'spinal-twin.BuildingCount': 'Nombre de bâtiments',
-  'spinal-twin.FloorCount': "Nombre d'étages",
-  'spinal-twin.RoomCount': 'Nombre de salles',
-
   'spinal-twin.hasCategoryAttributes': 'Attributs',
   'spinal-twin.CategoryAdd': "Ajouter une categorie d'attributs",
   'spinal-twin.CategoryEdit': 'Editer la categorie ',

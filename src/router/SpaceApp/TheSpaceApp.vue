@@ -244,7 +244,7 @@ export default {
       // );
 
       this.currentView = view;
-      // this.setColumns(view);
+      this.setColumns(view);
 
       if (this.isolated == true) {
         viewerState.changeIsolation();
@@ -275,16 +275,16 @@ export default {
       let node = FileSystem._objects[view.serverId];
       this.items.cols = [];
       if (!node) {
-        this.items.cols = ['CategoryCount', 'TotalEquipments'];
+        this.items.cols = ['CategoryCount'];
         return;
       }
       let nodeType = node.info.type.get();
       switch (nodeType) {
-        case 'BIMObjectGroupContext':
-          this.items.cols = ['GroupCount', 'TotalEquipments'];
+        case SPACE_CONTEXT_TYPE:
+          this.items.cols = ['GroupCount'];
           break;
-        case 'groupingCategory':
-          this.items.cols = ['EquipmentCount'];
+        case SPACE_CATEGORY_TYPE:
+          this.items.cols = ['RoomCount'];
           break;
         default:
           this.items.cols = [];

@@ -156,6 +156,10 @@ export default {
   'spinal-twin.TicketCount': 'Ticket number',
   'spinal-twin.TotalTickets': 'Total ticket number',
 
+  'spinal-twin.BuildingCount': 'Nombre de bâtiments',
+  'spinal-twin.FloorCount': "Nombre d'étages",
+  'spinal-twin.RoomCount': 'Nombre de salles',
+
   'spinal-twin.hasCategoryAttributes': 'Attributes',
   'spinal-twin.CategoryAdd': 'Add attribute category',
   'spinal-twin.CategoryEdit': 'Edit category ',
