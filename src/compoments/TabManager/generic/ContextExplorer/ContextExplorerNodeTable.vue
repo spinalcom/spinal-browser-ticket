@@ -27,11 +27,11 @@ with this file. If not, see
 -->
 <template>
   <div style="height: 100%">
+      <!-- @row-click="selectInView" -->
     <el-table
       v-loading="loading"
       :data="data"
       :header-cell-style="{ 'background-color': '#f0f2f5' }"
-      @row-click="selectInView"
       @row-dblclick="SeeEvent"
       height="100%"
       border
