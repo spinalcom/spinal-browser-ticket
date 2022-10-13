@@ -100,6 +100,8 @@ import CategoryAttribute from '../../compoments/TabManager/generic/CategoryAttri
 import NodeDocumentation from '../../compoments/TabManager/generic/NodeDocumentation.vue';
 import NodeTickets from '../../compoments/TabManager/generic/NodeTickets/NodeTickets.vue';
 import NodeNotes from '../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue';
+import InsightEndpoint from '../../compoments/TabManager/generic/Insight/InsightEndpoint.vue';
+import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue';
 
 const VIEW_KEY = 'DataApp';
 
@@ -168,6 +170,24 @@ export default {
         {
           name: 'spinal-twin.Tickets',
           content: NodeTickets,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+        {
+          name: 'spinal-twin.ControlEndpoints',
+          content: InsightEndpoint,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+        {
+          name: 'spinal-twin.Endpoints',
+          content: InsightEndpoint,
           props: {
             viewKey: VIEW_KEY,
             view: false,
