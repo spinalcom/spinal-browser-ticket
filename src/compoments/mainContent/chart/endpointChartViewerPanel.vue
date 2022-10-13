@@ -96,7 +96,7 @@ export default {
   methods: {
     async toogleSelect(data) {
       const nodeId = data.id.get();
-      console.log(nodeId," ");
+      console.log(nodeId, ' ');
       const name = data.objectName;
       const unit = data.unit;
       const index = this.timeSeriesData.findIndex((elem) => {

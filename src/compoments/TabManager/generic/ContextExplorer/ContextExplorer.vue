@@ -52,19 +52,6 @@ with this file. If not, see
         @isolate="Isolate"
         style="height: 100%"
       >
-    <div v-if="Properties.items !== false"
-         style="height:calc(100% - 52px)">
-      <context-explorer-node-table :ref="'Explorer-table'"
-                                   :view-key="Properties.viewKey"
-                                   :items="itemsComputed"
-                                   :columns="cols"
-                                   :relation="Properties.relation"
-                                   :depth="Properties.depth"
-                                   :context="Properties.context"
-                                   :hasEvent="Properties.hasEvent"
-                                   @select="Select"
-                                   @isolate="Isolate"
-                                   style="height:100%">
       </context-explorer-node-table>
     </div>
   </div>
@@ -72,12 +59,12 @@ with this file. If not, see
 
 <script>
 // Tools
-import { EventBus } from "../../../../services/event";
-import { viewerState } from "./viewerState";
+import { EventBus } from '../../../../services/event';
+import { viewerState } from './viewerState';
 
 // Components
-import ButtonSwitch from "../../../../compoments/ButtonSwitch";
-import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
+import ButtonSwitch from '../../../../compoments/ButtonSwitch';
+import ContextExplorerNodeTable from '../ContextExplorer/ContextExplorerNodeTable.vue';
 
 export default {
   name: 'ContextExplorer',
@@ -129,30 +116,30 @@ export default {
   methods: {
     Color() {
       viewerState.changeColoration();
-      EventBus.$emit("viewer-reset-color");
-      this.$refs["Explorer-table"].isColored = false;
+      EventBus.$emit('viewer-reset-color');
+      this.$refs['Explorer-table'].isColored = false;
       if (viewerState.colored()) {
-        this.$refs["Explorer-table"].Color();
+        this.$refs['Explorer-table'].Color();
       }
       this.colored = viewerState.colored();
     },
 
     Select(item) {
-      EventBus.$emit("viewer-select", item, this.Properties.relation);
+      EventBus.$emit('viewer-select', item, this.Properties.relation);
     },
 
     Isolate(item) {
       viewerState.changeIsolation();
-      EventBus.$emit("viewer-reset-isolate");
-      if (viewerState.isolated()) this.$refs["Explorer-table"].Isolate();
+      EventBus.$emit('viewer-reset-isolate');
+      if (viewerState.isolated()) this.$refs['Explorer-table'].Isolate();
     },
 
     exportToExcel() {
-      this.$refs["Explorer-table"].exportToExcel();
+      this.$refs['Explorer-table'].exportToExcel();
     },
 
     async debug(what) {
-      console.debug("Debugging", what);
+      console.debug('Debugging', what);
     },
   },
 };
@@ -174,7 +161,7 @@ export default {
 }
 
 .primary {
-  background: "blue";
+  background: 'blue';
   color: blue;
 }
 </style>

@@ -25,7 +25,6 @@ with this file. If not, see
 <template>
   <el-row>
     <el-tabs type="border-card">
-      
       <el-tab-pane :label="$t('Table')">
         <el-button
           class="boutton-barre"
@@ -41,21 +40,19 @@ with this file. If not, see
             icon="el-icon-download"
             circle
           ></el-button>
-          <el-button
-            class="boutton-barre"
-            icon="el-icon-view"
-            circle
-            :disabled="true"
-          ></el-button>
         </el-row>
-        
-        <el-table class="tab"
+
+        <el-table
+          class="tab"
           border
           style="width: 100%"
           :header-cell-style="{ 'background-color': '#f0f2f5' }"
           :data="data"
         >
-          <el-table-column align="center" :label="$t('HeatmapCenter.lst_profils')">
+          <el-table-column
+            align="center"
+            :label="$t('HeatmapCenter.lst_profils')"
+          >
             <template slot-scope="scope">
               <div>
                 <div
@@ -76,11 +73,8 @@ with this file. If not, see
               ></el-button>
             </template>
           </el-table-column>
-
-
-
         </el-table>
-        
+
         <!--<el-table-column width="65" align="center">
           <template slot-scope="scope">
             <el-button
@@ -90,7 +84,6 @@ with this file. If not, see
             ></el-button>
           </template>
         </el-table-column>-->
-        
       </el-tab-pane>
     </el-tabs>
   </el-row>
@@ -105,7 +98,6 @@ export default {
   components: {},
   props: ['profils', 'color'],
   methods: {
-    
     SeeEvent(data) {
       this.$emit('seeEvent', { ...data, color: this.color });
     },
@@ -130,7 +122,7 @@ export default {
         return {
           id: obj.id,
           name: obj.name,
-          endpointsProfils: obj.endpointsProfils
+          endpointsProfils: obj.endpointsProfils,
         };
       });
     },

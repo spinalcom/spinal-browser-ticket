@@ -77,17 +77,11 @@ with this file. If not, see
       </el-tooltip>
     </div>
 
-    <div
-      class="name"
-      v-tooltip="name"
-    >
-      {{name}}
+    <div class="name" v-tooltip="name">
+      {{ name }}
     </div>
-    <div
-      class="value"
-      v-tooltip="`${value} ${unit}`"
-    >
-      {{value | filterValue}} {{unit}}
+    <div class="value" v-tooltip="`${value} ${unit}`">
+      {{ value | filterValue }} {{ unit }}
     </div>
 
     <div class="relative">
@@ -304,9 +298,9 @@ export default {
       return allBimObjects.map((el) => el.get());
     },
     async focus() {
-    let a = await SpinalGraphService.getRealNode(this.room.id);
-    const item = { id: this.room.id, server_id: a._server_id };
-    EventBus.$emit('sidebar-selected-item', item);
+      let a = await SpinalGraphService.getRealNode(this.room.id);
+      const item = { id: this.room.id, server_id: a._server_id };
+      EventBus.$emit('sidebar-selected-item', item);
     },
 
     async select() {
@@ -349,8 +343,6 @@ export default {
       this.isConfigModalVisible = !this.isConfigModalVisible;
     },
   },
-
-  
 
   filters: {
     filterValue(value) {

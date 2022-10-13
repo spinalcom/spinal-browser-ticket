@@ -42,14 +42,7 @@ with this file. If not, see
             circle
             @click="exportData"
           ></el-button>
-          <el-button
-            class="boutton-barre"
-            icon="el-icon-view"
-            circle
-            @click="SeeAll"
-          ></el-button>
         </el-row>
-
         <!-- Si on a pas encore selectionné de Groupe on affiche une table avec la liste des groupes-->
         <el-table
           v-if="!groupSelected"

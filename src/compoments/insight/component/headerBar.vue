@@ -29,13 +29,6 @@ with this file. If not, see
       circle
       @click="exportData"
     ></el-button>
-    <el-button
-      class="boutton-barre"
-      icon="el-icon-view"
-      circle
-      :disabled="true"
-      @click="SeeAll"
-    ></el-button>
   </el-row>
 </template>
 
