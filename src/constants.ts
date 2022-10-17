@@ -88,6 +88,7 @@ export const GEO_RELATIONS = [
   ROOM_RELATION,
   EQUIPMENT_RELATION,
   REFERENCE_RELATION,
+  `${REFERENCE_RELATION}.ROOM`,
   // OLD RELATION NAMES
   'hasBIMObject',
   'hasReference',
@@ -99,8 +100,10 @@ export const PART_RELATION_NAME = 'hasParts';
 
 export const CATEGORY_RELATION_NAME = 'hasCategory';
 export const GROUP_RELATION_NAME = 'hasGroup';
+
 export const GROUP_EQUIPMENT_RELATION_NAME = 'groupHasBIMObject';
 
+// equipment group context
 export const EQUIPMENT_RELATION_LIST = [
   CATEGORY_RELATION_NAME,
   GROUP_RELATION_NAME,
@@ -110,3 +113,15 @@ export const EQUIPMENT_RELATION_LIST = [
 export const GEO_ROOM_TYPE = 'geographicRoom';
 export const GEO_FLOOR_TYPE = 'geographicFloor';
 export const GEO_BUILDING_TYPE = 'geographicBuilding';
+
+export const SPACE_CONTEXT_TYPE = 'geographicRoomGroupContext';
+export const SPACE_CATEGORY_TYPE = 'groupingCategory';
+export const SPACE_GROUP_TYPE = 'geographicRoomGroup';
+export const SPACE_ROOM_RELATION = 'groupHasgeographicRoom';
+
+
+export const SPACE_RELATION_LIST = [
+  CATEGORY_RELATION_NAME,
+  GROUP_RELATION_NAME,
+  SPACE_ROOM_RELATION,
+];

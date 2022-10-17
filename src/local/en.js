@@ -40,7 +40,8 @@ export default {
   'Routes.AppList': 'Select the application',
   'Routes.DataApp': 'Explore the building',
   'Routes.InsightCenter': 'Visualize the activity',
-  'Routes.SpaceCenter': 'Inspect the spaces',
+  // 'Routes.SpaceCenter': 'Inspect the spaces',
+  'Routes.SpaceApp': 'Inspect the spaces',
   'Routes.EquipmentApp': 'Inspect the equipments',
   'Routes.TicketApp': 'Handle the tickets',
 

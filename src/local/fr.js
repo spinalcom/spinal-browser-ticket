@@ -39,7 +39,8 @@ export default {
   'Routes.AppList': "Sélectionner l'application",
   'Routes.DataApp': 'Explorer le bâtiment',
   'Routes.InsightCenter': "Visualiser l'activité",
-  'Routes.SpaceCenter': 'Inspecter les espaces',
+  // 'Routes.SpaceCenter': 'Inspecter les espaces',
+  'Routes.SpaceApp': 'Inspecter les espaces',
   'Routes.EquipmentApp': 'Inspecter les équipements',
   'Routes.TicketApp': 'Gérer les tickets',
   'DataRoom.geographicContext': 'Contextes', // Could be generic

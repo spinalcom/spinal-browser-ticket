@@ -26,13 +26,18 @@ import {
   SpinalGraphService,
   SpinalNode,
 } from 'spinal-env-viewer-graph-service';
-import { EQUIPMENT_TYPE } from '../../constants';
+import { EQUIPMENT_TYPE, FLOOR_TYPE, ROOM_TYPE } from '../../constants';
 import { EQUIPMENT_RELATION_LIST, GEO_RELATIONS } from '../../constants';
+// import {
+//   TICKET_TICKET_TYPE,
+//   TICKET_TICKET_RELATION,
+//   TICKET_RELATION_LIST,
+// } from 'spinal-service-ticket/dist/constants.js';
 import {
-  TICKET_TICKET_TYPE,
-  TICKET_TICKET_RELATION,
-  TICKET_RELATION_LIST,
-} from 'spinal-service-ticket/dist/Constants.js';
+  SPINAL_TICKET_SERVICE_TICKET_TYPE,
+  SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+  SPINAL_TICKET_SERVICE_STEP_TYPE
+} from "spinal-service-ticket/dist/Constants.js";
 
 /**
  * Script to setup viewer & ticket interaction
@@ -53,7 +58,7 @@ export async function addObjectToTicket(ticketContext: spinal.Model) {
     relations,
     (n) => {
       if (
-        n.getType().get() === TICKET_TICKET_TYPE ||
+        n.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE ||
         n.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
       ) {
         // When a ticket is found, add it to the spinalgraphservice
@@ -82,6 +87,7 @@ export async function addObjectToTicket(ticketContext: spinal.Model) {
     // get all the bimobjects from the tickets' parents
     const objects: spinal.Model[] = await bimParent.find(relations, (n) => {
       if (
+
         n.getType().get() === EQUIPMENT_TYPE ||
         n.getType().get() === 'BimObject'
       ) {
@@ -127,32 +133,47 @@ function getOrAddModelIfMissing(array, model): { selection: number[]; model } {
  * @param node To get the selected items from
  */
 export default async function getItemsFromNode(node) {
-  if (node.getType().get() === TICKET_TICKET_TYPE) {
-    return getItemsByTicket(node);
+  let items: { selection: number[]; model: Autodesk.Viewing.Model }[] = [];
+  if (node.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE) {
+    const itms = await getItemsByTicket(node);
+    items = items.concat(itms);
   }
-
-  // get the tickets from the node
-  const listTicket = await node.find(TICKET_RELATION_LIST, (n) => {
-    if (
-      n.getType().get() === TICKET_TICKET_RELATION ||
-      n.getType().get() === TICKET_TICKET_TYPE ||
-      n.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
-    ) {
-      // When a ticket is found, add it to the spinalgraphservice
-      // so it can be found later using getRealnode
-      // @ts-ignore
-      SpinalGraphService._addNode(n);
-      return true;
+  else if (node.getType().get() === SPINAL_TICKET_SERVICE_STEP_TYPE) {
+    let listTicket = await node.getChildren(SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
+    // let items: { selection: number[]; model: Autodesk.Viewing.Model }[] = [];
+    for (const ticket of listTicket) {
+      const itms = await getItemsByTicket(ticket);
+      if (itms){
+        console.log("i am existing");
+        items = items.concat(itms);
+      } 
     }
-    return false;
-  });
 
-  const items: { selection: number[]; model: Autodesk.Viewing.Model }[] = [];
-  for (const ticket of listTicket) {
-    const itms = await getItemsByTicket(ticket);
-    if (itms) items.concat(itms);
+    
   }
-  return items;
+  return turnNodeIntoViewerCompatibleBimObject(items);
+  // // get the tickets from the node
+  // const listTicket = await node.find(TICKET_RELATION_LIST, (n) => {
+  //   if (
+  //     n.getType().get() === SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME ||
+  //     n.getType().get() === SPINAL_TICKET_SERVICE_TICKET_TYPE ||
+  //     n.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
+  //   ) {
+  //     // When a ticket is found, add it to the spinalgraphservice
+  //     // so it can be found later using getRealnode
+  //     // @ts-ignore
+  //     SpinalGraphService._addNode(n);
+  //     return true;
+  //   }
+  //   return false;
+  // });
+
+  // const items: { selection: number[]; model: Autodesk.Viewing.Model }[] = [];
+  // for (const ticket of listTicket) {
+  //   const itms = await getItemsByTicket(ticket);
+  //   if (itms) items.concat(itms);
+  // }
+  // return items;
 }
 
 /**
@@ -163,10 +184,11 @@ export default async function getItemsFromNode(node) {
 export async function getItemsByTicket(
   ticket
 ): Promise<
-  { selection: number[]; model: Autodesk.Viewing.Model }[] | undefined
+  // { selection: number[]; model: Autodesk.Viewing.Model }[] | undefined
+  SpinalNode<any>[] | undefined
 > {
   // get the parents of the tickets then find the bimobject connected to the ticket
-  const parents = await ticket.getParents(TICKET_TICKET_RELATION);
+  const parents = await ticket.getParents(SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
 
   // get the spatial parent of the ticket
   let bimParents = parents.filter(
@@ -181,49 +203,105 @@ export async function getItemsByTicket(
   // get all the bimobjects from the tickets' spatial parents
   let objects: SpinalNode[] = [];
   for (const parent of bimParents) {
-    let found = await parent.find(
-      [...EQUIPMENT_RELATION_LIST, ...GEO_RELATIONS],
-      (n) => {
-        if (
-          n.getType().get() === EQUIPMENT_TYPE ||
-          n.getType().get() === 'BimObject'
-        ) {
-          // @ts-ignore
-          SpinalGraphService._addNode(n);
-          return true;
-        }
-        return false;
-      }
-    );
-    objects.push(...found);
+    // let found = await parent.find(
+    //   [...EQUIPMENT_RELATION_LIST, ...GEO_RELATIONS],
+    //   (n) => {
+    //     // @ts-ignore
+    //     if (
+    //       n.getType().get() === EQUIPMENT_TYPE ||
+    //       n.getType().get() === 'BimObject'
+    //     ) {
+    //       // @ts-ignore
+    //       SpinalGraphService._addNode(n);
+    //       // console.log(n.getName().get());
+    //       return true;
+    //     }
+    //     return false;
+    //   }
+    // );
+
+    let found2 = await findCustom(parent, [...EQUIPMENT_RELATION_LIST, ...GEO_RELATIONS], EQUIPMENT_TYPE, []);
+    objects.push(...found2)
   }
+  return objects;
 
   // turn node of the bim objects into viewer compatible objects
-  const bimObjects: {
-    selection: number[];
-    model: Autodesk.Viewing.Model;
-  }[] = [];
-  for (const object of objects) {
-    const bimFileId = object.info.bimFileId.get();
-    const dbId: number = object.info.dbid.get();
-    const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
-    if (model && bimObjects.some((o) => o.model === model) === false) {
-      const obj: {
-        selection: number[];
-        model: Autodesk.Viewing.Model;
-      } = {
-        selection: [],
-        model,
-      };
-      obj.selection.push(dbId);
-      bimObjects.push(obj);
-    } else {
-      let obj = bimObjects.find((o) => o.model === model);
-      if (obj) {
+  // const bimObjects: {
+  //   selection: number[];
+  //   model: Autodesk.Viewing.Model;
+  // }[] = [];
+  // for (const object of objects) {
+  //   const bimFileId = object.info.bimFileId.get();
+  //   const dbId: number = object.info.dbid.get();
+  //   const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
+  //   if (model && bimObjects.some((o) => o.model === model) === false) {
+  //     const obj: {
+  //       selection: number[];
+  //       model: Autodesk.Viewing.Model;
+  //     } = {
+  //       selection: [],
+  //       model,
+  //     };
+  //     obj.selection.push(dbId);
+  //     bimObjects.push(obj);
+  //   } else {
+  //     let obj = bimObjects.find((o) => o.model === model);
+  //     if (obj) {
+  //       obj.selection.push(dbId);
+  //     }
+  //   }
+  // }
+  // return bimObjects;
+}
+
+function turnNodeIntoViewerCompatibleBimObject(objects){
+    // turn node of the bim objects into viewer compatible objects
+    const bimObjects: {
+      selection: number[];
+      model: Autodesk.Viewing.Model;
+    }[] = [];
+    for (const object of objects) {
+      console.log(object);
+      const bimFileId = object.info.bimFileId.get();
+      const dbId: number = object.info.dbid.get();
+      const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
+      if (model && bimObjects.some((o) => o.model === model) === false) {
+        const obj: {
+          selection: number[];
+          model: Autodesk.Viewing.Model;
+        } = {
+          selection: [],
+          model,
+        };
         obj.selection.push(dbId);
+        bimObjects.push(obj);
+      } else {
+        let obj = bimObjects.find((o) => o.model === model);
+        if (obj) {
+          obj.selection.push(dbId);
+        }
+      }
+    }
+    return bimObjects;
+
+
+}
+
+export async function findCustom(parentNode, relationList, type, filler) {
+  let result = filler;
+  if(parentNode.getType().get() == type){
+    result.push(parentNode);
+  }
+  else{
+    let children = await parentNode.getChildren(relationList);
+    for (let child of children) {
+      if (child.getType().get() == type) result.push(child);
+      else {
+        result = await findCustom(child, relationList, type, result);
       }
     }
   }
-
-  return bimObjects;
+  
+  return result;
 }
+

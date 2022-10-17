@@ -45,6 +45,7 @@ import {
 } from '../../constants';
 import { EventBus } from '../event';
 import ProcessOnChange from '../utlils/ProcessOnChange';
+import {findCustom} from "../../router/TicketApp/ViewerTicketContextSetup";
 const anyWin: any = window;
 type nodeRef = {
   name: string;
@@ -248,12 +249,15 @@ export default class BackEndSpatial {
   async getLstByModel(item, addRoomRef = false) {
     const node = getNodeFromItem(item);
     const relations = [...GEO_RELATIONS, 'hasReferenceObject.ROOM'];
-    const listNode = await node.find(relations, (n) => {
-      return (
-        n.getType().get() === EQUIPMENT_TYPE ||
-        n.getType().get() === 'BimObject'
-      );
-    });
+    // const listNode = await node.find(relations, (n) => {
+    //   // console.log(n);
+    //   // if(n.getName().get().includes("Sol")) console.log(n.getName().get());
+    //   return (
+    //     n.getType().get() === EQUIPMENT_TYPE ||
+    //     n.getType().get() === 'BimObject'
+    //   );
+    // });
+    const listNode = await findCustom(node, relations, EQUIPMENT_TYPE, []);
     return sortBIMObjectByModel(listNode);
   }
 
@@ -282,13 +286,14 @@ export default class BackEndSpatial {
   async getLstByModelAndRelation(item, relation, addRoomRef = false) {
     const node = getNodeFromItem(item);
     const relations = [...relation];
-    const listNode = await node.find(relations, (n) => {
-      return (
-        n.getType().get() === EQUIPMENT_TYPE ||
-        n.getType().get() === 'BimObject' ||
-        n.getType().get() === 'groupHasBIMObject'
-      );
-    });
+    // const listNode = await node.find(relations, (n) => {
+    //   return (
+    //     n.getType().get() === EQUIPMENT_TYPE ||
+    //     n.getType().get() === 'BimObject' ||
+    //     n.getType().get() === 'groupHasBIMObject'
+    //   );
+    // });
+    const listNode = await findCustom(node, relations, EQUIPMENT_TYPE, []);
     return sortBIMObjectByModel(listNode);
   }
 

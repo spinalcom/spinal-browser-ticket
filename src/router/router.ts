@@ -38,6 +38,8 @@ const EquipmentApp = () => import('./EquipmentApp/TheEquipmentApp.vue');
 const DataApp = () => import('./DataApp/TheDataApp.vue');
 const TicketApp = () => import('./TicketApp/TheTicketApp.vue');
 const AlarmApp = () => import('./AlarmCenter/index.vue');
+const SpaceApp = () => import('./SpaceApp/TheSpaceApp.vue');
+
 
 export const routes = [
   { path: '*', redirect: { name: 'AppList' } },
@@ -46,10 +48,12 @@ export const routes = [
   // { path: '/TicketCenter', name: 'TicketCenter', component: TicketCenter },
   { path: '/DataApp', name: 'DataApp', component: DataApp },
   { path: '/InsightCenter', name: 'InsightCenter', component: InsightCenter },
-  { path: '/Spacecenter', name: 'SpaceCenter', component: SpaceCenter },
+  // { path: '/Spacecenter', name: 'SpaceCenter', component: SpaceCenter },
   { path: '/EquipmentApp', name: 'EquipmentApp', component: EquipmentApp },
   { path: '/TicketApp', name: 'TicketApp', component: TicketApp },
   { path: '/AlarmApp', name: 'AlarmApp', component: AlarmApp },
+  { path: '/SpaceApp', name: 'SpaceApp', component: SpaceApp },
+
 ];
 const realroutes = [
   ...routes,
