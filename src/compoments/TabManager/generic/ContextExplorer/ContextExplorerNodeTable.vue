@@ -159,30 +159,38 @@ export default {
     Color() {
       this.isColored = true;
       console.debug('context explorer table color; hasEvent : ', this.hasEvent);
+      console.log(this.hasEvent);
       if (this.hasEvent) {
+        // console.log(this.data);
         EventBus.$emit('app-viewer-color', this.data, this.relation);
         return;
       }
+      // console.log(this.data);
+      // console.log(this.relation);
       EventBus.$emit('viewer-color', this.data, this.relation);
       // EventBus.$emit('viewer-color', this.data, this.relation);
     },
 
     onSelectItem(item) {
-      let view = ViewManager.getInstance(this.viewKey).back();
-      if (view.serverId == 0) {
+        // console.log("item");
+        // console.log(item);
+        // if(item.hasFiles == undefined)
+        let view = ViewManager.getInstance(this.viewKey).back();
+        // console.log(view);
+        if (view.serverId == 0) {
+          ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+          return;
+        }
+        if (
+          ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth ||
+          !SpinalGraphService.hasChildInContext(
+            FileSystem._objects[view.serverId].info.id.get(),
+            FileSystem._objects[this.context].info.id.get()
+          )
+        ) {
+          ViewManager.getInstance(this.viewKey).pop(false);
+        }
         ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
-        return;
-      }
-      if (
-        ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth ||
-        !SpinalGraphService.hasChildInContext(
-          FileSystem._objects[view.serverId].info.id.get(),
-          FileSystem._objects[this.context].info.id.get()
-        )
-      ) {
-        ViewManager.getInstance(this.viewKey).pop(false);
-      }
-      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
 
     update() {

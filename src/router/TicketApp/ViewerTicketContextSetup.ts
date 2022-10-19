@@ -144,7 +144,7 @@ export default async function getItemsFromNode(node) {
     for (const ticket of listTicket) {
       const itms = await getItemsByTicket(ticket);
       if (itms){
-        console.log("i am existing");
+        // console.log("i am existing");
         items = items.concat(itms);
       } 
     }
@@ -261,7 +261,7 @@ function turnNodeIntoViewerCompatibleBimObject(objects){
       model: Autodesk.Viewing.Model;
     }[] = [];
     for (const object of objects) {
-      console.log(object);
+      // console.log(object);
       const bimFileId = object.info.bimFileId.get();
       const dbId: number = object.info.dbid.get();
       const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);
@@ -289,18 +289,21 @@ function turnNodeIntoViewerCompatibleBimObject(objects){
 
 export async function findCustom(parentNode, relationList, type, filler) {
   let result = filler;
-  if(parentNode.getType().get() == type){
-    result.push(parentNode);
-  }
-  else{
-    let children = await parentNode.getChildren(relationList);
-    for (let child of children) {
-      if (child.getType().get() == type) result.push(child);
-      else {
-        result = await findCustom(child, relationList, type, result);
+  if(parentNode != undefined){
+    if(parentNode.getType().get() == type){
+      result.push(parentNode);
+    }
+    else{
+      let children = await parentNode.getChildren(relationList);
+      for (let child of children) {
+        if (child.getType().get() == type) result.push(child);
+        else {
+          result = await findCustom(child, relationList, type, result);
+        }
       }
     }
   }
+  
   
   return result;
 }

@@ -216,7 +216,9 @@ import {
   SpinalGraphService,
   SpinalNode,
 } from 'spinal-env-viewer-graph-service';
-import { LOGS_EVENTS_STRING } from 'spinal-service-ticket';
+import { LOGS_EVENTS_STRING } from 'spinal-service-ticket/src/Constants';
+
+
 import { spinalServiceTicket } from 'spinal-service-ticket';
 import { ViewManager } from '../../../../services/ViewManager/ViewManager';
 import { getTicketDescription } from './Ticket';
@@ -362,6 +364,8 @@ export default {
     },
 
     logFormat(n) {
+      console.log(n)
+      console.log(LOGS_EVENTS_STRING)
       return LOGS_EVENTS_STRING[n];
     },
 

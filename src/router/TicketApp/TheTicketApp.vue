@@ -78,34 +78,34 @@ with this file. If not, see
 
 <script>
 // Script & tools
-import { ViewManager } from '../../services/ViewManager/ViewManager';
-import { AppBack } from '../../services/backend/AppBack';
-import BackendInitializer from '../../services/BackendInitializer';
-import { EventBus } from '../../services/event';
-import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
-import fileSaver from 'file-saver';
-import './TicketTools';
-import { getTicketNumber } from './TicketTools';
-import getItemsFromNode from './ViewerTicketContextSetup';
+import { ViewManager } from "../../services/ViewManager/ViewManager";
+import { AppBack } from "../../services/backend/AppBack";
+import BackendInitializer from "../../services/BackendInitializer";
+import { EventBus } from "../../services/event";
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
+import "./TicketTools";
+import { getTicketNumber } from "./TicketTools";
+import getItemsFromNode from "./ViewerTicketContextSetup";
 import {
   SERVICE_TYPE,
   PROCESS_TYPE,
   SPINAL_TICKET_SERVICE_STEP_TYPE,
   SPINAL_TICKET_SERVICE_TICKET_TYPE,
-} from 'spinal-service-ticket/dist/Constants.js';
+} from "spinal-service-ticket/dist/Constants.js";
 
 // Generic components
-import SpinalBreadcrumb from '../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue';
-import TabManager from '../../compoments/TabManager/TabManager.vue';
+import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
+import TabManager from "../../compoments/TabManager/TabManager.vue";
 // Specific components
-import ContextExplorer from '../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue';
-import CategoryAttribute from '../../compoments/TabManager/generic/CategoryAttribute.vue';
-import NodeDocumentation from '../../compoments/TabManager/generic/NodeDocumentation.vue';
-import NodeTickets from '../../compoments/TabManager/generic/NodeTickets/NodeTickets.vue';
-import NodeNotes from '../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue';
-import NodeCalendar from '../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue';
-import NodeNotesMessage from '../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue';
-import NodeTicketSelected from '../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue';
+import ContextExplorer from "../../compoments/TabManager/generic/ContextExplorer/ContextExplorer.vue";
+import CategoryAttribute from "../../compoments/TabManager/generic/CategoryAttribute.vue";
+import NodeDocumentation from "../../compoments/TabManager/generic/NodeDocumentation.vue";
+import NodeTickets from "../../compoments/TabManager/generic/NodeTickets/NodeTickets.vue";
+import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.vue";
+import NodeCalendar from "../../compoments/TabManager/generic/NodeCalendar/NodeCalendar.vue";
+import NodeNotesMessage from "../../compoments/TabManager/generic/NodeNotes/NodeNotesMessage.vue";
+import NodeTicketSelected from "../../compoments/TabManager/generic/NodeTickets/NodeTicketsSelected.vue";
 
 export const TICKET_APP_RELATIONS = [
   SERVICE_TYPE,
@@ -113,13 +113,13 @@ export const TICKET_APP_RELATIONS = [
   SPINAL_TICKET_SERVICE_STEP_TYPE,
   SPINAL_TICKET_SERVICE_TICKET_TYPE,
 ];
-const VIEW_KEY = 'TicketApp';
+const VIEW_KEY = "TicketApp";
 
 const AppBackInstance = AppBack.getInstance();
 
 // Component exports
 export default {
-  name: 'TheTicketApp',
+  name: "TheTicketApp",
   components: {
     SpinalBreadcrumb,
     TabManager,
@@ -139,7 +139,7 @@ export default {
       isSelectable: false,
       tabs: [
         {
-          name: 'node-type.context',
+          name: "node-type.context",
           content: ContextExplorer,
           props: {
             viewKey: VIEW_KEY,
@@ -153,7 +153,7 @@ export default {
         },
 
         {
-          name: 'spinal-twin.hasCategoryAttributes',
+          name: "spinal-twin.hasCategoryAttributes",
           content: CategoryAttribute,
           props: {
             viewKey: VIEW_KEY,
@@ -163,7 +163,7 @@ export default {
         },
 
         {
-          name: 'spinal-twin.Documentation',
+          name: "spinal-twin.Documentation",
           content: NodeDocumentation,
           props: {
             viewKey: VIEW_KEY,
@@ -173,7 +173,7 @@ export default {
         },
 
         {
-          name: 'spinal-twin.Notes',
+          name: "spinal-twin.Notes",
           content: NodeNotes,
           props: {
             viewKey: VIEW_KEY,
@@ -197,19 +197,30 @@ export default {
 
   async mounted() {
     const graph = await BackendInitializer.getInstance().getGraph();
-    await AppBackInstance.init(graph, 'SpinalSystemServiceTicket');
+    await AppBackInstance.init(graph, "SpinalSystemServiceTicket");
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it
     await ViewManager.getInstance(this.viewKey).init(
       this.onViewChange.bind(this),
       0
     );
-    EventBus.$on('app-viewer-color', async (items, relation) => {
+    EventBus.$on("app-viewer-color", async (items, relation) => {
+      console.log("FONCTION ENTIÈREMENT COMMENTÉE CAR INUTILISÉE");
+      /*
       let list = await getItemsFromNode(
         FileSystem._objects[this.currentView.serverId]
       );
       console.debug('Ticket tools event; items :', list);
       console.debug(' relation :', relation);
-      EventBus.$emit('ticket-viewer-color', list, relation);
+      EventBus.$emit("ticket-viewer-color", list, relation);
+      */
+    });
+    EventBus.$on("viewer-color", async (items, relation) => {
+      if (relation == TICKET_APP_RELATIONS) {
+        // let list = await getItemsFromNode(
+        //   FileSystem._objects[this.currentView.serverId]
+        // );
+        EventBus.$emit("ticket-viewer-color", items, relation/*, list*/);
+      }
     });
   },
 
@@ -217,18 +228,24 @@ export default {
     getTicketOnly(liste) {
       return liste.filter((appItem) => {
         const node = FileSystem._objects[appItem.serverId];
-        return !node.info.subType || node.info.subType.get() === 'Ticket';
+        return !node.info.subType || node.info.subType.get() === "Ticket";
       });
     },
     async onViewChange(view) {
+      // console.log(view);
       this.nodeItems = [];
       // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
         const copy_mapItems = await AppBackInstance.getContexts(SERVICE_TYPE);
+        // console.log(copy_mapItems)
 
         const value = copy_mapItems.get(SERVICE_TYPE) || [];
+        // console.log("*************** value ***************");
+        // console.log(value);
+        // console.log("------------- map container ----------------");
+        // console.log([[SERVICE_TYPE, this.getTicketOnly(value)]])
 
         mapItems = new Map([[SERVICE_TYPE, this.getTicketOnly(value)]]);
 
@@ -280,7 +297,7 @@ export default {
 
       await Promise.all(
         this.items.items.map(async function (item) {
-          item['TotalTickets'] = await getTicketNumber(item);
+          item["TotalTickets"] = await getTicketNumber(item);
         })
       );
 
@@ -296,7 +313,7 @@ export default {
         let nodeticket = FileSystem._objects[this.currentView.serverId];
         this.tabs[0].props.stepping = true;
         this.tabs[0].props.selected = nodeticket.info.id.get();
-        console.debug('tab :', this.tabs[0].props.selected);
+        // console.debug('tab :', this.tabs[0].props.selected);
         this.tabs[0].content = NodeTicketSelected;
       }
       for (let tab of this.tabs) {
@@ -307,9 +324,13 @@ export default {
           tab.ignore = false;
         }
       } else {
+        // console.log("^^^^^^^^^^^tabs^^^^^^");
+        // console.log(this.tabs);
+        // if(this.tabs.length > 1){
         for (let i = 1; i < this.tabs.length; ++i) {
           this.tabs[i].ignore = true;
         }
+        // }
       }
     },
 
@@ -317,17 +338,17 @@ export default {
       let node = FileSystem._objects[view.serverId];
       this.items.cols = [];
       if (!node) {
-        this.items.cols = ['ProcessCount', 'TotalTickets'];
+        this.items.cols = ["ProcessCount", "TotalTickets"];
         return;
       }
       let nodeType = node.info.type.get();
-      console.debug('nodeType :', nodeType, TICKET_APP_RELATIONS);
+      // console.debug('nodeType :', nodeType, TICKET_APP_RELATIONS);
       switch (nodeType) {
         case SERVICE_TYPE:
-          this.items.cols = ['StepCount', 'TotalTickets'];
+          this.items.cols = ["StepCount", "TotalTickets"];
           break;
         case PROCESS_TYPE:
-          this.items.cols = ['TicketCount'];
+          this.items.cols = ["TicketCount"];
           break;
         // case SPINAL_TICKET_SERVICE_STEP_TYPE:
         //   this.items.cols = [ "TicketCount" ];
@@ -351,7 +372,7 @@ export default {
           FileSystem._objects[this.currentView.serverId]
         );
       }
-      EventBus.$emit('ticket-viewer-zoom', this.nodeItems);
+      EventBus.$emit("ticket-viewer-zoom", this.nodeItems);
     },
 
     async isolateAll() {
@@ -360,7 +381,7 @@ export default {
           FileSystem._objects[this.currentView.serverId]
         );
       }
-      EventBus.$emit('ticket-viewer-isolate', this.nodeItems);
+      EventBus.$emit("ticket-viewer-isolate", this.nodeItems);
     },
 
     async selectInView() {
@@ -369,7 +390,7 @@ export default {
           FileSystem._objects[this.currentView.serverId]
         );
       }
-      EventBus.$emit('ticket-viewer-select', this.nodeItems);
+      EventBus.$emit("ticket-viewer-select", this.nodeItems);
     },
 
     formatData() {
@@ -403,8 +424,8 @@ export default {
     exportToExcel() {
       let headers = [
         {
-          key: 'name',
-          header: this.$t('name'),
+          key: "name",
+          header: this.$t("name"),
           width: 20,
         },
       ];
@@ -417,11 +438,11 @@ export default {
       }
       let excelData = [
         {
-          name: 'Tableau',
-          author: '',
+          name: "Tableau",
+          author: "",
           data: [
             {
-              name: 'Tableau',
+              name: "Tableau",
               header: headers,
               rows: this.formatData(),
             },
@@ -434,16 +455,19 @@ export default {
     },
 
     Color() {
+      console.log("FONCTION ENTIÈREMENT COMMENTÉE CAR INUTILISÉE");
+      /*
       let items = this.items.items.map((item) => {
         return { server_id: item.serverId, color: item.getColor() };
       });
-      EventBus.$emit('ticket-viewer-color', items, {
+      EventBus.$emit("ticket-viewer-color", items, {
         server_id: this.currentView.serverId,
       });
+      */
     },
 
     ShowAll() {
-      EventBus.$emit('test-show-all');
+      EventBus.$emit("test-show-all");
     },
   },
 };

@@ -25,6 +25,11 @@
 import { EventBus } from '../../event';
 import { spinalBackEnd } from '../../spinalBackend';
 import { viewerUtils } from '../viewerUtils';
+import {
+  SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+  // SPINAL_TICKET_SERVICE_PROCESS_RELATION_NAME
+} from "spinal-service-ticket" 
+import { EQUIPMENT_RELATION_LIST, GEO_RELATIONS } from '../../../constants';
 
 EventBus.$on('ticket-viewer-zoom', async (items) => {
   await viewerUtils.waitInitialized();
@@ -47,16 +52,49 @@ EventBus.$on('ticket-viewer-reset-color', async () => {
 });
 
 EventBus.$on('ticket-viewer-color', async (items, relation) => {
+  console.log("EVENT : ticket-viewer-color");
+  
   await viewerUtils.waitInitialized();
   viewerUtils.restoreColorThemingItems();
-  items.map(async (item) => {
-    const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
-      { server_id: item.serverId },
-      relation,
-      true
-    );
-    for (const { selection, model } of list) {
-      viewerUtils.colorThemingItems(model, item.color, selection);
+  // console.log(items, relation);
+  // console.log(list);
+
+  for(let item of items){
+
+    let ticket = FileSystem._objects[item.serverId];
+    const bimParent = await ticket.find(SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME, (p) => {
+      return p.getType().get() !== 'SpinalSystemServiceTicketTypeStep';
+    });
+    const bimParents = await ticket.getParents(SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
+    if(bimParents.length != 0){
+      for(let bimParent of bimParents){
+        if(bimParent.getType().get() != 'SpinalSystemServiceTicketTypeStep'){
+
+          // console.log("ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù")
+          // console.log(bimParent);
+          // console.log("ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù")
+
+          const list2 = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
+            // { server_id: item.serverId },
+            { server_id: bimParent._server_id },
+            [...EQUIPMENT_RELATION_LIST, ...GEO_RELATIONS],
+            true
+          );
+          // console.log("listtttttttttttttttttttttttttttttttttttttttt")
+          // console.log(list2);
+          // console.log("listtttttttttttttttttttttttttttttttttttttttt")
+          for (const { selection, model } of list2) {
+            // console.log(selection, model)
+            viewerUtils.colorThemingItems(model, item.color, selection);
+          }
+        }
+
+      }
     }
-  });
+    
+  }
+      
+  
+  
+  
 });

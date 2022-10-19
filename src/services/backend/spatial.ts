@@ -285,7 +285,9 @@ export default class BackEndSpatial {
    */
   async getLstByModelAndRelation(item, relation, addRoomRef = false) {
     const node = getNodeFromItem(item);
+    // console.log(node);
     const relations = [...relation];
+    // console.log(relations);
     // const listNode = await node.find(relations, (n) => {
     //   return (
     //     n.getType().get() === EQUIPMENT_TYPE ||
@@ -294,6 +296,7 @@ export default class BackEndSpatial {
     //   );
     // });
     const listNode = await findCustom(node, relations, EQUIPMENT_TYPE, []);
+    // console.log(listNode);
     return sortBIMObjectByModel(listNode);
   }
 
@@ -410,7 +413,10 @@ export default class BackEndSpatial {
  * @returns
  */
 function getNodeFromItem(item) {
-  return FileSystem._objects[item.server_id];
+  // console.log(item.server_id);
+  const node = FileSystem._objects[item.server_id];
+  // console.log(node);
+  return node;
 }
 
 function sortBIMObjectByModel(
