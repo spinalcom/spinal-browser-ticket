@@ -296,9 +296,12 @@ export default {
   height: 100%;
   display: flex;
 }
-
+.heatmap-vue {
+  max-height: 70vh !important;
+}
 .heatmapContainer {
   width: 100%;
-  height: calc(100% - 43px);
+  height: calc(100vh - 66px);
+  padding-bottom: 6px;
 }
 </style>

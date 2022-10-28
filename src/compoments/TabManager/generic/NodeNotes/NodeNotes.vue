@@ -57,8 +57,16 @@ with this file. If not, see
               @confirm="delNote(note.selectedNode)"
               :title="$t('spinal-twin.DeleteConfirm')"
             >
-              <el-button
+              <!-- <el-button
                 class="spl-input-button"
+                icon="el-icon-delete"
+                type="danger"
+                size="small"
+                circle
+                slot="reference"
+              ></el-button> -->
+              <el-button
+                class="el-button-delete"
                 icon="el-icon-delete"
                 type="danger"
                 size="small"

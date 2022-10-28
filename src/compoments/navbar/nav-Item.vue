@@ -116,6 +116,7 @@ export default {
 .navbar-item > div > .el-button {
   margin-left: 8px;
 }
+
 .spinal-dropdown-disabled {
   cursor: not-allowed !important;
   color: #bbb !important;
@@ -123,16 +124,36 @@ export default {
 </style>
 
 <style>
+/* .navbar-item{
+  background: #14202C 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #F7F7F7;
+  opacity: 1;
+} */
+
+.navbar-item .el-input__inner {
+  color: #1d4b5e;
+}
 .navbar-item .el-input__inner {
   color: #1d4b5e;
 }
 .navbar-item .el-button-group {
   width: 100%;
   white-space: nowrap;
+
 }
 
 .navbar-item .el-button-group .el-button:first-child {
   width: calc(100% - 28px);
+}
+
+.navbar-item .el-button-group .el-button {
+  background-color: #14202c;
+  text-align: left;
+  /* font: normal normal normal 15px/18px Charlevoix Pro; */
+  letter-spacing: 0.75px;
+  color: #F9F9F9;
+  opacity: 1;
 }
 
 .button-icon-left-focus.is-disabled,

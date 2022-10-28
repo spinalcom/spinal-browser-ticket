@@ -25,7 +25,7 @@ with this file. If not, see
     class="tab-manager-tabs"
     type="border-card"
   >
-    <template v-for="tab in tabsprop">
+    <template v-for="tab in tabsprop" >
       <template v-if="!tab.ignore" style="height: calc(100% - 120px)">
         <el-tab-pane
           :key="$t(tab.name)"
@@ -34,6 +34,13 @@ with this file. If not, see
           :closable="false"
           style="height: calc(100%); overflow: hidden"
         >
+        <!-- <el-tab-pane
+          :key="$t(tab.name)"
+          :label="$t(tab.name)"
+          :name="tab.name"
+          :closable="false"
+          style="height: calc(100%); overflow: auto"
+        > -->
           <keep-alive>
             <component
               :is="tab.content"
@@ -103,10 +110,48 @@ export default {
 
 <style>
 .tab-manager-tabs .el-tabs__content {
-  height: 95%;
+  /* height: 95%; */
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 10px #49545C29;
+  /* border: 1px solid #F7F7F7; */
+  border-radius: 10px;
+  opacity: 1;
+  backdrop-filter: blur(33px);
+  -webkit-backdrop-filter: blur(33px);
 }
+/* .el-tabs__header{
+    background-color: #eaeef0;
+} */
+.el-tabs__item.is-top{
+  /* color: #214353 !important;
+  background-color: #eaeef0; */
+  background: #dcdee6 0% 0% no-repeat padding-box !important;
+  border: 1px solid #49545C29 !important;
+  border-radius: 10px 10px 0px 0px !important;
+  opacity: 1 !important;
+  text-align: left;
+/* font: normal normal normal 11px/13px Charlevoix Pro; */
+  letter-spacing: 1.1px !important;
+  color: #214353 !important;
+  opacity: 0.32 !important;
+}
+.el-tabs__item.is-top.is-active{
+  /* color: #214353 !important;
+  background-color: #f9f9f9; */
+  background: #F9F9F9 0% 0% no-repeat padding-box !important;
+  
+  border: 1px solid #F7F7F7 !important;
 
+  border-radius: 10px 10px 0px 0px !important;
+  opacity: 1 !important;
+  text-align: left !important;
+  /* font: normal normal normal 11px/13px Charlevoix Pro !important; */
+  letter-spacing: 1.1px !important;
+  color: #214353 !important;
+  opacity: 1 !important;
+}
 .tab-manager-pane {
   height: 100%;
 }
+
 </style>

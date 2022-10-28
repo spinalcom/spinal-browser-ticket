@@ -24,10 +24,34 @@ with this file. If not, see
 
 <template>
   <div style="height: 100%">
-    <el-table
+    <!-- <el-table
       v-if="tickets"
       :data="tickets"
       :header-cell-style="{ 'background-color': '#f0f2f5' }"
+      border
+      height="100%"
+    > -->
+    <el-table
+      v-if="tickets"
+      :data="tickets"
+      :header-cell-style="{
+        'background-color': '#ffffff',
+        'text-align': 'left',
+        'letter-spacing': '1px',
+        'color': '#214353',
+        'opacity': '1',
+        'height': 'fit-content',
+      }"
+      :row-style="{
+        'background': '#ffffff 0% 0% no-repeat padding-box',
+        'border': '1px solid #F8F8F8',
+        'border-radius': '5px',
+        'opacity': '1',
+        'text-align': 'left',
+        'letter-spacing': '0.9px',
+        'color': '#214353',
+        'opacity': '1',
+      }"
       border
       height="100%"
     >

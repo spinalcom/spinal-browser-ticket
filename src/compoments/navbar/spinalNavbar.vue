@@ -113,12 +113,13 @@ export default {
 
 <style>
 .spinal-navbar-main-container {
-  height: 60px;
+  min-height: 60px;
   /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04); */
   display: flex;
   flex-wrap: nowrap;
   background: #fdfdfd;
   overflow-x: auto;
+  overflow-y: visible;
   /* background-image: radial-gradient(circle at top left, #04092d, #1d3461); */
   /* background-image: radial-gradient(circle at top left, #494949, #58595b); */
   /* background-image: radial-gradient(
@@ -150,6 +151,12 @@ export default {
   flex-wrap: nowrap;
   width: 100%;
   padding: 5px 0 5px 5px;
+
+  background: #14202C 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #F7F7F7;
+  opacity: 1;
+  border-radius: 5px;
 }
 .bread-btn {
   display: flex !important;
@@ -191,5 +198,12 @@ export default {
   margin: 5px;
   align-self: center;
   height: 38px;
+
+  color: #f9f9f9;
+  background: #14202C 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #F7F7F7;
+  opacity: 1;
 }
+
 </style>

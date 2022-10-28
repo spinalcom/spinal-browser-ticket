@@ -26,29 +26,82 @@ with this file. If not, see
   <div>
     <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.CategoryAdd')" style="float: right">
-        <el-button
+        <!-- <el-button
           @click.native="addCategory()"
           :disabled="ctxNode == false || isEditing"
           icon="el-icon-plus"
           type="primary"
           circle
+        ></el-button> -->
+        <el-button
+          @click.native="addCategory()"
+          :disabled="ctxNode == false || isEditing"
+          icon="el-icon-plus"
+          circle
+          class="el-button-add"
         ></el-button>
       </el-tooltip>
     </div>
 
     <div style="overflow: auto; height: inherit">
-      <el-table
+      <!-- <el-table
         v-if="Categories"
         :data="Categories"
         :header-cell-style="{ 'background-color': '#f0f2f5' }"
         border
         style="overflow: auto; height: inherit"
+      > -->
+      <el-table
+        v-if="Categories"
+        :data="Categories"
+        :header-cell-style="{
+          'background-color': '#ffffff',
+          'text-align': 'left',
+          'letter-spacing': '1px',
+          'color': '#214353',
+          'opacity': '1',
+          'height': 'fit-content',
+        }"
+        :row-style="{
+          'background': '#ffffff 0% 0% no-repeat padding-box',
+          'border': '1px solid #F8F8F8',
+          'border-radius': '5px',
+          'opacity': '1',
+          'text-align': 'left',
+          'letter-spacing': '0.9px',
+          'color': '#214353',
+          'opacity': '1',
+        }"
+        border
+        style="overflow: auto; height: inherit"
       >
         <el-table-column type="expand">
           <div slot-scope="cat">
-            <el-table
+            <!-- <el-table
               :data="cat.row.attributes"
               :header-cell-style="{ 'background-color': '#f0f2f5' }"
+              border
+            > -->
+            <el-table
+              :data="cat.row.attributes"
+              :header-cell-style="{
+              'background-color': '#ffffff',
+              'text-align': 'left',
+              'letter-spacing': '1px',
+              'color': '#214353',
+              'opacity': '1',
+              'height': 'fit-content',
+              }"
+              :row-style="{
+              'background': '#ffffff 0% 0% no-repeat padding-box',
+              'border': '1px solid #F8F8F8',
+              'border-radius': '5px',
+              'opacity': '1',
+              'text-align': 'left',
+              'letter-spacing': '0.9px',
+              'color': '#214353',
+              'opacity': '1',
+              }"
               border
             >
               <el-table-column :label="$t('node-type.Attribute')">
@@ -120,11 +173,17 @@ with this file. If not, see
                       @confirm="delAttribute(cat.row, scope.row)"
                       :title="$t('spinal-twin.DeleteConfirm')"
                     >
-                      <el-button
+                      <!-- <el-button
                         type="danger"
                         icon="el-icon-delete"
                         circle
                         slot="reference"
+                      ></el-button> -->
+                      <el-button
+                        icon="el-icon-delete"
+                        circle
+                        slot="reference"
+                        class="el-button-delete"
                       ></el-button>
                     </el-popconfirm>
                   </el-tooltip>
@@ -139,6 +198,7 @@ with this file. If not, see
                 :disabled="isEditing"
                 icon="el-icon-plus"
                 circle
+                class="el-button-add"
               ></el-button>
             </el-tooltip>
           </div>
@@ -173,11 +233,18 @@ with this file. If not, see
                 @confirm="delCategory(cat.row)"
                 :title="$t('spinal-twin.DeleteConfirm')"
               >
+                <!-- <el-button
+                  slot="reference"
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                ></el-button> -->
                 <el-button
                   slot="reference"
                   type="danger"
                   icon="el-icon-delete"
                   circle
+                  class="el-button-delete"
                 ></el-button>
               </el-popconfirm>
             </el-tooltip>
@@ -402,4 +469,13 @@ export default {
   flex-direction: row-reverse;
   padding: 5px 5px 5px 5px;
 }
+/* .el-button-add{
+  background-color: #14202C;
+  color: #F9F9F9;
+} */
+/* .el-button-delete{
+  color: #EF5F32;
+  border-color: #EF5F32;
+} */
+
 </style>

@@ -52,11 +52,17 @@ with this file. If not, see
           :content="$t('spinal-twin.TicketDeclare')"
           style="float: right"
         >
-          <el-button
+          <!-- <el-button
             @click.native="addingTicket = true"
             icon="el-icon-plus"
             type="primary"
             circle
+          ></el-button> -->
+          <el-button
+            @click.native="addingTicket = true"
+            icon="el-icon-plus"
+            circle
+            class="el-button-add"
           ></el-button>
         </el-tooltip>
       </div>

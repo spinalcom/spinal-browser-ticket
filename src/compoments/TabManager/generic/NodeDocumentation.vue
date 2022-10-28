@@ -26,21 +26,51 @@ with this file. If not, see
   <div style="height: inherit">
     <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.DocumentAdd')">
-        <el-button
+        <!-- <el-button
           :disabled="ctxNode == false"
           @click.native="addDocument()"
           icon="el-icon-plus"
           circle
           type="primary"
           style="float: right"
+        ></el-button> -->
+        <el-button
+          :disabled="ctxNode == false"
+          @click.native="addDocument()"
+          icon="el-icon-plus"
+          circle
+          class="el-button-add"
         ></el-button>
       </el-tooltip>
     </div>
 
     <div style="height: inherit">
-      <el-table
+      <!-- <el-table
         :data="documents"
         :header-cell-style="{ 'background-color': '#f0f2f5' }"
+        border
+        style="overflow: auto; height: 100%"
+      > -->
+      <el-table
+        :data="documents"
+        :header-cell-style="{
+          'background-color': '#ffffff',
+          'text-align': 'left',
+          'letter-spacing': '1px',
+          'color': '#214353',
+          'opacity': '1',
+          'height': 'fit-content',
+        }"
+        :row-style="{
+          'background': '#ffffff 0% 0% no-repeat padding-box',
+          'border': '1px solid #F8F8F8',
+          'border-radius': '5px',
+          'opacity': '1',
+          'text-align': 'left',
+          'letter-spacing': '0.9px',
+          'color': '#214353',
+          'opacity': '1',
+        }"
         border
         style="overflow: auto; height: 100%"
       >
@@ -63,11 +93,17 @@ with this file. If not, see
                 @confirm="delDocument(scope.row._server_id)"
                 :title="$t('spinal-twin.DeleteConfirm')"
               >
-                <el-button
+                <!-- <el-button
                   icon="el-icon-delete"
                   circle
                   type="danger"
                   slot="reference"
+                ></el-button> -->
+                <el-button
+                  icon="el-icon-delete"
+                  circle
+                  slot="reference"
+                  class="el-button-delete"
                 ></el-button>
               </el-popconfirm>
             </el-tooltip>
@@ -79,11 +115,11 @@ with this file. If not, see
 </template>
 
 <script>
-import { FileSystem } from 'spinal-core-connectorjs_type';
-import { FileExplorer } from 'spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer';
+import { FileSystem } from "spinal-core-connectorjs_type";
+import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
 
 export default {
-  name: 'NodeDocumentation',
+  name: "NodeDocumentation",
   components: {},
   props: {
     Properties: {
@@ -143,16 +179,16 @@ export default {
 
     async addDocument() {
       const maxSize = 25000000;
-      const input = document.createElement('input');
+      const input = document.createElement("input");
 
       if (!this.directory) {
         this.directory = await FileExplorer.createDirectory(this.ctxNode);
       }
-      input.type = 'file';
+      input.type = "file";
       input.multiple = true;
       input.click();
       input.addEventListener(
-        'change',
+        "change",
         (event) => {
           const files = event.target.files;
           let filelist = [];
@@ -163,14 +199,14 @@ export default {
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              this.$t('spinal-twin.ErrorFileTooLarge') +
+              this.$t("spinal-twin.ErrorFileTooLarge") +
                 maxSize / 1000000 +
-                ' MB'
+                " MB"
             );
             return;
           }
           FileExplorer.addFileUpload(this.directory, filelist);
-          this.$emit('reload');
+          this.$emit("reload");
           this.update(this.Properties.view.serverId);
         },
         false
@@ -190,15 +226,15 @@ export default {
     downloadDocument(id) {
       const file = this.docAt(id);
       file._ptr.load((path) => {
-        var element = document.createElement('a');
-        element.setAttribute('href', '/sceen/_?u=' + path._server_id);
-        element.setAttribute('download', file.name);
+        var element = document.createElement("a");
+        element.setAttribute("href", "/sceen/_?u=" + path._server_id);
+        element.setAttribute("download", file.name);
         element.click();
       });
     },
 
     async debug(what) {
-      console.debug('Debugging', what);
+      console.debug("Debugging", what);
     },
   },
 };

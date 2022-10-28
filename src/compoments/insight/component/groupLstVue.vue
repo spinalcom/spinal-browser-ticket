@@ -44,13 +44,38 @@ with this file. If not, see
           ></el-button>
         </el-row>
         <!-- Si on a pas encore selectionné de Groupe on affiche une table avec la liste des groupes-->
-        <el-table
+        <!-- <el-table
           v-if="!groupSelected"
           :data="data"
           class="tab"
           border
           style="width: 100%"
           :header-cell-style="{ 'background-color': '#f0f2f5' }"
+        > -->
+        <el-table
+          v-if="!groupSelected"
+          :data="data"
+          class="tab"
+          border
+          style="width: 100%, overflow: auto; height: inherit"
+          :header-cell-style="{
+            'background-color': '#ffffff',
+            'text-align': 'left',
+            'letter-spacing': '1px',
+            'color': '#214353',
+            'opacity': '1',
+            'height': 'fit-content',
+          }"
+          :row-style="{
+            'background': '#ffffff 0% 0% no-repeat padding-box',
+            'border': '1px solid #F8F8F8',
+            'border-radius': '5px',
+            'opacity': '1',
+            'text-align': 'left',
+            'letter-spacing': '0.9px',
+            'color': '#214353',
+            'opacity': '1',
+          }"
         >
           <!-- @row-click="SeeEvent"> -->
           <el-table-column :label="$t('HeatmapCenter.Groupe')">

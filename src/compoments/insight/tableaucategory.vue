@@ -40,7 +40,7 @@ with this file. If not, see
           :data="categories"
         />
 
-        <el-table
+        <!-- <el-table
           :data="categories"
           border
           style="width: 100%"
@@ -50,6 +50,29 @@ with this file. If not, see
             padding: '0px',
           }"
           :header-cell-style="{ 'background-color': '#f0f2f5' }"
+        > -->
+        <el-table
+          :data="categories"
+          border
+          style="width: 100%, overflow: auto; height: inherit"
+          :header-cell-style="{
+            'background-color': '#ffffff',
+            'text-align': 'left',
+            'letter-spacing': '1px',
+            'color': '#214353',
+            'opacity': '1',
+            'height': 'fit-content',
+          }"
+          :row-style="{
+            'background': '#ffffff 0% 0% no-repeat padding-box',
+            'border': '1px solid #F8F8F8',
+            'border-radius': '5px',
+            'opacity': '1',
+            'text-align': 'left',
+            'letter-spacing': '0.9px',
+            'color': '#214353',
+            'opacity': '1',
+          }"
         >
           <el-table-column :label="$t('HeatmapCenter.Categories')" width="180">
             <template slot-scope="scope">

@@ -413,4 +413,8 @@ export default {
 .delete-button {
   padding: 25px 10px 10px 10px;
 }
+
+.spl-el-button{
+  background-color:green;
+}
 </style>

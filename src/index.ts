@@ -37,13 +37,35 @@ import { router } from './router/router';
 import BackendInitializer from './services/BackendInitializer';
 import { i18n } from './services/i18n';
 import spinalBackend from './services/spinalBackend';
-
 import Ripple from 'vue-ripple-directive';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './app.css';
 import './compoments/sidebar/eventSideBar';
 import './services/viewerUtils/viewerEventHandle';
+// import 'material-design-icons-iconfont';
+import "material-design-icons-iconfont/dist/material-design-icons.css";
+// import "@mdi/font/css/materialdesignicons.css";
+// import "vuetify/dist/vuetify.min.css"
+
+
+import Vuetify from 'vuetify';
+import { vuetifyInit, vuetify } from './plugins/vuetify';
+
+// const vuetify = new Vuetify({
+//   theme: {
+//     themes: {
+//       light: {
+//         primary: '#14202c', // #E53935
+//         secondary: '#14202c', // #FFCDD2
+//         accent: '#14202c', // #3F51B5
+//       },
+//     },
+//   },
+// });
+// Vue.use(Vuetify);
+
+// vuetifyInit(Vue);
 
 // @ts-ignore
 window.Autodesk.Viewing.Private.analytics.optOut();
@@ -61,12 +83,14 @@ Vue.use(ElementUI);
 Vue.use(VTooltip);
 Vue.use(BootstrapVue);
 Vue.use(VueMaterial);
+Vue.use(Vuetify)
 
 spinalBackend.init();
 BackendInitializer.getInstance().init();
 
 new Vue({
   i18n,
+  // vuetify,
   router,
   render: (h) => h(App),
 }).$mount('#app');

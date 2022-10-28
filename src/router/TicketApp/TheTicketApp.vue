@@ -479,8 +479,10 @@ export default {
 }
 .tab-manager {
   margin: 10px 10px 10px 0px;
-  height: 88%;
+  max-height: 80%;
   border-radius: 5px;
+  /* max-height:30%;
+  overflow: auto; */
 }
 
 .spl-height-control {

@@ -26,17 +26,46 @@ with this file. If not, see
     :height="`${data.length > 15 ? 100 : 100 * data.length}%`"
 -->
 <template>
-  <div style="height: 100%">
-    <el-table
+  <!-- <div style="height: 100%"> -->
+  <div>
+    <!-- <el-table
       v-loading="loading"
       :data="data"
       :header-cell-style="{ 'background-color': '#f0f2f5' }"
       @row-click="selectInView"
       @row-dblclick="SeeEvent"
-      height="100%"
       border
+      height="70vh"
       show-summary
       sum-text="Total"
+    > -->
+    <el-table
+      v-loading="loading"
+      :data="data"
+      :header-cell-style="{
+        'background-color': '#ffffff',
+        'text-align': 'left',
+        'letter-spacing': '1px',
+        'color': '#214353',
+        'opacity': '1',
+        'height': 'fit-content',
+      }"
+      :row-style="{
+        'background': '#ffffff 0% 0% no-repeat padding-box',
+        'border': '1px solid #F8F8F8',
+        'border-radius': '5px',
+        'opacity': '1',
+        'text-align': 'left',
+        'letter-spacing': '0.9px',
+        'color': '#214353',
+        'opacity': '1',
+
+        }"
+      @row-click="selectInView"
+      @row-dblclick="SeeEvent"
+      border
+      height="100%"
+      max-height="70vh"
     >
       <el-table-column :label="$t('explorer.Name')">
         <div slot-scope="scope">
@@ -89,30 +118,30 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from '../../../../services/ViewManager/ViewManager';
-import { ColorGenerator } from '../../../../services/utlils/ColorGenerator';
-import { EventBus } from '../../../../services/event';
-import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
-import fileSaver from 'file-saver';
-import { viewerState } from './viewerState';
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { ViewManager } from "../../../../services/ViewManager/ViewManager";
+import { ColorGenerator } from "../../../../services/utlils/ColorGenerator";
+import { EventBus } from "../../../../services/event";
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
+import { viewerState } from "./viewerState";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 
 const CountNames = [
-  'BuildingCount',
-  'FloorCount',
-  'RoomCount',
-  'CategoryCount',
-  'GroupCount',
-  'EquipmentCount',
-  'ProcessCount',
-  'StepCount',
-  'TicketCount',
-  'AlarmCount',
-  'AlarmProcessCount',
+  "BuildingCount",
+  "FloorCount",
+  "RoomCount",
+  "CategoryCount",
+  "GroupCount",
+  "EquipmentCount",
+  "ProcessCount",
+  "StepCount",
+  "TicketCount",
+  "AlarmCount",
+  "AlarmProcessCount",
 ];
 
 export default {
-  name: 'ContextExplorerNodeTable',
+  name: "ContextExplorerNodeTable",
   props: {
     viewKey: { required: true, type: String },
     items: { required: true, type: Array },
@@ -145,52 +174,52 @@ export default {
 
   methods: {
     selectInView(item) {
-      this.$emit('select', item);
+      this.$emit("select", item);
     },
 
     SeeEvent(item) {
-      this.$emit('isolate', item);
+      this.$emit("isolate", item);
     },
 
     Isolate() {
-      EventBus.$emit('isolate', this.data, this.relation);
+      EventBus.$emit("isolate", this.data, this.relation);
     },
 
     Color() {
       this.isColored = true;
-      console.debug('context explorer table color; hasEvent : ', this.hasEvent);
+      console.debug("context explorer table color; hasEvent : ", this.hasEvent);
       console.log(this.hasEvent);
       if (this.hasEvent) {
         // console.log(this.data);
-        EventBus.$emit('app-viewer-color', this.data, this.relation);
+        EventBus.$emit("app-viewer-color", this.data, this.relation);
         return;
       }
       // console.log(this.data);
       // console.log(this.relation);
-      EventBus.$emit('viewer-color', this.data, this.relation);
+      EventBus.$emit("viewer-color", this.data, this.relation);
       // EventBus.$emit('viewer-color', this.data, this.relation);
     },
 
     onSelectItem(item) {
-        // console.log("item");
-        // console.log(item);
-        // if(item.hasFiles == undefined)
-        let view = ViewManager.getInstance(this.viewKey).back();
-        // console.log(view);
-        if (view.serverId == 0) {
-          ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
-          return;
-        }
-        if (
-          ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth ||
-          !SpinalGraphService.hasChildInContext(
-            FileSystem._objects[view.serverId].info.id.get(),
-            FileSystem._objects[this.context].info.id.get()
-          )
-        ) {
-          ViewManager.getInstance(this.viewKey).pop(false);
-        }
+      // console.log("item");
+      // console.log(item);
+      // if(item.hasFiles == undefined)
+      let view = ViewManager.getInstance(this.viewKey).back();
+      // console.log(view);
+      if (view.serverId == 0) {
         ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+        return;
+      }
+      if (
+        ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth ||
+        !SpinalGraphService.hasChildInContext(
+          FileSystem._objects[view.serverId].info.id.get(),
+          FileSystem._objects[this.context].info.id.get()
+        )
+      ) {
+        ViewManager.getInstance(this.viewKey).pop(false);
+      }
+      ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
     },
 
     update() {
@@ -210,11 +239,11 @@ export default {
         }
         if (item.children) {
           for (const [_, childItems] of item.children) {
-            resItem['children'] = childItems.length;
+            resItem["children"] = childItems.length;
             resItem.haveChild = true;
           }
         } else if (FileSystem._objects[item.serverId] !== undefined) {
-          resItem['children'] = 0;
+          resItem["children"] = 0;
           let thisnode = FileSystem._objects[item.serverId];
           if (thisnode.children.PtrLst !== undefined) {
             for (const name of thisnode.children.PtrLst._attribute_names) {
@@ -232,9 +261,9 @@ export default {
     },
 
     updateIsolation() {
-      EventBus.$emit('viewer-reset-isolate');
+      EventBus.$emit("viewer-reset-isolate");
       if (viewerState.isolated())
-        EventBus.$emit('viewer-isolate', this.data, this.relation);
+        EventBus.$emit("viewer-isolate", this.data, this.relation);
     },
 
     updateColor(res, colorUsed) {
@@ -247,9 +276,9 @@ export default {
           Object.assign(itm, { color });
         }
       }
-      EventBus.$emit('viewer-reset-color');
+      EventBus.$emit("viewer-reset-color");
       if (viewerState.colored()) {
-        EventBus.$emit('viewer-color', this.data, this.relation);
+        EventBus.$emit("viewer-color", this.data, this.relation);
       }
     },
 
@@ -263,12 +292,12 @@ export default {
 
     getColor(color) {
       return {
-        backgroundColor: color[0] === '#' ? color : `#${color}`,
+        backgroundColor: color[0] === "#" ? color : `#${color}`,
       };
     },
 
     columnValue(item, key) {
-      if (CountNames.includes(key)) return item['children'];
+      if (CountNames.includes(key)) return item["children"];
       if (item[key]) return item[key];
       return 0;
     },
@@ -276,14 +305,14 @@ export default {
     exportToExcel() {
       let headers = [
         {
-          key: 'name',
-          header: this.$t('name'),
+          key: "name",
+          header: this.$t("name"),
           width: 20,
         },
       ];
       for (const column of this.columns) {
         let name = column;
-        if (CountNames.includes(column)) name = 'children';
+        if (CountNames.includes(column)) name = "children";
         headers.push({
           key: name,
           header: this.$t(name),
@@ -292,11 +321,11 @@ export default {
       }
       let excelData = [
         {
-          name: 'Tableau',
-          author: '',
+          name: "Tableau",
+          author: "",
           data: [
             {
-              name: 'Tableau',
+              name: "Tableau",
               header: headers,
               rows: this.data,
             },
@@ -323,9 +352,20 @@ export default {
 .spl-table {
   height: 800px;
   overflow: auto;
+  /* overflow-y: scroll; */
 }
 
 .spinal-height-control {
-  height: 80%;
+  max-height: 80%;
 }
+
+/* .el-table__header-cell{
+    background-color: #f0f2f5;
+    text-align: left !important;
+    font: normal normal normal 10px/12px Charlevoix Pro;
+    letter-spacing: 1px !important;
+    color: #214353 !important;
+    opacity: 1 !important;
+    height: fit-content !important;
+} */
 </style>

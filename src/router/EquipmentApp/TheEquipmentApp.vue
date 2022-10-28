@@ -375,7 +375,7 @@ export default {
 
 .tab-manager {
   margin: 10px 10px 10px 0px;
-  height: 88%;
+  /* height: 88%; */
   border-radius: 5px;
 }
 

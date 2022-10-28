@@ -121,6 +121,7 @@ export default {
 .info_container .content .endpointValues {
   width: 100%;
   height: calc(100% - 90px);
+  padding-bottom: 6px;
   /* padding: 25px 0; */
   /* border: 1px solid red; */
 }

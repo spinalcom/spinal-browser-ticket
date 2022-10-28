@@ -19,7 +19,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div style="height: 100%">
+  <div>
     <div class="spl-button-bar">
       <el-tooltip :content="$t('spinal-twin.ColorSwitch')">
         <button-switch
@@ -50,7 +50,6 @@ with this file. If not, see
         :context="Properties.context"
         @select="Select"
         @isolate="Isolate"
-        style="height: 100%"
       >
       </context-explorer-node-table>
     </div>
@@ -149,6 +148,7 @@ export default {
 .spl-el-button {
   margin: 0 0 0 10px;
 }
+
 .spl-button-bar {
   overflow: hidden;
   display: flex;
@@ -158,6 +158,7 @@ export default {
 
 .spinal-height-control {
   height: auto;
+  /* overflow:scroll; */
 }
 
 .primary {

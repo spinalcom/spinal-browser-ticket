@@ -25,7 +25,7 @@ with this file. If not, see
 <template>
   <div class="spinal-main-container" :class="{ 'have-abs-viewer': absviewer }">
     <div class="spinal-main-container-left">
-      <spinalNavbar class="main-navbar"></spinalNavbar>
+      <!-- <spinalNavbar class="main-navbar"></spinalNavbar> -->
       <div
         v-show="!absviewer && !dataMode"
         ref="viewerContainer"
@@ -64,6 +64,7 @@ with this file. If not, see
       </div>
     </div>
     <div class="spinal-other-container">
+      <spinalNavbar class="main-navbar"></spinalNavbar>
       <router-view></router-view>
     </div>
     <transition name="el-fade-in-linear">
@@ -166,6 +167,9 @@ export default {
 .spinal-main-container.have-abs-viewer .spinal-other-container {
   width: 100%;
   flex-grow: 1;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .spinal-other-container > div {
@@ -193,15 +197,33 @@ export default {
 }
 .spinal-main-container-left {
   height: 100%;
-  width: 50%;
+  width: 67%;
+  /* width: 60%; */
   display: flex;
   flex-direction: column;
 }
+.el-button.is-circle{
+  background-color: #EAEEF0; 
+}
+.el-button.el-button-add{
+  background-color: #14202C;
+  color: #F9F9F9;
+}
+.el-button.el-button-delete{
+  color: #EF5F32;
+  border-color: #EF5F32;
+}
+.el-button.is-disabled{
+  display: none;
+}
+
 .spinal-other-container {
-  width: 50%;
+  width: 33%;
+  /* width: 40%; */
   position: relative;
   display: flex;
-  overflow: auto;
+  overflow: hidden;
+  flex-direction: column;
 }
 
 @media screen and (max-width: 992px) {
@@ -309,5 +331,9 @@ export default {
   top: calc(100% - var(--minimized-viewer-height) - 58px);
   width: var(--minimized-viewer-width);
   height: var(--minimized-viewer-height);
+}
+
+.router-view{
+  max-height:calc(100%- 60px);
 }
 </style>
