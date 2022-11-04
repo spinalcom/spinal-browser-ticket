@@ -33,12 +33,18 @@ const sidebarHomeSelectDebounce = debounce(sidebarHomeSelect, 500);
 
 EventBus.$on('sidebar-selected-item', async (item) => {
   await viewerUtils.waitInitialized();
-  return sidebarSelectedItemDebounce(item);
+  // return sidebarSelectedItemDebounce(item);
+  return sidebarSelectedItem(item);
 });
 EventBus.$on('sidebar-mouseover-item', async (item) => {
   await viewerUtils.waitInitialized();
   return sidebarMouseoverItemDebounce(item);
 });
+EventBus.$on('sidebar-mouseover-item-without-debounce', async (item) => {
+  await viewerUtils.waitInitialized();
+  return sidebarMouseoverItem(item);
+});
+
 EventBus.$on('sidebar-homeSelect', async (item) => {
   await viewerUtils.waitInitialized();
   return sidebarHomeSelectDebounce(item);

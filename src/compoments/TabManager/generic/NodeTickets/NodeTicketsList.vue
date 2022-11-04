@@ -87,7 +87,8 @@ with this file. If not, see
 
 <script>
 export default {
-  name: 'NodeTicketsList.vue',
+  // name: 'NodeTicketsList.vue',
+  name: 'NodeTicketsList',
   props: {
     tickets: {
       required: true,
@@ -100,6 +101,7 @@ export default {
   methods: {
     select(ticket) {
       this.$emit('select', ticket);
+      console.log("selection dans nodeticketslist");
     },
   },
 };

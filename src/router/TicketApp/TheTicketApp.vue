@@ -22,8 +22,17 @@ with this file. If not, see
   <div class="hide-overflow">
     <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
     <el-tooltip :content="$t('spinal-twin.Back')">
-      <el-button
+      <!-- <el-button
         v-show="currentView.serverId != 0"
+        @click.stop="popView()"
+        class="spl-el-button"
+        style="float: left"
+        icon="el-icon-arrow-left"
+        circle
+      >
+      </el-button> -->
+      <el-button
+        v-show="showBackButton != false"
         @click.stop="popView()"
         class="spl-el-button"
         style="float: left"
@@ -124,7 +133,7 @@ export default {
     SpinalBreadcrumb,
     TabManager,
     NodeNotesMessage,
-    NodeTickets,
+    // NodeTickets,
     NodeCalendar,
     NodeTicketSelected,
   },
@@ -133,6 +142,7 @@ export default {
     return {
       viewKey: VIEW_KEY,
       items: {},
+      showBackButton: false,
       nodeItems: [],
       currentView: false,
       isNode: false,
@@ -294,6 +304,9 @@ export default {
       //   this.items = { nodeType, items, cols: Array.from(cols) };
       // }
       this.currentView = view;
+      if(this.currentView.serverId !=0){
+        this.showBackButton = true;
+      }
 
       await Promise.all(
         this.items.items.map(async function (item) {

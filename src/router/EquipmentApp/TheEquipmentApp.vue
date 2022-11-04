@@ -22,8 +22,16 @@ with this file. If not, see
   <div class="equipment-center">
     <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
     <el-tooltip :content="$t('spinal-twin.Back')">
-      <el-button
+      <!-- <el-button
         v-show="currentView.serverId != 0"
+        @click.stop="popView()"
+        class="spl-el-button"
+        style="float: left"
+        icon="el-icon-arrow-left"
+        circle
+      > -->
+      <el-button
+        v-show="showBackButton != false"
         @click.stop="popView()"
         class="spl-el-button"
         style="float: left"
@@ -121,6 +129,7 @@ export default {
     return {
       viewKey: VIEW_KEY,
       items: {},
+      showBackButton: false,
       currentView: false,
       isNode: false,
       isolated: false,
@@ -224,6 +233,9 @@ export default {
       );
 
       this.currentView = view;
+      if(this.currentView.serverId !=0){
+        this.showBackButton = true;
+      }
       this.setColumns(view);
 
       if (this.isolated == true) {

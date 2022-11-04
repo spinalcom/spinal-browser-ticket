@@ -76,6 +76,27 @@ export default {
     this.sideBarChangeBinded = this.sideBarChange.bind(this);
     EventBus.$on('side-bar-change', this.sideBarChangeBinded);
     EventBus.$emit('get-side-bar-floors-data');
+    EventBus.$on("contextNodeExplorer-onSelectItem", item => {
+      // console.log("l'event est passé");
+      // console.log(item);
+      let noeud = FileSystem._objects[item.serverId];
+      // console.log(noeud);
+      if(noeud != undefined){
+        if(noeud.getType().get() == "geographicFloor"){
+          let index = this.levels.findIndex(it => it.server_id == item.serverId);
+          if(index != -1) this.onLevelChange(this.levels[index]);
+        }
+        else if(noeud.getType().get() == "geographicRoom"){
+          console.log(item);
+          console.log(noeud);
+          let index = this.selectedLevelRooms.findIndex(it => it.server_id == item.serverId);
+          if(index != -1) this.onRoomChange(this.selectedLevelRooms[index]);
+        }
+      }
+      // let index = this.levels.findIndex(it => it.server_id == item.serverId);
+      // if(index != -1) this.onLevelChange(this.levels[index]);
+      // console.log("l'event est terminé");
+    })
   },
   beforeDestroy() {
     EventBus.$off('side-bar-change', this.sideBarChangeBinded);
@@ -86,6 +107,8 @@ export default {
       this.building = building;
     },
     onLevelChange(level) {
+      console.log(level);
+      console.log(this.levels);
       this.selectedLevel = level;
       this.selectedLevelRooms = level.children;
       this.selectedRoom = null;

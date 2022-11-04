@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container v-if="ticket" style="height: 100%">
+  <!-- <el-container v-if="ticket" style="height: 100%">
     <el-header style="height: max-content; display: flex">
       <el-tooltip
         v-if="Properties.viewKey != 'TicketApp'"
@@ -204,28 +204,236 @@ with this file. If not, see
         </el-collapse-item>
       </el-collapse>
     </el-main>
-  </el-container>
+  </el-container> -->
+  <div class="ticket-selected-main-container">
+    <div class="ticket-presentation">
+      <el-tooltip
+        v-if="Properties.viewKey != 'TicketApp'"
+        :content="$t('spinal-twin.Back')"
+      >
+        <el-button
+          @click.stop="back()"
+          class="spl-el-button"
+          style="float: right"
+          icon="el-icon-search"
+          circle
+        >
+        </el-button>
+      </el-tooltip>
+
+      <div class="ticket-name">{{ ticket.name }}</div>
+      <!-- <div class="ticket-row-card">
+        <div class="ticket-label-information">Priorité :</div>
+        <div class="ticket-label-value">{{ ticket.priority || "0" }}</div>
+      </div> -->
+      <el-select v-model="ticket.step" class="ticket-steps">
+        <el-option
+          v-for="item in steps"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
+    <div class="ticket-creation-informations">
+      <div class="ticket-row-card">
+        <div class="ticket-label-information">Priorité</div>
+        <div class="ticket-label-value">{{ ticket.priority || "N.C" }}</div>
+      </div>
+      <div class="ticket-row-card">
+        <div class="ticket-label-information">Par</div>
+        <div class="ticket-label-value">
+          {{
+            (ticket.ticket.user &&
+              (ticket.ticket.user.name || ticket.ticket.user.username)) ||
+            "unknow"
+          }}
+        </div>
+      </div>
+    </div>
+
+    <div class="ticket-creation-informations">
+      <div class="ticket-row-card">
+        <div class="ticket-label-information">Créé le</div>
+        <div class="ticket-label-value">
+          {{ DateFormat(ticket.creationDate) }}
+        </div>
+      </div>
+      <!-- <div class="ticket-row-card">
+        <div class="ticket-label-information">Par</div>
+        <div class="ticket-label-value">
+          {{
+            (ticket.ticket.user &&
+              (ticket.ticket.user.name || ticket.ticket.user.username)) ||
+            "unknow"
+          }}
+        </div>
+      </div> -->
+    </div>
+    <div class="ticket-target-informations">
+      <div class="ticket-row-card">
+        <div class="ticket-label-information">Sur</div>
+        <div class="ticket-label-value">
+          <!-- <div>{{ ticket.target.name + " (" + ticket.target.type + ")" }}</div> -->
+          <div>{{ ticket.target.name }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="ticket-description">
+      <div class="ticket-label-information">Description</div>
+      <!-- <div class="ticket-label-value">{{ ticket.ticket.description || "unknown"}}</div> -->
+      <div class="ticket-label-value">
+        <div class="description">
+          <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam. -->
+          {{ ticket.ticket.description || "unknown" }}
+        </div>
+      </div>
+    </div>
+    <!-- <div class="ticket-notes-and-events"> -->
+    <el-collapse v-model="activeCollapses">
+      <!-- <div class="ticket-events"> -->
+      <el-collapse-item
+        class="ticket-events"
+        name="Events"
+        :title="$t('spinal-twin.Events')"
+      >
+        <!-- <div class="ticket-label-information">Events :</div> -->
+        <el-table
+          :data="ticket.events"
+          :header-cell-style="{
+            'background-color': '#ffffff',
+            'text-align': 'left',
+            'letter-spacing': '1px',
+            color: '#214353',
+            opacity: '1',
+            height: 'fit-content',
+          }"
+          :row-style="{
+            background: '#ffffff 0% 0% no-repeat padding-box',
+            border: '1px solid #F8F8F8',
+            'border-radius': '5px',
+            opacity: '1',
+            'text-align': 'left',
+            'letter-spacing': '0.9px',
+            color: '#214353',
+            opacity: '1',
+          }"
+          border
+          style="overflow: auto"
+        >
+          <el-table-column label="Date">
+            <div slot-scope="scope">
+              {{ elapsedTimeFormat(scope.row.creationDate) }}
+            </div>
+          </el-table-column>
+          <el-table-column :label="$t('spinal-twin.User')">
+            <div slot-scope="scope">
+              {{
+                (scope.row.user &&
+                  (scope.row.user.name || scope.row.user.username)) ||
+                "unknow"
+              }}
+            </div>
+          </el-table-column>
+          <el-table-column label="Action">
+            <div slot-scope="scope">
+              {{ logFormat(scope.row.event) }}
+            </div>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <!-- </div> -->
+      <!-- <div class="ticket-notes"> -->
+      <el-collapse-item
+        class="ticket-notes"
+        name="Notes"
+        :title="$t('spinal-twin.TicketNotes')"
+      >
+        <!-- <div class="ticket-label-information">Commentaires :</div> -->
+        <el-container>
+          <el-header style="height: 140">
+            <node-notes-create
+              v-if="ticket.ticket"
+              :node="getTicketRealNode(ticket.ticket)"
+              @send-note="sendNote"
+            >
+            </node-notes-create>
+          </el-header>
+
+          <div class="note-feed">
+            <el-container
+              v-for="note of ticket.comments"
+              :key="note._server_id"
+              style="
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                margin-bottom: 10px;
+              "
+            >
+              <el-main style="padding: 0 0 10px 0">
+                <node-notes-message
+                  :username="note.element.username.get()"
+                  :date="note.element.date.get()"
+                  :message="note.element.message.get()"
+                  :type="note.element.type.get()"
+                  :file="note.element.file ? note.element.file : {}"
+                  :viewPoint="
+                    note.element.viewPoint ? note.element.viewPoint : null
+                  "
+                >
+                </node-notes-message>
+              </el-main>
+              <el-tooltip
+                :content="$t('spinal-twin.DeleteNote')"
+                class="delete-button"
+              >
+                <el-popconfirm
+                  @confirm="delNote(ticket.ticket)"
+                  :title="$t('spinal-twin.DeleteConfirm')"
+                >
+                  <el-button
+                    class="el-button-delete"
+                    icon="el-icon-delete"
+                    type="danger"
+                    size="small"
+                    circle
+                    slot="reference"
+                  ></el-button>
+                </el-popconfirm>
+              </el-tooltip>
+            </el-container>
+          </div>
+        </el-container>
+      </el-collapse-item>
+      <!-- </div> -->
+    </el-collapse>
+
+    <!-- </div> -->
+  </div>
 </template>
 
 <script>
-import moment from 'moment';
-import NodeNotesMessage from '../NodeNotes/NodeNotesMessage.vue';
-import NodeNotesCreate from '../NodeNotes/NodeNotesCreate.vue';
-import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import moment from "moment";
+import NodeNotesMessage from "../NodeNotes/NodeNotesMessage.vue";
+import NodeNotesCreate from "../NodeNotes/NodeNotesCreate.vue";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import {
   SpinalGraphService,
   SpinalNode,
-} from 'spinal-env-viewer-graph-service';
-import { LOGS_EVENTS_STRING } from 'spinal-service-ticket/src/Constants';
+} from "spinal-env-viewer-graph-service";
+import { LOGS_EVENTS_STRING } from "spinal-service-ticket/src/Constants";
 
-
-import { spinalServiceTicket } from 'spinal-service-ticket';
-import { ViewManager } from '../../../../services/ViewManager/ViewManager';
-import { getTicketDescription } from './Ticket';
-import EventBus from '../../../space/component/js/event';
+import { spinalServiceTicket } from "spinal-service-ticket";
+import { ViewManager } from "../../../../services/ViewManager/ViewManager";
+import { getTicketDescription } from "./Ticket";
+// import * as appEvent from "../../../../services/event";
+import EventBus from "../../../space/component/js/event";
 
 export default {
-  name: 'NodeTicketSelected',
+  name: "NodeTicketSelected",
   components: { NodeNotesMessage, NodeNotesCreate },
   props: {
     Properties: {
@@ -244,12 +452,21 @@ export default {
       default: false,
     },
   },
+  watch: {
+    Properties: {
+      handler(oldProps, newProps) {
+        this.update();
+      },
+      deep: true,
+    },
+  },
 
   data() {
     return {
+      steps: [],
       ticket: false,
       doStepping: true,
-      activeCollapses: ['Details'],
+      activeCollapses: ["Details"],
     };
   },
 
@@ -259,7 +476,7 @@ export default {
 
   async created() {
     EventBus.$on(
-      'note-added',
+      "note-added",
       async function () {
         await this.update();
       }.bind(this)
@@ -268,15 +485,16 @@ export default {
 
   methods: {
     async sendNote() {
-      EventBus.$emit('note-added');
-      this.$emit('update');
+      EventBus.$emit("note-added");
+      this.$emit("update");
       await new Promise((r) => setTimeout(r, 300));
       await this.update();
     },
 
     async update() {
+      console.log(this.Properties);
       this.ticket = undefined;
-      if (typeof this.selected == 'undefined') {
+      if (typeof this.selected == "undefined") {
         let ticketinfo = SpinalGraphService.getRealNode(
           this.Properties.selected
         );
@@ -286,33 +504,34 @@ export default {
         this.ticket = this.selected;
         this.doStepping = this.stepping;
       }
+      // console.log(this.ticket);
     },
 
     async delNote(note) {
       await serviceDocumentation.delNote(this.ticket.ticket, note);
-      this.$emit('update');
+      this.$emit("update");
     },
 
     DateFormat(time) {
       const date = new Date(time);
 
-      return moment(date, 'DD/MM/YYYY HH:mm:ss');
+      return moment(date, "DD/MM/YYYY HH:mm:ss");
     },
 
     elapsedTimeFormat(time) {
       const now = new Date();
       const then = new Date(time);
 
-      var ms = moment(now, 'DD/MM/YYYY HH:mm:ss').diff(
-        moment(then, 'DD/MM/YYYY HH:mm:ss')
+      var ms = moment(now, "DD/MM/YYYY HH:mm:ss").diff(
+        moment(then, "DD/MM/YYYY HH:mm:ss")
       );
       var d = moment.duration(ms);
       if (d.asDays() < 1) {
-        return this.$t('spinal-twin.Today');
+        return this.$t("spinal-twin.Today");
       } else if (d.asDays() < 2) {
-        return this.$t('spinal-twin.Yesterday');
+        return this.$t("spinal-twin.Yesterday");
       }
-      return Math.floor(d.asDays()) + this.$t('spinal-twin.DaysAgo');
+      return Math.floor(d.asDays()) + this.$t("spinal-twin.DaysAgo");
     },
 
     async changeStep(step, ticket) {
@@ -355,17 +574,17 @@ export default {
       } else {
         return;
       }
-      this.$emit('update');
+      this.$emit("update");
       await this.update();
     },
 
     back() {
-      this.$emit('back');
+      this.$emit("back");
     },
 
     logFormat(n) {
-      console.log(n)
-      console.log(LOGS_EVENTS_STRING)
+      console.log(n);
+      console.log(LOGS_EVENTS_STRING);
       return LOGS_EVENTS_STRING[n];
     },
 
@@ -374,7 +593,7 @@ export default {
     },
 
     debug(what) {
-      console.debug('debug', what);
+      console.debug("debug", what);
     },
 
     getTicketRealNode(ticket) {
@@ -386,6 +605,100 @@ export default {
 </script>
 
 <style scoped>
+.ticket-presentation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px;
+  align-items: center;
+}
+/* .ticket-steps{
+  text-align: left;
+  letter-spacing: .75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c;
+  border: 3px solid #f9f9f9;
+  border-radius: 10px;
+} */
+
+.ticket-creation-informations {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px;
+}
+.ticket-target-informations {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px;
+}
+.ticket-description {
+  border: 1px solid #eaeef0;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+}
+.description {
+  margin-top: 10px;
+  letter-spacing: 1.2px;
+  font-size: 15px;
+}
+
+.ticket-row-card {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #eaeef0;
+  background-color: #f9f9f9;
+  align-items: center;
+  /* padding-left: 10px;
+  padding-right: 10px; */
+  border-radius: 10px;
+  padding: 10px;
+}
+.ticket-label-information {
+  letter-spacing: 1.5px;
+  color: #14202c;
+  opacity: 1;
+  font-size: 20px;
+}
+.ticket-name {
+  letter-spacing: 1.5px;
+  color: #14202c;
+  opacity: 1;
+  font-size: 20px;
+  padding: 10px;
+  max-width: 35%;
+}
+.ticket-events {
+  border: 1px solid #eaeef0;
+  background-color: #f9f9f9;
+  margin: 10px;
+}
+.ticket-label-value {
+  color: #949da6;
+  letter-spacing: 1.5px;
+  font-size: 15px;
+  padding-left: 1.5px;
+  margin-left: 10px;
+}
+.ticket-notes-and-events {
+  display: flex;
+  flex-direction: row;
+}
+.ticket-notes {
+  border: 1px solid #eaeef0;
+  background-color: #f9f9f9;
+  margin: 10px;
+}
+
+/* ************************************OLD STYLES ******************************** */
+
+/*
 .ticketSelectedHeader {
   display: flex;
   justify-content: space-between;
@@ -414,7 +727,28 @@ export default {
   padding: 25px 10px 10px 10px;
 }
 
-.spl-el-button{
-  background-color:green;
+.spl-el-button {
+  background-color: green;
+}
+*/
+</style>
+<style>
+.el-collapse-item__header {
+  letter-spacing: 1.5px !important;
+  color: #14202c !important;
+  opacity: 1 !important;
+  font-size: 20px !important;
+  padding-left: 10px !important;
+}
+
+/* a voir pourquoi ici ça bug avec les notes */
+.ticket-steps > .el-input--suffix > .el-input__inner {
+  text-align: left;
+  letter-spacing: 0.75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c;
+  border: 3px solid #f9f9f9;
+  border-radius: 10px;
 }
 </style>

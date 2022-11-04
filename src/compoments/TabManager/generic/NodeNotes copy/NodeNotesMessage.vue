@@ -23,18 +23,14 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container
-    style="padding: 0 0 10px 0"
-  >
-    <el-header
-      class="spl-chat-header"
-      style="height: min-content"
-    >
+  <el-container style="padding: 0 0 10px 0">
+    <el-header class="spl-chat-header" style="height: min-content">
       <b>
         {{ username }}
       </b>
       , {{ DateFormat(date) }}
     </el-header>
+
     <el-main class="spl-chat-box">
       {{ message }}
       <img
@@ -43,10 +39,22 @@ with this file. If not, see
         alt="image"
         class="spl-message-image"
       />
+      <i
+        v-else-if="type == 'img' || type == 'view'"
+        class="el-icon-document-delete"
+      ></i>
     </el-main>
+
     <div>
+      <!-- <el-button
+        v-if="type == 'img' || type == 'view' || type == 'file'"
+        v-on:click.native="downloadImage()"
+        type="primary"
+        square
+        style="width: min-content"
+      > -->
       <el-button
-        v-if="type == 'img' || type == 'view'"
+        v-if="type == 'img' || type == 'file'"
         v-on:click.native="downloadImage()"
         type="primary"
         square
@@ -63,23 +71,15 @@ with this file. If not, see
       >
         {{ $t('spinal-twin.NoteRestore') }}
       </el-button>
-      <!-- <el-button
-        @click.native="debug(file)"
-        type="primary"
-        square
-        style="width: min-content"
-      >
-        Debug
-      </el-button> -->
     </div>
   </el-container>
 </template>
 
 <script>
-import moment from "moment";
+import moment from 'moment';
 
 export default {
-  name: "NodeNotesMessage",
+  name: 'NodeNotesMessage',
   props: {
     username: { type: String, required: true },
     date: { type: Number, required: true },
@@ -97,35 +97,34 @@ export default {
 
   mounted() {
     this.getImage();
+    console.log("ici")
+    console.log(this.type);
   },
 
   methods: {
-    DateFormat(date)
-    {
-      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
+    DateFormat(date) {
+      return moment(date).format('MMMM Do YYYY, h:mm:ss a');
     },
 
-    async waitimageReady(path)
-    {
-      return new Promise(resolve => {
+    async waitimageReady(path) {
+      return new Promise((resolve) => {
         const aibe = setInterval(() => {
-          if (path.remaining.get() === 0)
-          {
+          if (path.remaining.get() === 0) {
             clearInterval(aibe);
             return resolve();
           }
-        }, 500)
-      })
+        }, 500);
+      });
     },
 
-    getImage()
-    {
-      if (!this.file.load)
+    getImage() {
+      if (!this.file.load) {
         return;
-      this.file.load((f) =>
-      {
-        if (typeof f === "undefined")
+      }
+      this.file.load((f) => {
+        if (typeof f === 'undefined') {
           return;
+        }
         f.load(async (l) => {
           await this.waitimageReady(l);
           this.image = f._ptr.data.value;
@@ -136,8 +135,7 @@ export default {
 
     restoreView() {
       const viewer = window.spinal.SpinalForgeViewer.viewerManager.viewer;
-      if (Object.keys(this.viewPoint).length === 0)
-        return;
+      if (Object.keys(this.viewPoint).length === 0) return;
       const viewStateString = this.viewPoint.viewState.get();
       const objectStateString = this.viewPoint.objectState.get();
       const viewState = JSON.parse(viewStateString);
@@ -163,37 +161,29 @@ export default {
         const bimFileId =
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
-        model.selector.setSelection(el.selection, model, "selectOnly");
+        model.selector.setSelection(el.selection, model, 'selectOnly');
       });
     },
 
-    downloadImage()
-    {
-      var element = document.createElement("a");
-      element.setAttribute("href", "/sceen/_?u=" + this.image);
-      element.setAttribute("download", this.image_name);
+    downloadImage() {
+      var element = document.createElement('a');
+      element.setAttribute('href', '/sceen/_?u=' + this.image);
+      element.setAttribute('download', this.image_name);
       element.click();
-    },
-
-    debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };
 </script>
 
 <style scoped>
-
-.spl-message-image
-{
+.spl-message-image {
   width: 100px;
   height: 100px;
   border-radius: 5px;
   float: right;
 }
 
-.spl-chat-box
-{
+.spl-chat-box {
   border: 2px solid transparent;
   background-color: #dedede;
   border-radius: 5px;
@@ -203,8 +193,7 @@ export default {
   width: 100%;
 }
 
-.spl-chat-header
-{
+.spl-chat-header {
   border: 0 0 2px 0 solid transparent;
   border-radius: 5px 5px 0px 0px;
   height: min-content;

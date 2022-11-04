@@ -158,7 +158,7 @@ export default {
         EventBus.$emit('insight-clear-select');
         this.isSelect = false;
       } else {
-        EventBus.$emit('sidebar-mouseover-item', data);
+        EventBus.$emit('sidebar-mouseover-item-without-debounce', data);
         this.isSelect = true;
       }
       this.selected = data.id;
@@ -223,4 +223,5 @@ export default {
   overflow: hidden;
   overflow-y: auto;
 }
+
 </style>

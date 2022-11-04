@@ -24,20 +24,35 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-    <div class="spinal-space-header">
-      <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
-        <el-breadcrumb class="breadcrumb-style" separator="/">
+    <!-- <div class="spinal-space-header"> -->
+      <div class="spinal-breadcrumb">
+      <!-- <div class="spinal-space-header-breadcrum-container spinal-scrollbar"> -->
+        <!-- <el-breadcrumb class="breadcrumb-style" separator="/"> -->
+        <el-breadcrumb class="spinal-breadcrumb-item" separator=">">
           <el-breadcrumb-item>
-            <a @click="ResetBreadCrumb()">{{ $t('Routes.InsightCenter') }}</a>
+            <a @click="ResetBreadCrumb()" :style="{
+            'letter-spacing': '1.1px',
+            'font-size':'15px',
+            'color': '#f9f9f9',
+            'padding':'10px',
+          }">{{ $t('Routes.InsightCenter') }}</a>
           </el-breadcrumb-item>
-          <el-breadcrumb-item
+          <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs" :key="index">
+          <!-- <el-breadcrumb-item
             v-for="(breadcrumb, index) in breadcrumbs"
             :key="index"
-          >
-            <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
+          > -->
+            <!-- <a @click="breadcrumb.click">{{ breadcrumb.name }}</a> -->
+            <a class="el-bradcrumb-item-content" @click="breadcrumb.click" :style="{
+            'letter-spacing': '1.1px',
+            'font-size':'15px',
+            'color': '#f9f9f9',
+            'padding':'10px',
+          }"
+      >{{ breadcrumb.name }}</a>
           </el-breadcrumb-item>
         </el-breadcrumb>
-      </div>
+      <!-- </div> -->
 
       <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
     </div>
@@ -100,14 +115,14 @@ with this file. If not, see
 </template>
 
 <script>
-import { spinalBackEnd } from '../../services/spinalBackend';
-import groupLstVue from './component/groupLstVue';
-import profilLstVue from './component/profilLstVue';
-import tableauContext from './tableaucontext';
-import tableauCategory from './tableaucategory';
-import { EventBus } from '../../services/event';
-import HeatmapVue from './component/heatmapVue.vue';
-import { viewerUtils } from '../../services/viewerUtils/viewerUtils';
+import { spinalBackEnd } from "../../services/spinalBackend";
+import groupLstVue from "./component/groupLstVue";
+import profilLstVue from "./component/profilLstVue";
+import tableauContext from "./tableaucontext";
+import tableauCategory from "./tableaucategory";
+import { EventBus } from "../../services/event";
+import HeatmapVue from "./component/heatmapVue.vue";
+import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
 
 export default {
   components: {
@@ -135,7 +150,7 @@ export default {
     this.profilSelected = null;
     this.contextLst = await spinalBackEnd.heatmapBack.getData(); // this is when we get the data of all the contexts and children
     this.loading = false;
-    EventBus.$on('sidebar-homeSelect', (item) => {
+    EventBus.$on("sidebar-homeSelect", (item) => {
       spinalBackEnd.heatmapBack
         .getDataFilterItem(item)
         .then((result) => {
@@ -259,7 +274,7 @@ export default {
     },
 
     openDrawer() {
-      EventBus.$emit('open-drawer');
+      EventBus.$emit("open-drawer");
     },
   },
 };
@@ -271,7 +286,7 @@ export default {
   height: 100%;
   padding: 0 5px;
 }
-.breadcrumb-style {
+/* .breadcrumb-style {
   display: flex;
   justify-content: space-between;
   flex-wrap: nowrap;
@@ -295,7 +310,8 @@ export default {
   white-space: nowrap;
   height: 100%;
   display: flex;
-}
+} */
+
 .heatmap-vue {
   max-height: 70vh !important;
 }
@@ -303,5 +319,42 @@ export default {
   width: 100%;
   height: calc(100vh - 66px);
   padding-bottom: 6px;
+}
+</style>
+
+<style>
+.spinal-breadcrumb {
+  display: flex;
+  max-height: 40px;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+.el-breadcrumb.spinal-breadcrumb-item {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding: 10px;
+}
+
+.el-breadcrumb__inner {
+  background-color: #14202c;
+  opacity: 1;
+  text-align: left;
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 25px;
+}
+
+.el-breadcrumb__inner.is-link {
+  letter-spacing: 1.1px;
+  font-size: 15px;
+  color: #f9f9f9;
 }
 </style>

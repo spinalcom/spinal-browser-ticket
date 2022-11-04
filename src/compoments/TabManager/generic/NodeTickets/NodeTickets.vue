@@ -22,6 +22,8 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
+<!--ATTENTION C'EST UN ONGLET DES AUTRES APPS, PAS DE TICKET APP-->
+
 <template>
   <div style="height: 100%">
     <el-container v-if="selected" style="height: 100%">
@@ -52,12 +54,6 @@ with this file. If not, see
           :content="$t('spinal-twin.TicketDeclare')"
           style="float: right"
         >
-          <!-- <el-button
-            @click.native="addingTicket = true"
-            icon="el-icon-plus"
-            type="primary"
-            circle
-          ></el-button> -->
           <el-button
             @click.native="addingTicket = true"
             icon="el-icon-plus"
@@ -196,7 +192,10 @@ export default {
     },
 
     select(ticket) {
+      console.log("selection dans nodetickets");
       this.selected = ticket;
+      console.log("select used");
+      // console.log(ticket);
     },
 
     async archive(ticket) {

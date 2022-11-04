@@ -24,18 +24,44 @@ with this file. If not, see
 
 <template>
   <el-container style="overflow: hidden">
-    <el-main style="">
+    <el-header>
+      <node-notes-create
+        v-if="ctxNode"
+        :node="ctxNode"
+        @send-note="sendNote"
+      ></node-notes-create>
+    </el-header>
+    <el-main style="overflow: hidden">
       <div class="note-feed">
         <el-container
           v-for="note of notes"
           :key="note._server_id"
-          style="
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            margin-bottom: 10px;
-          "
         >
+          <el-header class="delete-button"
+          >
+            <el-tooltip :content="$t('spinal-twin.DeleteNote')">
+              <el-popconfirm
+                @confirm="delNote(note.selectedNode)"
+                :title="$t('spinal-twin.DeleteConfirm')">
+                <el-button
+                  class="spl-input-button"
+                  icon="el-icon-delete"
+                  type="danger"
+                  size="small"
+                  circle
+                  slot="reference"
+                ></el-button>
+              </el-popconfirm>
+            </el-tooltip>
+            <!-- <el-button
+              v-on:click.native="debug(note)"
+              class="spl-input-button"
+              icon="el-icon-search"
+              type="primary"
+              size="small"
+              circle
+            ></el-button> -->
+          </el-header>
           <el-main style="padding: 0 0 10px 0">
             <node-notes-message
               :username="note.element.username.get()"
@@ -43,61 +69,24 @@ with this file. If not, see
               :message="note.element.message.get()"
               :type="note.element.type.get()"
               :file="note.element.file ? note.element.file : {}"
-              :viewPoint="
-                note.element.viewPoint ? note.element.viewPoint : null
-              "
-            >
-            </node-notes-message>
+              :viewPoint="note.element.viewPoint ? note.element.viewPoint : null"
+            ></node-notes-message>
           </el-main>
-          <el-tooltip
-            :content="$t('spinal-twin.DeleteNote')"
-            class="delete-button"
-          >
-            <el-popconfirm
-              @confirm="delNote(note.selectedNode)"
-              :title="$t('spinal-twin.DeleteConfirm')"
-            >
-              <!-- <el-button
-                class="spl-input-button"
-                icon="el-icon-delete"
-                type="danger"
-                size="small"
-                circle
-                slot="reference"
-              ></el-button> -->
-              <el-button
-                class="el-button-delete"
-                icon="el-icon-delete"
-                type="danger"
-                size="small"
-                circle
-                slot="reference"
-              ></el-button>
-            </el-popconfirm>
-          </el-tooltip>
         </el-container>
       </div>
     </el-main>
-
-    <el-header class="header">
-      <node-notes-create
-        v-if="ctxNode"
-        :node="ctxNode"
-        @send-note="sendNote"
-      ></node-notes-create>
-    </el-header>
   </el-container>
 </template>
 
 <script>
-import { FileSystem } from 'spinal-core-connectorjs_type';
-import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
-import NodeNotesMessage from './NodeNotesMessage.vue';
+import { FileSystem } from 'spinal-core-connectorjs_type'
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import NodeNotesMessage from "./NodeNotesMessage.vue";
 import NodeNotesCreate from './NodeNotesCreate.vue';
-import EventBus from '../../../space/component/js/event';
 
 export default {
-  name: 'NodeNotes',
+  name: "NodeNotes",
   components: { NodeNotesMessage, NodeNotesCreate },
   props: {
     Properties: {
@@ -110,58 +99,60 @@ export default {
     return {
       ctxNode: false,
       notes: false,
-      new_note: '',
+      new_note: "",
       attachment: false,
     };
   },
-
-  watch: {
-    Properties: {
-      handler: async function (oldProp, newProp) {
-        if (newProp.view.serverId != 0) {
+  
+  watch:
+  {
+    Properties:
+    {
+      handler: async function(oldProp, newProp)
+      {
+        if (newProp.view.serverId != 0)
+        {
           await this.update(newProp.view.serverId);
-        } else {
+        }
+        else
+        {
           this.ctxNode = false;
         }
       },
       deep: true,
-    },
+    }
   },
 
   mounted() {
     this.update(this.Properties.view.serverId);
   },
 
-  async created() {
-    EventBus.$on(
-      'note-added',
-      async function () {
-        await this.update(this.Properties.view.serverId);
-      }.bind(this)
-    );
-  },
-
   methods: {
-    async update(id) {
+    async update(id)
+    {
+      console.debug("NOTE start")
+      // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
+      console.debug("NOTE end")
       this.notes = [];
       this.notes = await serviceDocumentation.getNotes(this.ctxNode);
-      this.new_note = '';
+      this.new_note = "";
       this.attachment = false;
     },
 
-    async sendNote(text, pack) {
-      this.update(this.Properties.view.serverId);
-      EventBus.$emit('note-added');
-    },
-
-    async delNote(note) {
-      await serviceDocumentation.delNote(this.ctxNode, note);
+    async sendNote(text, pack)
+    {
       this.update(this.Properties.view.serverId);
     },
 
+    delNote(note)
+    {
+      serviceDocumentation.delNote(this.ctxNode, note);
+      this.update(this.Properties.view.serverId);
+    },
+    
     debug(what) {
-      console.debug('Debugging', what);
+      console.debug("Debugging", what);
     },
   },
 };
@@ -171,15 +162,13 @@ export default {
 .note-feed {
   overflow: auto;
   display: flex;
-  flex-direction: column-reverse;
-  flex-wrap: wrap;
+  flex-direction: column-reverse
 }
 
 .delete-button {
-  padding: 25px 10px 10px 10px;
-}
-
-.header {
-  height: 140px !important;
+  padding: 10px 0 0 0;
+  display: flex;
+  flex-direction: row-reverse;
+  height: min-content;
 }
 </style>

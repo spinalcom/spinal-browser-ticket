@@ -54,6 +54,7 @@ with this file. If not, see
 </template>
 
 <script>
+import { EventBus } from "../../services/event"
 export default {
   name: 'NavItem',
   props: ['label', 'items', 'select', 'icon'],
@@ -76,6 +77,7 @@ export default {
     },
     itemsComputed() {
       const res = [];
+      // console.log(this.items);
       this.items.forEach((e) => {
         if (e) res.push(e);
       });
@@ -84,6 +86,16 @@ export default {
   },
   mounted() {
     eva.replace();
+    // EventBus.$on("contextNodeExplorer-onSelectItem", item => {
+    //   // console.log("l'event est passé");
+    //   // console.log(this);
+    //   // console.log(item)
+    //   // let index = this.items.findIndex(it => it.serverId == item.serverId);
+    //   // console.log(index);
+    //   // if(index != -1) this.handleCommand(this.items[index]);
+    //   // // this.handleCommand(item);
+    //   // console.log("l'event est terminé");
+    // })
   },
   methods: {
     onMouseOver(item) {
@@ -91,6 +103,9 @@ export default {
     },
     handleCommand(value) {
       this.$emit('select', value);
+      // console.log("handlecommand");
+      // console.log(value);
+      // console.log("/handlecommand");
     },
     focusItem() {
       this.$emit('focusItem', this.select);
@@ -100,12 +115,11 @@ export default {
 </script>
 
 <style scoped>
-.navbar-item {
+/* .navbar-item {
   flex-grow: 1;
   display: flex;
   align-self: center;
   margin: 0px 5px;
-  /* background: white; */
 }
 .navbar-item > * {
   display: flex;
@@ -120,18 +134,12 @@ export default {
 .spinal-dropdown-disabled {
   cursor: not-allowed !important;
   color: #bbb !important;
-}
+} */
 </style>
 
 <style>
-/* .navbar-item{
-  background: #14202C 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 6px #00000029;
-  border: 1px solid #F7F7F7;
-  opacity: 1;
-} */
 
-.navbar-item .el-input__inner {
+/* .navbar-item .el-input__inner {
   color: #1d4b5e;
 }
 .navbar-item .el-input__inner {
@@ -150,7 +158,6 @@ export default {
 .navbar-item .el-button-group .el-button {
   background-color: #14202c;
   text-align: left;
-  /* font: normal normal normal 15px/18px Charlevoix Pro; */
   letter-spacing: 0.75px;
   color: #F9F9F9;
   opacity: 1;
@@ -170,9 +177,12 @@ export default {
   margin-left: -20px;
   padding-left: 20px;
 }
+
 .el-dropdown-menu.el-popper {
   max-height: 95vh;
   overflow: auto;
+  background-color: #14202c;
+  border-radius: 10px;
 }
 
 .el-dropdown-menu.el-popper::-webkit-scrollbar {
@@ -196,5 +206,122 @@ export default {
   pointer-events: none !important;
   background-color: #c8c9cc !important;
   border-radius: 4px;
+}
+.dropdown-item-container{
+  align-content: center;
+  background-color: #14202c;
+  width:140px;
+  color: #F9F9F9;
+  border-radius: 5px;
+  border: 1px solid #F7F8F8;
+  margin:10px;
+} */
+
+</style>
+
+
+<style scoped>
+.navbar-item {
+  flex-grow: 1;
+  display: flex;
+  align-self: center;
+  margin: 0px 5px;
+  /* background: white; */
+}
+.navbar-item > * {
+  display: flex;
+  align-self: center;
+  width: 100%;
+}
+.navbar-item > div > .el-button {
+  margin-left: 8px;
+}
+.spinal-dropdown-disabled {
+  cursor: not-allowed !important;
+  color: #bbb !important;
+}
+</style>
+
+<style>
+/* .navbar-item{
+  background: #14202C 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #F7F7F7;
+  opacity: 1;
+} */
+.navbar-item .el-input__inner {
+  color: #1d4b5e;
+}
+.navbar-item .el-input__inner {
+  color: #1d4b5e;
+}
+.navbar-item .el-button-group {
+  width: 100%;
+  white-space: nowrap;
+}
+.navbar-item .el-button-group .el-button:first-child {
+  width: calc(100% - 28px);
+}
+.navbar-item .el-button-group .el-button {
+  background-color: #14202c;
+  text-align: left;
+  /* font: normal normal normal 15px/18px Charlevoix Pro; */
+  letter-spacing: 0.75px;
+  color: #F9F9F9;
+  opacity: 1;
+}
+.button-icon-left-focus.is-disabled,
+.button-icon-left-focus.is-disabled:active,
+.button-icon-left-focus.is-disabled:focus,
+.button-icon-left-focus.is-disabled:hover {
+  color: #fff !important;
+  background-color: #c8c9cc !important;
+  border-color: #c8c9cc !important;
+}
+.dropdown-item-container {
+  float: left;
+  width: calc(100% + 40px);
+  margin-left: -20px;
+  padding-left: 20px;
+}
+.el-dropdown-menu.el-popper {
+  max-height: 95vh;
+  overflow: auto;
+  background-color:#14202c;
+  padding:10px;
+}
+.el-dropdown-menu.el-popper::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.el-dropdown-menu.el-popper::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: rgba(169, 169, 169, 0.9);
+}
+.el-dropdown-menu.el-popper::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+.spinal-dropdown-disabled * {
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background-color: #c8c9cc !important;
+  border-radius: 4px;
+}
+
+.dropdown-item-container{
+  color: #F9F9F9;
+  border-radius: 5px;
+  border: 1px solid #4B6079;
+  background-color:#14202c;
+  margin-top:2.5px;
+  margin-bottom: 2.5px;
+  letter-spacing: 0.75px;
+  opacity:1;
+  font-size: 12px;
+
 }
 </style>

@@ -261,7 +261,7 @@ with this file. If not, see
         {{ value | filterValue }}
       </div>
       <div class="unit" v-tooltip="`${unit}`">{{ unit }}</div>
-        <div class="name" v-tooltip="name">
+        <div class="name" v-tooltip="name" v-on:mouseover="select()">
       {{ name }}
     </div>
         </v-list-item-title>
@@ -495,14 +495,18 @@ export default {
         ids: allBimObjects,
       });
     },
+    // async select() {
+    //   let data = { rooms: [this.room] };
+    //   const allBimObjects = await this.getAllBimObjects(data);
+    //   this.$emit("select", {
+    //     id: this.room.id,
+    //     ids: allBimObjects,
+    //   });
+    // },
     async select() {
-      let data = { rooms: [this.room] };
-      const allBimObjects = await this.getAllBimObjects(data);
-
-      this.$emit("select", {
-        id: this.room.id,
-        ids: allBimObjects,
-      });
+      let a = SpinalGraphService.getRealNode(this.room.id);
+      const item = { id: this.room.id, server_id: a._server_id };
+      this.$emit("select", item);
     },
     async isolate() {
       let data = { rooms: [this.room] };
@@ -532,11 +536,7 @@ export default {
       EventBus.$emit("sidebar-selected-item", item);
     },
 
-    async select() {
-      let a = await SpinalGraphService.getRealNode(this.room.id);
-      const item = { id: this.room.id, server_id: a._server_id };
-      this.$emit("select", item);
-    },
+    
     async isolate() {
       let data = { rooms: [this.room] };
       const allBimObjects = await this.getAllBimObjects(data);
@@ -701,6 +701,9 @@ export default {
   letter-spacing: 1.1px;
   margin-left: 6px;
 }
+
+
+
 
 
 

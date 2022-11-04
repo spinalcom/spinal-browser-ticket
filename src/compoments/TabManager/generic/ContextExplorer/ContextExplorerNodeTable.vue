@@ -52,7 +52,7 @@ with this file. If not, see
       }"
       :row-style="{
         'background': '#ffffff 0% 0% no-repeat padding-box',
-        'border': '1px solid #F8F8F8',
+        'border': '1px solid green',
         'border-radius': '5px',
         'opacity': '1',
         'text-align': 'left',
@@ -62,18 +62,32 @@ with this file. If not, see
 
         }"
       @row-click="selectInView"
+      @cell-mouse-enter="hoverSelectInView"
       @row-dblclick="SeeEvent"
-      border
+      
       height="100%"
       max-height="70vh"
     >
       <el-table-column :label="$t('explorer.Name')">
         <div slot-scope="scope">
-          <div
+          <!-- <div
             v-if="scope.row.color && isColored"
             :style="getColor(scope.row.color)"
             class="spinal-table-cell-color"
+          ></div> -->
+          <div
+            v-if="scope.row.color && isColored"
+            :style="getColor(scope.row.color)"
+            class="div__rectangle"
           ></div>
+          <!-- <div
+          v-if="scope.row.color && isColored"
+          class="div__rectangle"
+          :style="{
+            'background-color': getColor(scope.row.color),
+          }"
+        ></div> -->
+
           <div>
             {{ scope.row.name }}
           </div>
@@ -176,6 +190,14 @@ export default {
     selectInView(item) {
       this.$emit("select", item);
     },
+    hoverSelectInView(item){
+      let node = FileSystem._objects[item.serverId];
+      if(node != undefined){
+        if(node.getType().get() == "geographicRoom"){
+          this.$emit("select", item);
+        }
+      }
+    },
 
     SeeEvent(item) {
       this.$emit("isolate", item);
@@ -201,11 +223,17 @@ export default {
     },
 
     onSelectItem(item) {
-      // console.log("item");
-      // console.log(item);
-      // if(item.hasFiles == undefined)
+      // if(this.viewKey == "TicketApp"){
+      //   console.log("µµµµµµµµµµµµµµµµµµµµµµµ")
+      //   // console.log(item)
+
+      //   console.log("µµµµµµµµµµµµµµµµµµµµµµµ")
+      //   EventBus.$emit('TicketApp-onSelectItem', item);
+        
+      // }
+      
+      EventBus.$emit("contextNodeExplorer-onSelectItem", item);
       let view = ViewManager.getInstance(this.viewKey).back();
-      // console.log(view);
       if (view.serverId == 0) {
         ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
         return;
@@ -258,6 +286,9 @@ export default {
       this.loading = false;
       this.updateColor(this.data, colorUsed);
       this.isColored = viewerState.colored();
+      console.log("********************");
+      console.log(this.items);
+      console.log("********************");
     },
 
     updateIsolation() {
@@ -341,12 +372,23 @@ export default {
 </script>
 
 <style scoped>
-.spinal-table-cell-color {
+/* .spinal-table-cell-color {
   height: 100%;
   width: 5px;
   position: absolute;
   left: 0;
   top: 0;
+} */
+
+.div__rectangle {
+  width: 5px;
+  height: 50%;
+  margin-left: 0px;
+  border-radius: 5px;
+  position: absolute;
+  left: 0;
+  top: 25%;
+  /* min-height: inherit; */
 }
 
 .spl-table {
@@ -367,5 +409,12 @@ export default {
     color: #214353 !important;
     opacity: 1 !important;
     height: fit-content !important;
+} */
+
+</style>
+
+<style>
+/* .el-table__body-wrapper.is-scrolling-none{
+  border: 4px solid black;
 } */
 </style>

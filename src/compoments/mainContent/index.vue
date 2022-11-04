@@ -336,4 +336,19 @@ export default {
 .router-view{
   max-height:calc(100%- 60px);
 }
+
+    *::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  .__content *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #14202c;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+  }
 </style>
