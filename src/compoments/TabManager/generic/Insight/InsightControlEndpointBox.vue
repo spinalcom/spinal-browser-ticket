@@ -23,15 +23,123 @@ with this file. If not, see
 -->
 
 <template>
-  <el-card class="control-endpoint-box">
+  <!-- <el-card class="control-endpoint-box">
     <h5>
       {{ name }}
     </h5>
     <span> {{ value | filterValue }} {{ unit }} </span>
-  </el-card>
+  </el-card> -->
+
+ <v-list-item class="data-table-item">
+      <v-list-item-content>
+        <v-list-item-title>
+          <!-- <div
+          v-if="this.endpoint"
+          class="div__rectangle"
+          :style="{
+            'background-color': getColor(
+              this.endpoint.currentValue.get(),
+              this.variableSelected.config
+            ),
+          }"
+        ></div> -->
+        <div
+          class="div__rectangle"
+          :style="{
+            'background-color': '#14202c'
+          }"
+        ></div>
+        <!-- <div
+          class="div__rectangle"
+          :style="{
+            'background-color': '#'+(Math.floor(Math.random()*0xFFFFFF)).toString(16)
+          }"
+        ></div> -->
+        <div class="value" v-tooltip="`${value} ${unit}`">
+        {{ value | filterValue }}
+      </div>
+      <div class="unit" v-tooltip="`${unit}`">{{ unit }}</div>
+        <!-- <div class="name" v-tooltip="name" v-on:mouseover="select()"> -->
+          <div class="name" v-tooltip="name">
+      {{ name }}
+    </div>
+        </v-list-item-title>
+      </v-list-item-content>
+      
+      <v-list-item-action class="data-table-item-btn-container">
+        <!-- <el-tooltip
+          content="Focus"
+          effect="light"
+          :open-delay="300"
+          placement="right"
+        >
+          <el-button
+            v-on:click="focus()"
+            class="custom-icon circled-button position_right"
+            circle
+            icon="el-icon-zoom-in"
+          ></el-button>
+        </el-tooltip> -->
+        <!-- <el-tooltip
+          content="Select"
+          effect="light"
+          :open-delay="300"
+          placement="right"
+        >
+          <el-button
+            v-on:click="select()"
+            class="custom-icon circled-button position_right2"
+            circle
+            icon="el-icon-view"
+          ></el-button>
+        </el-tooltip> -->
+
+
+
+          <el-button
+            v-on:click="openChartModal()"
+            :disabled="endpoint.saveTimeSeries === 0"
+            class="dashboard-btn custom-icon circled-button"
+            :class="{
+              'dashboard-btn-disabled': parseInt(endpoint['timeSeries maxDay']) != NaN,
+              'dashboard-btn-on': isDataMode,
+              'dashboard-btn-off': !isDataMode,
+            }"
+            circle
+            icon="el-icon-menu"
+          >
+          </el-button>
+          
+
+          <el-button
+            v-if="displayBoolButton"
+            v-on:click="flip()"
+            class="config-btn-position custom-icon circled-button"
+            circle
+            icon="el-icon-refresh"
+          >
+          </el-button>
+
+          <!-- <el-button
+            v-if="
+              variableSelected.type == 'Consigne' &&
+              variableSelected.dataType != 'Boolean'
+            "
+            v-on:click="openConfigModal()"
+            class="config-btn-position custom-icon circled-button"
+            circle
+            icon="el-icon-setting"
+          >
+          </el-button> -->
+      </v-list-item-action>
+    </v-list-item>
+
 </template>
 
 <script>
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { EventBus } from "../../../../services/event";
+
 export default {
   name: 'InsightControlEndpointBox',
   props: {
@@ -43,9 +151,12 @@ export default {
       value: undefined,
       unit: undefined,
       bindProcess: undefined,
+      isDataMode: false,
     };
   },
   mounted() {
+    console.log(this.endpoint);
+    this.selectedNode = SpinalGraphService.getRealNode(this.endpoint.endpointNodeId);
     this.value = this.endpoint.currentValue;
     this.unit = this.endpoint.unit;
   },
@@ -53,11 +164,22 @@ export default {
   methods: {
     updateEndpoint() {
       if (this.endpoint) {
+        // console.log(this.endpoint);
         this.bindProcess = this.endpoint.currentValue.bind(() => {
           this.value = this.endpoint.currentValue.get();
           this.unit = this.endpoint.unit.get();
         });
       }
+    },
+    openChartModal() {
+      console.log(this.endpoint);
+      let data = this.selectedNode.info;
+      // let data = this.endpoint;
+      data.objectName = this.name;
+      data.unit = this.unit;
+      console.log(data);
+      EventBus.$emit("data-mode", data);
+      this.isDataMode = !this.isDataMode;
     },
   },
 
@@ -77,9 +199,106 @@ export default {
 </script>
 
 <style scoped>
-.control-endpoint-box {
+/* .control-endpoint-box {
   width: 30%;
   margin: 10px;
   height: 10%;
+} */
+
+/* .div__content {
+  display: flex;
+  flex-direction: row;
+  background-color: #f9f9f9;
+  align-items: center;
+  padding: 4px;
+  height: fit-content;
+  border: 2px solid #eaeef0;
+  border-radius: 17px;
+} */
+.relative {
+  min-height: inherit;
+}
+.div__rectangle {
+  width: 10px;
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  /* min-height: inherit; */
+}
+/* .stat-card {
+  margin: 4px;
+  border-radius: 10px;
+  width: 100%;
+} */
+.data-table-item-btn-container {
+  flex-direction: row;
+  display: flex;
+  opacity: 0;
+  /* transition: opacity 1s left 5s linear; */
+  transition: opacity 0.5s linear, left 0.2s linear;
+  /* transition: left 0.2s linear; */
+  overflow: hidden;
+  position: relative;
+  left: 0px;
+  width: 0;
+  /* min-width: 1px; */
+  min-width: 20%;
+  margin-left: 0;
+}
+
+.data-table-item:hover .data-table-item-btn-container{
+  width: fit-content;
+  opacity: 1;
+  position: relative;
+  left: 20px;
+  margin-left: 20px;
+  /* max-width: 20%; */
+}
+
+.v-list-item__title{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+/* .data-table-item{
+  margin: 4px;
+  border-radius: 10px;
+  width: 100%;
+} */
+
+.data-table-item{
+  display: flex;
+  flex-direction: row;
+  background-color: #f9f9f9;
+  /* justify-content: flex-start; */
+  align-items: center;
+  padding: 4px;
+  height: fit-content;
+  border: 2px solid #eaeef0;
+  border-radius: 17px;
+  margin-top: 4px;
+  width: 100%;
+}
+.v-list-item-content{
+  max-width:60%;
+}
+.value{
+  letter-spacing: 1.5px;
+  color: #14202C;
+  opacity: 1;
+  font-size: 20px;
+}
+.unit{
+  margin-left: 2px;
+  letter-spacing: 1.5px;
+  color: #14202C;
+  opacity: 1;
+  font-size: 10px;
+}
+.name{
+  color:#949DA6;
+  letter-spacing: 1.1px;
+  margin-left: 6px;
 }
 </style>

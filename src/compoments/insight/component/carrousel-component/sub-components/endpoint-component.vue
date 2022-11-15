@@ -386,6 +386,7 @@ export default {
     };
   },
   async mounted() {
+    
     this.updateEndpoint();
     this.updateDisplay();
     this.selectedNode = await this.getEndpoint();
@@ -397,6 +398,7 @@ export default {
         (el) => el.id.get() == this.variableSelected.id
       );
       if (this.endpoint) {
+        console.log(this.endpoint)
         this.bindProcess = this.endpoint.currentValue.bind(() => {
           this.value = this.endpoint.currentValue.get();
           this.unit = this.endpoint.unit.get();
@@ -561,6 +563,7 @@ export default {
     },
 
     openChartModal() {
+      console.log(this.selectedNode);
       let data = this.selectedNode;
       data.objectName = this.name;
       data.unit = this.unit;

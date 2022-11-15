@@ -187,7 +187,7 @@ export default {
         },
         {
           name: 'spinal-twin.ControlEndpoints',
-          content: InsightEndpoint,
+          content: InsightControlEndpoint,
           props: {
             viewKey: VIEW_KEY,
             view: false,
@@ -335,6 +335,7 @@ export default {
 
     formatData() {
       const res = [];
+      console.log(this.items);
       for (const item of this.items.items) {
         const resItem = {
           name: item.name,

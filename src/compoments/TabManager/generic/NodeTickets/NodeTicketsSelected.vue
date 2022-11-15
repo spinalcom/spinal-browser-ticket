@@ -751,4 +751,7 @@ export default {
   border: 3px solid #f9f9f9;
   border-radius: 10px;
 }
+.ticket-selected-main-container{
+  width:100%;
+}
 </style>

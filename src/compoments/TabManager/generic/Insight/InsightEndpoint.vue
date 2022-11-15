@@ -37,7 +37,7 @@ with this file. If not, see
         ></insight-control-endpoint-box>
       </div>
 
-      <h4> Room's equipment </h4>
+      <!-- <h4> Room's equipment </h4>
       <div class="control-endpoint-grid">
         <insight-control-endpoint-box
           v-for="endpoint of childrenEndpoints"
@@ -45,7 +45,7 @@ with this file. If not, see
           :name="endpoint.name"
           :endpoint="endpoint"
         ></insight-control-endpoint-box>
-      </div>
+      </div> -->
     </div>
   </el-container>
 </template>
@@ -124,16 +124,25 @@ export default {
       const attributesLstModels = await serviceDocumentation.getAllAttributes(
         realnode
       );
+      // console.log("9999999999999999999")
+      // console.log(attributesLstModels);
+      // console.log("9999999999999999999")
       const attributes = attributesLstModels.map((el) => el.get());
       const endpointInfo = {};
       for (const attr of attributes) {
         endpointInfo[attr.label] = attr.value;
       }
-      const infos = await realnode.element.load();
-      endpointInfo.name = infos.name.get();
-      endpointInfo.id = realnode.info.id.get();
-      endpointInfo.currentValue = infos.currentValue.get();
-      endpointInfo.unit = infos.unit.get();
+      endpointInfo.endpointNodeId = endpointNodeId;
+      // const infos = await realnode.element.load();
+      // console.log("****************************")
+      // console.log(infos);
+      // console.log("****************************")
+      // endpointInfo.name = infos.name.get();
+      // endpointInfo.id = realnode.info.id.get();
+      // endpointInfo.currentValue = infos.currentValue.get();
+      // // endpointInfo.saveTimeSeries = infos.saveTimeSeries.get();
+      // endpointInfo.unit = infos.unit.get();
+
       return endpointInfo;
     },
 
@@ -174,5 +183,7 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  max-height: 70vh;
+  overflow: auto;
 }
 </style>

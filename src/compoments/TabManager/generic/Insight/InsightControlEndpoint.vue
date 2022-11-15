@@ -23,26 +23,29 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container
+  <!-- <el-container
     v-if="
       ctxNode &&
       ctxNode.info.type.get() == 'geographicRoom' &&
       typeof endpoints !== 'undefined' &&
       endpoints.length != 0
     "
-  >
-    <h4>
-      {{ ctxNode.info.name.get() }}
-    </h4>
-    <div>
-      <div v-for="eq of endpoints" :key="eq.name">
-        <div class="control-endpoint-grid">
-          <insight-control-endpoint-box
-            v-for="end of eq.info"
-            :key="end.name"
-            :name="end.name"
-            :endpoint="end"
-          ></insight-control-endpoint-box>
+  > -->
+  <el-container v-if="ctxNode">
+    <div style="overflow: auto">
+      <h4>
+        {{ ctxNode.info.name.get() }}
+      </h4>
+      <div>
+        <div v-for="eq of endpoints" :key="eq.name">
+          <div class="control-endpoint-grid">
+            <insight-control-endpoint-box
+              v-for="end of eq.info"
+              :key="end.name"
+              :name="end.name"
+              :endpoint="end"
+            ></insight-control-endpoint-box>
+          </div>
         </div>
       </div>
     </div>
@@ -51,12 +54,12 @@ with this file. If not, see
 
 <script>
 // imports
-import InsightControlEndpointBox from './InsightControlEndpointBox.vue';
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
-import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import InsightControlEndpointBox from "./InsightControlEndpointBox.vue";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 
 export default {
-  name: 'InsightControlEndpoint',
+  name: "InsightControlEndpoint",
   components: { InsightControlEndpointBox },
   props: {
     Properties: {
@@ -103,7 +106,7 @@ export default {
       this.ctxNode = FileSystem._objects[id];
       this.endpoints = await this.getNodeEndpointsInfo(
         this.ctxNode.info.id.get(),
-        'hasControlPoints'
+        "hasControlPoints"
       );
     },
 
@@ -118,6 +121,7 @@ export default {
       for (const attr of attributes) {
         endpointInfo[attr.label] = attr.value;
       }
+      endpointInfo.endpointNodeId = endpointNodeId;
       return endpointInfo;
     },
 
@@ -127,7 +131,7 @@ export default {
         endpointRelation
       );
       if (endpointProfilsModel && endpointProfilsModel.length == 0) return; // si la node n'a pas d'endpoints on quitte la fonction
-      if (endpointRelation == 'hasControlPoints') {
+      if (endpointRelation == "hasControlPoints") {
         // on cherche les control endpoints (onglet insight)
         const res = [];
         for (const endpointProfil of endpointProfilsModel) {
@@ -135,7 +139,7 @@ export default {
           /** on récupère la data */
           const endpointsModels = await SpinalGraphService.getChildren(
             endpointProfil.id.get(),
-            'hasBmsEndpoint'
+            "hasBmsEndpoint"
           );
           const endpoints = endpointsModels.map((el) => el.get());
           const infos = [];
@@ -163,5 +167,7 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  max-height: 70vh;
+  overflow: auto;
 }
 </style>

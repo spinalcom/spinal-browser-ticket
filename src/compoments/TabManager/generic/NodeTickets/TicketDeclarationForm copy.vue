@@ -25,7 +25,7 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <h5 class="ticket-declare-title">
+      <h5 style="margin: 20px">
         {{ $t('spinal-twin.TicketDeclare') }}
       </h5>
     </el-header>
@@ -36,12 +36,12 @@ with this file. If not, see
         :model="newTicket"
         label-width="80px"
       >
-        <el-form-item>
-          <label class="ticket-declare-subtitle">Context</label>
+        <el-form-item label="Context">
           <el-select
             v-model="newTicket.context"
             @change="setProcesses()"
             placeholder="---"
+            style="width: 500px"
           >
             <!-- :placeholder="$t('spinal-twin.SelectContext')" -->
             <el-option
@@ -53,12 +53,12 @@ with this file. If not, see
           </el-select>
         </el-form-item>
 
-        <el-form-item v-show="processes">
-          <label class="ticket-declare-subtitle">Process</label>
+        <el-form-item v-show="processes" label="Process">
           <el-select
             v-model="newTicket.process"
             placeholder="---"
             @change="setIncidents()"
+            style="width: 500px"
           >
             <!-- :placeholder="$t('spinal-twin.SelectProcess')" -->
             <el-option
@@ -70,12 +70,12 @@ with this file. If not, see
           </el-select>
         </el-form-item>
 
-        <el-form-item v-show="incidents">
-          <label class="ticket-declare-subtitle">Incident</label>
+        <el-form-item v-show="incidents" label="Incident">
           <el-autocomplete
             v-model="newTicket.incident"
             :fetch-suggestions="suggestIncidents"
             @select="selected"
+            style="width: 500px"
             placeholder="---"
           >
             <!-- :placeholder="$t('spinal-twin.SelectIncident')" -->
@@ -87,9 +87,9 @@ with this file. If not, see
 
         <el-form-item
           v-show="newTicket.incident != '' && newTicket.incident != undefined"
+          :label="$t('spinal-twin.Priority')"
         >
-        <label class="ticket-declare-subtitle">{{$t('spinal-twin.Priority')}}</label>
-          <el-radio-group class="priority-radio-group" v-model="newTicket.priority">
+          <el-radio-group v-model="newTicket.priority">
             <el-radio label="Occasionally"></el-radio>
             <el-radio label="Normal"></el-radio>
             <el-radio label="Urgent"></el-radio>
@@ -97,8 +97,8 @@ with this file. If not, see
         </el-form-item>
         <el-form-item
           v-show="newTicket.incident != '' && newTicket.incident != undefined"
+          :label="$t('spinal-twin.Description')"
         >
-        <label class="ticket-declare-subtitle">{{$t('spinal-twin.Description')}}</label>
           <el-input
             v-model="newTicket.description"
             autosize
@@ -110,8 +110,7 @@ with this file. If not, see
       </el-form>
     </el-main>
 
-    <!-- <el-footer style="position: absolute; bottom: 50px"> -->
-      <el-footer >
+    <el-footer style="position: absolute; bottom: 50px">
       <el-button @click="close()">
         {{ $t('Cancel') }}
       </el-button>
@@ -245,37 +244,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.ticket-declare-title{
-  background-color: rgb(255, 255, 255);
-  text-align: left;
-  letter-spacing: 1px;
-  color: rgb(33, 67, 83);
-  opacity: 1;
-  height: fit-content;
-  margin:20px;
-}
-.ticket-declare-subtitle{
-  background-color: rgb(255, 255, 255);
-  text-align: left;
-  letter-spacing: 1px;
-  color: rgb(33, 67, 83);
-  opacity: 1;
-  height: fit-content;
-  margin-right: 20px
-}
-.el-radio{
-  background-color: rgb(255, 255, 255);
-  text-align: left;
-  letter-spacing: 1px;
-  color: rgb(33, 67, 83);
-  opacity: 1;
-  height: fit-content;
-}
-.priority-radio-group{
-  margin-top: 10px;
-}
-
-</style>
-<style>
-</style>
