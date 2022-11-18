@@ -122,7 +122,7 @@ export const TICKET_APP_RELATIONS = [
   SPINAL_TICKET_SERVICE_STEP_TYPE,
   SPINAL_TICKET_SERVICE_TICKET_TYPE,
 ];
-const VIEW_KEY = "TicketApp";
+export const VIEW_KEY = "TicketApp";
 
 const AppBackInstance = AppBack.getInstance();
 

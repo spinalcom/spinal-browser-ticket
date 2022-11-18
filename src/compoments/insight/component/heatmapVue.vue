@@ -24,29 +24,47 @@ with this file. If not, see
 
 <template>
   <div class="_heatmapContainer spaceL-top">
-    <div class="buttons">
-      <el-button
+    <!-- <div class="buttons"> -->
+      <!-- <el-button
         class="boutton-barre"
         icon="el-icon-arrow-left"
         circle
         style="position: fixed; z-index: 1"
         @click="goBack()"
+      > -->
+      <div class="endpoint-selector-block">
+      <el-button
+        class="boutton-barre"
+        icon="el-icon-arrow-left"
+        circle
+        @click="goBack()"
       >
       </el-button>
-      <div class="btn space-top btn-size space-right center-div">
+    <!-- </div> -->
+    <!-- <div class="btn no-shadow btn-size space-right center-div">
         <i @click="decreaseIndex()" class="arrow left"></i>
         {{ variableSelected ? variableSelected.name : '' }}
         <i @click="increaseIndex()" class="arrow right"></i>
-      </div>
+      </div> -->
+    
+      <div class="endpoint-selector-label">Indicateur visualisé</div>
+      <el-select v-model="index" class="endpoint-selector">
+        <el-option
+          v-for="(item, index) in variables"
+          :key="index"
+          :label="variables[index].name"
+          :value="index"
+        />
+      </el-select>
     </div>
 
     <vueper-slides
       :slide-ratio="1 / 2"
       :touchable="false"
       prevent-y-scroll
-      class="space-top"
+      class="no-shadow"
     >
-      <vueper-slide class="heigth" v-for="(slide, i) in slides" :key="i">
+      <vueper-slide class="heights" v-for="(slide, i) in slides" :key="i">
         <!--Profil info component-->
         <template v-slot:content>
           <component
@@ -63,19 +81,19 @@ with this file. If not, see
 </template>
 
 <script>
-import { VueperSlides, VueperSlide } from 'vueperslides';
-import { EventBus } from '../../../services/event';
-import { spinalBackEnd } from '../../../services/spinalBackend';
+import { VueperSlides, VueperSlide } from "vueperslides";
+import { EventBus } from "../../../services/event";
+import { spinalBackEnd } from "../../../services/spinalBackend";
 
-import 'vueperslides/dist/vueperslides.css';
+import "vueperslides/dist/vueperslides.css";
 
-import profilInfoComponent from './carrousel-component/profil_info_component.vue';
-import chartComponent from './carrousel-component/chart_component.vue';
+import profilInfoComponent from "./carrousel-component/profil_info_component.vue";
+import chartComponent from "./carrousel-component/chart_component.vue";
 
 const backendService = spinalBackEnd.heatmapBack;
 
 export default {
-  props: ['profil', 'filter'],
+  props: ["profil", "filter"],
 
   data() {
     return {
@@ -86,7 +104,7 @@ export default {
       index: undefined,
       slides: [
         {
-          title: 'Profil info',
+          title: "Profil info",
           content: profilInfoComponent,
         },
       ],
@@ -125,12 +143,12 @@ export default {
         gradients,
         endpoints: this.endpoints,
       };
-      EventBus.$emit('seeHeatMap', obj);
+      EventBus.$emit("seeHeatMap", obj);
     },
 
     sendDataUpdated() {
       const gradients = this.getColorGradient(this.variableSelected.config);
-      EventBus.$emit('seeHeatMap', {
+      EventBus.$emit("seeHeatMap", {
         profil: this.variableSelected,
         gradients,
         endpoints: this.endpoints,
@@ -156,7 +174,7 @@ export default {
 
     getValue(index, max, min) {
       if (isNaN(parseInt(min)) && isNaN(parseInt(max)))
-        return index ? 'True' : 'False';
+        return index ? "True" : "False";
       return Number(min) + ((Number(max) - Number(min)) * Number(index)) / 10;
     },
 
@@ -173,7 +191,7 @@ export default {
     },
 
     goBack() {
-      this.$emit('goBackProfil');
+      this.$emit("goBackProfil");
     },
   },
 
@@ -184,6 +202,7 @@ export default {
     ) {
       this.variables = this.profil.endpointsProfils;
       this.index = 0;
+      console.log(this.variables);
     }
     /*// Update references
       for(const element of this.profil.rooms){
@@ -200,14 +219,14 @@ export default {
     },
 
     index() {
-      if (typeof this.index !== 'undefined') {
+      if (typeof this.index !== "undefined") {
         this.variableSelected = this.variables[this.index];
       }
     },
   },
 
   beforeDestroy() {
-    EventBus.$emit('hide-heatmap');
+    EventBus.$emit("hide-heatmap");
   },
 };
 </script>
@@ -228,10 +247,9 @@ export default {
   /* background-color: green; */
 }
 
-._heatmapContainer .buttons {
+/* ._heatmapContainer .buttons {
   width: 100%;
-  height: 100px;
-  margin: 10px 0;
+  margin: 10px;
 }
 
 ._heatmapContainer .buttons .btn {
@@ -243,7 +261,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+} */
 
 ._heatmapContainer .buttons .btn .arrow {
   border: solid black;
@@ -252,32 +270,30 @@ export default {
   padding: 3px;
 }
 
-._heatmapContainer .buttons .btn .arrow.right {
+/* ._heatmapContainer .buttons .btn .arrow.right {
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
 }
 
 ._heatmapContainer .buttons .btn .arrow.left {
   transform: rotate(135deg);
-  -webkit-transform: rotate(135deg);
-}
+  -webkit-transform: rotate(135deg); 
+}*/
 
-._heatmapContainer .space-top {
+._heatmapContainer .no-shadow {
   width: 100%;
   height: calc(100% - 140px);
-  /* background-color: green; */
 }
 
-._heatmapContainer .space-top .heigth {
+._heatmapContainer .no-shadow .heights {
   width: 100%;
   height: 100%;
-  /* background-color: red; */
 }
 
-.center-div {
+/* .center-div {
   margin: 0 auto;
   width: 100px;
-}
+} */
 
 .boutton-barre {
   padding: 14px !important;
@@ -285,13 +301,13 @@ export default {
 </style>
 
 <style>
-._heatmapContainer .space-top .vueperslides__inner {
+._heatmapContainer .no-shadow .vueperslides__inner {
   width: 100%;
   height: 100%;
 }
 
 ._heatmapContainer
-  .space-top
+  .no-shadow
   .vueperslides__inner
   .vueperslides__parallax-wrapper {
   width: 100%;
@@ -300,5 +316,48 @@ export default {
 
 .vueperslides__arrow {
   color: black;
+}
+
+.endpoint-selector-block{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.endpoint-selector-label{
+  color:#949DA6;
+  letter-spacing: 1.3px;
+  font-size: 20px;
+}
+
+.endpoint-selector > .el-input--suffix > .el-input__inner {
+  text-align: left;
+  letter-spacing: 0.75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c;
+  border: 3px solid #f9f9f9;
+  border-radius: 10px;
+}
+.el-scrollbar {
+  text-align: left;
+  letter-spacing: 0.75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c !important;
+  /* border: 3px solid #f9f9f9; */
+  border-radius: 10px;
+}
+.el-select-dropdown__item.hover {
+  background-color: #14202c;
+  color: #448aff;
+}
+.el-select-dropdown__item {
+  color: #f9f9f9;
+}
+
+.el-select-dropdown.el-popper {
+  background-color: #14202c;
+  border-color: #14202c;
 }
 </style>

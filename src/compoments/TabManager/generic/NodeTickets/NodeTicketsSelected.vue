@@ -226,12 +226,16 @@ with this file. If not, see
         <div class="ticket-label-information">Priorité :</div>
         <div class="ticket-label-value">{{ ticket.priority || "0" }}</div>
       </div> -->
-      <el-select v-model="ticket.step" class="ticket-steps">
+      <el-select
+        v-model="ticket.step"
+        class="ticket-steps"
+        @change="changeStep2(ticket.step)"
+      >
         <el-option
-          v-for="item in steps"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          v-for="item in ticket.steps"
+          :key="item.id.get()"
+          :label="item.name.get()"
+          :value="item.id.get()"
         />
       </el-select>
     </div>
@@ -464,7 +468,7 @@ export default {
   data() {
     return {
       steps: [],
-      ticket: false,
+      ticket: undefined,
       doStepping: true,
       activeCollapses: ["Details"],
     };
@@ -492,7 +496,6 @@ export default {
     },
 
     async update() {
-      console.log(this.Properties);
       this.ticket = undefined;
       if (typeof this.selected == "undefined") {
         let ticketinfo = SpinalGraphService.getRealNode(
@@ -504,7 +507,14 @@ export default {
         this.ticket = this.selected;
         this.doStepping = this.stepping;
       }
-      // console.log(this.ticket);
+      console.log(this.ticket);
+      // console.log(this.ticket.ticket.processId);
+      // console.log(this.ticket.ticket.contextId);
+
+      // this.steps = await spinalServiceTicket.getStepsFromProcess(this.ticket.ticket.processId, this.ticket.ticket.contextId);
+      // spinalServiceTicket.getStepsFromProcess(this.ticket.ticket.processId, this.ticket.ticket.contextId).then(result => console.log(result));
+      // let node = SpinalGraphService.getRealNode(this.ticket.ticket.processId)
+      // console.log(node);
     },
 
     async delNote(note) {
@@ -573,6 +583,28 @@ export default {
         }
       } else {
         return;
+      }
+      this.$emit("update");
+      await this.update();
+    },
+    async changeStep2(step) {
+      // console.log("coucou");
+      // console.log(step);
+      // console.log(this.ticket);
+      await spinalServiceTicket.moveTicket(
+        this.ticket.ticket.id,
+        this.ticket.ticket.stepId,
+        this.ticket.step,
+        this.ticket.ticket.contextId
+      );
+      if (this.Properties.viewKey == "TicketApp") {
+        let realStep = SpinalGraphService.getRealNode(step);
+        SpinalGraphService._addNode(realStep);
+        ViewManager.getInstance(this.Properties.viewKey).breadcrumb[3].name =
+          realStep.info.name.get();
+        ViewManager.getInstance(
+          this.Properties.viewKey
+        ).breadcrumb[3].serverId = realStep._server_id;
       }
       this.$emit("update");
       await this.update();
@@ -751,7 +783,35 @@ export default {
   border: 3px solid #f9f9f9;
   border-radius: 10px;
 }
-.ticket-selected-main-container{
-  width:100%;
+.el-scrollbar {
+  text-align: left;
+  letter-spacing: 0.75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c !important;
+  /* border: 3px solid #f9f9f9; */
+  border-radius: 10px;
+}
+.el-select-dropdown__item.hover {
+  background-color: #14202c;
+  color: #448aff;
+}
+.el-select-dropdown__item {
+  color: #f9f9f9;
+}
+
+.el-select-dropdown.el-popper {
+  background-color: #14202c;
+  border-color: #14202c;
+}
+.ticket-selected-main-container {
+  width: 100%;
+}
+
+.el-popper[x-placement^="bottom"] .popper__arrow {
+  border-bottom-color: #14202c;
+}
+.el-popper[x-placement^="bottom"] .popper__arrow:after {
+  border-bottom-color: #14202c;
 }
 </style>

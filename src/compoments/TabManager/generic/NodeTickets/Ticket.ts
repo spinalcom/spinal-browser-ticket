@@ -41,6 +41,7 @@ import {
 import {
   SPINAL_TICKET_SERVICE_STEP_TYPE,
   SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+  STEP_RELATION_NAME
 } from 'spinal-service-ticket/dist/Constants';
 
 const GEO_TYPES = [GEO_FLOOR_TYPE, GEO_ROOM_TYPE, EQUIPMENT_TYPE];
@@ -120,6 +121,7 @@ export async function getTicketDescription(
     ticket.name,
     ticket.creationDate
   );
+  
 
   let ticketNode = SpinalGraphService.getRealNode(ticket.id!);
   ticketDesc.comments = await serviceDocumentation.getNotes(ticketNode);
@@ -132,6 +134,10 @@ export async function getTicketDescription(
     (step) => step.type.get() === SPINAL_TICKET_SERVICE_STEP_TYPE
   );
   ticketDesc.step = stepinfo[0].name.get();
+  let process = await SpinalGraphService.getParents(stepinfo[0].id.get(), STEP_RELATION_NAME);
+  if(process.length !=0){
+    ticketDesc.steps = await spinalServiceTicket.getStepsFromProcess(process[0].id.get(), ticket.contextId);
+  }
 
   ticketDesc.events = await spinalServiceTicket.getLogs(ticket.id!);
 

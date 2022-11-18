@@ -175,6 +175,7 @@ export default {
           ],
         },
       ];
+      
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });

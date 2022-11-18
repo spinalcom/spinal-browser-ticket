@@ -294,7 +294,7 @@ with this file. If not, see
             icon="el-icon-zoom-in"
           ></el-button>
         </el-tooltip>
-        <el-tooltip
+        <!-- <el-tooltip
           content="Select"
           effect="light"
           :open-delay="300"
@@ -306,7 +306,7 @@ with this file. If not, see
             circle
             icon="el-icon-view"
           ></el-button>
-        </el-tooltip>
+        </el-tooltip> -->
           <el-button
             v-on:click="openChartModal()"
             :disabled="variableSelected.saveTimeSeries === 0"
@@ -322,14 +322,14 @@ with this file. If not, see
           >
           </el-button>
 
-          <el-button
+          <!-- <el-button
             v-if="displayBoolButton"
             v-on:click="flip()"
             class="config-btn-position custom-icon circled-button"
             circle
             icon="el-icon-refresh"
           >
-          </el-button>
+          </el-button> -->
 
           <el-button
             v-if="
@@ -340,6 +340,15 @@ with this file. If not, see
             class="config-btn-position custom-icon circled-button"
             circle
             icon="el-icon-setting"
+          >
+          </el-button>
+
+          <el-button
+            v-on:click="downloadTimeSeries()"
+            :disabled="variableSelected.saveTimeSeries === 0"
+            class="dashboard-btn custom-icon circled-button"
+            circle
+            icon="el-icon-download"
           >
           </el-button>
 
@@ -366,6 +375,9 @@ import valueConfig from "./value-config";
 import { EventBus } from "../../../../../services/event";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { NetworkService } from "spinal-model-bmsnetwork";
+import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
+import fileSaver from 'file-saver';
 
 export default {
   components: { valueConfig },
@@ -574,6 +586,45 @@ export default {
     openConfigModal() {
       this.isConfigModalVisible = !this.isConfigModalVisible;
     },
+    async downloadTimeSeries(){
+      console.log(this.endpoint);
+      console.log(this.variableSelected);
+      console.log(this.room);
+      console.log(this.selectedNode)
+
+      let netWorkService = new NetworkService();
+      // console.log(netWorkService)
+      let tsNode = await netWorkService.getTimeseries(this.selectedNode.id.get());
+      let tsValues = await tsNode.getFromIntervalTime();
+      let headers = [
+        {
+          key: 'date',
+          header: 'date',
+          width: 20,
+        },
+        {
+          key: 'value',
+          header: 'value',
+          width: 20,
+        }
+      ];
+      let excelData = [
+        {
+          name: 'Tableau',
+          author: '',
+          data: [
+            {
+              name: 'Tableau',
+              header: headers,
+              rows: tsValues,
+            },
+          ],
+        },
+      ];
+      excelManager.export(excelData).then((reponse) => {
+        fileSaver.saveAs(new Blob(reponse), this.selectedNode.name.get() + `.xlsx`);
+      });
+    }
   },
 
   filters: {

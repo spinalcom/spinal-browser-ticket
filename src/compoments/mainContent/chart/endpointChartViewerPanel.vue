@@ -96,12 +96,14 @@ export default {
   methods: {
     async toogleSelect(data) {
       const nodeId = data.id.get();
+      // console.log(timeSeriesData);
       console.log(nodeId, ' ');
       const name = data.objectName;
       const unit = data.unit;
       const index = this.timeSeriesData.findIndex((elem) => {
         return elem === nodeId;
       });
+      console.log(index);
       console.log('index:  ', index);
       if (index === -1) {
         let data;

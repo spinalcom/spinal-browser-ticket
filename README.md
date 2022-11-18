@@ -1,9 +1,19 @@
+# 18.11.22 : v1.4.1
+        - Endpoint tab debug : take into account multiple relations to display all the endpoint linked to an item
+        - Add Download feature to Insight / Endpoint Tabs
+        - Add Download feature in Insight center
+        - Correction of moving step's ticket feature
+        - Correction of the breadcrumb when a step has been change by the user into ticket app
+        - Redesign of step selection-dropdown of ticket detail tab
+        - Redesign of Insight Center => Control endpoint list
+
 # 15.11.22 : v1.4.0
         - Insight / Endpoints tabs redesign
         - Add historization graph feature to Insights / Endpoints tabs
         - Ticket declaration form redesign
         - Change Implementation of changelog document
         - Rename changelog.md to README.md
+        - Correction of Insights / Endpoints tab to make them display the right datas on the interface
 
 # 04.11.22 : v1.3.0
         - scrollbar redesign

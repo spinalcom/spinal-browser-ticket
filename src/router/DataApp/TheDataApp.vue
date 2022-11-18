@@ -390,6 +390,7 @@ export default {
           ],
         },
       ];
+      console.log(excelData);
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });

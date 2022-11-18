@@ -97,7 +97,7 @@ export default {
     async update() {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[this.Properties.view.serverId];
-      if (this.ctxNode.info.type.get() == 'geographicRoom') {
+      /*if (this.ctxNode.info.type.get() == 'geographicRoom') {
         let children = await SpinalGraphService.getChildrenInContext(
           this.ctxNode.info.id.get(),
           FileSystem._objects[this.Properties.context].info.id.get()
@@ -111,12 +111,19 @@ export default {
             this.childrenEndpoints = this.childrenEndpoints.concat(temp);
           }
         }
-      }
+      }*/
       this.endpoints = await this.getNodeEndpointsInfo(
         this.ctxNode.info.id.get(),
-        'hasEndPoint'
+        ['hasEndPoint', 'hasBmsEndpoint', 'hasBmsDevice']
       );
+
     },
+
+
+
+
+
+
 
     // return infos from an endpointNodeId
     async getEndpointInfo(endpointNodeId) {
@@ -154,7 +161,7 @@ export default {
       if (endpointProfilsModel.length == 0) return; // si la node n'a pas d'endpoints on quitte la fonction
       const res = [];
       // premier automate associé ( à changer si besoin )
-      if (endpointProfilsModel[0].type.get() == 'BmsDevice') {
+      /*if (endpointProfilsModel[0].type.get() == 'BmsDevice') {
         const endpointsModels = await SpinalGraphService.getChildren(
           endpointProfilsModel[0].id.get(),
           'hasBmsEndpoint'
@@ -171,9 +178,37 @@ export default {
           const info = await this.getEndpointInfo(endpoint.id);
           res.push(info);
         }
+      }*/
+
+      for(let child of endpointProfilsModel){
+        let temp = await this.findEndpointInfo(child.id.get(), [], [...endpointRelation, "hasBmsEndpointGroup"]);
+        res = res.concat(temp);
+        // if(child.type.get() == "BmsDevice"){
+        //   let temp = await this.findEndpointInfo(child.id.get(), [], [...endpointRelation, "hasBmsEndpointGroup"]);
+        //   res = res.concat(temp);
+        // }
+        // else if(child.type.get() == "BmsEndpoint"){
+        //   let temp = await this.getEndpointInfo(child.id.get());
+        //   res.push(temp);
+        // }
       }
       return res;
     },
+
+    async findEndpointInfo(nodeId, res, relations){
+      let children = await SpinalGraphService.getChildren(nodeId, relations);
+        for(let child of children){
+          if(child.type.get() == "BmsEndpoint"){
+            const info = await this.getEndpointInfo(child.id.get());
+            res.push(info);
+          }
+          else{
+            return await this.findEndpointInfo(child.id.get(), res, relations);
+          }
+        }
+        return res;
+      
+    }
   },
 };
 </script>
