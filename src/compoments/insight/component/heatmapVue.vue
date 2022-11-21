@@ -47,7 +47,7 @@ with this file. If not, see
         <i @click="increaseIndex()" class="arrow right"></i>
       </div> -->
     
-      <div class="endpoint-selector-label">Indicateur visualisé</div>
+      <div class="endpoint-selector-label">{{$t('HeatmapCenter.visualized-insight')}}</div>
       <el-select v-model="index" class="endpoint-selector">
         <el-option
           v-for="(item, index) in variables"

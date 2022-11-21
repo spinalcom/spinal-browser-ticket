@@ -241,11 +241,11 @@ with this file. If not, see
     </div>
     <div class="ticket-creation-informations">
       <div class="ticket-row-card">
-        <div class="ticket-label-information">Priorité</div>
+        <div class="ticket-label-information">{{$t('spinal-twin.Priority')}}</div>
         <div class="ticket-label-value">{{ ticket.priority || "N.C" }}</div>
       </div>
       <div class="ticket-row-card">
-        <div class="ticket-label-information">Par</div>
+        <div class="ticket-label-information">{{$t('spinal-twin.TicketAuthor')}}</div>
         <div class="ticket-label-value">
           {{
             (ticket.ticket.user &&
@@ -258,7 +258,7 @@ with this file. If not, see
 
     <div class="ticket-creation-informations">
       <div class="ticket-row-card">
-        <div class="ticket-label-information">Créé le</div>
+        <div class="ticket-label-information">{{$t('spinal-twin.CreationTime')}}</div>
         <div class="ticket-label-value">
           {{ DateFormat(ticket.creationDate) }}
         </div>
@@ -276,7 +276,7 @@ with this file. If not, see
     </div>
     <div class="ticket-target-informations">
       <div class="ticket-row-card">
-        <div class="ticket-label-information">Sur</div>
+        <div class="ticket-label-information">{{$t('spinal-twin.Target')}}</div>
         <div class="ticket-label-value">
           <!-- <div>{{ ticket.target.name + " (" + ticket.target.type + ")" }}</div> -->
           <div>{{ ticket.target.name }}</div>

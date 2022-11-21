@@ -32,19 +32,18 @@ export default {
   Max: 'Maximum',
   Average: 'Average',
   Value: 'Value',
-
   'sidebar.topButton.buildingNameDefault': 'Building',
   'error.returntodrive.confirmbtntext': 'Retrun to drive',
   'error.returntodrive.text': 'Imposible to load the digital twin.',
   'error.returntodrive.title': 'Error',
   'Routes.AppList': 'Select the application',
-  'Routes.DataApp': 'Explore the building',
-  'Routes.InsightCenter': 'Visualize the activity',
+  'Routes.DataApp': 'Data room',
+  'Routes.InsightCenter': 'Insights',
   // 'Routes.SpaceCenter': 'Inspect the spaces',
-  'Routes.SpaceApp': 'Inspect the spaces',
-  'Routes.EquipmentApp': 'Inspect the equipments',
-  'Routes.TicketApp': 'Handle the tickets',
-
+  'Routes.SpaceApp': 'Spaces',
+  'Routes.EquipmentApp': 'Equipments',
+  'Routes.TicketApp': 'Tickets',
+ // data room
   'DataRoom.geographicContext': 'Contextes', // Could be generic
   'DataRoom.geographicBuilding': 'Bâtiments', // Could be generic
   'DataRoom.geographicFloor': 'Etages', // Could be generic
@@ -90,16 +89,20 @@ export default {
   'spinal-twin.Area': 'Area (m²)',
   'spinal-twin.children': 'Child node number',
 
+  'spinal-twin.BuildingCount': 'Building number',
+  'spinal-twin.FloorCount': "Floor number",
+  'spinal-twin.RoomCount': 'Room number',
+
   'sidebar.topButton.buildingNameDefault': 'Building',
   'error.returntodrive.confirmbtntext': 'Retrun to drive',
   'error.returntodrive.text': 'Imposible to load the digital twin.',
   'error.returntodrive.title': 'Error',
-  'Routes.AppList': 'Select the application',
-  'Routes.DataApp': 'Explore the building',
-  'Routes.InsightCenter': 'Visualize the activity',
-  'Routes.SpaceCenter': 'Inspect the spaces',
-  'Routes.EquipmentApp': 'Inspect the equipments',
-  'Routes.TicketApp': 'Handle the tickets',
+  // 'Routes.AppList': 'Select the application',
+  // 'Routes.DataApp': 'Explore the building',
+  // 'Routes.InsightCenter': 'Visualize the activity',
+  // 'Routes.SpaceCenter': 'Inspect the spaces',
+  // 'Routes.EquipmentApp': 'Inspect the equipments',
+  // 'Routes.TicketApp': 'Handle the tickets',
   'DataRoom.geographicContext': 'Contextes', // Could be generic
   'DataRoom.geographicBuilding': 'Bâtiments', // Could be generic
   'DataRoom.geographicFloor': 'Etages', // Could be generic
@@ -138,6 +141,7 @@ export default {
   'node-type.Sum': 'Count',
   'node-type.Category': 'Category',
   'node-type.Attribute': 'Attribute',
+  'node-type.geographicRoomGroupContext': 'Room group contexts',
   'spinal-twin.DeleteConfirm': 'Are you sure you want to delete that element ?',
   'spinal-twin.Back': 'Go Back',
   'spinal-twin.Isolate': 'Isolate',
@@ -180,7 +184,7 @@ export default {
   'spinal-twin.NotesDeleteAttachment': 'Delete attachment',
 
   'spinal-twin.Tickets': 'Tickets',
-  'spinal-twin.TicketAuthor': 'Created by',
+  'spinal-twin.TicketAuthor': 'By',
   'spinal-twin.TicketNotes': "Ticket's notes",
   'spinal-twin.TicketInspect': 'Inspect ticket',
   'spinal-twin.TicketArchive': 'Toggle archive ticket',
@@ -199,7 +203,7 @@ export default {
   'spinal-twin.Step': 'Step',
   'spinal-twin.Priority': 'Priority',
   'spinal-twin.Description': 'Description',
-  'spinal-twin.CreationTime': 'Creation time',
+  'spinal-twin.CreationTime': 'Created on',
   'spinal-twin.Events': 'Events',
   'spinal-twin.User': 'User',
   'spinal-twin.Calendar': 'Calendar',
@@ -220,7 +224,7 @@ export default {
   'spinal-twin.Name': 'Name',
   'spinal-twin.Type': 'Type',
   'spinal-twin.Path': 'Path',
-  'spinal-twin.Target': 'Target',
+  'spinal-twin.Target': 'On',
   'spinal-twin.Parent': "Target's parent",
   'spinal-twin.Endpoints': 'Endpoints',
   'spinal-twin.ControlEndpoints': 'Insights',
@@ -252,8 +256,10 @@ export default {
   'HeatmapCenter.Courbe_bool': 'Display graph',
   'HeatmapCenter.GO': 'Go',
   'HeatmapCenter.ModifyAll': 'Modify all values',
+  'HeatmapCenter.no-variable-selected' : 'No data.',
+  'HeatmapCenter.visualized-insight' : 'Visualized insight',
   // Alarms
-  'Routes.AlarmApp': 'Alarm App',
+  'Routes.AlarmApp': 'Alarms',
   'spinal-twin.AlarmProcessCount': 'Process count',
   'spinal-twin.TotalAlarms': 'Total Alarm count',
   'spinal-twin.AlarmCount': 'Alarm count',

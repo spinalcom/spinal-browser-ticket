@@ -42,8 +42,8 @@ with this file. If not, see
         ></items-linked-component>
       </div>
     </div>
-
-    <div class="noProfilSelected" v-else> No Variable selected. </div>
+    <div class="noProfilSelected" v-else>{{$t('HeatmapCenter.no-variable-selected')}}</div>
+    <!-- <div class="noProfilSelected" v-else> No Variable selected. </div> -->
   </div>
 </template>
 

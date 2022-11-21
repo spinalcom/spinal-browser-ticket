@@ -36,13 +36,13 @@ export default {
   'error.returntodrive.confirmbtntext': 'Retourner au drive',
   'error.returntodrive.text': 'Imposible de charger le Jumeau numérique.',
   'error.returntodrive.title': 'Erreur',
-  'Routes.AppList': "Sélectionner l'application",
-  'Routes.DataApp': 'Explorer le bâtiment',
-  'Routes.InsightCenter': "Visualiser l'activité",
+  'Routes.AppList': "Liste des applications",
+  'Routes.DataApp': 'Data room',
+  'Routes.InsightCenter': "Insights",
   // 'Routes.SpaceCenter': 'Inspecter les espaces',
-  'Routes.SpaceApp': 'Inspecter les espaces',
-  'Routes.EquipmentApp': 'Inspecter les équipements',
-  'Routes.TicketApp': 'Gérer les tickets',
+  'Routes.SpaceApp': 'Spaces',
+  'Routes.EquipmentApp': 'Equipments',
+  'Routes.TicketApp': 'Tickets',
   'DataRoom.geographicContext': 'Contextes', // Could be generic
   'DataRoom.geographicBuilding': 'Bâtiments', // Could be generic
   'DataRoom.geographicFloor': 'Etages', // Could be generic
@@ -81,6 +81,7 @@ export default {
   'node-type.Sum': 'Quantité',
   'node-type.Category': 'Catégorie',
   'node-type.Attribute': 'Attribut',
+  'node-type.geographicRoomGroupContext' : "Contextes de groupement de salle",
   'spinal-twin.DeleteConfirm':
     'Êtes vous sûr de vouloir supprimer cet element ?',
   'spinal-twin.Back': 'Retour',
@@ -126,7 +127,7 @@ export default {
   'spinal-twin.NotesDeleteAttachment': 'Supprimer la pièce jointe',
 
   'spinal-twin.Tickets': 'Tickets',
-  'spinal-twin.TicketAuthor': 'Crée par',
+  'spinal-twin.TicketAuthor': 'Par',
   'spinal-twin.TicketNotes': 'Notes du ticket',
   'spinal-twin.TicketInspect': 'Inspecter le ticket',
   'spinal-twin.TicketArchive': 'Archiver/désarchiver le ticket',
@@ -145,7 +146,7 @@ export default {
   'spinal-twin.Step': 'Etape',
   'spinal-twin.Priority': 'Priorité',
   'spinal-twin.Description': 'Description',
-  'spinal-twin.CreationTime': 'Date de creation',
+  'spinal-twin.CreationTime': 'Créé le',
   'spinal-twin.Events': 'Evenements',
   'spinal-twin.User': 'Utilisateur',
   'spinal-twin.DeleteNote': 'Supprimer la note',
@@ -167,7 +168,7 @@ export default {
   'spinal-twin.Name': 'Nom',
   'spinal-twin.Type': 'Type',
   'spinal-twin.Path': 'Chemin',
-  'spinal-twin.Target': 'Cible',
+  'spinal-twin.Target': 'Sur',
   'spinal-twin.Parent': 'Parent de la cible',
   'spinal-twin.Endpoints': 'Données brutes',
   'spinal-twin.ControlEndpoints': 'Indicateurs',
@@ -200,9 +201,11 @@ export default {
   'HeatmapCenter.Courbe_bool': 'Afficher courbe',
   'HeatmapCenter.GO': 'Go',
   'HeatmapCenter.ModifyAll': 'Modifier toutes les valeurs',
+  'HeatmapCenter.no-variable-selected' : 'Aucune donnée.',
+  'HeatmapCenter.visualized-insight' : 'Indicateur visualisé',
 
   // Alarms
-  'Routes.AlarmApp': 'Gérer les alarmes',
+  'Routes.AlarmApp': 'Alarms',
   'spinal-twin.AlarmProcessCount': 'Nombre de processus',
   'spinal-twin.TotalAlarms': "Nombre total d'alarmes",
   'spinal-twin.AlarmCount': "Nombre d'alarmes",

@@ -1,3 +1,7 @@
+# 21.11.22 : v1.4.2
+        - Language routing
+        - css of lang selector
+
 # 18.11.22 : v1.4.1
         - Endpoint tab debug : take into account multiple relations to display all the endpoint linked to an item
         - Add Download feature to Insight / Endpoint Tabs

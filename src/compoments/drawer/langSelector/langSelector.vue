@@ -28,7 +28,7 @@ with this file. If not, see
       <el-button
         v-for="lang in langs"
         :key="lang"
-        type="primary"
+        class="lang-button"
         :disabled="currentLang === lang"
         v-ripple
         @click="setLang(lang)"
@@ -67,5 +67,36 @@ export default {
 <style>
 .lang-selector-grp {
   align-self: center;
+}
+/* .el-button.is-disabled{
+  display:block;
+  background-color: yellow;
+} */
+/* .el-button{
+  background-color: #409eff;
+} */
+</style>
+<style scoped>
+.lang-button{
+  background-color: #ecf5ff;
+  color: #14202c;
+  border-color:transparent;
+}
+.lang-button:hover{
+  background-color: #ecf5ff;
+  color: #14202c;
+  border-color:transparent;
+}
+.lang-button.is-disabled{
+  display:block;
+  background-color: #409eff;
+  color:white;
+  border-color:transparent;
+}
+.lang-button.is-disabled:hover{
+  display:block;
+  background-color: #409eff;
+  color:white;
+  border-color:transparent;
 }
 </style>
