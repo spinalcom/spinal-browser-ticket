@@ -43,7 +43,7 @@ export class ViewManager {
   }
   static getInstance(viewKey: string): ViewManager {
     const i = ViewManager.instances.get(viewKey);
-    console.log(i);
+    // console.log(i);
     if (!i) {
       const i = new ViewManager(viewKey);
       ViewManager.instances.set(viewKey, i);

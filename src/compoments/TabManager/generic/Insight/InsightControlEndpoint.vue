@@ -44,6 +44,7 @@ with this file. If not, see
               :key="end.name"
               :name="end.name"
               :endpoint="end"
+              :targetName="ctxNode.getName().get()"
             ></insight-control-endpoint-box>
           </div>
         </div>

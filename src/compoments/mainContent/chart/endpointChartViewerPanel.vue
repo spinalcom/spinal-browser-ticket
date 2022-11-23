@@ -97,14 +97,14 @@ export default {
     async toogleSelect(data) {
       const nodeId = data.id.get();
       // console.log(timeSeriesData);
-      console.log(nodeId, ' ');
+      // console.log(nodeId, ' ');
       const name = data.objectName;
       const unit = data.unit;
       const index = this.timeSeriesData.findIndex((elem) => {
         return elem === nodeId;
       });
-      console.log(index);
-      console.log('index:  ', index);
+      // console.log(index);
+      // console.log('index:  ', index);
       if (index === -1) {
         let data;
         if (this.btnSelected === 'CUSTOM') {
@@ -152,7 +152,7 @@ export default {
     },
     async closeDialogCustom(value) {
       const { start, end, valid } = value;
-      console.log(start, end, valid);
+      // console.log(start, end, valid);
       this.isDialogCustomOpen = false;
       if (valid) {
         this.lastStart = start;

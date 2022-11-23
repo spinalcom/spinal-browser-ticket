@@ -287,14 +287,14 @@ export default {
       // console.log(viewPoint);
       // console.log(this.attachments)
       const viewPoint = await this.getViewPoint();
-      console.log(this.new_note);
+      // console.log(this.new_note);
       this.attachments.push({
         type: "view",
         name:"ghui",
         file: viewPoint.file,
         view: viewPoint.state
       });
-      console.log(this.attachments)
+      // console.log(this.attachments)
     },
 
     async addScreenshot() {

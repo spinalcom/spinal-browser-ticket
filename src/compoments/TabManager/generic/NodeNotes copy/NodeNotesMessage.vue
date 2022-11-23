@@ -97,8 +97,8 @@ export default {
 
   mounted() {
     this.getImage();
-    console.log("ici")
-    console.log(this.type);
+    // console.log("ici")
+    // console.log(this.type);
   },
 
   methods: {

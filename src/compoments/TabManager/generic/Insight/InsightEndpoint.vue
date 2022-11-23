@@ -34,6 +34,7 @@ with this file. If not, see
           :key="endpoint.id"
           :name="endpoint.name"
           :endpoint="endpoint"
+          :targetName="ctxNode.getName().get()"
         ></insight-control-endpoint-box>
       </div>
 
@@ -97,6 +98,7 @@ export default {
     async update() {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[this.Properties.view.serverId];
+      console.log(this.ctxNode);
       /*if (this.ctxNode.info.type.get() == 'geographicRoom') {
         let children = await SpinalGraphService.getChildrenInContext(
           this.ctxNode.info.id.get(),

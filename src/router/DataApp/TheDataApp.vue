@@ -335,7 +335,7 @@ export default {
 
     formatData() {
       const res = [];
-      console.log(this.items);
+      // console.log(this.items);
       for (const item of this.items.items) {
         const resItem = {
           name: item.name,
@@ -390,7 +390,7 @@ export default {
           ],
         },
       ];
-      console.log(excelData);
+      // console.log(excelData);
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });

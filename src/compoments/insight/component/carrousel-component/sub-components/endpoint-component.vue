@@ -410,7 +410,7 @@ export default {
         (el) => el.id.get() == this.variableSelected.id
       );
       if (this.endpoint) {
-        console.log(this.endpoint)
+        // console.log(this.endpoint)
         this.bindProcess = this.endpoint.currentValue.bind(() => {
           this.value = this.endpoint.currentValue.get();
           this.unit = this.endpoint.unit.get();
@@ -575,7 +575,7 @@ export default {
     },
 
     openChartModal() {
-      console.log(this.selectedNode);
+      // console.log(this.selectedNode);
       let data = this.selectedNode;
       data.objectName = this.name;
       data.unit = this.unit;
@@ -587,10 +587,10 @@ export default {
       this.isConfigModalVisible = !this.isConfigModalVisible;
     },
     async downloadTimeSeries(){
-      console.log(this.endpoint);
-      console.log(this.variableSelected);
-      console.log(this.room);
-      console.log(this.selectedNode)
+      // console.log(this.endpoint);
+      // console.log(this.variableSelected);
+      // console.log(this.room);
+      // console.log(this.selectedNode)
 
       let netWorkService = new NetworkService();
       // console.log(netWorkService)
@@ -670,6 +670,9 @@ export default {
   border: 2px solid #eaeef0;
   border-radius: 17px;
 } */
+.data-table-item{
+  margin-left: 5px;
+}
 .relative {
   min-height: inherit;
 }

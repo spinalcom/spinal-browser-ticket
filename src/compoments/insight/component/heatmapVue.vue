@@ -202,7 +202,7 @@ export default {
     ) {
       this.variables = this.profil.endpointsProfils;
       this.index = 0;
-      console.log(this.variables);
+      // console.log(this.variables);
     }
     /*// Update references
       for(const element of this.profil.rooms){

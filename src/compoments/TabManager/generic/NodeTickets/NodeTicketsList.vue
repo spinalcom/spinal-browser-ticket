@@ -101,7 +101,7 @@ export default {
   methods: {
     select(ticket) {
       this.$emit('select', ticket);
-      console.log("selection dans nodeticketslist");
+      // console.log("selection dans nodeticketslist");
     },
   },
 };

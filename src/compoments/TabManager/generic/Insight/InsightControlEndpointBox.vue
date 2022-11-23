@@ -157,6 +157,7 @@ export default {
   props: {
     name: { required: true, type: String },
     endpoint: { required: true, type: Object },
+    targetName: { required: false, type: String}
   },
   data() {
     return {
@@ -167,7 +168,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.endpoint);
+    // console.log(this.endpoint);
     this.selectedNode = SpinalGraphService.getRealNode(this.endpoint.endpointNodeId);
     this.value = this.endpoint.currentValue;
     this.unit = this.endpoint.unit;
@@ -185,13 +186,15 @@ export default {
     },
     openChartModal() {
       // console.log(this.endpoint);
+      // console.log(this.targetName);
       let data = this.selectedNode.info;
+      // console.log(this.endpoint)
       // let data = this.endpoint;
       // data.objectName = this.name;
-      data.objectName = "toto";
-      console.log(data.objectName);
+      data.objectName = this.targetName;
+      // console.log(data.objectName);
       data.unit = this.unit;
-      console.log(data);
+      // console.log(data);
       EventBus.$emit("data-mode", data);
       this.isDataMode = !this.isDataMode;
     },
@@ -210,11 +213,11 @@ export default {
 
       // console.log(coucou);
       let netWorkService = new NetworkService();
-      console.log(netWorkService)
+      // console.log(netWorkService)
       let tsNode = await netWorkService.getTimeseries(this.endpoint.endpointNodeId);
-      console.log(tsNode);
+      // console.log(tsNode);
       let tsValues = await tsNode.getFromIntervalTime();
-      console.log(tsValues);
+      // console.log(tsValues);
       let headers = [
         {
           key: 'date',
@@ -240,7 +243,7 @@ export default {
           ],
         },
       ];
-      console.log(excelData);
+      // console.log(excelData);
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), this.endpoint.name + `.xlsx`);
       });

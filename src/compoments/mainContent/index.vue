@@ -63,6 +63,7 @@ with this file. If not, see
         </div>
       </div>
     </div>
+    <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button>
     <div class="spinal-other-container">
       <spinalNavbar class="main-navbar"></spinalNavbar>
       <router-view></router-view>
@@ -88,14 +89,14 @@ with this file. If not, see
 </template>
 
 <script>
-import createDragElement from '../../services/utlils/createDragElement';
-import appViewer from './viewer/viewer.vue';
-import spinalNavbar from '../navbar/spinalNavbar.vue';
-import { EventBus } from '../../services/event';
-import endpointChartViewerPanel from './chart/endpointChartViewerPanel.vue';
+import createDragElement from "../../services/utlils/createDragElement";
+import appViewer from "./viewer/viewer.vue";
+import spinalNavbar from "../navbar/spinalNavbar.vue";
+import { EventBus } from "../../services/event";
+import endpointChartViewerPanel from "./chart/endpointChartViewerPanel.vue";
 
 export default {
-  name: 'MainContent',
+  name: "MainContent",
   components: {
     appViewer,
     spinalNavbar,
@@ -107,11 +108,12 @@ export default {
       absviewer: false,
       hideViewer: false,
       dataMode: false,
+      expanded:false
     };
   },
   mounted() {
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
-    EventBus.$on('data-mode', (data) => {
+    EventBus.$on("data-mode", (data) => {
       this.dataMode = true;
       this.$refs.chart.toogleSelect(data);
     });
@@ -146,11 +148,45 @@ export default {
     openDataMode() {
       this.dataMode = !this.dataMode;
     },
+    expandData(){
+      // console.log("expansion");
+      const collection1 = document.getElementsByClassName("spinal-main-container-left");
+      const collection2 = document.getElementsByClassName("spinal-other-container");
+      if(this.expanded == false){
+        for (let i1 = 0; i1 < collection1.length; i1++) {
+          collection1[i1].style.width = "50%";
+        }
+        for (let i2 = 0; i2 < collection2.length; i2++) {
+          collection2[i2].style.width = "50%";
+        }
+        this.expanded=true;
+      }
+      else{
+        for (let i1 = 0; i1 < collection1.length; i1++) {
+          collection1[i1].style.width = "67%";
+        }
+        for (let i2 = 0; i2 < collection2.length; i2++) {
+          collection2[i2].style.width = "33%";
+        }
+        this.expanded=false;
+      }
+
+      
+      
+      // this.expanded;
+      
+      // console.log(collection)
+    },
+    chooseExpandIcon(){
+      if(this.expanded == false) return "el-icon-arrow-left"
+      else return "el-icon-arrow-right"
+    }
   },
 };
 </script>
 
 <style>
+
 .spinal-main-container,
 .spinal-main-container .spinal-viewer-container,
 .spinal-main-container .spinal-other-container {
@@ -195,36 +231,23 @@ export default {
   display: flex;
   flex-grow: 1;
 }
-.spinal-main-container-left {
-  height: 100%;
-  width: 67%;
-  /* width: 60%; */
-  display: flex;
-  flex-direction: column;
+
+.el-button.is-circle {
+  background-color: #eaeef0;
 }
-.el-button.is-circle{
-  background-color: #EAEEF0; 
+.el-button.el-button-add {
+  background-color: #14202c;
+  color: #f9f9f9;
 }
-.el-button.el-button-add{
-  background-color: #14202C;
-  color: #F9F9F9;
+.el-button.el-button-delete {
+  color: #ef5f32;
+  border-color: #ef5f32;
 }
-.el-button.el-button-delete{
-  color: #EF5F32;
-  border-color: #EF5F32;
-}
-.el-button.is-disabled{
+.el-button.is-disabled {
   display: none;
 }
 
-.spinal-other-container {
-  width: 33%;
-  /* width: 40%; */
-  position: relative;
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-}
+
 
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {
@@ -333,22 +356,59 @@ export default {
   height: var(--minimized-viewer-height);
 }
 
-.router-view{
-  max-height:calc(100%- 60px);
+.router-view {
+  max-height: calc(100%- 60px);
 }
 
-    *::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
 
-  .__content *::-webkit-scrollbar-track {
-    background: #ffffff;
-  }
+.__content *::-webkit-scrollbar-track {
+  background: #ffffff;
+}
 
-  *::-webkit-scrollbar-thumb {
-    background-color: #14202c;
-    border-radius: 10px;
-    border: 3px solid #ffffff;
-  }
+*::-webkit-scrollbar-thumb {
+  background-color: #14202c;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+}
+
+.spinal-main-container-left {
+  height: 100%;
+  width: 67%;
+  /* width: 60%; */
+  display: flex;
+  flex-direction: column;
+}
+.spinal-other-container {
+  width: 33%;
+  /* width: 40%; */
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+
+</style>
+<style scoped>
+.spinal-button-expand{
+  padding: 0%;
+  background-color: #fafafa;
+  color:#606266;
+  border-color: #dcdfe6;
+}
+.spinal-button-expand:hover{
+  background-color: #fafafa;
+  color: #606266;
+  border-color: #dcdfe6;
+}
+.spinal-button-expand:focus{
+  background-color: #fafafa;
+  color: #606266;
+  border-color: #dcdfe6;
+}
+
 </style>

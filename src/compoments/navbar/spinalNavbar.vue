@@ -87,8 +87,8 @@ export default {
           if(index != -1) this.onLevelChange(this.levels[index]);
         }
         else if(noeud.getType().get() == "geographicRoom"){
-          console.log(item);
-          console.log(noeud);
+          // console.log(item);
+          // console.log(noeud);
           let index = this.selectedLevelRooms.findIndex(it => it.server_id == item.serverId);
           if(index != -1) this.onRoomChange(this.selectedLevelRooms[index]);
         }
@@ -107,8 +107,8 @@ export default {
       this.building = building;
     },
     onLevelChange(level) {
-      console.log(level);
-      console.log(this.levels);
+      // console.log(level);
+      // console.log(this.levels);
       this.selectedLevel = level;
       this.selectedLevelRooms = level.children;
       this.selectedRoom = null;

@@ -159,6 +159,7 @@ export default {
   'spinal-twin.TicketCount': 'Ticket number',
   'spinal-twin.TotalTickets': 'Total ticket number',
 
+
   'spinal-twin.hasCategoryAttributes': 'Attributes',
   'spinal-twin.CategoryAdd': 'Add attribute category',
   'spinal-twin.CategoryEdit': 'Edit category ',
@@ -198,6 +199,7 @@ export default {
   'spinal-twin.TicketPriority.Occasion': 'Occasional',
   'spinal-twin.TicketPriority.Normal': 'Normal',
   'spinal-twin.TicketPriority.Urgent': 'Urgent',
+  'spinal-twin.Target-parent': 'From',
 
   'spinal-twin.CurrentStep': 'Current step',
   'spinal-twin.Step': 'Step',

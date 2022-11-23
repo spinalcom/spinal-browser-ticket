@@ -86,7 +86,7 @@ export default {
   watch: {
     tabsprop: {
       handler(oldTabs, newTabs) {
-        console.log("j'ai changé dans tabmanager");
+        // console.log("j'ai changé dans tabmanager");
         // console.log("tab changing")
         // console.log(oldTabs);
         // console.log(newTabs);

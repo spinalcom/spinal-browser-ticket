@@ -141,6 +141,7 @@ export default {
   'spinal-twin.TicketPriority.Occasion': 'Occasionel',
   'spinal-twin.TicketPriority.Normal': 'Normal',
   'spinal-twin.TicketPriority.Urgent': 'Urgent',
+  'spinal-twin.Target-parent': 'Qui appartient à',
 
   'spinal-twin.CurrentStep': 'Etape en cours',
   'spinal-twin.Step': 'Etape',

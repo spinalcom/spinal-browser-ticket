@@ -150,7 +150,7 @@ export default {
   },
   computed: {
     getTagsTitle() {
-      console.log(this.data);
+      // console.log(this.data);
       return this.data.tags.join(", ");
     },
   },

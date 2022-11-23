@@ -187,7 +187,7 @@ export default {
       this.EventInterface.startDate = new Date(this.form.value1).getTime();
       this.EventInterface.endDate = new Date(this.form.value2).getTime();
       this.EventInterface.name = this.form.name;
-      console.log("EventInterface", this.EventInterface);
+      // console.log("EventInterface", this.EventInterface);
       SpinalEventService.createEvent(
         this.EventInterface.contextId,
         this.EventInterface.groupId,
@@ -195,7 +195,7 @@ export default {
         this.EventInterface,
         {}
       ).then((result) => {
-        console.log("result", result);
+        // console.log("result", result);
 
         this.$emit("reload");
       });

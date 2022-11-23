@@ -49,14 +49,20 @@ const GEO_TYPES = [GEO_FLOOR_TYPE, GEO_ROOM_TYPE, EQUIPMENT_TYPE];
 class TargetDescription {
   name: string;
   type: string;
+  nodeId:string;
   ispath: boolean;
   path: string;
+  parent:Object;
+  isGeographic:boolean;
 
   constructor(node: SpinalNode) {
     this.name = node.name.get();
     this.type = node.type.get();
-    this.ispath = false;
-    this.path = '';
+    this.nodeId = node.id.get();
+    this.ispath = false; // ??????????????????????????????
+    this.path = ''; // ????????????????????? inutile
+    this.parent= new Object();
+    this.isGeographic = false;
   }
 
   async pathPrepare(node: SpinalNode): Promise<void> {
@@ -163,7 +169,25 @@ export async function getTicketDescription(
     (step) => step.type.get() !== SPINAL_TICKET_SERVICE_STEP_TYPE
   );
   ticketDesc.target = new TargetDescription(targetinfo[0]);
-  ticketDesc.target.setPath(targetinfo[0]);
+  if(targetinfo[0].type.get() == GEO_ROOM_TYPE){
+    let targetParentNode = await SpinalGraphService.getParents(targetinfo[0].id.get(), GEO_RELATIONS);
+    if(targetParentNode.length !=0){
+      let n = targetParentNode.filter(
+        (p) => p.type.get() === GEO_FLOOR_TYPE
+      );
+      // console.log(n);
+      // let res = {
+      //   name: n[0].name.get(),
+      //   type: n[0].type.get(),
+      //   nodeId: n[0].id.get()
+      // }
+      // ticketDesc.target.parent = res;
+      ticketDesc.target.parent = n[0];
+      ticketDesc.target.isGeographic = true;
+    }
+    
+  }
+  // ticketDesc.target.setPath(targetinfo[0]);
 
   return ticketDesc;
 }

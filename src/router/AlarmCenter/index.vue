@@ -285,7 +285,7 @@ export default {
 
       this.setColumns(view);
 
-      console.log(this.items);
+      // console.log(this.items);
       // Update tabs
       this.tabs[0].props.items = this.items;
       this.updateNames();

@@ -241,11 +241,15 @@ with this file. If not, see
     </div>
     <div class="ticket-creation-informations">
       <div class="ticket-row-card">
-        <div class="ticket-label-information">{{$t('spinal-twin.Priority')}}</div>
+        <div class="ticket-label-information">
+          {{ $t("spinal-twin.Priority") }}
+        </div>
         <div class="ticket-label-value">{{ ticket.priority || "N.C" }}</div>
       </div>
       <div class="ticket-row-card">
-        <div class="ticket-label-information">{{$t('spinal-twin.TicketAuthor')}}</div>
+        <div class="ticket-label-information">
+          {{ $t("spinal-twin.TicketAuthor") }}
+        </div>
         <div class="ticket-label-value">
           {{
             (ticket.ticket.user &&
@@ -258,7 +262,9 @@ with this file. If not, see
 
     <div class="ticket-creation-informations">
       <div class="ticket-row-card">
-        <div class="ticket-label-information">{{$t('spinal-twin.CreationTime')}}</div>
+        <div class="ticket-label-information">
+          {{ $t("spinal-twin.CreationTime") }}
+        </div>
         <div class="ticket-label-value">
           {{ DateFormat(ticket.creationDate) }}
         </div>
@@ -276,11 +282,38 @@ with this file. If not, see
     </div>
     <div class="ticket-target-informations">
       <div class="ticket-row-card">
-        <div class="ticket-label-information">{{$t('spinal-twin.Target')}}</div>
+        <div class="ticket-label-information">
+          {{ $t("spinal-twin.Target") }}
+        </div>
         <div class="ticket-label-value">
           <!-- <div>{{ ticket.target.name + " (" + ticket.target.type + ")" }}</div> -->
           <div>{{ ticket.target.name }}</div>
         </div>
+      </div>
+    </div>
+    <!-- parents informations -->
+    <div
+      class="ticket-target-parent-informations"
+      v-if="ticket.target.isGeographic == true"
+    >
+      <div class="ticket-row-card">
+        <div class="ticket-label-information">
+          {{ $t("spinal-twin.Target-parent") }}
+        </div>
+        <div class="ticket-label-value">
+          <div>{{ ticket.target.parent.name.get() }}</div>
+        </div>
+      </div>
+      <div class="spl-button-bar">
+        <el-tooltip :content="$t('spinal-twin.Isolate')">
+          <el-button
+            @click="isolateParentTarget()"
+            class="spl-el-button"
+            icon="el-icon-aim"
+            size="small"
+            circle
+          ></el-button>
+        </el-tooltip>
       </div>
     </div>
     <div class="ticket-description">
@@ -432,9 +465,13 @@ import { LOGS_EVENTS_STRING } from "spinal-service-ticket/src/Constants";
 
 import { spinalServiceTicket } from "spinal-service-ticket";
 import { ViewManager } from "../../../../services/ViewManager/ViewManager";
+// import { viewerState } from '../../../TabManager/generic/ContextExplorer/viewerState.ts';
+import { viewerState } from "../../generic/ContextExplorer/viewerState";
 import { getTicketDescription } from "./Ticket";
-// import * as appEvent from "../../../../services/event";
+import * as appEvent from "../../../../services/event";
 import EventBus from "../../../space/component/js/event";
+// import { GEO_RELATIONS } from "../../constants";
+import { GEO_RELATIONS } from "../../../../constants";
 
 export default {
   name: "NodeTicketSelected",
@@ -507,7 +544,7 @@ export default {
         this.ticket = this.selected;
         this.doStepping = this.stepping;
       }
-      console.log(this.ticket);
+      // console.log(this.ticket);
       // console.log(this.ticket.ticket.processId);
       // console.log(this.ticket.ticket.contextId);
 
@@ -632,6 +669,21 @@ export default {
       if (ticket instanceof SpinalNode) return ticket;
       return SpinalGraphService.getRealNode(ticket.id);
     },
+    isolateParentTarget() {
+      viewerState.changeIsolation();
+      appEvent.EventBus.$emit("viewer-reset-isolate");
+      let node = SpinalGraphService.getRealNode(this.ticket.target.parent.id.get());
+      console.log(node);
+      // this.isolated = false;
+      if (viewerState.isolated()) {
+        let obj = {
+          name: this.ticket.target.parent.name.get(),
+          serverId: node._server_id,
+        };
+        // this.isolated = true;
+        appEvent.EventBus.$emit("viewer-isolate", [obj], GEO_RELATIONS);
+      }
+    },
   },
 };
 </script>
@@ -665,6 +717,16 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   margin: 10px;
+}
+.ticket-target-parent-informations{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin: 10px;
+}
+.spl-button-bar{
+  margin-left:20px;
 }
 .ticket-description {
   border: 1px solid #eaeef0;

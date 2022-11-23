@@ -286,9 +286,9 @@ export default {
       this.loading = false;
       this.updateColor(this.data, colorUsed);
       this.isColored = viewerState.colored();
-      console.log("********************");
-      console.log(this.items);
-      console.log("********************");
+      // console.log("********************");
+      // console.log(this.items);
+      // console.log("********************");
     },
 
     updateIsolation() {

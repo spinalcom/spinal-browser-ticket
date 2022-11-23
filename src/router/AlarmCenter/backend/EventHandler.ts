@@ -52,8 +52,8 @@ EventBus.$on('view-color-item', async (item) => {
 
 
 EventBus.$on('view-color-all', async (items, zone) => {
-  console.log("----items", items);
-  console.log("----zone", zone);
+  // console.log("----items", items);
+  // console.log("----zone", zone);
 
 
   if (lastColorItem || (lastColorZone &&

@@ -65,7 +65,7 @@ export default {
   mounted() {},
   methods: {
     exportToExcel() {
-      console.log("hello");
+      // console.log("hello");
       let headers = [
         {
           key: "name",
