@@ -162,7 +162,7 @@ export async function getTicketDescription(
 
   let targetinfo = await SpinalGraphService.getParents(
     ticket.id!,
-    SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME
+    [SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME, "hasAlarm"]
   );
   // targetinfo = ticket.getParentsInContext()
   targetinfo = targetinfo.filter(

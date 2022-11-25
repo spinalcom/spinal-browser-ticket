@@ -242,6 +242,7 @@ with this file. If not, see
   </v-card> -->
 
     <!-- <v-hover v-slot="{ hover }"> -->
+      <div>
     <v-list-item class="data-table-item">
       <v-list-item-content>
         <v-list-item-title>
@@ -365,6 +366,14 @@ with this file. If not, see
       </v-list-item-action>
       
     </v-list-item>
+    <value-config
+      v-if="isConfigModalVisible"
+      :endpoint="this.endpoint"
+      :config="this.variableSelected.config"
+      :dataType="this.variableSelected.dataType"
+    >
+    </value-config>
+    </div>
   <!-- </v-hover> -->
 </template>
 

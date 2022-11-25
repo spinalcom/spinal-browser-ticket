@@ -1,3 +1,7 @@
+# 25.11.22 : v1.4.4 (hard fix)
+        - Patch to display the Alarms on Alarm center
+        - Command feature added
+
 # 23.12.22 : v1.4.3
         - Add Floor when the target of a ticket is a room, with isolation button
         - Add a button to expand / reduce the data table and the viewer components

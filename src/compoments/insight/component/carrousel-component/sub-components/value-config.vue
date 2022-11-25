@@ -115,7 +115,8 @@ export default {
 ._content {
   position: relative;
   border: 1px solid black;
-  width: 100%;
+  /* width: 100%; */
+  width: 300px;
   height: 100px;
   background-color: white;
   display: flex;

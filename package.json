@@ -1,6 +1,6 @@
 {
   "name": "spinal-browser-spinaltwin",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "",
   "scripts": {
     "build": "parcel build src/index.html --no-optimize --public-url '/html/spinaltwin/' --dist-dir www/ --no-scope-hoist",
