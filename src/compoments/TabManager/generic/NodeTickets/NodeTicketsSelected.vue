@@ -290,6 +290,26 @@ with this file. If not, see
           <div>{{ ticket.target.name }}</div>
         </div>
       </div>
+      <div class="spl-button-bar">
+        <el-tooltip :content="$t('spinal-twin.Isolate')">
+          <el-button
+            @click="isolateTarget(ticket.target.nodeId)"
+            class="spl-el-button"
+            icon="el-icon-aim"
+            size="small"
+            circle
+          ></el-button>
+        </el-tooltip>
+        <el-tooltip :content="'open in data room'">
+          <el-button
+            @click="openInDataRoom(ticket.target.nodeId)"
+            class="spl-el-button"
+            icon="el-icon-arrow-right"
+            size="small"
+            circle
+          ></el-button>
+        </el-tooltip>
+      </div>
     </div>
     <!-- parents informations -->
     <div
@@ -307,9 +327,18 @@ with this file. If not, see
       <div class="spl-button-bar">
         <el-tooltip :content="$t('spinal-twin.Isolate')">
           <el-button
-            @click="isolateParentTarget()"
+            @click="isolateTarget(ticket.target.parent.id.get())"
             class="spl-el-button"
             icon="el-icon-aim"
+            size="small"
+            circle
+          ></el-button>
+        </el-tooltip>
+        <el-tooltip :content="'open in data room'">
+          <el-button
+            @click="openInDataRoom(ticket.target.parent.id.get())"
+            class="spl-el-button"
+            icon="el-icon-arrow-right"
             size="small"
             circle
           ></el-button>
@@ -471,7 +500,12 @@ import { getTicketDescription } from "./Ticket";
 import * as appEvent from "../../../../services/event";
 import EventBus from "../../../space/component/js/event";
 // import { GEO_RELATIONS } from "../../constants";
-import { GEO_RELATIONS } from "../../../../constants";
+import {
+  GEO_BUILDING_TYPE,
+  GEO_RELATIONS,
+  GEO_ROOM_TYPE,
+  GEO_FLOOR_TYPE,
+} from "../../../../constants";
 
 export default {
   name: "NodeTicketSelected",
@@ -669,20 +703,60 @@ export default {
       if (ticket instanceof SpinalNode) return ticket;
       return SpinalGraphService.getRealNode(ticket.id);
     },
-    isolateParentTarget() {
+    isolateTarget(id) {
+      console.log(this.ticket);
+      // if(item.nodeId != undefined){
+      //   var id = item.nodeId
+      //   var name = item.name
+      // }
+      // else{
+      //   var id = item.id.get()
+      //   var name = item.name.get()
+      // }
       viewerState.changeIsolation();
       appEvent.EventBus.$emit("viewer-reset-isolate");
-      let node = SpinalGraphService.getRealNode(this.ticket.target.parent.id.get());
-      console.log(node);
+      // let node = SpinalGraphService.getRealNode(this.ticket.target.parent.id.get());
+      // let node = SpinalGraphService.getRealNode(item.id.get());
+      let node = SpinalGraphService.getRealNode(id);
       // this.isolated = false;
       if (viewerState.isolated()) {
         let obj = {
-          name: this.ticket.target.parent.name.get(),
+          // name: item.name.get(),
+          name: node.getName().get(),
           serverId: node._server_id,
         };
         // this.isolated = true;
         appEvent.EventBus.$emit("viewer-isolate", [obj], GEO_RELATIONS);
       }
+    },
+    async openInDataRoom(id) {
+      // console.log(info);
+      // let node = SpinalGraphService.getRealNode(info.id.get());
+      let node = SpinalGraphService.getRealNode(id);
+      SpinalGraphService._addNode(node);
+      // console.log(node);
+      let path = await this.getPathOfTicket(node, [
+        /*{name:"DataApp", serverId:0}*/
+      ]);
+      // console.log(path);
+      // console.log(this.ticket);
+      appEvent.EventBus.$emit("switch-to-dataroom", path);
+    },
+    async getPathOfTicket(node, path) {
+      let tab = [{ name: node.getName().get(), serverId: node._server_id }];
+      let temp = tab.concat(path);
+      let parentNode = (await node.getParents(GEO_RELATIONS)).filter((parent) =>
+        [
+          "geographicContext",
+          GEO_BUILDING_TYPE,
+          GEO_FLOOR_TYPE,
+          GEO_ROOM_TYPE,
+        ].includes(parent.getType().get())
+      );
+      if (parentNode.length != 0) {
+        // let temp = path.concat({name: parentNode[0].getName().get(), serverId: parentNode[0]._server_id}, path)
+        return await this.getPathOfTicket(parentNode[0], temp);
+      } else return temp;
     },
   },
 };
@@ -713,20 +787,25 @@ export default {
   margin: 10px;
 }
 .ticket-target-informations {
-  display: flex;
+  /* display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 10px;
-}
-.ticket-target-parent-informations{
+  margin: 10px; */
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: flex-start;
   margin: 10px;
 }
-.spl-button-bar{
-  margin-left:20px;
+.ticket-target-parent-informations {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin: 10px;
+}
+.spl-button-bar {
+  margin-left: 20px;
 }
 .ticket-description {
   border: 1px solid #eaeef0;

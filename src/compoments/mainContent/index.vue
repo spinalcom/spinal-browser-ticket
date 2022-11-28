@@ -117,6 +117,10 @@ export default {
       this.dataMode = true;
       this.$refs.chart.toogleSelect(data);
     });
+    // EventBus.$on("switch-to-dataroom", (data) =>{
+    //   console.log("switch-to-dataroom RECEIVED");
+    //   console.log(data);
+    // });
   },
   methods: {
     onPopClick(event) {

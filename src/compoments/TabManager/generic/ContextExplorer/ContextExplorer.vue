@@ -93,6 +93,7 @@ export default {
 
   computed: {
     itemsComputed() {
+      // console.log(this.Properties)
       if (
         this.Properties &&
         this.Properties.items &&
@@ -111,7 +112,6 @@ export default {
       return [];
     },
   },
-
   methods: {
     Color() {
       viewerState.changeColoration();

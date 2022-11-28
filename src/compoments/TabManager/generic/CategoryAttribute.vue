@@ -24,7 +24,7 @@ with this file. If not, see
 
 <template>
   <div>
-    <div class="spl-button-bar">
+    <div class="spl-button-bar" :style="{'max-height':'60vh'}">
       <el-tooltip :content="$t('spinal-twin.CategoryAdd')" style="float: right">
         <!-- <el-button
           @click.native="addCategory()"
@@ -261,6 +261,9 @@ import { FileSystem } from 'spinal-core-connectorjs_type';
 
 import EditableText from '../../../compoments/EditableText.vue';
 import { spinalIO } from '../../../services/spinalIO';
+
+import { EventBus } from "../../../services/event"
+
 export default {
   name: 'Attributes',
   components: { EditableText },
@@ -295,6 +298,7 @@ export default {
 
   mounted() {
     this.update(this.Properties.view.serverId);
+    EventBus.$on("click-on_spinal-twin.hasCategoryAttributes", () => this.update(this.Properties.view.serverId))
   },
 
   methods: {

@@ -183,7 +183,40 @@ export default {
   },
 
   mounted() {
-    this.update();
+    const promise = new Promise((res, rej)=>{
+      this.update();
+      res()
+    });
+    promise.then(()=> {
+      if(this.viewKey == "DataApp"){
+        // console.log("je suis init")
+        EventBus.$emit("dataroom-initialized", this.items)
+      }
+    });
+    // this.update();
+    if(this.viewKey == "DataApp"){
+      EventBus.$on("dataroom-instructions-sent", async data => {
+        if(data != undefined){
+          let itemIndex = this.items.findIndex(it => it.serverId==data.serverId);
+          if(itemIndex !=-1){
+            await this.onSelectItem(this.items[itemIndex]);
+          }
+        }
+        
+        
+        
+        // for(let d of data){
+        //   // console.log(d);
+        //   let itemIndex = this.items.findIndex(it => it.serverId==d.serverId);
+        //   // console.log(itemIndex)
+        //   if(itemIndex !=-1){
+        //     await this.onSelectItem(this.items[itemIndex]);
+        //   }
+        // }  
+      });
+    }
+    
+    
   },
 
   methods: {
@@ -210,7 +243,7 @@ export default {
     Color() {
       this.isColored = true;
       console.debug("context explorer table color; hasEvent : ", this.hasEvent);
-      console.log(this.hasEvent);
+      // console.log(this.hasEvent);
       if (this.hasEvent) {
         // console.log(this.data);
         EventBus.$emit("app-viewer-color", this.data, this.relation);
@@ -222,28 +255,23 @@ export default {
       // EventBus.$emit('viewer-color', this.data, this.relation);
     },
 
-    onSelectItem(item) {
-      // if(this.viewKey == "TicketApp"){
-      //   console.log("µµµµµµµµµµµµµµµµµµµµµµµ")
-      //   // console.log(item)
-
-      //   console.log("µµµµµµµµµµµµµµµµµµµµµµµ")
-      //   EventBus.$emit('TicketApp-onSelectItem', item);
-        
-      // }
-      
+    async onSelectItem(item) {
+      // console.log(this.items);
+      // console.log(item);
       EventBus.$emit("contextNodeExplorer-onSelectItem", item);
       let view = ViewManager.getInstance(this.viewKey).back();
+      // console.log(view)
+      // console.log(this.context)
       if (view.serverId == 0) {
         ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
         return;
       }
       if (
-        ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth ||
+        ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth /*||
         !SpinalGraphService.hasChildInContext(
           FileSystem._objects[view.serverId].info.id.get(),
           FileSystem._objects[this.context].info.id.get()
-        )
+        )*/
       ) {
         ViewManager.getInstance(this.viewKey).pop(false);
       }

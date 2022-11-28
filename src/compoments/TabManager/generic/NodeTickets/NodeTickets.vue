@@ -25,8 +25,8 @@ with this file. If not, see
 <!--ATTENTION C'EST UN ONGLET DES AUTRES APPS, PAS DE TICKET APP-->
 
 <template>
-  <div style="height: 100%">
-    <el-container v-if="selected" style="height: 100%">
+  <div>
+    <el-container v-if="selected" :style="{'max-height':'60vh'}">
       <node-tickets-selected
         :selected="selected"
         :stepping="stepping"
@@ -48,7 +48,7 @@ with this file. If not, see
       </ticket-declaration-form>
     </el-container>
 
-    <div v-else style="height: 100%">
+    <div v-else style="height: fit-content">
       <div class="spl-button-bar">
         <el-tooltip
           :content="$t('spinal-twin.TicketDeclare')"
@@ -63,13 +63,13 @@ with this file. If not, see
         </el-tooltip>
       </div>
 
-      <div style="height: calc(100% - 42px)">
+      <div style="height: fit-content">
         <node-tickets-list
           v-if="tickets"
           :tickets="tickets"
           @select="select"
           @archive="archive"
-          style="height: 100%"
+          style="height: fit-content"
         >
         </node-tickets-list>
       </div>
@@ -87,6 +87,7 @@ import NodeTicketsList from './NodeTicketsList.vue';
 import NodeTicketsSelected from './NodeTicketsSelected.vue';
 import TicketDeclarationForm from './TicketDeclarationForm.vue';
 import { getTicketDescription } from './Ticket';
+import {EventBus} from "../../../../services/event";
 
 export default {
   name: 'NodeTickets',
@@ -132,6 +133,8 @@ export default {
 
   async mounted() {
     this.update(this.Properties.view.serverId);
+    EventBus.$on("click-on_spinal-twin.Tickets", () => this.update(this.Properties.view.serverId));
+
   },
 
   methods: {
@@ -248,5 +251,11 @@ export default {
 .rowify {
   display: flex;
   flex-direction: row;
+}
+</style>
+<style>
+.node-tickets-list{
+  max-height: 40vh;
+  overflow-y:scroll;
 }
 </style>

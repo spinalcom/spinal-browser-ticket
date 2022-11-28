@@ -58,6 +58,7 @@ with this file. If not, see
 import InsightControlEndpointBox from "./InsightControlEndpointBox.vue";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import { EventBus } from "../../../../services/event"
 
 export default {
   name: "InsightControlEndpoint",
@@ -98,7 +99,22 @@ export default {
   },
 
   async mounted() {
-    this.update(this.Properties.view.serverId);
+    const promise = new Promise((res,rej)=>{
+      this.ctxNode=false;
+      this.endpoints=false;
+      this.controlEndpoints=false;
+      res();
+    })
+    promise.then(async ()=>{
+      await this.update(this.Properties.view.serverId);
+    })
+    EventBus.$on("breadcrumb-click", async serverId => {
+      await this.update(serverId);
+    });
+    EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
+      await this.update(this.ctxNode._server_id);
+    });
+    
   },
 
   methods: {
@@ -109,6 +125,10 @@ export default {
         this.ctxNode.info.id.get(),
         "hasControlPoints"
       );
+
+
+      console.log(this.endpoints);
+      console.log(this.ctxNode);
     },
 
     // return infos from an endpointNodeId
@@ -149,10 +169,12 @@ export default {
             // pour chaque control endpoint
             /** on récupère la data */
             const info = await this.getEndpointInfo(endpoint.id);
+            info.controlpointNodeId = endpointProfil.id.get();
             infos.push(info);
           }
           res.push({
             name: endpointProfil.name.get(),
+            nodeId: endpointProfil.id.get(),
             info: infos,
           });
         }

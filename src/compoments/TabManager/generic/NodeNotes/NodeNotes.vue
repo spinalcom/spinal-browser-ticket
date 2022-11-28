@@ -84,6 +84,7 @@ import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import NodeNotesMessage from "./NodeNotesMessage.vue";
 import NodeNotesCreate from './NodeNotesCreate.vue';
+import { EventBus } from "../../../../services/event"
 
 export default {
   name: "NodeNotes",
@@ -125,6 +126,7 @@ export default {
 
   mounted() {
     this.update(this.Properties.view.serverId);
+    EventBus.$on("click-on_spinal-twin.Notes", () => this.update(this.Properties.view.serverId));
   },
 
   methods: {

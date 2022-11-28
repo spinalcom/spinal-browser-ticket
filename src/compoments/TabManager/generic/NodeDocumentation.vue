@@ -117,6 +117,7 @@ with this file. If not, see
 <script>
 import { FileSystem } from "spinal-core-connectorjs_type";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
+import { EventBus } from "../../../services/event"
 
 export default {
   name: "NodeDocumentation",
@@ -151,6 +152,7 @@ export default {
 
   async mounted() {
     this.update(this.Properties.view.serverId);
+    EventBus.$on("click-on_spinal-twin.Documentation", () => this.update(this.Properties.view.serverId));
   },
 
   methods: {

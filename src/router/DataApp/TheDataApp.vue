@@ -208,19 +208,36 @@ export default {
   },
 
   async mounted() {
-    const graph = await BackendInitializer.getInstance().getGraph();
-    await AppBack.getInstance().init(graph, 'geographicContext');
-    await ViewManager.getInstance(this.viewKey).init(
-      this.onViewChange.bind(this),
-      0
-    );
-    this.relations = GEO_RELATIONS;
-    this.relations.push('hasReferenceObject.ROOM');
-    this.tabs[0].props.relation = this.relations;
+    // EventBus.$on("dataroom-instructions-sent", async data => {
+    //       for(let i=0;i<data.length;i+=1){
+    //         await this.onViewChange(data[i]);
+    //       }
+    //   });
+    
+      const graph = await BackendInitializer.getInstance().getGraph();
+      await AppBack.getInstance().init(graph, 'geographicContext');
+      await ViewManager.getInstance(this.viewKey).init(
+        this.onViewChange.bind(this),
+        0
+      );
+      this.relations = GEO_RELATIONS;
+      this.relations.push('hasReferenceObject.ROOM');
+      this.tabs[0].props.relation = this.relations;
+      
+      
+      
+    
   },
 
   methods: {
+    findItem(serverId, items){
+      console.log(serverId)
+      console.log(items);
+    },
     async onViewChange(view) {
+      // console.log(this.items)
+      console.log(view)
+      // console.log(view)
       // Get items from graph
       let mapItems;
       if (view.serverId === 0) {

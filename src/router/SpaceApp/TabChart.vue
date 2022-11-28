@@ -43,6 +43,7 @@ with this file. If not, see
 </template>
 
 <script>
+import {EventBus} from "../../services/event"
 export default {
   name: 'TabChart',
   components: {},
@@ -84,6 +85,11 @@ export default {
   async mounted() {
     Plotly.newPlot(this.$refs.charts, this.data);
     this.updateChart();
+    EventBus.$on("click-on_spinal-twin.Chart", () => {
+      Plotly.newPlot(this.$refs.charts, this.data);
+      this.updateChart();
+    });
+
   },
 
   methods: {

@@ -1,3 +1,6 @@
+# 28.11.22 : v1.4.5
+        - Add proof of concept of link/routage between ticket center and data room
+
 # 25.11.22 : v1.4.4 (hard fix)
         - Patch to display the Alarms on Alarm center
         - Command feature added

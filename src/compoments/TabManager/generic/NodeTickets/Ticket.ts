@@ -187,7 +187,7 @@ export async function getTicketDescription(
     }
     
   }
-  // ticketDesc.target.setPath(targetinfo[0]);
+  ticketDesc.target.setPath(targetinfo[0]);
 
   return ticketDesc;
 }

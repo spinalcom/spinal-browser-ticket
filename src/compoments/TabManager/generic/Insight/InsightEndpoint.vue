@@ -55,6 +55,7 @@ with this file. If not, see
 // Tools
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import {EventBus} from "../../../../services/event"
 
 // Components
 import InsightControlEndpointBox from './InsightControlEndpointBox.vue';
@@ -92,13 +93,14 @@ export default {
 
   async mounted() {
     this.update();
+    EventBus.$on("click-on_spinal-twin.Endpoints", async ()=> await this.update());
   },
 
   methods: {
     async update() {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[this.Properties.view.serverId];
-      console.log(this.ctxNode);
+      // console.log(this.ctxNode);
       /*if (this.ctxNode.info.type.get() == 'geographicRoom') {
         let children = await SpinalGraphService.getChildrenInContext(
           this.ctxNode.info.id.get(),

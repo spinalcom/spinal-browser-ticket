@@ -56,6 +56,7 @@ with this file. If not, see
 
 <script>
 import Vue from 'vue';
+import {EventBus} from "../../services/event"
 export default {
   name: 'TabManager',
   components: {},
@@ -103,11 +104,17 @@ export default {
 
   async mounted() {
     this.activetab = this.$t(this.tabsprop[0].name);
+    // console.log("tabmanager mounted");
   },
 
   methods: {
     handleClick(tab, event) {
       this.activetab = tab._props.name;
+      // let eventName = "click-on-"+tab._props.name;
+      // console.log(eventName);
+      EventBus.$emit("click-on_"+tab._props.name)
+      console.log(tab._props.name)
+      console.log(event)
     },
   },
 };
