@@ -1,5 +1,13 @@
+# 29.11.22 : v1.4.6
+        - Correction Of Endpoint tab
+        - Add Insight / Endpoint tabs in space center
+        - Modification of the disposition of the button on Insight / Endpoint tabs and insight center
+        - Fix glitch on insight center
+        - Rename of the google tab from Spinal Twin to Spinaltwin
+
 # 28.11.22 : v1.4.5
         - Add proof of concept of link/routage between ticket center and data room
+        - add multiple event when a tab is selected in all the applications, to recall "this.initialize()" to update the datas of the tab
 
 # 25.11.22 : v1.4.4 (hard fix)
         - Patch to display the Alarms on Alarm center

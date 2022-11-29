@@ -200,7 +200,14 @@ export default {
     },
 
     async findEndpointInfo(nodeId, res, relations){
-      let children = await SpinalGraphService.getChildren(nodeId, relations);
+      let node = SpinalGraphService.getRealNode(nodeId);
+      if(node.getType().get() == "BmsEndpoint"){
+        const info = await this.getEndpointInfo(nodeId);
+        res.push(info);
+        return res;
+      }
+      else{
+        let children = await SpinalGraphService.getChildren(nodeId, relations);
         for(let child of children){
           if(child.type.get() == "BmsEndpoint"){
             const info = await this.getEndpointInfo(child.id.get());
@@ -211,6 +218,8 @@ export default {
           }
         }
         return res;
+      }
+      
       
     }
   },

@@ -211,6 +211,7 @@ export default {
   justify-content: center;
   flex-wrap: wrap;
 }
+
 </style>
 
 <style>
@@ -219,6 +220,7 @@ export default {
   height: 100%;
   display: flex;
   justify-content: flex-start;
+  align-content: flex-start;
   flex-wrap: wrap;
   overflow: hidden;
   overflow-y: auto;

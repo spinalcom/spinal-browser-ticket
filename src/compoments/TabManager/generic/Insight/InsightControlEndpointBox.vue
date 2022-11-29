@@ -33,28 +33,20 @@ with this file. If not, see
  <v-list-item class="data-table-item">
       <v-list-item-content>
         <v-list-item-title>
-          <!-- <div
-          v-if="this.endpoint"
+          
+        <!-- <div
           class="div__rectangle"
           :style="{
-            'background-color': getColor(
-              this.endpoint.currentValue.get(),
-              this.variableSelected.config
-            ),
+            'background-color': '#14202c'
           }"
         ></div> -->
         <div
           class="div__rectangle"
           :style="{
-            'background-color': '#14202c'
+            'background-color': 'transparent'
           }"
         ></div>
-        <!-- <div
-          class="div__rectangle"
-          :style="{
-            'background-color': '#'+(Math.floor(Math.random()*0xFFFFFF)).toString(16)
-          }"
-        ></div> -->
+        
         <div class="value" v-tooltip="`${value} ${unit}`">
         {{ value | filterValue }}
       </div>
@@ -303,9 +295,8 @@ export default {
   flex-direction: row;
   display: flex;
   opacity: 0;
-  /* transition: opacity 1s left 5s linear; */
-  transition: opacity 0.5s linear, left 0.2s linear;
-  /* transition: left 0.2s linear; */
+  /* transition: opacity 0.5s linear, left 0.2s linear; */
+  transition: opacity 0.5s linear;
   overflow: hidden;
   position: relative;
   left: 0px;
@@ -319,8 +310,9 @@ export default {
   width: fit-content;
   opacity: 1;
   position: relative;
-  left: 20px;
-  margin-left: 20px;
+  /* left: 20px; */
+  /* margin-left: 20px; */
+  margin-right: 20px;
   /* max-width: 20%; */
 }
 
@@ -339,7 +331,7 @@ export default {
   display: flex;
   flex-direction: row;
   background-color: #f9f9f9;
-  /* justify-content: flex-start; */
+  justify-content: space-between;
   align-items: center;
   padding: 4px;
   height: fit-content;

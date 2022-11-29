@@ -242,7 +242,7 @@ with this file. If not, see
   </v-card> -->
 
     <!-- <v-hover v-slot="{ hover }"> -->
-      <div>
+      <div class="data-list">
     <v-list-item class="data-table-item">
       <v-list-item-content>
         <v-list-item-title>
@@ -681,6 +681,7 @@ export default {
 } */
 .data-table-item{
   margin-left: 5px;
+  margin-right: 5px;
 }
 .relative {
   min-height: inherit;
@@ -702,9 +703,8 @@ export default {
   flex-direction: row;
   display: flex;
   opacity: 0;
-  /* transition: opacity 1s left 5s linear; */
-  transition: opacity 0.5s linear, left 0.2s linear;
-  /* transition: left 0.2s linear; */
+  /* transition: opacity 0.5s linear, left 0.2s linear; */
+  transition: opacity 0.5s linear;
   overflow: hidden;
   position: relative;
   left: 0px;
@@ -717,8 +717,9 @@ export default {
   width: fit-content;
   opacity: 1;
   position: relative;
-  left: 20px;
-  margin-left: 20px;
+  /* left: 20px; */
+  /* margin-left: 20px; */
+  margin-right: 20px;
   /* max-width: 20%; */
 }
 
@@ -726,6 +727,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
+  /* justify-content: space-between; */
 }
 /* .data-table-item{
   margin: 4px;
@@ -739,6 +741,7 @@ export default {
   background-color: #f9f9f9;
   /* justify-content: flex-start; */
   align-items: center;
+  justify-content: space-between;
   padding: 4px;
   height: fit-content;
   border: 2px solid #eaeef0;
@@ -746,8 +749,11 @@ export default {
   margin-top: 4px;
   width: 100%;
 }
-.v-list-item-content{
+/* .v-list-item-content{
   max-width:75%;
+} */
+.v-list-item__content{
+  max-width:65%;
 }
 .value{
   letter-spacing: 1.5px;
@@ -766,6 +772,10 @@ export default {
   color:#949DA6;
   letter-spacing: 1.1px;
   margin-left: 6px;
+}
+.data-list{
+  width:100%;
+  margin-right: 5px;
 }
 
 
