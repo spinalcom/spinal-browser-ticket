@@ -99,6 +99,8 @@ import {
   SPACE_RELATION_LIST,
   SPACE_ROOM_RELATION,
 } from '../../constants';
+import { getSurfaceFromNode } from '../DataApp/DataTools';
+
 
 // Generic components
 import SpinalBreadcrumb from '../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue';
@@ -271,6 +273,12 @@ export default {
       //   })
       // );
 
+      await Promise.all(
+        this.items.items.map(async function (item) {
+          item['Area'] = await getSurfaceFromNode(item);
+        })
+      );
+
       this.currentView = view;
       if(this.currentView.serverId !=0){
         this.showBackButton = true;
@@ -313,13 +321,13 @@ export default {
       let nodeType = node.info.type.get();
       switch (nodeType) {
         case SPACE_CONTEXT_TYPE:
-          this.items.cols = ['GroupCount'];
+          this.items.cols = ['GroupCount', 'Area'];
           break;
         case SPACE_CATEGORY_TYPE:
-          this.items.cols = ['RoomCount'];
+          this.items.cols = ['RoomCount', 'Area'];
           break;
         default:
-          this.items.cols = [];
+          this.items.cols = ['Area'];
       }
     },
 

@@ -186,6 +186,24 @@ export default {
           },
           ignore: true,
         },
+        {
+          name: 'spinal-twin.ControlEndpoints',
+          content: InsightControlEndpoint,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+        {
+          name: 'spinal-twin.Endpoints',
+          content: InsightEndpoint,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
       ],
     };
   },
