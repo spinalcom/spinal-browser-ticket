@@ -49,7 +49,7 @@ with this file. If not, see
         style="background: red"
         class="md-layout-item topbtn"
         @click="openChartModal"
-        >X
+        >{{$t('node-type.close-chart')}}
       </md-button>
     </div>
 

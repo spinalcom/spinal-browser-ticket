@@ -89,6 +89,7 @@ export default {
   'spinal-twin.Area': 'Area (m²)',
   'spinal-twin.children': 'Child node number',
   'spinal-twin.Chart' : 'Chart',
+  'datas.current-value': "Current values",
 
   'spinal-twin.BuildingCount': 'Building number',
   'spinal-twin.FloorCount': "Floor number",
@@ -271,4 +272,6 @@ export default {
   'node-type.SpinalServiceTicketProcess.Alarm': 'Alarm Processes',
   'node-type.SpinalSystemServiceTicketTypeStep.Alarm': 'Steps',
   'node-type.SpinalSystemServiceTicketTypeTicket.Alarm': 'Alarms',
+  // Dashboard and Chart
+  'node-type.close-chart' : 'Back to 3D',
 };

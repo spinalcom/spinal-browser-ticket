@@ -90,6 +90,7 @@ export default {
   'spinal-twin.Area': 'Surface (m²)',
   'spinal-twin.children': 'Nombre de noeuds enfants',
   'spinal-twin.Chart' : 'Diagramme',
+  'datas.current-value': "Valeurs courantes",
 
   'spinal-twin.BuildingCount': 'Nombre de bâtiments',
   'spinal-twin.FloorCount': "Nombre d'étages",
@@ -216,4 +217,6 @@ export default {
   'node-type.SpinalServiceTicketProcess.Alarm': "Processus d'alarmes",
   'node-type.SpinalSystemServiceTicketTypeStep.Alarm': 'Etapes',
   'node-type.SpinalSystemServiceTicketTypeTicket.Alarm': 'Alarmes',
+  // Dashboard and Chart
+  'node-type.close-chart' : 'Retour 3D',
 };

@@ -2,6 +2,8 @@
         - Add Insight / Endpoints tab feature on Equipment center
         - Add Area Feature on Space Center
         - Fix routing names (fr/eng) in space center and equipment center
+        - Modification "X" => "Retour 3D" / "Back to 3D" of endpoint chart viewer
+        - Add "Valeurs courantes" / "Current values"  on Insight / endpoint tabs
 
 # 29.11.22 : v1.4.6
         - Correction Of Endpoint tab

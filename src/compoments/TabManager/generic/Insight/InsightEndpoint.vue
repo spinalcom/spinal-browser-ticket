@@ -25,8 +25,8 @@ with this file. If not, see
 <template>
   <el-container v-if="ctxNode">
     <div style="overflow: auto">
-      <h4>
-        {{ ctxNode.info.name.get() }}
+      <h4 class="box-node-name">
+        {{ ctxNode.info.name.get() + " : " + $t('datas.current-value')}}
       </h4>
       <div class="control-endpoint-grid">
         <insight-control-endpoint-box
@@ -233,5 +233,8 @@ export default {
   flex-wrap: wrap;
   max-height: 70vh;
   overflow: auto;
+}
+.box-node-name{
+  text-align: center;
 }
 </style>
