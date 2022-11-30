@@ -88,6 +88,7 @@ export default {
   'spinal-twin.Select': 'Select',
   'spinal-twin.Area': 'Area (m²)',
   'spinal-twin.children': 'Child node number',
+  'spinal-twin.Chart' : 'Chart',
 
   'spinal-twin.BuildingCount': 'Building number',
   'spinal-twin.FloorCount': "Floor number",
@@ -148,6 +149,7 @@ export default {
   'spinal-twin.Select': 'Select',
   'spinal-twin.Area': 'Area (m²)',
   'spinal-twin.children': 'Child node number',
+  'node-type.geographicRoomGroup':'Groups',
 
   'spinal-twin.CategoryCount': 'Category number',
   'spinal-twin.GroupCount': 'Group number',

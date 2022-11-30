@@ -89,6 +89,7 @@ export default {
   'spinal-twin.Select': 'Sélectionner',
   'spinal-twin.Area': 'Surface (m²)',
   'spinal-twin.children': 'Nombre de noeuds enfants',
+  'spinal-twin.Chart' : 'Diagramme',
 
   'spinal-twin.BuildingCount': 'Nombre de bâtiments',
   'spinal-twin.FloorCount': "Nombre d'étages",
@@ -154,6 +155,7 @@ export default {
   'spinal-twin.Calendar': 'Calendrier',
   'spinal-twin.EventDelete': "Supprimer l'événement",
   'spinal-twin.EventAdd': 'Ajouter an événement',
+  'node-type.geographicRoomGroup':'Groupes',
 
   'spinal-twin.Today': "Aujourd'hui",
   'spinal-twin.Yesterday': 'Hier',
