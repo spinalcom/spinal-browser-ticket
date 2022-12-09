@@ -1,3 +1,6 @@
+# 02.12.22
+        - Add a component to make a routage between applications 
+
 # 30.11.22 : v1.4.7
         - Add Insight / Endpoints tab feature on Equipment center
         - Add Area Feature on Space Center

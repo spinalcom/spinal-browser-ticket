@@ -55,6 +55,22 @@ export const routes = [
   { path: '/SpaceApp', name: 'SpaceApp', component: SpaceApp },
 
 ];
+
+
+// export const routes = [
+//   { path: '*', redirect: { name: 'ApplicationList' } },
+//   { path: '/AppList', name: 'ApplicationList', component: AppList },
+//   // { path: '/DataRoom', name: 'Data Room', component: DataRoom },
+//   // { path: '/TicketCenter', name: 'TicketCenter', component: TicketCenter },
+//   { path: '/DataRoom', name: 'Data room', component: DataApp },
+//   { path: '/InsightCenter', name: 'Insights', component: InsightCenter },
+//   // { path: '/Spacecenter', name: 'SpaceCenter', component: SpaceCenter },
+//   { path: '/Equipments', name: 'Equipments', component: EquipmentApp },
+//   { path: '/Tickets', name: 'Tickets', component: TicketApp },
+//   { path: '/Alarms', name: 'Alarms', component: AlarmApp },
+//   { path: '/Spaces', name: 'Spaces', component: SpaceApp },
+
+// ];
 const realroutes = [
   ...routes,
   {

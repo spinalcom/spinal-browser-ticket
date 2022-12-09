@@ -23,8 +23,12 @@ with this file. If not, see
 -->
 
 <template>
+  
   <div class="spinal-main-container" :class="{ 'have-abs-viewer': absviewer }">
+    
     <div class="spinal-main-container-left">
+      <appSelector class="appSelector"></appSelector>
+      <!-- <div class="appSelector">coucou</div> -->
       <!-- <spinalNavbar class="main-navbar"></spinalNavbar> -->
       <div
         v-show="!absviewer && !dataMode"
@@ -34,6 +38,7 @@ with this file. If not, see
       >
         <div ref="viewerContent" class="viewer-content">
           <div class="content-viewer-view">
+
             <appViewer
               ref="viewerItem"
               @onModelLoadEnd="showLoadingModel = false"
@@ -47,6 +52,7 @@ with this file. If not, see
                 @click="onPopClick"
               ></el-button>
               <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
+              <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button>
             </el-button-group>
           </div>
         </div>
@@ -63,7 +69,7 @@ with this file. If not, see
         </div>
       </div>
     </div>
-    <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button>
+    <!-- <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button> -->
     <div class="spinal-other-container">
       <spinalNavbar class="main-navbar"></spinalNavbar>
       <router-view></router-view>
@@ -94,6 +100,7 @@ import appViewer from "./viewer/viewer.vue";
 import spinalNavbar from "../navbar/spinalNavbar.vue";
 import { EventBus } from "../../services/event";
 import endpointChartViewerPanel from "./chart/endpointChartViewerPanel.vue";
+import appSelector from "../drawer/appSelector/appSelector.vue"
 
 export default {
   name: "MainContent",
@@ -101,6 +108,7 @@ export default {
     appViewer,
     spinalNavbar,
     endpointChartViewerPanel,
+    appSelector,
   },
   data() {
     return {
@@ -191,6 +199,12 @@ export default {
 
 <style>
 
+.appSelector{
+  position: absolute;
+  top:5px;
+  /* left: 10%; */
+  z-index: 2;
+}
 .spinal-main-container,
 .spinal-main-container .spinal-viewer-container,
 .spinal-main-container .spinal-other-container {
@@ -278,8 +292,8 @@ export default {
   flex-grow: 1;
   height: calc(100% - 68px);
   position: relative;
-  margin: 0px 5px 10px 10px;
-  background: #fdfdfd;
+  /* margin: 0px 5px 10px 10px; */
+  background: transparent;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -398,12 +412,12 @@ export default {
 
 </style>
 <style scoped>
-.spinal-button-expand{
+/* .spinal-button-expand{
   padding: 0%;
   background-color: #fafafa;
   color:#606266;
   border-color: #dcdfe6;
-}
+} */
 .spinal-button-expand:hover{
   background-color: #fafafa;
   color: #606266;

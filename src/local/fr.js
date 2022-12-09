@@ -43,6 +43,16 @@ export default {
   'Routes.SpaceApp': 'Spaces',
   'Routes.EquipmentApp': 'Equipments',
   'Routes.TicketApp': 'Tickets',
+
+  'Routes.Application List': 'Liste des applications',
+  'Routes.Data room': 'Data room',
+  'Routes.Insights': 'Insights',
+  'Routes.Equipments': 'Equipements',
+  'Routes.Tickets': 'Tickets',
+  'Routes.Alarms': 'Alarms',
+  'Routes.Spaces': 'Spaces',
+
+
   'DataRoom.geographicContext': 'Contextes', // Could be generic
   'DataRoom.geographicBuilding': 'Bâtiments', // Could be generic
   'DataRoom.geographicFloor': 'Etages', // Could be generic

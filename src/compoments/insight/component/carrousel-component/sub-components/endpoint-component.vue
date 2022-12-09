@@ -411,6 +411,10 @@ export default {
     this.updateEndpoint();
     this.updateDisplay();
     this.selectedNode = await this.getEndpoint();
+    // EventBus.$on('InsightCenter-display-sprites', async () => {
+    //   console.log(this.variableSelected);
+    // })
+    // console.log(this.selectedNode)
   },
 
   methods: {
