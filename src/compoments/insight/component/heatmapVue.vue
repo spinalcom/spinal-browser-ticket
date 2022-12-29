@@ -46,13 +46,21 @@ with this file. If not, see
         {{ variableSelected ? variableSelected.name : '' }}
         <i @click="increaseIndex()" class="arrow right"></i>
       </div> -->
-      <el-button
+      <!-- <el-button
         class="boutton-barre"
         icon="el-icon-add"
         circle
         @click="genSprite()"
+      > -->
+      <el-switch
+        v-model="showSprites"
+        class="boutton-barre"
+        style="--el-switch-on-color: #14202c; --el-switch-off-color: #ff4949"
+        icon="el-icon-add"
+        circle
+        @change="genSprite()"
       >
-      </el-button>
+      </el-switch>
       <div class="endpoint-selector-label">{{$t('HeatmapCenter.visualized-insight')}}</div>
       <el-select v-model="index" class="endpoint-selector">
         <el-option
@@ -78,6 +86,7 @@ with this file. If not, see
             :variableSelected="variableSelected"
             :profil="profil"
             :filterObjects="filter"
+            :showSprites="showSprites"
             @sendDataUpdated="sendDataUpdated"
           />
         </template>
@@ -106,9 +115,9 @@ const backendService = spinalBackEnd.heatmapBack;
 
 export default {
   props: ["profil", "filter"],
-
   data() {
     return {
+      showSprites: false,
       variableSelected: undefined,
       endpoints: [],
       details: [],
@@ -130,48 +139,16 @@ export default {
   },
   methods: {
     async genSprite(){
-      console.log(this.endpoints)
-      for(let endpoint of this.endpoints){
-        let text = (parseFloat(endpoint.endpoint.currentValue.get()).toFixed(1)).toString() + " " + endpoint.endpoint.unit.get();
-        let node = SpinalGraphService.getRealNode(endpoint.target.id);
-        let position = await AttributeService.findOneAttributeInCategory(node, "Spatial", "XYZ center");
-        if(position != -1){
-          const pos = position.value.get().split(";");
-          // console.log(position);
-          // await threeJsManager.createSprite({x:pos[0], y:pos[1], z:pos[2]}, text);
-        }
+      EventBus.$emit("remove-sprites");
+      if(this.showSprites == true){
+        EventBus.$emit('InsightCenter-display-sprites');
         
-        // console.log(this.endpoints)
-      }
-      EventBus.$emit('InsightCenter-display-sprites');
-        console.log("event emis");
-    // await threeJsManager.testing();
-    // let datas = [
-    //   {
-    //     position:{x:0,y:0,z:0},
-    //     dbid:1,
-    //     spinalModel:{
-    //       nodeId: undefined,
-    //       spriteType: undefined
-    //     }
-    //   },
-    //   {
-    //     position:{x:0,y:-10,z:0},
-    //     dbid:2,
-    //     spinalModel:{
-    //       nodeId: undefined,
-    //       spriteType: undefined
-    //     }
-    //   }
-    // ];
-    // await threeJsManager.createSprite({x:100, y:100, z:100}, "23.5°C");
-    // await threeJsManager.testEdit3D();
-    // await threeJsManager.testSprite();
-    // await threeJsManager.testThree();
-    // await threeJsManager.testMarkup();
-    // await threeJsManager.createSprites(datas)
-    // await threeJsManager.createSprites([datas[0]])
-    // await threeJsManager.createSprites([datas[1]])
+        }
+        else{
+          // EventBus.$off("sprite-clicked", data.endpoint);
+          EventBus.$emit("remove-sprites");
+        }
+      
     },
     renderComponent(i) {
       return this.slides[i].content;
@@ -259,8 +236,8 @@ export default {
     ) {
       this.variables = this.profil.endpointsProfils;
       this.index = 0;
-      // console.log(this.variables);
     }
+    
     /*// Update references
       for(const element of this.profil.rooms){
             element.references = await backendService._getRoomReferences(element.id);
@@ -268,6 +245,12 @@ export default {
   },
 
   watch: {
+    filter: function(){
+      // this.genSprite();
+      // EventBus.$emit("remove-sprites");
+
+      // EventBus.$emit('InsightCenter-display-sprites');
+    },
     variableSelected() {
       if (this.variableSelected) {
         // const parsed = JSON.parse(this.variableSelected);
@@ -339,7 +322,9 @@ export default {
 
 ._heatmapContainer .no-shadow {
   width: 100%;
-  height: calc(100% - 140px);
+  /* height: calc(100% - 140px); */
+  height: 100%;
+  padding-bottom: 20px;
 }
 
 ._heatmapContainer .no-shadow .heights {

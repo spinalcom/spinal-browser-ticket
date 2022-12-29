@@ -46,6 +46,7 @@ with this file. If not, see
 
 <script>
 import { routes } from '../../../router/router';
+import { EventBus } from "../../../services/event"
 export default {
   data() {
     return {
@@ -60,6 +61,7 @@ export default {
   },
   methods: {
     menuSelect(index) {
+      EventBus.$emit("application-change", index);
       if (this.$route.name !== index) {
         this.$router.push({
           name: index,

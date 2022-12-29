@@ -41,8 +41,6 @@ EventBus.$on('viewer-reset-isolate', async () => {
 });
 
 EventBus.$on('viewer-isolate', async (items, relation) => {
-  // console.log(items)
-  // console.log(relation)
   await viewerUtils.waitInitialized();
   viewerUtils.showAll();
   let list: {

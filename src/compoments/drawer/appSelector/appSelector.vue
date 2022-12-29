@@ -60,7 +60,6 @@ with this file. If not, see
 <script>
 
 import { routes } from '../../../router/router';
-console.log(routes)
 
 export default {
   name: "appSelector",

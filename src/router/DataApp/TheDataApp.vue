@@ -208,12 +208,14 @@ export default {
   },
 
   async mounted() {
-    // EventBus.$on("dataroom-instructions-sent", async data => {
-    //       for(let i=0;i<data.length;i+=1){
-    //         await this.onViewChange(data[i]);
-    //       }
-    //   });
     
+      EventBus.$on("application-change", appName => {
+        if(this.viewKey != appName){
+          EventBus.$off("dataroom-instructions-sent");
+          EventBus.$off("application-change");
+          this.$destroy()
+        }
+      })
       const graph = await BackendInitializer.getInstance().getGraph();
       await AppBack.getInstance().init(graph, 'geographicContext');
       await ViewManager.getInstance(this.viewKey).init(
@@ -224,20 +226,48 @@ export default {
       this.relations.push('hasReferenceObject.ROOM');
       this.tabs[0].props.relation = this.relations;
       
-      
+      EventBus.$on("dataroom-instructions-sent", async data => {
+        const viewerManager = ViewManager.getInstance(this.viewKey)
+          viewerManager.reset();
+          (viewerManager.pushMultiple(data)).then(async res => {
+            EventBus.$emit("contextNodeExplorer-onSelectItem", data[data.length-1]);
+            for(let d of data){
+              await this.onViewChange(d);
+            }
+            
+          });
+
+      });
       
     
   },
 
   methods: {
-    findItem(serverId, items){
-      console.log(serverId)
-      console.log(items);
-    },
+    // findItem(serverId, items){
+    //   for(let item of items){
+
+    //     if(item.serverId == /*serverId*/1834772928){
+    //       return item;
+    //       }
+    //     else{
+    //       if(item.children != undefined){
+    //         const iterator = item.children.values();
+    //         let its = [];
+    //         for(let i=0; i<item.children.size; i++){
+    //           // its = its.concat(iterator.next().value);
+    //           return this.findItem(serverId, iterator.next().value)
+    //         }
+    //         // return this.findItem(serverId, its)
+    //       }
+          
+          
+    //       // return this.findItem(serverId,Object.values(item.children))
+    //     }
+    //   }
+      
+    // },
     async onViewChange(view) {
-      // console.log(this.items)
-      console.log(view)
-      // console.log(view)
+
       // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
@@ -331,6 +361,9 @@ export default {
     popView() {
       ViewManager.getInstance(this.viewKey).pop();
     },
+    reset(){
+      ViewManager.getInstance(this.viewKey).reset()
+    },
 
     zoomOn() {
       EventBus.$emit('viewer-zoom', this.currentView, this.relations);
@@ -352,7 +385,6 @@ export default {
 
     formatData() {
       const res = [];
-      // console.log(this.items);
       for (const item of this.items.items) {
         const resItem = {
           name: item.name,
@@ -407,7 +439,6 @@ export default {
           ],
         },
       ];
-      // console.log(excelData);
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });

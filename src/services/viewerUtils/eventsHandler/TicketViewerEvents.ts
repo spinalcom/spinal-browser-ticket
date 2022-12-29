@@ -52,12 +52,10 @@ EventBus.$on('ticket-viewer-reset-color', async () => {
 });
 
 EventBus.$on('ticket-viewer-color', async (items, relation) => {
-  console.log("EVENT : ticket-viewer-color");
   
   await viewerUtils.waitInitialized();
   viewerUtils.restoreColorThemingItems();
-  // console.log(items, relation);
-  // console.log(list);
+
 
   for(let item of items){
 
@@ -70,9 +68,7 @@ EventBus.$on('ticket-viewer-color', async (items, relation) => {
       for(let bimParent of bimParents){
         if(bimParent.getType().get() != 'SpinalSystemServiceTicketTypeStep'){
 
-          // console.log("ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù")
-          // console.log(bimParent);
-          // console.log("ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù")
+
 
           const list2 = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
             // { server_id: item.serverId },
@@ -80,11 +76,8 @@ EventBus.$on('ticket-viewer-color', async (items, relation) => {
             [...EQUIPMENT_RELATION_LIST, ...GEO_RELATIONS],
             true
           );
-          // console.log("listtttttttttttttttttttttttttttttttttttttttt")
-          // console.log(list2);
-          // console.log("listtttttttttttttttttttttttttttttttttttttttt")
+
           for (const { selection, model } of list2) {
-            // console.log(selection, model)
             viewerUtils.colorThemingItems(model, item.color, selection);
           }
         }

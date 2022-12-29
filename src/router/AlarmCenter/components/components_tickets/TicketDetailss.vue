@@ -165,7 +165,6 @@ export default {
       ).fromNow();
     },
     ActualStep() {
-      // console.log(this.nodeInfo.selectedNode.info.stepId.get());
       SpinalGraphService._addNode(this.nodeInfo.selectedNode);
 
       const stepRealNode = SpinalGraphService.getRealNode(

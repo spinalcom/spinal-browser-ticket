@@ -242,20 +242,15 @@ export default {
       });
     },
     async onViewChange(view) {
-      // console.log(view);
       this.nodeItems = [];
       // Get items from graph
       let mapItems;
       if (view.serverId === 0) {
         this.contextServId = 0;
         const copy_mapItems = await AppBackInstance.getContexts(SERVICE_TYPE);
-        // console.log(copy_mapItems)
 
         const value = copy_mapItems.get(SERVICE_TYPE) || [];
-        // console.log("*************** value ***************");
-        // console.log(value);
-        // console.log("------------- map container ----------------");
-        // console.log([[SERVICE_TYPE, this.getTicketOnly(value)]])
+
 
         mapItems = new Map([[SERVICE_TYPE, this.getTicketOnly(value)]]);
 
@@ -337,8 +332,6 @@ export default {
           tab.ignore = false;
         }
       } else {
-        // console.log("^^^^^^^^^^^tabs^^^^^^");
-        // console.log(this.tabs);
         // if(this.tabs.length > 1){
         for (let i = 1; i < this.tabs.length; ++i) {
           this.tabs[i].ignore = true;

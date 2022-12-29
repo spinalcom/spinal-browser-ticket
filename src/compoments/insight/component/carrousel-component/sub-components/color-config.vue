@@ -112,6 +112,7 @@ export default {
   height: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .__container .header-item {

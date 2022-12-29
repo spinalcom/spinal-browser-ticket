@@ -108,7 +108,7 @@ export default {
     promise.then(async ()=>{
       await this.update(this.Properties.view.serverId);
     })
-    EventBus.$on("breadcrumb-click", async serverId => {
+    EventBus.$on("insight-breadcrumb-click", async serverId => {
       await this.update(serverId);
     });
     EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
@@ -127,8 +127,6 @@ export default {
       );
 
 
-      console.log(this.endpoints);
-      console.log(this.ctxNode);
     },
 
     // return infos from an endpointNodeId

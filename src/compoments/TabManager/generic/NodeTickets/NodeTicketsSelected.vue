@@ -578,14 +578,10 @@ export default {
         this.ticket = this.selected;
         this.doStepping = this.stepping;
       }
-      // console.log(this.ticket);
-      // console.log(this.ticket.ticket.processId);
-      // console.log(this.ticket.ticket.contextId);
+
 
       // this.steps = await spinalServiceTicket.getStepsFromProcess(this.ticket.ticket.processId, this.ticket.ticket.contextId);
-      // spinalServiceTicket.getStepsFromProcess(this.ticket.ticket.processId, this.ticket.ticket.contextId).then(result => console.log(result));
       // let node = SpinalGraphService.getRealNode(this.ticket.ticket.processId)
-      // console.log(node);
     },
 
     async delNote(note) {
@@ -659,9 +655,7 @@ export default {
       await this.update();
     },
     async changeStep2(step) {
-      // console.log("coucou");
-      // console.log(step);
-      // console.log(this.ticket);
+
       await spinalServiceTicket.moveTicket(
         this.ticket.ticket.id,
         this.ticket.ticket.stepId,
@@ -686,8 +680,6 @@ export default {
     },
 
     logFormat(n) {
-      console.log(n);
-      console.log(LOGS_EVENTS_STRING);
       return LOGS_EVENTS_STRING[n];
     },
 
@@ -704,7 +696,6 @@ export default {
       return SpinalGraphService.getRealNode(ticket.id);
     },
     isolateTarget(id) {
-      console.log(this.ticket);
       // if(item.nodeId != undefined){
       //   var id = item.nodeId
       //   var name = item.name
@@ -730,16 +721,10 @@ export default {
       }
     },
     async openInDataRoom(id) {
-      // console.log(info);
-      // let node = SpinalGraphService.getRealNode(info.id.get());
       let node = SpinalGraphService.getRealNode(id);
       SpinalGraphService._addNode(node);
-      // console.log(node);
       let path = await this.getPathOfTicket(node, [
-        /*{name:"DataApp", serverId:0}*/
       ]);
-      // console.log(path);
-      // console.log(this.ticket);
       appEvent.EventBus.$emit("switch-to-dataroom", path);
     },
     async getPathOfTicket(node, path) {

@@ -125,10 +125,6 @@ export default {
       this.dataMode = true;
       this.$refs.chart.toogleSelect(data);
     });
-    // EventBus.$on("switch-to-dataroom", (data) =>{
-    //   console.log("switch-to-dataroom RECEIVED");
-    //   console.log(data);
-    // });
   },
   methods: {
     onPopClick(event) {
@@ -161,7 +157,6 @@ export default {
       this.dataMode = !this.dataMode;
     },
     expandData(){
-      // console.log("expansion");
       const collection1 = document.getElementsByClassName("spinal-main-container-left");
       const collection2 = document.getElementsByClassName("spinal-other-container");
       if(this.expanded == false){
@@ -187,7 +182,6 @@ export default {
       
       // this.expanded;
       
-      // console.log(collection)
     },
     chooseExpandIcon(){
       if(this.expanded == false) return "el-icon-arrow-left"
@@ -405,7 +399,7 @@ export default {
   /* width: 40%; */
   position: relative;
   display: flex;
-  overflow: hidden;
+  /* overflow: hidden; */
   flex-direction: column;
 }
 

@@ -53,65 +53,38 @@ export default {
       breadcrumb: [],
     };
   },
+  watch:{
+    //  breadcrumb() {
+    //   if(this.breadcrumb.length !=0) this.selectBreadcrumb(this.breadcrumb[this.breacrumb.length - 1]);
+    // },
+  },
   mounted() {
-    // console.log("breadcrumb mounted");
     const viewManager = ViewManager.getInstance(this.viewKey);
     viewManager.breacrumbSubscribe(this.onBreadcrumbChange.bind(this));
-    EventBus.$on("switch-to-dataroom", (data) =>{
-      data = data.reverse();
-      console.log("switch-to-dataroom RECEIVED");
-      this.$router.push({
+    EventBus.$on("application-change", () => {
+      EventBus.$off("switch-to-dataroom");
+      EventBus.$off("dataroom-initialized");
+      EventBus.$off("application-change");
+    });
+    EventBus.$on("switch-to-dataroom", (data) =>{      
+      if (this.$route.name !== "DataApp") {
+        this.$router.push({
           name: "DataApp",
         });
-
         EventBus.$on("dataroom-initialized", (res) => {
-          console.log("dataroom-initialized");
-          // console.log(res)
-          EventBus.$emit("dataroom-instructions-sent", data.pop());
-          // if(data.length == 0 || data == undefined){
-          //   this.selectBreadcrumb(this.breadcrumb[this.breadcrumb.length-1]);
-          // }
+          EventBus.$emit("dataroom-instructions-sent", data);
         });
+      }
+
+        // EventBus.$on("dataroom-initialized", (res) => {
+        //   EventBus.$emit("dataroom-instructions-sent", data.pop());
+        //   // if(data.length == 0 || data == undefined){
+        //   //   this.selectBreadcrumb(this.breadcrumb[this.breadcrumb.length-1]);
+        //   // }
+        // });
 
     });
-    EventBus.$on("connect-dataroom", data => {
-      // console.log(data)
-      if (viewManager.viewKey == "DataApp"){
-        // console.log("je suis dans la data app");
-        let newbreadcrumb = [
-          {
-            name: "DataApp",
-            serverId: 0
-          },
-          {
-            name: "spatial",
-            serverId: 301907232
-          },
-          {
-            name: "Maquette_test",
-            serverId: 301997840
-          },
-          {
-            name: "RDC",
-            serverId: 301635200
-          },
-          {
-            name: "1-Pièce 1",
-            serverId: 302541600
-          },
-          {
-            name: "1-Pièce 1",
-            serverId: 302541600
-          }
-        ];
-        // this.onBreadcrumbChange(newbreadcrumb);
-        EventBus.$emit("on-essaie", {data:newbreadcrumb, index:0});
-        // setTimeout(()=> {
-          
-        // }, 500);
-      }
-      else console.log(viewManager.viewKey);
-    })
+     
   },
   methods: {
     onBreadcrumbChange(breadcrumb) {
@@ -121,7 +94,7 @@ export default {
       const viewManager = ViewManager.getInstance(this.viewKey);
       viewManager.move(bc.serverId);
       // const node = FileSystem._objects[bc.serverId];
-      EventBus.$emit("breadcrumb-click", bc.serverId);
+      EventBus.$emit("insight-breadcrumb-click", bc.serverId);
     },
     openDrawer() {
       EventBus.$emit('open-drawer');

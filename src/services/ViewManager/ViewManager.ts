@@ -43,7 +43,6 @@ export class ViewManager {
   }
   static getInstance(viewKey: string): ViewManager {
     const i = ViewManager.instances.get(viewKey);
-    // console.log(i);
     if (!i) {
       const i = new ViewManager(viewKey);
       ViewManager.instances.set(viewKey, i);
@@ -63,6 +62,7 @@ export class ViewManager {
   }
 
   push(name: string, serverId: number) {
+
     const view = { name, serverId };
     this.breadcrumb.push(view);
     this.onChangeFct.forEach((fct) => {
@@ -97,6 +97,9 @@ export class ViewManager {
   }
 
   move(serverId: number) {
+    console.log("$$$$$$$$$$$$$$$$")
+    console.log(serverId)
+    console.log("$$$$$$$$$$$$$$$$")
     for (var i = this.breadcrumb.length - 1; i >= 0; i--) {
       const bc = this.breadcrumb[i];
       if (bc.serverId === serverId) {
@@ -108,5 +111,19 @@ export class ViewManager {
         return;
       } else this.breadcrumb.pop();
     }
+  }
+  reset(): ISpinalView{
+    return this.breadcrumb[0];
+  }
+  async pushMultiple(bc:[{name:string, serverId:number}]){
+    for(let b of bc) this.push(b.name, b.serverId);
+    // this.breadcrumb = this.breadcrumb.concat(bc);
+    // for(let b of this.breadcrumb){
+    //   this.onChangeFct.forEach((fct) => {
+    //     fct(b);
+    //   });
+    // }
+    // if (this.breacrumbSubscribeFct) this.breacrumbSubscribeFct(this.breadcrumb);
+    
   }
 }

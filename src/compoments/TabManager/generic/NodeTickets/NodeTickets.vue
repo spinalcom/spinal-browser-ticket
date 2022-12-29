@@ -195,10 +195,8 @@ export default {
     },
 
     select(ticket) {
-      // console.log("selection dans nodetickets");
       this.selected = ticket;
-      // console.log("select used");
-      // console.log(ticket);
+
     },
 
     async archive(ticket) {

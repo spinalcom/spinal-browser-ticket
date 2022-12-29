@@ -141,7 +141,6 @@ export default {
 
     colorElement() {
       this.unBindAll();
-      //console.log(this.endpoints);
       this.endpoints.map(({ endpoint, ids }) => {
         if (!endpoint) return;
         let bindProcess = endpoint.currentValue.bind(() => {

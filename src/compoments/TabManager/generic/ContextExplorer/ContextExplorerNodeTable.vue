@@ -189,36 +189,38 @@ export default {
     });
     promise.then(()=> {
       if(this.viewKey == "DataApp"){
-        // console.log("je suis init")
         EventBus.$emit("dataroom-initialized", this.items)
       }
     });
     // this.update();
     if(this.viewKey == "DataApp"){
-      EventBus.$on("dataroom-instructions-sent", async data => {
+      /*EventBus.$on("dataroom-instructions-sent", async data => {
         if(data != undefined){
           let itemIndex = this.items.findIndex(it => it.serverId==data.serverId);
           if(itemIndex !=-1){
             await this.onSelectItem(this.items[itemIndex]);
+            
           }
         }
         
         
         
         // for(let d of data){
-        //   // console.log(d);
         //   let itemIndex = this.items.findIndex(it => it.serverId==d.serverId);
-        //   // console.log(itemIndex)
         //   if(itemIndex !=-1){
         //     await this.onSelectItem(this.items[itemIndex]);
         //   }
         // }  
-      });
+
+
+      });*/
     }
     
     
   },
-
+  beforeDestroy(){
+    EventBus.$off("dataroom-instructions-sent");
+  },
   methods: {
     selectInView(item) {
       this.$emit("select", item);
@@ -243,25 +245,17 @@ export default {
     Color() {
       this.isColored = true;
       console.debug("context explorer table color; hasEvent : ", this.hasEvent);
-      // console.log(this.hasEvent);
       if (this.hasEvent) {
-        // console.log(this.data);
         EventBus.$emit("app-viewer-color", this.data, this.relation);
         return;
       }
-      // console.log(this.data);
-      // console.log(this.relation);
       EventBus.$emit("viewer-color", this.data, this.relation);
       // EventBus.$emit('viewer-color', this.data, this.relation);
     },
 
     async onSelectItem(item) {
-      // console.log(this.items);
-      // console.log(item);
       EventBus.$emit("contextNodeExplorer-onSelectItem", item);
       let view = ViewManager.getInstance(this.viewKey).back();
-      // console.log(view)
-      // console.log(this.context)
       if (view.serverId == 0) {
         ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
         return;
@@ -276,6 +270,7 @@ export default {
         ViewManager.getInstance(this.viewKey).pop(false);
       }
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
+      // this.$destroy();
     },
 
     update() {
@@ -314,9 +309,7 @@ export default {
       this.loading = false;
       this.updateColor(this.data, colorUsed);
       this.isColored = viewerState.colored();
-      // console.log("********************");
-      // console.log(this.items);
-      // console.log("********************");
+
     },
 
     updateIsolation() {

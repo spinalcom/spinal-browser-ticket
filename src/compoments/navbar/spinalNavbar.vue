@@ -56,8 +56,11 @@ with this file. If not, see
 </template>
 
 <script>
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 import { EventBus } from '../../services/event';
 import navItem from './nav-Item.vue';
+import { ViewManager } from '../../services/ViewManager/ViewManager';
+
 
 export default {
   name: 'SpinalNavbar',
@@ -76,26 +79,56 @@ export default {
     this.sideBarChangeBinded = this.sideBarChange.bind(this);
     EventBus.$on('side-bar-change', this.sideBarChangeBinded);
     EventBus.$emit('get-side-bar-floors-data');
-    EventBus.$on("contextNodeExplorer-onSelectItem", item => {
-      // console.log("l'event est passé");
-      // console.log(item);
+    EventBus.$on("contextNodeExplorer-onSelectItem", async item => {
       let noeud = FileSystem._objects[item.serverId];
-      // console.log(noeud);
       if(noeud != undefined){
         if(noeud.getType().get() == "geographicFloor"){
           let index = this.levels.findIndex(it => it.server_id == item.serverId);
           if(index != -1) this.onLevelChange(this.levels[index]);
         }
         else if(noeud.getType().get() == "geographicRoom"){
-          // console.log(item);
-          // console.log(noeud);
-          let index = this.selectedLevelRooms.findIndex(it => it.server_id == item.serverId);
-          if(index != -1) this.onRoomChange(this.selectedLevelRooms[index]);
+          let floor = await SpinalGraphService.getParents(noeud.getId().get(), "hasGeographicRoom");;
+          if(this.selectedLevel != null){
+            for(let flr of floor){
+              if(flr.id.get() != this.selectedLevel.id){
+                let i1 = this.levels.findIndex(l => l.id === flr.id.get());
+                if(i1 !=-1){
+                  let selectedRooms = this.onLevelChange(this.levels[i1], false);
+                  let i2 = selectedRooms.findIndex(it => it.server_id == item.serverId);
+                  if(i2 != -1) this.onRoomChange(selectedRooms[i2]);
+                }
+              }
+              else{
+                let index = this.selectedLevelRooms.findIndex(it => it.server_id == item.serverId);
+                if(index != -1) this.onRoomChange(this.selectedLevelRooms[index]);
+                
+              }
+            }
+            
+          }
+          else{
+            // let selectedRooms = this.onLevelChange(floor[0], false);
+            // let index = selectedRooms.findIndex(it => it.server_id == item.serverId);
+            // if(index != -1) this.onRoomChange(selectedRooms[index]);
+            for(let flr of floor){
+              let i1 = this.levels.findIndex(l => l.id === flr.id.get());
+              if(i1 !=-1){
+                let selectedRooms = this.onLevelChange(this.levels[i1], false);
+                let i2 = selectedRooms.findIndex(it => it.server_id == item.serverId);
+                if(i2 != -1) this.onRoomChange(selectedRooms[i2]);
+              }
+            }
+            
+            
+          }
+          
+          
+          // let index = this.selectedLevelRooms.findIndex(it => it.server_id == item.serverId);
+          // if(index != -1) this.onRoomChange(this.selectedLevelRooms[index]);
         }
       }
       // let index = this.levels.findIndex(it => it.server_id == item.serverId);
       // if(index != -1) this.onLevelChange(this.levels[index]);
-      // console.log("l'event est terminé");
     })
   },
   beforeDestroy() {
@@ -106,14 +139,16 @@ export default {
       this.levels = data;
       this.building = building;
     },
-    onLevelChange(level) {
-      // console.log(level);
-      // console.log(this.levels);
+    onLevelChange(level, isolate=true) {
       this.selectedLevel = level;
       this.selectedLevelRooms = level.children;
       this.selectedRoom = null;
-      if (level) this.focusItem(level);
-      else this.focusItem();
+      if(isolate = true){
+        if (level) this.focusItem(level);
+        else this.focusItem();
+      }
+      return level.children;
+      
     },
     onRoomChange(room) {
       this.selectedRoom = room;
@@ -137,6 +172,7 @@ export default {
 <style>
 .spinal-navbar-main-container {
   min-height: 60px;
+  max-height: 60px;
   /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04); */
   display: flex;
   flex-wrap: nowrap;
@@ -180,6 +216,7 @@ export default {
   border: 1px solid #F7F7F7;
   opacity: 1;
   border-radius: 5px;
+  max-height: calc(100vh - 60px);
 }
 .bread-btn {
   display: flex !important;

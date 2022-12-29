@@ -160,7 +160,6 @@ export default {
     };
   },
   mounted() {
-    // console.log(this.endpoint);
     this.selectedNode = SpinalGraphService.getRealNode(this.endpoint.endpointNodeId);
     this.value = this.endpoint.currentValue;
     this.unit = this.endpoint.unit;
@@ -169,7 +168,6 @@ export default {
   methods: {
     updateEndpoint() {
       if (this.endpoint) {
-        // console.log(this.endpoint);
         this.bindProcess = this.endpoint.currentValue.bind(() => {
           this.value = this.endpoint.currentValue.get();
           this.unit = this.endpoint.unit.get();
@@ -177,39 +175,27 @@ export default {
       }
     },
     openChartModal() {
-      // console.log(this.endpoint);
-      // console.log(this.targetName);
       let data = this.selectedNode.info;
-      // console.log(this.endpoint)
       // let data = this.endpoint;
       // data.objectName = this.name;
       data.objectName = this.targetName;
-      // console.log(data.objectName);
       data.unit = this.unit;
-      // console.log(data);
       EventBus.$emit("data-mode", data);
       this.isDataMode = !this.isDataMode;
     },
     async downloadTimeSeries(){
       // let eNode = SpinalGraphService.getRealNode(this.endpoint.endpointNodeId);
       // SpinalGraphService._addNode(eNode);
-      // console.log(eNode);
 
       // let timeSeries = await SpinalGraphService.getChildren(this.endpoint.endpointNodeId, "hasTimeSeries");
       // if(timeSeries.length != 0){
-      //   // console.log(timeSeries);
       //   let tsNode = SpinalGraphService.getRealNode(timeSeries[0].timeSeriesId.get());
       //   SpinalGraphService._addNode(tsNode);
-      //   console.log(tsNode);
       // }
 
-      // console.log(coucou);
       let netWorkService = new NetworkService();
-      // console.log(netWorkService)
       let tsNode = await netWorkService.getTimeseries(this.endpoint.endpointNodeId);
-      // console.log(tsNode);
       let tsValues = await tsNode.getFromIntervalTime();
-      // console.log(tsValues);
       let headers = [
         {
           key: 'date',
@@ -235,7 +221,6 @@ export default {
           ],
         },
       ];
-      // console.log(excelData);
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), this.endpoint.name + `.xlsx`);
       });

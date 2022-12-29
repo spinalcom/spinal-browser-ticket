@@ -144,7 +144,6 @@ export default async function getItemsFromNode(node) {
     for (const ticket of listTicket) {
       const itms = await getItemsByTicket(ticket);
       if (itms){
-        // console.log("i am existing");
         items = items.concat(itms);
       } 
     }
@@ -213,7 +212,6 @@ export async function getItemsByTicket(
     //     ) {
     //       // @ts-ignore
     //       SpinalGraphService._addNode(n);
-    //       // console.log(n.getName().get());
     //       return true;
     //     }
     //     return false;
@@ -261,7 +259,6 @@ function turnNodeIntoViewerCompatibleBimObject(objects){
       model: Autodesk.Viewing.Model;
     }[] = [];
     for (const object of objects) {
-      // console.log(object);
       const bimFileId = object.info.bimFileId.get();
       const dbId: number = object.info.dbid.get();
       const model = anyWin.spinal.BimObjectService.getModelByBimfile(bimFileId);

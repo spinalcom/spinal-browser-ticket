@@ -55,11 +55,13 @@ import * as threeJsManager from "../../../../services/viewerUtils/threejsManager
 // import * as threeJsManager from "../../../services/viewerUtils/threejsManager";
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 import AttributeService from 'spinal-env-viewer-plugin-documentation-service';
+import { spinalBackEnd } from "../../../../services/spinalBackend";
+const backendService = spinalBackEnd.heatmapBack;
 
 
 export default {
   name: 'ProfilInfoComponent',
-  props: { filterObjects: {}, variableSelected: {}, profil: {} },
+  props: { filterObjects: {}, variableSelected: {}, profil: {} ,showSprites: Boolean},
   components: { ColorConfig, ItemsLinkedComponent },
   data() {
     return {
@@ -76,10 +78,10 @@ export default {
       });
     }
     EventBus.$on('InsightCenter-display-sprites', async () => {
-      console.log(this.filteredObjects);
-      console.log(this.variableSelected)
       await this.genSprites();
-    })
+    });
+    
+    
     
   },
   methods: {
@@ -87,30 +89,30 @@ export default {
       for(let obj of this.filteredObjects){
         let node = SpinalGraphService.getRealNode(obj.id);
         let endpoint = obj.endpoints.filter(el=> el.name.get() == this.variableSelected.name);
+        // console.log(endpoint)
         if(endpoint.length != 0){
-          let text = (parseFloat(endpoint[0].currentValue.get()).toFixed(1)).toString() + " " + endpoint[0].unit.get()
+          let text = ((typeof endpoint[0].currentValue.get()) == "number") ?(parseFloat((endpoint[0].currentValue.get()).toFixed(1)).toString() + " " + endpoint[0].unit.get()) : endpoint[0].currentValue.get();
           let position = await AttributeService.findOneAttributeInCategory(node, "Spatial", "XYZ center");
           if(position != -1){
+            // console.log("je suis dans la boucle");
             const pos = position.value.get().split(";");
-            // console.log(position);
-            await threeJsManager.createSprite({x:pos[0], y:pos[1], z:pos[2]}, text);
+            let color = this.getColor(endpoint[0].currentValue.get(), this.variableSelected.config);
+            // console.log(color);
+            await threeJsManager.createSprite({x:pos[0], y:pos[1], z:pos[2]}, {node:obj, text:text, config: this.variableSelected.config, color: color});
           }
         }
         
 
       }
-      // console.log(this.endpoints)
       // for(let endpoint of this.endpoints){
       //   let text = (parseFloat(endpoint.endpoint.currentValue.get()).toFixed(1)).toString() + " " + endpoint.endpoint.unit.get();
       //   let node = SpinalGraphService.getRealNode(endpoint.target.id);
       //   let position = await AttributeService.findOneAttributeInCategory(node, "Spatial", "XYZ center");
       //   if(position != -1){
       //     const pos = position.value.get().split(";");
-      //     // console.log(position);
       //     // await threeJsManager.createSprite({x:pos[0], y:pos[1], z:pos[2]}, text);
       //   }
         
-      //   // console.log(this.endpoints)
       // }
     },
     updateAverage() {
@@ -122,6 +124,25 @@ export default {
         this.sendEvent();
       }
     },
+    getColor(endpointValue, config) {
+      if (config.enumeration) {
+        return backendService.getEnumColor(endpointValue, config.enumeration);
+      }
+      let gradient = backendService.getGradientColor(
+        config.min,
+        config.average,
+        config.max
+      );
+      let color = backendService.getColor(
+        endpointValue,
+        config.min.value,
+        config.max.value,
+        gradient
+      );
+      let colorHex = `#${color}`;
+      // console.log(colorHex)
+      return colorHex;
+    },
 
     sendEvent() {
       this.$emit('sendDataUpdated');
@@ -129,6 +150,7 @@ export default {
   },
   watch: {
     filterObjects() {
+      EventBus.$emit("remove-sprites");
       if (this.filterObjects == 0) {
         this.filteredObjects = this.profil.rooms;
       } else {
@@ -136,6 +158,13 @@ export default {
           return this.filterObjects.includes(room.id);
         });
       }
+
+      if(this.showSprites == true){
+        EventBus.$emit('InsightCenter-display-sprites');
+      }
+      // EventBus.$emit("remove-sprites");
+      // EventBus.$emit('InsightCenter-display-sprites');
+      // this.genSprites();
     },
   },
 };

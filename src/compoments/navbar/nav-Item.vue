@@ -77,7 +77,6 @@ export default {
     },
     itemsComputed() {
       const res = [];
-      // console.log(this.items);
       this.items.forEach((e) => {
         if (e) res.push(e);
       });
@@ -87,14 +86,9 @@ export default {
   mounted() {
     eva.replace();
     // EventBus.$on("contextNodeExplorer-onSelectItem", item => {
-    //   // console.log("l'event est passé");
-    //   // console.log(this);
-    //   // console.log(item)
     //   // let index = this.items.findIndex(it => it.serverId == item.serverId);
-    //   // console.log(index);
     //   // if(index != -1) this.handleCommand(this.items[index]);
     //   // // this.handleCommand(item);
-    //   // console.log("l'event est terminé");
     // })
   },
   methods: {
@@ -103,9 +97,7 @@ export default {
     },
     handleCommand(value) {
       this.$emit('select', value);
-      // console.log("handlecommand");
-      // console.log(value);
-      // console.log("/handlecommand");
+
     },
     focusItem() {
       this.$emit('focusItem', this.select);

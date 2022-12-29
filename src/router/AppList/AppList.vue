@@ -156,7 +156,6 @@ export default {
   },
   computed: {
     routes() {
-      // console.log(routes);
       return routes.filter((e) => !e.redirect && this.$route.name !== e.name);
     },
   },
@@ -172,7 +171,6 @@ export default {
       EventBus.$emit("open-drawer");
     },
     applySettings(name) {
-      // console.log(name);
       // this[name].name = name;
       return this[name];
     },

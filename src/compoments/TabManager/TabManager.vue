@@ -87,11 +87,6 @@ export default {
   watch: {
     tabsprop: {
       handler(oldTabs, newTabs) {
-        // console.log("j'ai changé dans tabmanager");
-        // console.log("tab changing")
-        // console.log(oldTabs);
-        // console.log(newTabs);
-        // console.log("tab changing")
         if (
           !newTabs.some((tab) => !tab.ignore && tab.name === this.activetab)
         ) {
@@ -104,17 +99,13 @@ export default {
 
   async mounted() {
     this.activetab = this.$t(this.tabsprop[0].name);
-    // console.log("tabmanager mounted");
   },
 
   methods: {
     handleClick(tab, event) {
       this.activetab = tab._props.name;
       // let eventName = "click-on-"+tab._props.name;
-      // console.log(eventName);
       EventBus.$emit("click-on_"+tab._props.name)
-      console.log(tab._props.name)
-      console.log(event)
     },
   },
 };

@@ -171,7 +171,6 @@ class SVGLoader extends Loader {
 					break;
 
 				default:
-					// console.log( node );
 
 			}
 
@@ -242,7 +241,6 @@ class SVGLoader extends Loader {
 
 			const d = node.getAttribute( 'd' );
 
-			// console.log( d );
 
 			const commands = d.match( /[a-df-z][^a-df-z]*/ig );
 
@@ -667,7 +665,6 @@ class SVGLoader extends Loader {
 
 				}
 
-				// console.log( type, parseFloats( data ), parseFloats( data ).length  )
 
 				doSetFirstPoint = false;
 
@@ -1930,7 +1927,6 @@ class SVGLoader extends Loader {
 
 		const data = { paths: paths, xml: xml.documentElement };
 
-		// console.log( paths );
 		return data;
 
 	}

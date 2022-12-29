@@ -1,3 +1,9 @@
+#
+        - Add .parcel-cache on reset script in package.json
+        - Add sprite feature in Insight center
+        - Add switch between ticket center and data room feature
+        - this.$destroy() certain components when not used anymore, and switch off Events
+
 # 02.12.22
         - Add a component to make a routage between applications 
 

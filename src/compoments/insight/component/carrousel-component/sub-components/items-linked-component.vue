@@ -76,7 +76,7 @@ with this file. If not, see
     >
     </value-config-global>
 
-    <endpoint-component
+    <endpoint-component class="endpoint-component"
       v-for="room of rooms"
       :name="room.name"
       v-bind:key="room.name"
@@ -114,6 +114,16 @@ export default {
       isolated: undefined,
       selected: undefined,
     };
+  },
+  mounted(){
+    EventBus.$on("InsightCenter-scroll-to-endpoint", res => {
+      let element = this.$el.getElementsByClassName("endpoint-component");
+      element.scroll({
+        top: 58,
+        left: 0,
+        behavior: 'smooth'
+});
+    });
   },
   methods: {
     openModal() {

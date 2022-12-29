@@ -100,7 +100,6 @@ export default {
     async update() {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[this.Properties.view.serverId];
-      // console.log(this.ctxNode);
       /*if (this.ctxNode.info.type.get() == 'geographicRoom') {
         let children = await SpinalGraphService.getChildrenInContext(
           this.ctxNode.info.id.get(),
@@ -135,9 +134,7 @@ export default {
       const attributesLstModels = await serviceDocumentation.getAllAttributes(
         realnode
       );
-      // console.log("9999999999999999999")
-      // console.log(attributesLstModels);
-      // console.log("9999999999999999999")
+
       const attributes = attributesLstModels.map((el) => el.get());
       const endpointInfo = {};
       for (const attr of attributes) {
@@ -145,9 +142,7 @@ export default {
       }
       endpointInfo.endpointNodeId = endpointNodeId;
       // const infos = await realnode.element.load();
-      // console.log("****************************")
-      // console.log(infos);
-      // console.log("****************************")
+
       // endpointInfo.name = infos.name.get();
       // endpointInfo.id = realnode.info.id.get();
       // endpointInfo.currentValue = infos.currentValue.get();

@@ -175,7 +175,6 @@ export async function getTicketDescription(
       let n = targetParentNode.filter(
         (p) => p.type.get() === GEO_FLOOR_TYPE
       );
-      // console.log(n);
       // let res = {
       //   name: n[0].name.get(),
       //   type: n[0].type.get(),

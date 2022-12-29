@@ -412,9 +412,23 @@ export default {
     this.updateDisplay();
     this.selectedNode = await this.getEndpoint();
     // EventBus.$on('InsightCenter-display-sprites', async () => {
-    //   console.log(this.variableSelected);
     // })
-    // console.log(this.selectedNode)
+    EventBus.$on("sprite-clicked", (res)=>{
+      if(res != undefined && this.endpoint != undefined){
+        if(res.id == this.room.id){
+          let element = this.$el.getElementsByClassName("data-table-item")
+          element[0].style.borderColor = "#00A2FF";
+          element[0].style.backgroundColor = "#BCE1FF";
+          element[0].scrollIntoView({behavior:"smooth", block:"center"});
+          // EventBus.$emit("InsightCenter-scroll-to-endpoint", this);
+        }
+        else{
+          let element = this.$el.getElementsByClassName("data-table-item")
+          element[0].style.borderColor = "";
+          element[0].style.backgroundColor = "";
+        }   
+      }
+    });
   },
 
   methods: {
@@ -423,11 +437,15 @@ export default {
         (el) => el.id.get() == this.variableSelected.id
       );
       if (this.endpoint) {
-        // console.log(this.endpoint)
         this.bindProcess = this.endpoint.currentValue.bind(() => {
           this.value = this.endpoint.currentValue.get();
           this.unit = this.endpoint.unit.get();
-          if (isNaN(this.value)) this.unit = "";
+          if (isNaN(this.value)) this.unit = "";  
+          EventBus.$emit("update-sprite", {
+            text: ((typeof this.value) == "number") ? ((parseFloat(this.value).toFixed(1)).toString() + " " + this.unit): this.value, 
+            color: this.getColor(this.value, this.variableSelected.config),
+            node: this.room
+          });
         });
       }
     },
@@ -514,10 +532,10 @@ export default {
       }
     },
 
-    async focus() {
+    async $() {
       let data = { rooms: [this.room] };
       const allBimObjects = await this.getAllBimObjects(data);
-      EventBus.$emit("insight-focus", {
+      EventBus.$emit("insight-$", {
         id: data.id,
         ids: allBimObjects,
       });
@@ -588,7 +606,6 @@ export default {
     },
 
     openChartModal() {
-      // console.log(this.selectedNode);
       let data = this.selectedNode;
       data.objectName = this.name;
       data.unit = this.unit;
@@ -600,13 +617,9 @@ export default {
       this.isConfigModalVisible = !this.isConfigModalVisible;
     },
     async downloadTimeSeries(){
-      // console.log(this.endpoint);
-      // console.log(this.variableSelected);
-      // console.log(this.room);
-      // console.log(this.selectedNode)
+
 
       let netWorkService = new NetworkService();
-      // console.log(netWorkService)
       let tsNode = await netWorkService.getTimeseries(this.selectedNode.id.get());
       let tsValues = await tsNode.getFromIntervalTime();
       let headers = [
@@ -692,7 +705,9 @@ export default {
 }
 .div__rectangle {
   width: 10px;
+  min-width: 10px;
   height: 30px;
+  min-height: 30px;
   margin-left: 10px;
   margin-right: 10px;
   border-radius: 5px;

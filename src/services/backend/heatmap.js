@@ -92,7 +92,6 @@ export default class Heatmap {
     }
 
     if(itemNode.getType().get() === FLOOR_TYPE){
-      // console.log("floor filter")
       res.push(itemNode.info.id.get());
       const rooms = await itemNode.getChildren(ROOM_RELATION);
       for(const room of rooms){

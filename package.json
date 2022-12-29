@@ -5,7 +5,7 @@
   "scripts": {
     "build": "parcel build src/index.html --no-optimize --public-url '/html/spinaltwin/' --dist-dir www/ --no-scope-hoist",
     "dev": "parcel watch src/index.html --public-url '/html/spinaltwin/' --dist-dir www/",
-    "reset": "rm -fr www"
+    "reset": "rm -fr www .parcel-cache"
   },
   "keywords": [],
   "author": "",

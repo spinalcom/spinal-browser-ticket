@@ -82,6 +82,8 @@ export default {
   height: 100%;
   width: 100%;
   display: flex;
+  /* position: fixed; */
+  overflow: hidden;
 }
 .body-main-container {
   width: 100%;

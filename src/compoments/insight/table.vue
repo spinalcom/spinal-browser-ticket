@@ -317,7 +317,7 @@ export default {
 }
 .heatmapContainer {
   width: 100%;
-  height: calc(100vh - 66px);
+  height: calc(100vh - 160px);
   padding-bottom: 6px;
 }
 </style>
