@@ -133,21 +133,15 @@ export async function createSprite(position: { x: null, y: null, z: null }, data
     });
     EventBus.$on("update-sprite", res => {
       if(res.node == data.node){
-        console.log("$$$$$$$$$$$$$$$$$$$$$")
-        console.log(res);
         label.textDiv.textContent = res.text;
         label.container.childNodes[0].style.borderColor= res.color;
         label.container.childNodes[1].style.borderColor= res.color;
       }
     })
-    label.container.addEventListener('click', async () => {
+    label.container.addEventListener('click', async (res) => {
       EventBus.$emit("sprite-clicked", data.node);
-      console.log(label);
-      console.log(img);
-      // let viewer = window.spinal.SpinalForgeViewer.viewerManager.viewer;
-      // await viewer.loadExtension('Autodesk.Edit3D');
-      // console.log(Autodesk.Edit3D);
-      // console.log(viewer);
-      // console.log(label);
+      viewer.clearSelection()
+      // res.stopPropagation();
+
       });
 }

@@ -1,8 +1,11 @@
-#
+# 30.12.22 : v1.5.0
         - Add .parcel-cache on reset script in package.json
         - Add sprite feature in Insight center
-        - Add switch between ticket center and data room feature
+        - Add switch from ticket center TO data room feature
+        - Add a hard fix to switch from insight center TO data room feature
         - this.$destroy() certain components when not used anymore, and switch off Events
+        - Modification of the behaviour of the viewer when a room, a floor or the entire building is selected on spatial selector, disable hovering
+        - multiple css modifications
 
 # 02.12.22
         - Add a component to make a routage between applications 

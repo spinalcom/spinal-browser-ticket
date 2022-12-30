@@ -98,7 +98,8 @@ export default class Heatmap {
         res.push(room.info.id.get());
         const equipments = await room.getChildren(EQUIPMENT_RELATION);
         for (const equipment of equipments){
-          res.push(equipment.info.id.get());
+          // res.push(equipment.info.id.get());
+          res.push(equipment.getId().get());
         }
       }
       return res;

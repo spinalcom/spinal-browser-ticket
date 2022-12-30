@@ -285,4 +285,5 @@ export default {
   'node-type.SpinalSystemServiceTicketTypeTicket.Alarm': 'Alarms',
   // Dashboard and Chart
   'node-type.close-chart' : 'Back to 3D',
+  'spinal-twin.open-in-dataroom' : 'Switch to Data Room',
 };

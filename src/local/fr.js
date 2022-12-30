@@ -174,7 +174,7 @@ export default {
   'spinal-twin.StartDate': 'Date de début',
   'spinal-twin.EndDate': 'Date de fin',
 
-  'spinal-twin.ColorSwitch': 'Activer ou désactiver les couleurs',
+  'spinal-twin.ColorSwitch': 'Activer / désactiver coloriage',
   'spinal-twin.DownloadList': 'Télécharger les données en excel',
   'spinal-twin.NextNode': 'Suivre ce noeud',
   'spinal-twin.Inspect': 'Inspecter ce noeud',
@@ -229,4 +229,5 @@ export default {
   'node-type.SpinalSystemServiceTicketTypeTicket.Alarm': 'Alarmes',
   // Dashboard and Chart
   'node-type.close-chart' : 'Retour 3D',
+  'spinal-twin.open-in-dataroom' : 'Ouvrir dans la Data Room',
 };

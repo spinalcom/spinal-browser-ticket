@@ -97,7 +97,7 @@ with this file. If not, see
 
 <script>
 import { VueperSlides, VueperSlide } from "vueperslides";
-import { EventBus } from "../../../services/event";
+// import { EventBus } from "../../../services/event";
 import { spinalBackEnd } from "../../../services/spinalBackend";
 import { EventBus } from "../../../services/event";
 

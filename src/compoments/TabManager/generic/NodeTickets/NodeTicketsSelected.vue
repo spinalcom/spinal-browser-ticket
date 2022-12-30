@@ -222,6 +222,8 @@ with this file. If not, see
       </el-tooltip>
 
       <div class="ticket-name">{{ ticket.name }}</div>
+      <!-- <div v-if="ticket != undefined" class="ticket-name" >{{ ticket.name }}</div>
+      <div v-else class="ticket-name" >N.C</div> -->
       <!-- <div class="ticket-row-card">
         <div class="ticket-label-information">Priorité :</div>
         <div class="ticket-label-value">{{ ticket.priority || "0" }}</div>
@@ -254,7 +256,7 @@ with this file. If not, see
           {{
             (ticket.ticket.user &&
               (ticket.ticket.user.name || ticket.ticket.user.username)) ||
-            "unknow"
+            "N.C"
           }}
         </div>
       </div>
@@ -300,7 +302,7 @@ with this file. If not, see
             circle
           ></el-button>
         </el-tooltip>
-        <el-tooltip :content="'open in data room'">
+        <el-tooltip v-if="Properties.viewKey == 'TicketApp'" :content="$t('spinal-twin.open-in-dataroom')">
           <el-button
             @click="openInDataRoom(ticket.target.nodeId)"
             class="spl-el-button"
@@ -334,7 +336,7 @@ with this file. If not, see
             circle
           ></el-button>
         </el-tooltip>
-        <el-tooltip :content="'open in data room'">
+        <el-tooltip v-if="Properties.viewKey == 'TicketApp'" :content="$t('spinal-twin.open-in-dataroom')">
           <el-button
             @click="openInDataRoom(ticket.target.parent.id.get())"
             class="spl-el-button"
@@ -578,6 +580,7 @@ export default {
         this.ticket = this.selected;
         this.doStepping = this.stepping;
       }
+      console.log(this.ticket);
 
 
       // this.steps = await spinalServiceTicket.getStepsFromProcess(this.ticket.ticket.processId, this.ticket.ticket.contextId);

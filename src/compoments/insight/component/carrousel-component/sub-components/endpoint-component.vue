@@ -241,38 +241,37 @@ with this file. If not, see
     </div>
   </v-card> -->
 
-    <!-- <v-hover v-slot="{ hover }"> -->
-      <div class="data-list">
+  <!-- <v-hover v-slot="{ hover }"> -->
+  <div class="data-list">
     <v-list-item class="data-table-item">
       <v-list-item-content>
         <v-list-item-title>
           <div
-          v-if="this.endpoint"
-          class="div__rectangle"
-          :style="{
-            'background-color': getColor(
-              this.endpoint.currentValue.get(),
-              this.variableSelected.config
-            ),
-          }"
-        ></div>
-        <div class="value" v-tooltip="`${value} ${unit}`">
-          
-        <!-- {{ value | filterValue }} {{ unit }} -->
-        {{ value | filterValue }}
-      </div>
-      <div class="unit" v-tooltip="`${unit}`">{{ unit }}</div>
-        <div class="name" v-tooltip="name" v-on:mouseover="select()">
-      {{ name }}
-    </div>
+            v-if="this.endpoint"
+            class="div__rectangle"
+            :style="{
+              'background-color': getColor(
+                this.endpoint.currentValue.get(),
+                this.variableSelected.config
+              ),
+            }"
+          ></div>
+          <div class="value" v-tooltip="`${value} ${unit}`">
+            <!-- {{ value | filterValue }} {{ unit }} -->
+            {{ value | filterValue }}
+          </div>
+          <div class="unit" v-tooltip="`${unit}`">{{ unit }}</div>
+          <div class="name" v-tooltip="name" v-on:mouseover="select()">
+            {{ name }}
+          </div>
         </v-list-item-title>
       </v-list-item-content>
-      
+
       <v-list-item-action class="data-table-item-btn-container">
         <!-- <v-fade-transition group> -->
-          <!-- <template> -->
-          <!-- <template v-if="hover"> -->
-            <!-- <v-btn
+        <!-- <template> -->
+        <!-- <template v-if="hover"> -->
+        <!-- <v-btn
               v-for="menu in menuItems"
               :key="menu.eventName"
               v-once
@@ -282,6 +281,16 @@ with this file. If not, see
             >
               <v-icon>{{ menu.icon }}</v-icon>
             </v-btn> -->
+        <el-tooltip :content="$t('spinal-twin.open-in-dataroom')">
+          <el-button
+            @click="openInDataRoom(room.id)"
+            class="spl-el-button"
+            icon="el-icon-arrow-right"
+            size="small"
+            circle
+          ></el-button>
+        </el-tooltip>
+        
         <el-tooltip
           content="Focus"
           effect="light"
@@ -308,22 +317,21 @@ with this file. If not, see
             icon="el-icon-view"
           ></el-button>
         </el-tooltip> -->
-          <el-button
-            v-on:click="openChartModal()"
-            :disabled="variableSelected.saveTimeSeries === 0"
-            class="dashboard-btn custom-icon circled-button"
-            :class="{
-              'dashboard-btn-disabled':
-                variableSelected.saveTimeSeries === 0,
-              'dashboard-btn-on': isDataMode,
-              'dashboard-btn-off': !isDataMode,
-            }"
-            circle
-            icon="el-icon-menu"
-          >
-          </el-button>
+        <el-button
+          v-on:click="openChartModal()"
+          :disabled="variableSelected.saveTimeSeries === 0"
+          class="dashboard-btn custom-icon circled-button"
+          :class="{
+            'dashboard-btn-disabled': variableSelected.saveTimeSeries === 0,
+            'dashboard-btn-on': isDataMode,
+            'dashboard-btn-off': !isDataMode,
+          }"
+          circle
+          icon="el-icon-menu"
+        >
+        </el-button>
 
-          <!-- <el-button
+        <!-- <el-button
             v-if="displayBoolButton"
             v-on:click="flip()"
             class="config-btn-position custom-icon circled-button"
@@ -332,28 +340,28 @@ with this file. If not, see
           >
           </el-button> -->
 
-          <el-button
-            v-if="
-              variableSelected.type == 'Consigne' &&
-              variableSelected.dataType != 'Boolean'
-            "
-            v-on:click="openConfigModal()"
-            class="config-btn-position custom-icon circled-button"
-            circle
-            icon="el-icon-setting"
-          >
-          </el-button>
+        <el-button
+          v-if="
+            variableSelected.type == 'Consigne' &&
+            variableSelected.dataType != 'Boolean'
+          "
+          v-on:click="openConfigModal()"
+          class="config-btn-position custom-icon circled-button"
+          circle
+          icon="el-icon-setting"
+        >
+        </el-button>
 
-          <el-button
-            v-on:click="downloadTimeSeries()"
-            :disabled="variableSelected.saveTimeSeries === 0"
-            class="dashboard-btn custom-icon circled-button"
-            circle
-            icon="el-icon-download"
-          >
-          </el-button>
+        <el-button
+          v-on:click="downloadTimeSeries()"
+          :disabled="variableSelected.saveTimeSeries === 0"
+          class="dashboard-btn custom-icon circled-button"
+          circle
+          icon="el-icon-download"
+        >
+        </el-button>
 
-          <!-- </template>
+        <!-- </template>
         </v-fade-transition> -->
 
         <!-- <v-btn
@@ -364,7 +372,6 @@ with this file. If not, see
           <v-icon color="grey lighten-1">mdi-chevron-right</v-icon>
         </v-btn> -->
       </v-list-item-action>
-      
     </v-list-item>
     <value-config
       v-if="isConfigModalVisible"
@@ -373,7 +380,7 @@ with this file. If not, see
       :dataType="this.variableSelected.dataType"
     >
     </value-config>
-    </div>
+  </div>
   <!-- </v-hover> -->
 </template>
 
@@ -385,8 +392,14 @@ import { EventBus } from "../../../../../services/event";
 import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { NetworkService } from "spinal-model-bmsnetwork";
-import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
-import fileSaver from 'file-saver';
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
+import {
+  GEO_BUILDING_TYPE,
+  GEO_RELATIONS,
+  GEO_ROOM_TYPE,
+  GEO_FLOOR_TYPE,
+} from "../../../../../constants";
 
 export default {
   components: { valueConfig },
@@ -407,31 +420,52 @@ export default {
     };
   },
   async mounted() {
-    
     this.updateEndpoint();
     this.updateDisplay();
     this.selectedNode = await this.getEndpoint();
     // EventBus.$on('InsightCenter-display-sprites', async () => {
     // })
-    EventBus.$on("sprite-clicked", (res)=>{
-      if(res != undefined && this.endpoint != undefined){
-        if(res.id == this.room.id){
-          let element = this.$el.getElementsByClassName("data-table-item")
+    EventBus.$on("sprite-clicked", (res) => {
+      if (res != undefined && this.endpoint != undefined) {
+        if (res.id == this.room.id) {
+          let element = this.$el.getElementsByClassName("data-table-item");
           element[0].style.borderColor = "#00A2FF";
           element[0].style.backgroundColor = "#BCE1FF";
-          element[0].scrollIntoView({behavior:"smooth", block:"center"});
+          element[0].scrollIntoView({ behavior: "smooth", block: "center" });
           // EventBus.$emit("InsightCenter-scroll-to-endpoint", this);
-        }
-        else{
-          let element = this.$el.getElementsByClassName("data-table-item")
+        } else {
+          let element = this.$el.getElementsByClassName("data-table-item");
           element[0].style.borderColor = "";
           element[0].style.backgroundColor = "";
-        }   
+        }
       }
     });
   },
 
   methods: {
+    async openInDataRoom(id) {
+      let node = SpinalGraphService.getRealNode(id);
+      SpinalGraphService._addNode(node);
+      let path = await this.getPath(node, [
+      ]);
+      EventBus.$emit("switch-to-dataroom", path);
+    },
+    async getPath(node, path) {
+      let tab = [{ name: node.getName().get(), serverId: node._server_id }];
+      let temp = tab.concat(path);
+      let parentNode = (await node.getParents(GEO_RELATIONS)).filter((parent) =>
+        [
+          "geographicContext",
+          GEO_BUILDING_TYPE,
+          GEO_FLOOR_TYPE,
+          GEO_ROOM_TYPE,
+        ].includes(parent.getType().get())
+      );
+      if (parentNode.length != 0) {
+        // let temp = path.concat({name: parentNode[0].getName().get(), serverId: parentNode[0]._server_id}, path)
+        return await this.getPath(parentNode[0], temp);
+      } else return temp;
+    },
     updateEndpoint() {
       this.endpoint = this.endpoints.find(
         (el) => el.id.get() == this.variableSelected.id
@@ -440,11 +474,14 @@ export default {
         this.bindProcess = this.endpoint.currentValue.bind(() => {
           this.value = this.endpoint.currentValue.get();
           this.unit = this.endpoint.unit.get();
-          if (isNaN(this.value)) this.unit = "";  
+          if (isNaN(this.value)) this.unit = "";
           EventBus.$emit("update-sprite", {
-            text: ((typeof this.value) == "number") ? ((parseFloat(this.value).toFixed(1)).toString() + " " + this.unit): this.value, 
+            text:
+              typeof this.value == "number"
+                ? parseFloat(this.value).toFixed(1).toString() + " " + this.unit
+                : this.value,
             color: this.getColor(this.value, this.variableSelected.config),
-            node: this.room
+            node: this.room,
           });
         });
       }
@@ -494,21 +531,23 @@ export default {
 
     //useless now ? not sure
     async getEndpoint() {
-      let allControlPoints = await SpinalGraphService.getChildren(
-        this.room.id,
-        ["hasControlPoints"]
-      );
-      for (let controlPoint of allControlPoints) {
-        let allBmsEndpoints = await SpinalGraphService.getChildren(
-          controlPoint.id.get(),
-          ["hasBmsEndpoint"]
+      if (this.endpoint != undefined) {
+        let allControlPoints = await SpinalGraphService.getChildren(
+          this.room.id,
+          ["hasControlPoints"]
         );
-        let test = allBmsEndpoints.filter(
-          (elt) => elt.name.get() == this.endpoint.name.get()
-        );
-        if (test.length != 0) {
-          test = test[0];
-          return SpinalGraphService.getInfo(test.id.get());
+        for (let controlPoint of allControlPoints) {
+          let allBmsEndpoints = await SpinalGraphService.getChildren(
+            controlPoint.id.get(),
+            ["hasBmsEndpoint"]
+          );
+          let test = allBmsEndpoints.filter((elt) => {
+            elt.name.get() == this.endpoint.name.get();
+          });
+          if (test.length != 0) {
+            test = test[0];
+            return SpinalGraphService.getInfo(test.id.get());
+          }
         }
       }
     },
@@ -581,7 +620,6 @@ export default {
       EventBus.$emit("sidebar-selected-item", item);
     },
 
-    
     async isolate() {
       let data = { rooms: [this.room] };
       const allBimObjects = await this.getAllBimObjects(data);
@@ -616,31 +654,31 @@ export default {
     openConfigModal() {
       this.isConfigModalVisible = !this.isConfigModalVisible;
     },
-    async downloadTimeSeries(){
-
-
+    async downloadTimeSeries() {
       let netWorkService = new NetworkService();
-      let tsNode = await netWorkService.getTimeseries(this.selectedNode.id.get());
+      let tsNode = await netWorkService.getTimeseries(
+        this.selectedNode.id.get()
+      );
       let tsValues = await tsNode.getFromIntervalTime();
       let headers = [
         {
-          key: 'date',
-          header: 'date',
+          key: "date",
+          header: "date",
           width: 20,
         },
         {
-          key: 'value',
-          header: 'value',
+          key: "value",
+          header: "value",
           width: 20,
-        }
+        },
       ];
       let excelData = [
         {
-          name: 'Tableau',
-          author: '',
+          name: "Tableau",
+          author: "",
           data: [
             {
-              name: 'Tableau',
+              name: "Tableau",
               header: headers,
               rows: tsValues,
             },
@@ -648,9 +686,12 @@ export default {
         },
       ];
       excelManager.export(excelData).then((reponse) => {
-        fileSaver.saveAs(new Blob(reponse), this.selectedNode.name.get() + `.xlsx`);
+        fileSaver.saveAs(
+          new Blob(reponse),
+          this.selectedNode.name.get() + `.xlsx`
+        );
       });
-    }
+    },
   },
 
   filters: {
@@ -696,7 +737,7 @@ export default {
   border: 2px solid #eaeef0;
   border-radius: 17px;
 } */
-.data-table-item{
+.data-table-item {
   margin-left: 5px;
   margin-right: 5px;
 }
@@ -732,7 +773,7 @@ export default {
   margin-left: 0;
 }
 
-.data-table-item:hover .data-table-item-btn-container{
+.data-table-item:hover .data-table-item-btn-container {
   width: fit-content;
   opacity: 1;
   position: relative;
@@ -742,7 +783,7 @@ export default {
   /* max-width: 20%; */
 }
 
-.v-list-item__title{
+.v-list-item__title {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -754,7 +795,7 @@ export default {
   width: 100%;
 } */
 
-.data-table-item{
+.data-table-item {
   display: flex;
   flex-direction: row;
   background-color: #f9f9f9;
@@ -771,42 +812,31 @@ export default {
 /* .v-list-item-content{
   max-width:75%;
 } */
-.v-list-item__content{
-  max-width:65%;
+.v-list-item__content {
+  max-width: 65%;
 }
-.value{
+.value {
   letter-spacing: 1.5px;
-  color: #14202C;
+  color: #14202c;
   opacity: 1;
   font-size: 20px;
 }
-.unit{
+.unit {
   margin-left: 2px;
   letter-spacing: 1.5px;
-  color: #14202C;
+  color: #14202c;
   opacity: 1;
   font-size: 10px;
 }
-.name{
-  color:#949DA6;
+.name {
+  color: #949da6;
   letter-spacing: 1.1px;
   margin-left: 6px;
 }
-.data-list{
-  width:100%;
+.data-list {
+  width: 100%;
   margin-right: 5px;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /* .div__content {
   width: 30%;

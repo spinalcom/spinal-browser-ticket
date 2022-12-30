@@ -66,7 +66,7 @@ export default {
       EventBus.$off("dataroom-initialized");
       EventBus.$off("application-change");
     });
-    EventBus.$on("switch-to-dataroom", (data) =>{      
+    EventBus.$on("switch-to-dataroom", (data) =>{  
       if (this.$route.name !== "DataApp") {
         this.$router.push({
           name: "DataApp",

@@ -98,6 +98,11 @@ export default {
 
 <style scoped>
 .spinaltwin-nav-bar {
+  display: none;
+  /* display: flex; */
+
+
+
   height: 60px;
   width: 440px;
   background: #ffffff 0% 0% no-repeat padding-box;
@@ -105,7 +110,6 @@ export default {
   border: 1px solid #f7f7f7;
   border-radius: 0px 10px 10px 0px;
   opacity: 1;
-  display: flex;
   flex-direction: row;
   align-items: center;
   padding-left: 10px;

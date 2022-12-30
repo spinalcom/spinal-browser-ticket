@@ -97,9 +97,7 @@ export class ViewManager {
   }
 
   move(serverId: number) {
-    console.log("$$$$$$$$$$$$$$$$")
-    console.log(serverId)
-    console.log("$$$$$$$$$$$$$$$$")
+
     for (var i = this.breadcrumb.length - 1; i >= 0; i--) {
       const bc = this.breadcrumb[i];
       if (bc.serverId === serverId) {

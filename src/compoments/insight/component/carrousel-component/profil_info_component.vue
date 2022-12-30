@@ -42,26 +42,32 @@ with this file. If not, see
         ></items-linked-component>
       </div>
     </div>
-    <div class="noProfilSelected" v-else>{{$t('HeatmapCenter.no-variable-selected')}}</div>
+    <div class="noProfilSelected" v-else>
+      {{ $t("HeatmapCenter.no-variable-selected") }}
+    </div>
     <!-- <div class="noProfilSelected" v-else> No Variable selected. </div> -->
   </div>
 </template>
 
 <script>
-import ColorConfig from './sub-components/color-config.vue';
-import ItemsLinkedComponent from './sub-components/items-linked-component.vue';
+import ColorConfig from "./sub-components/color-config.vue";
+import ItemsLinkedComponent from "./sub-components/items-linked-component.vue";
 import { EventBus } from "../../../../services/event";
-import * as threeJsManager from "../../../../services/viewerUtils/threejsManager"
+import * as threeJsManager from "../../../../services/viewerUtils/threejsManager";
 // import * as threeJsManager from "../../../services/viewerUtils/threejsManager";
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
-import AttributeService from 'spinal-env-viewer-plugin-documentation-service';
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import AttributeService from "spinal-env-viewer-plugin-documentation-service";
 import { spinalBackEnd } from "../../../../services/spinalBackend";
 const backendService = spinalBackEnd.heatmapBack;
 
-
 export default {
-  name: 'ProfilInfoComponent',
-  props: { filterObjects: {}, variableSelected: {}, profil: {} ,showSprites: Boolean},
+  name: "ProfilInfoComponent",
+  props: {
+    filterObjects: {},
+    variableSelected: {},
+    profil: {},
+    showSprites: Boolean,
+  },
   components: { ColorConfig, ItemsLinkedComponent },
   data() {
     return {
@@ -77,32 +83,105 @@ export default {
         return this.filterObjects.includes(room.id);
       });
     }
-    EventBus.$on('InsightCenter-display-sprites', async () => {
+    EventBus.$on("InsightCenter-display-sprites", async () => {
       await this.genSprites();
     });
-    
-    
-    
+  },
+  beforeDestroy() {
+    EventBus.$off("InsightCenter-display-sprites");
+    EventBus.$emit("remove-sprites");
   },
   methods: {
-    async genSprites(){
-      for(let obj of this.filteredObjects){
-        let node = SpinalGraphService.getRealNode(obj.id);
-        let endpoint = obj.endpoints.filter(el=> el.name.get() == this.variableSelected.name);
-        // console.log(endpoint)
-        if(endpoint.length != 0){
-          let text = ((typeof endpoint[0].currentValue.get()) == "number") ?(parseFloat((endpoint[0].currentValue.get()).toFixed(1)).toString() + " " + endpoint[0].unit.get()) : endpoint[0].currentValue.get();
-          let position = await AttributeService.findOneAttributeInCategory(node, "Spatial", "XYZ center");
-          if(position != -1){
-            // console.log("je suis dans la boucle");
-            const pos = position.value.get().split(";");
-            let color = this.getColor(endpoint[0].currentValue.get(), this.variableSelected.config);
-            // console.log(color);
-            await threeJsManager.createSprite({x:pos[0], y:pos[1], z:pos[2]}, {node:obj, text:text, config: this.variableSelected.config, color: color});
+    async genSprites() {
+      for (let obj of this.filteredObjects) {
+        let nodeTemp = SpinalGraphService.getRealNode(obj.id);
+        if (nodeTemp.getType().get() == "geographicRoom") {
+          let bimObj = await nodeTemp.getChildren("hasReferenceObject.ROOM");
+          if (bimObj.length != 0) {
+            let node = bimObj[0];
+            let endpoint = obj.endpoints.filter(
+              (el) => el.name.get() == this.variableSelected.name
+            );
+            if (endpoint.length != 0) {
+              let text =
+                typeof endpoint[0].currentValue.get() == "number"
+                  ? parseFloat(
+                      endpoint[0].currentValue.get().toFixed(1)
+                    ).toString() +
+                    " " +
+                    endpoint[0].unit.get()
+                  : endpoint[0].currentValue.get();
+              let position = await AttributeService.findOneAttributeInCategory(
+                node,
+                "Spatial",
+                "XYZ center"
+              );
+              if (position != -1) {
+                const pos = position.value.get().split(";");
+                let color = this.getColor(
+                  endpoint[0].currentValue.get(),
+                  this.variableSelected.config
+                );
+                await threeJsManager.createSprite(
+                  { x: pos[0], y: pos[1], z: pos[2] },
+                  {
+                    node: obj,
+                    text: text,
+                    config: this.variableSelected.config,
+                    color: color,
+                  }
+                );
+              }
+            }
+          }
+        } else {
+          let node = nodeTemp;
+          let endpoint = obj.endpoints.filter(
+            (el) => el.name.get() == this.variableSelected.name
+          );
+          if (endpoint.length != 0) {
+            let text =
+              typeof endpoint[0].currentValue.get() == "number"
+                ? parseFloat(
+                    endpoint[0].currentValue.get().toFixed(1)
+                  ).toString() +
+                  " " +
+                  endpoint[0].unit.get()
+                : endpoint[0].currentValue.get();
+            let position = await AttributeService.findOneAttributeInCategory(
+              node,
+              "Spatial",
+              "XYZ center"
+            );
+            if (position != -1) {
+              const pos = position.value.get().split(";");
+              let color = this.getColor(
+                endpoint[0].currentValue.get(),
+                this.variableSelected.config
+              );
+              await threeJsManager.createSprite(
+                { x: pos[0], y: pos[1], z: pos[2] },
+                {
+                  node: obj,
+                  text: text,
+                  config: this.variableSelected.config,
+                  color: color,
+                }
+              );
+            }
           }
         }
-        
 
+        // let endpoint = obj.endpoints.filter(el=> el.name.get() == this.variableSelected.name);
+        // if(endpoint.length != 0){
+        //   let text = ((typeof endpoint[0].currentValue.get()) == "number") ?(parseFloat((endpoint[0].currentValue.get()).toFixed(1)).toString() + " " + endpoint[0].unit.get()) : endpoint[0].currentValue.get();
+        //   let position = await AttributeService.findOneAttributeInCategory(node, "Spatial", "XYZ center");
+        //   if(position != -1){
+        //     const pos = position.value.get().split(";");
+        //     let color = this.getColor(endpoint[0].currentValue.get(), this.variableSelected.config);
+        //     await threeJsManager.createSprite({x:pos[0], y:pos[1], z:pos[2]}, {node:obj, text:text, config: this.variableSelected.config, color: color});
+        //   }
+        // }
       }
       // for(let endpoint of this.endpoints){
       //   let text = (parseFloat(endpoint.endpoint.currentValue.get()).toFixed(1)).toString() + " " + endpoint.endpoint.unit.get();
@@ -112,7 +191,7 @@ export default {
       //     const pos = position.value.get().split(";");
       //     // await threeJsManager.createSprite({x:pos[0], y:pos[1], z:pos[2]}, text);
       //   }
-        
+
       // }
     },
     updateAverage() {
@@ -140,12 +219,11 @@ export default {
         gradient
       );
       let colorHex = `#${color}`;
-      // console.log(colorHex)
       return colorHex;
     },
 
     sendEvent() {
-      this.$emit('sendDataUpdated');
+      this.$emit("sendDataUpdated");
     },
   },
   watch: {
@@ -159,8 +237,8 @@ export default {
         });
       }
 
-      if(this.showSprites == true){
-        EventBus.$emit('InsightCenter-display-sprites');
+      if (this.showSprites == true) {
+        EventBus.$emit("InsightCenter-display-sprites");
       }
       // EventBus.$emit("remove-sprites");
       // EventBus.$emit('InsightCenter-display-sprites');

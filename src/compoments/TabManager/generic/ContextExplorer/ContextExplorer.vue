@@ -148,6 +148,10 @@ export default {
   margin: 0 0 0 10px;
 }
 
+.button-switch{
+  border: 1px solid #dcdfe6;
+}
+
 .spl-button-bar {
   overflow: hidden;
   display: flex;
@@ -164,4 +168,18 @@ export default {
   background: 'blue';
   color: blue;
 }
+</style>
+
+<style>
+.el-button--primary:focus, .el-button--primary:hover {
+    color: #409eff;
+    background-color: #ecf5ff;
+    border-color: #c6e2ff;
+}
+.el-button--primary{
+    color: #409eff;
+    background-color: #ecf5ff;
+    border-color: #409eff;
+}
+
 </style>

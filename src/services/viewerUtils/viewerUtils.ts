@@ -71,6 +71,7 @@ export class ViewerUtils {
       this.cube = cube;
       this.initialized.resolve();
     });
+    // viewer.fitToView();
   }
 
   waitLoadModels(viewer): Promise<void> {
@@ -111,7 +112,7 @@ export class ViewerUtils {
    * @returns Promise<void>
    * @memberof ViewerUtils
    */
-  rotateTo(face: RotateToFace) {
+  async rotateTo(face: RotateToFace) {
     if (!this.viewer) return;
     return this.cube.setViewCube(face);
   }

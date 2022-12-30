@@ -24,38 +24,43 @@ with this file. If not, see
 
 <template>
   <div class="spacecon">
-    <!-- <div class="spinal-space-header"> -->
-      <div class="spinal-breadcrumb">
-      <!-- <div class="spinal-space-header-breadcrum-container spinal-scrollbar"> -->
-        <!-- <el-breadcrumb class="breadcrumb-style" separator="/"> -->
-        <el-breadcrumb class="spinal-breadcrumb-item" separator=">">
-          <el-breadcrumb-item>
-            <a @click="ResetBreadCrumb()" :style="{
-            'letter-spacing': '1.1px',
-            'font-size':'15px',
-            'color': '#f9f9f9',
-            'padding':'10px',
-          }">{{ $t('Routes.InsightCenter') }}</a>
-          </el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs" :key="index">
-          <!-- <el-breadcrumb-item
-            v-for="(breadcrumb, index) in breadcrumbs"
-            :key="index"
-          > -->
-            <!-- <a @click="breadcrumb.click">{{ breadcrumb.name }}</a> -->
-            <a class="el-bradcrumb-item-content" @click="breadcrumb.click" :style="{
-            'letter-spacing': '1.1px',
-            'font-size':'15px',
-            'color': '#f9f9f9',
-            'padding':'10px',
-          }"
-      >{{ breadcrumb.name }}</a>
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      <!-- </div> -->
-
+    <div class="spinal-breadcrumb">
+      <el-breadcrumb class="spinal-breadcrumb-item" separator=">">
+        <el-breadcrumb-item>
+          <a
+            @click="ResetBreadCrumb()"
+            :style="{
+              'letter-spacing': '1.1px',
+              'font-size': '15px',
+              color: '#f9f9f9',
+              padding: '10px',
+            }"
+            >{{ $t("Routes.InsightCenter") }}</a
+          >
+        </el-breadcrumb-item>
+        <el-breadcrumb-item
+          v-for="(breadcrumb, index) in breadcrumbs"
+          :key="index"
+        >
+          <a
+            class="el-bradcrumb-item-content"
+            @click="breadcrumb.click"
+            :style="{
+              'letter-spacing': '1.1px',
+              'font-size': '15px',
+              color: '#f9f9f9',
+              padding: '10px',
+            }"
+            >{{ breadcrumb.name }}</a
+          >
+        </el-breadcrumb-item>
+      </el-breadcrumb>
       <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
     </div>
+
+
+    <spinal-breadcrumb class="breadcrumb-general" :view-key="$t('Routes.InsightCenter')"></spinal-breadcrumb>
+
     <!-- Si on a pas encore choisi de catégorie -->
     <div v-if="selectCategorie == null" class="root" style="margin-top: 11px">
       <!-- Si on a pas encore choisi de contexte -->
@@ -115,6 +120,7 @@ with this file. If not, see
 </template>
 
 <script>
+import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
 import { spinalBackEnd } from "../../services/spinalBackend";
 import groupLstVue from "./component/groupLstVue";
 import profilLstVue from "./component/profilLstVue";
@@ -131,10 +137,12 @@ export default {
     tableauContext,
     tableauCategory,
     HeatmapVue,
+    SpinalBreadcrumb,
   },
   props: [],
   data() {
     return {
+      viewKey: "Insights",
       contextLst: [],
       breadcrumbs: [],
       selectCategorie: null,
@@ -281,6 +289,9 @@ export default {
 </script>
 
 <style scoped>
+.breadcrumb-general{
+  display:none
+}
 .spacecon {
   width: 100%;
   height: 100%;

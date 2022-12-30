@@ -132,10 +132,10 @@ export default {
   methods: {
     async update(id)
     {
-      console.debug("NOTE start")
+      // console.debug("NOTE start")
       // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
-      console.debug("NOTE end")
+      // console.debug("NOTE end")
       this.notes = [];
       this.notes = await serviceDocumentation.getNotes(this.ctxNode);
       this.new_note = "";

@@ -52,16 +52,34 @@ EventBus.$on('sidebar-homeSelect', async (item) => {
 
 async function sidebarHomeSelect(item) {
   viewerUtils.clearSelection();
+  const face = 'top,front';
   if (!item) {
-    const face = 'front,top,right';
+    // const face = 'front,top,right';
     viewerUtils.showAll();
-    await viewerUtils.rotateTo(face);
-    await viewerUtils.fitToView();
+    viewerUtils.rotateTo(face);
+    // await viewerUtils.rotateTo(face);
+    // await viewerUtils.fitToView();
+
+    // viewerUtils.fitToView().then(()=> {
+    //   setTimeout(()=> {
+    //     viewerUtils.rotateTo(face);
+    //     viewerUtils.clearSelection();
+    //   }, 100);
+    // });
   } else {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
-    await viewerUtils.rotateTo('front,top,right');
-    await viewerUtils.fitToView(lstByModel);
+    viewerUtils.rotateTo(face);
+    // await viewerUtils.rotateTo(face);
+    // await viewerUtils.rotateTo('front,top,right');
+    // await viewerUtils.fitToView(lstByModel);
+
+    // viewerUtils.fitToView(lstByModel).then(()=> {
+    //   setTimeout(()=> {
+    //     viewerUtils.rotateTo(face);
+    //     viewerUtils.clearSelection();
+    //   }, 100);
+    // });
   }
   viewerUtils.clearSelection();
 }
@@ -69,7 +87,7 @@ async function sidebarHomeSelect(item) {
 async function sidebarMouseoverItem(item) {
   if (item) {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
-    viewerUtils.selectObjects(lstByModel);
+    // viewerUtils.selectObjects(lstByModel);
   }
 }
 async function sidebarSelectedItem(item) {
