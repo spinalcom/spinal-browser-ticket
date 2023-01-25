@@ -24,17 +24,33 @@ with this file. If not, see
 
 <template>
   <div class="spinaltwin-nav-bar">
-    <el-button class="nav-button" icon="el-icon-menu"></el-button>
-    <img class="image-spinalcom" :src="logo" />
-    <div class="application-selection-group">
-      <div class="application-selection-label">APPLICATION</div>
-      <el-select class="application-selection" v-model="currentRoute" @change="menuSelect(currentRoute)">
-        <el-option v-for="route in routes"
-        :key="route.path"
-        :label="route.name"
-        :value="route.name"
+    <el-button
+      class="nav-bar-expand"
+      :icon="chooseExpandIcon()"
+      size="small"
+      @click="expandData()"
+    ></el-button>
+    <el-button
+      class="nav-button"
+      icon="el-icon-menu"
+      v-if="expanded"
+    ></el-button>
+    <img class="image-spinalcom" :src="logo" v-if="expanded" />
+    <div class="application-selection-group" v-if="expanded">
+      <div class="application-selection-label" v-if="expanded">APPLICATION</div>
+      <el-select
+        class="application-selection"
+        v-model="currentRoute"
+        @change="menuSelect(currentRoute)"
+        v-if="expanded"
+      >
+        <el-option
+          v-for="route in routes"
+          :key="route.path"
+          :label="route.name"
+          :value="route.name"
         >
-        <span>{{ $t('Routes.' + route.name) }}</span>
+          <span>{{ $t("Routes." + route.name) }}</span>
         </el-option>
       </el-select>
       <!-- <v-select
@@ -43,7 +59,7 @@ with this file. If not, see
           label="Label"
         ></v-select> -->
 
-        <!-- <el-menu-item
+      <!-- <el-menu-item
         v-for="route in routes"
         :index="route.name"
         :key="route.path"
@@ -58,8 +74,8 @@ with this file. If not, see
 </template>
 
 <script>
-
-import { routes } from '../../../router/router';
+import { routes } from "../../../router/router";
+import { EventBus } from "../../../services/event";
 
 export default {
   name: "appSelector",
@@ -75,36 +91,66 @@ export default {
   data() {
     return {
       logo: require("../../../assets/imgs/spinalcom_logo_RVB.png"),
-      currentRoute:"",
+      currentRoute: this.$route.name,
+      expanded: true,
     };
   },
 
   // watch: {},
 
-  // async mounted() {},
+  async mounted() {
+    this.currentRoute = this.$route.name;
+    console.log(this.$route);
+  },
+  watch: {
+    $route() {
+      this.currentRoute = this.$route.name;
+      console.log(this.$route);
+    },
+  },
 
   methods: {
     // async update() {},
     menuSelect(index) {
+      EventBus.$emit("application-change", index);
       if (this.$route.name !== index) {
         this.$router.push({
           name: index,
         });
       }
     },
+    chooseExpandIcon() {
+      if (this.expanded == true) return "el-icon-arrow-left";
+      else return "el-icon-arrow-right";
+    },
+    expandData() {
+      const collection = document.getElementsByClassName("spinaltwin-nav-bar");
+      for (let i1 = 0; i1 < collection.length; i1++) {
+        if (this.expanded == false) {
+          collection[i1].style["padding-right"] = "10px";
+        } else {
+          collection[i1].style["padding-right"] = "0px";
+        }
+      }
+      this.expanded = !this.expanded;
+    },
   },
 };
 </script>
 
 <style scoped>
+.nav-bar-expand {
+  width: 20px;
+  height: 60px;
+  border-color: transparent;
+}
+
 .spinaltwin-nav-bar {
-  display: none;
-  /* display: flex; */
-
-
+  /* display: none; */
+  display: flex;
 
   height: 60px;
-  width: 440px;
+  max-width: 440px;
   background: #ffffff 0% 0% no-repeat padding-box;
   box-shadow: 0px 3px 10px #49545c29;
   border: 1px solid #f7f7f7;
@@ -112,7 +158,7 @@ export default {
   opacity: 1;
   flex-direction: row;
   align-items: center;
-  padding-left: 10px;
+  /* padding-left: 10px; */
   padding-right: 10px;
 }
 .image-spinalcom {
@@ -120,23 +166,30 @@ export default {
   width: auto;
   align-self: center;
 }
-.application-selection-group{
+.application-selection-group {
   display: flex;
   flex-direction: column;
   max-width: 100%;
 }
-.application-selection-label{
+.application-selection-label {
   text-align: left;
   /* font: normal normal normal 7px/8px Charlevoix Pro; */
   font-size: 8px;
   font-family: charlevoix sans-serif;
   letter-spacing: 1px;
-  color: #14202C;
+  color: #14202c;
   opacity: 1;
   height: 14.5px;
   padding-left: 10px;
 }
-.nav-button{
+.nav-button {
   height: 40px;
+}
+</style>
+<style>
+.nav-bar-expand.el-button--default.el-button--small {
+  padding-right: 0px;
+  padding-left: 0px;
+  width: fit-content;
 }
 </style>

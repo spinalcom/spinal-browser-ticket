@@ -33,7 +33,7 @@ const InsightCenter = () => import('./InsightCenter/InsightCenter.vue');
 const SpaceCenter = () => import('./Space Center/spacecenter.vue');
 const SpaceCenterGestion = () =>
   import('../compoments/space/component/categoryLstVue.vue');
-//const DataRoom = () => import("./DataRoom/DataRoom.vue")
+// const DataRoom = () => import("./DataRoom/DataRoom.vue")
 const EquipmentApp = () => import('./EquipmentApp/TheEquipmentApp.vue');
 const DataApp = () => import('./DataApp/TheDataApp.vue');
 const TicketApp = () => import('./TicketApp/TheTicketApp.vue');

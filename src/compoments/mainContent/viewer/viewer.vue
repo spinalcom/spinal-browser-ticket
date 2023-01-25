@@ -53,22 +53,24 @@ export default {
     };
   },
   mounted() {
+    console.log(ForgeViewer)
     return this.createViewer();
   },
   methods: {
     handleMinized(toShowUI) {
       if (this.viewer) {
         if (toShowUI === false) {
-          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none');
+          // if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none');
           viewerUtils.setCubeVisible(false);
         } else {
-          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('');
+          // if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none');
           viewerUtils.setCubeVisible(true);
         }
         setTimeout(this.viewer.resize.bind(this.viewer), 400);
       }
     },
     async createViewer() {
+      
       const container = document.getElementById('autodesk_forge_viewer');
       this.forgeViewer = new ForgeViewer(container, false);
       await this.forgeViewer.start();
@@ -101,6 +103,7 @@ export default {
       // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
       this.viewer.fitToView();
       viewerUtils.initViewer(this.viewer);
+      // document.getElementById('guiviewer3d-toolbar').style.display = "none";
     },
 
     colorsRooms(roomsList, argColor, id) {

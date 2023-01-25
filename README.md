@@ -1,3 +1,9 @@
+# v1.6.0
+        - Remove toolbar from Autodesk Forge Viewer component
+        - Add a button to expand / reduce the AppSelector component
+        - Modification of the disposition of datas in the entire application
+        - Add Inventory tab and component on Space center
+
 # 30.12.22 : v1.5.0
         - Add .parcel-cache on reset script in package.json
         - Add sprite feature in Insight center

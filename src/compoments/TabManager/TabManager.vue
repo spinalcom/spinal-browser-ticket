@@ -19,46 +19,76 @@ with this file. If not, see
 -->
 
 <template>
-  <el-tabs
-    :value="activetab"
-    @tab-click="handleClick"
-    class="tab-manager-tabs"
-    type="border-card"
-  >
-    <template v-for="tab in tabsprop" >
-      <template v-if="!tab.ignore" style="height: calc(100% - 120px)">
-        <el-tab-pane
-          :key="$t(tab.name)"
+  <div class="tab-manager-placement">
+    <div class="tab-selector-placement">
+      <el-select
+        v-model="activetab"
+        :label="$t(activeTab)"
+        class="tab-selector"
+        @change="chooseTab2"
+      >
+        <!-- @change="handleClick(tab)" -->
+        <template v-for="(tab, index) of tabsprop">
+          <el-option v-if="!tab.ignore"
+          :key="index"
           :label="$t(tab.name)"
-          :name="tab.name"
-          :closable="false"
-          style="height: calc(100%); overflow: hidden"
-        >
-        <!-- <el-tab-pane
+          :value="tab.name"
+          />
+        </template>
+        <!-- <el-option
+          v-for="(tab, index) of tabsprop"
+          :key="index"
+          :label="$t(tab.name)"
+          :value="tab.name"
+        /> -->
+      </el-select>
+    </div>
+    <!-- <component
+              :is="activetab.content"
+              :Properties="activetab.props"
+              style="height: calc(100% - 20px)"
+            ></component> -->
+
+    <el-tabs
+      :value="activetab"
+      @tab-click="handleClick"
+      class="tab-manager-tabs"
+      type="border-card"
+    >
+      <template v-for="tab in tabsprop">
+        <template v-if="!tab.ignore" style="height: calc(100% - 120px)">
+          <el-tab-pane
+            :key="$t(tab.name)"
+            :label="$t(tab.name)"
+            :name="tab.name"
+            :closable="false"
+            style="height: calc(100%); overflow: hidden"
+          >
+            <!-- <el-tab-pane
           :key="$t(tab.name)"
           :label="$t(tab.name)"
           :name="tab.name"
           :closable="false"
           style="height: calc(100%); overflow: auto"
         > -->
-          <keep-alive>
-            <component
-              :is="tab.content"
-              :Properties="tab.props"
-              style="height: calc(100% - 20px)"
-            ></component>
-          </keep-alive>
-        </el-tab-pane>
+            <keep-alive>
+              <component
+                :is="tab.content"
+                :Properties="tab.props"
+              ></component>
+            </keep-alive>
+          </el-tab-pane>
+        </template>
       </template>
-    </template>
-  </el-tabs>
+    </el-tabs>
+  </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import {EventBus} from "../../services/event"
+import Vue from "vue";
+import { EventBus } from "../../services/event";
 export default {
-  name: 'TabManager',
+  name: "TabManager",
   components: {},
   props: {
     tabsprop: {
@@ -66,11 +96,11 @@ export default {
       required: true,
       validator: function (value) {
         if (!value.name instanceof String) {
-          console.error('Invalid tab name');
+          console.error("Invalid tab name");
           return false;
         }
         if (!value.content instanceof Vue) {
-          console.error('Invalid component for tab content');
+          console.error("Invalid component for tab content");
           return false;
         }
         return true;
@@ -103,47 +133,120 @@ export default {
 
   methods: {
     handleClick(tab, event) {
+      console.log(tab);
       this.activetab = tab._props.name;
       // let eventName = "click-on-"+tab._props.name;
-      EventBus.$emit("click-on_"+tab._props.name)
+
+      EventBus.$emit("click-on_" + tab._props.name);
+    },
+    chooseTab(tab) {
+      console.log(tab);
+      this.activetab = tab.name;
+      EventBus.$emit("click-on_" + tab.name);
+    },
+    chooseTab2(tabName) {
+      console.log(tabName);
+      this.activetab = tabName;
+      EventBus.$emit("click-on_" + tabName);
     },
   },
 };
 </script>
 
 <style>
+.tab-manager-placement {
+  display: flex;
+  flex-direction: column;
+}
+.el-tabs__header {
+  display: none;
+}
+
+/* .tab-selector{
+  background-color: #14202c;
+  border-radius: 4px;
+  border: 1px solid #DCDFE6;
+  color: #F9F9F9;
+} */
+.tab-selector-placement {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.tab-selector > .el-input--suffix > .el-input__inner {
+  text-align: left;
+  letter-spacing: 0.75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c;
+  border: 3px solid #f9f9f9;
+  border-radius: 10px;
+}
+/* .el-scrollbar {
+  text-align: left;
+  letter-spacing: 0.75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c !important;
+  border-radius: 10px;
+} */
+.el-select-dropdown__item.hover {
+  background-color: #14202c;
+  color: #448aff;
+}
+.el-select-dropdown__item {
+  color: #f9f9f9;
+}
+
+.el-select-dropdown.el-popper {
+  background-color: #14202c;
+  border-color: #14202c;
+}
+.ticket-selected-main-container {
+  width: 100%;
+}
+
+.el-popper[x-placement^="bottom"] .popper__arrow {
+  border-bottom-color: #14202c;
+}
+.el-popper[x-placement^="bottom"] .popper__arrow:after {
+  border-bottom-color: #14202c;
+}
+.tab-manager-tabs {
+  display: flex;
+  flex-direction: column;
+
+}
+
 .tab-manager-tabs .el-tabs__content {
-  /* height: 95%; */
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 10px #49545C29;
-  /* border: 1px solid #F7F7F7; */
+  background: #ffffff 0% 0% no-repeat padding-box;
+  /* box-shadow: 0px 3px 10px #49545c29; */
   border-radius: 10px;
   opacity: 1;
   backdrop-filter: blur(33px);
   -webkit-backdrop-filter: blur(33px);
 }
-/* .el-tabs__header{
-    background-color: #eaeef0;
-} */
-.el-tabs__item.is-top{
+
+.el-tabs__item.is-top {
   /* color: #214353 !important;
   background-color: #eaeef0; */
   background: #dcdee6 0% 0% no-repeat padding-box !important;
-  border: 1px solid #49545C29 !important;
+  border: 1px solid #49545c29 !important;
   border-radius: 10px 10px 0px 0px !important;
   opacity: 1 !important;
   text-align: left;
-/* font: normal normal normal 11px/13px Charlevoix Pro; */
+  /* font: normal normal normal 11px/13px Charlevoix Pro; */
   letter-spacing: 1.1px !important;
   color: #214353 !important;
   opacity: 0.32 !important;
 }
-.el-tabs__item.is-top.is-active{
+.el-tabs__item.is-top.is-active {
   /* color: #214353 !important;
   background-color: #f9f9f9; */
-  background: #F9F9F9 0% 0% no-repeat padding-box !important;
-  
-  border: 1px solid #F7F7F7 !important;
+  background: #f9f9f9 0% 0% no-repeat padding-box !important;
+
+  border: 1px solid #f7f7f7 !important;
 
   border-radius: 10px 10px 0px 0px !important;
   opacity: 1 !important;
@@ -156,5 +259,4 @@ export default {
 .tab-manager-pane {
   height: 100%;
 }
-
 </style>

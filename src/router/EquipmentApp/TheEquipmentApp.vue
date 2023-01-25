@@ -20,16 +20,68 @@ with this file. If not, see
 
 <template>
   <div class="equipment-center">
-    <spinal-breadcrumb :view-key="viewKey"></spinal-breadcrumb>
+    <spinal-breadcrumb class="application-breadcrumb" :view-key="viewKey"></spinal-breadcrumb>
+    <div class="Back-node-button-bar" v-if="currentView.name != viewKey">
+      <el-tooltip :content="$t('spinal-twin.Back')">
+        <el-button
+          v-show="showBackButton != false"
+          @click.stop="popView()"
+          class="spl-el-button"
+          style="float: left"
+          icon="el-icon-arrow-left"
+          circle
+        >
+        </el-button>
+      </el-tooltip>
+      <div class="selected-node">{{currentView.name}}</div>
+      <div class="spl-button-bar">
+        <el-tooltip :disabled="!isNode" :content="$t('spinal-twin.Isolate')">
+          <button-switch
+            @click.native="isolateAll"
+            :disabled="!isNode"
+            :active="isolated"
+            class="spl-el-button"
+            icon="el-icon-aim"
+          ></button-switch>
+        </el-tooltip>
+        <el-tooltip :disabled="!isNode" :content="$t('spinal-twin.Select')">
+          <el-button
+            :disabled="!isNode"
+            @click.stop="selectInView()"
+            circle
+            class="spl-el-button"
+            icon="el-icon-location"
+          >
+          </el-button>
+        </el-tooltip>
+        <el-tooltip :disabled="!isNode" content="Zoom">
+          <el-button
+            :disabled="!isNode"
+            @click.stop="zoomOn()"
+            circle
+            class="spl-el-button"
+            icon="el-icon-search"
+          >
+          </el-button>
+        </el-tooltip>
+      </div>
+    </div>
+    <div class="Back-node-button-bar-is-not-necessary" v-else>
+      <div class="selected-node">{{currentView.name}}</div>
+    </div>
+
+    <tab-manager
+      :tabsprop="tabs"
+      ref="tab-manager"
+      class="tab-manager"
+    ></tab-manager>
+
+
+
+
+
+    <!-- <spinal-breadcrumb class="application-breadcrumb" :view-key="viewKey"></spinal-breadcrumb>
     <el-tooltip :content="$t('spinal-twin.Back')">
-      <!-- <el-button
-        v-show="currentView.serverId != 0"
-        @click.stop="popView()"
-        class="spl-el-button"
-        style="float: left"
-        icon="el-icon-arrow-left"
-        circle
-      > -->
       <el-button
         v-show="showBackButton != false"
         @click.stop="popView()"
@@ -77,7 +129,7 @@ with this file. If not, see
       :tabsprop="tabs"
       ref="tab-manager"
       class="tab-manager"
-    ></tab-manager>
+    ></tab-manager> -->
   </div>
 </template>
 
@@ -402,10 +454,31 @@ export default {
 .equipment-center {
   overflow: hidden;
 }
+.application-breadcrumb{
+  display: none;
+}
+.Back-node-button-bar{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.Back-node-button-bar-is-not-necessary{
+  display: flex;
+  margin-top: 15px;
+  place-content: center;
+}
+.selected-node{
+  font-size: 16px;
+  font-weight: 200;
+  color: #58727e;
+  letter-spacing: 1px;
+}
 
 .tab-manager {
-  margin: 10px 10px 10px 0px;
-  /* height: 88%; */
+  /* margin: 0px 10px 10px 0px; */
+  height: calc(100% - 120px);
   border-radius: 5px;
 }
 

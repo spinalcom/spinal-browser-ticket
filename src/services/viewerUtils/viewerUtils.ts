@@ -71,7 +71,10 @@ export class ViewerUtils {
       this.cube = cube;
       this.initialized.resolve();
     });
-    // viewer.fitToView();
+    viewer.toolbar.container.style.display = "none";
+    // for(let extName in viewer.loadedExtensions){
+    //   if (extName != "Autodesk.ViewCubeUi") viewer.loadedExtensions[extName].unload();
+    // }
   }
 
   waitLoadModels(viewer): Promise<void> {

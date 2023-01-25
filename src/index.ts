@@ -85,6 +85,7 @@ Vue.use(BootstrapVue);
 Vue.use(VueMaterial);
 Vue.use(Vuetify)
 
+
 spinalBackend.init();
 BackendInitializer.getInstance().init();
 
@@ -94,3 +95,5 @@ new Vue({
   router,
   render: (h) => h(App),
 }).$mount('#app');
+
+Vue.config.devtools = true

@@ -31,7 +31,7 @@ with this file. If not, see
       <!-- <div class="appSelector">coucou</div> -->
       <!-- <spinalNavbar class="main-navbar"></spinalNavbar> -->
       <div
-        v-show="!absviewer && !dataMode"
+        v-show="!absviewer && !dataMode && !inventoryMode"
         ref="viewerContainer"
         class="spinal-viewer-container"
         :class="{ 'abs-viewer': absviewer }"
@@ -53,19 +53,26 @@ with this file. If not, see
               ></el-button>
               <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
               <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button>
+              <el-button icon="el-icon-collection" @click="onInventoryClick"></el-button>
             </el-button-group>
           </div>
         </div>
       </div>
 
-      <div v-show="dataMode" class="spinal-viewer-container">
+      <div v-show="dataMode || inventoryMode" class="spinal-viewer-container">
         <div class="viewer-content">
-          <endpoint-chart-viewer-panel
+          <endpoint-chart-viewer-panel v-show="dataMode"
             ref="chart"
             v-bind:isChartModalVisible="dataMode"
             v-bind:openChartModal="openDataMode"
           >
           </endpoint-chart-viewer-panel>
+          <InventoryPanel v-show="inventoryMode"
+            ref="inventory"
+            v-bind:isInventoryModalVisible="inventoryMode"
+            v-bind:openInventoryModal="openInventoryMode"
+          >
+          </InventoryPanel>
         </div>
       </div>
     </div>
@@ -101,6 +108,7 @@ import spinalNavbar from "../navbar/spinalNavbar.vue";
 import { EventBus } from "../../services/event";
 import endpointChartViewerPanel from "./chart/endpointChartViewerPanel.vue";
 import appSelector from "../drawer/appSelector/appSelector.vue"
+import InventoryPanel from "./inventory/InventoryPanel.vue"
 
 export default {
   name: "MainContent",
@@ -109,6 +117,7 @@ export default {
     spinalNavbar,
     endpointChartViewerPanel,
     appSelector,
+    InventoryPanel
   },
   data() {
     return {
@@ -116,7 +125,8 @@ export default {
       absviewer: false,
       hideViewer: false,
       dataMode: false,
-      expanded:false
+      expanded:false,
+      inventoryMode: false
     };
   },
   mounted() {
@@ -125,6 +135,11 @@ export default {
       this.dataMode = true;
       this.$refs.chart.toogleSelect(data);
     });
+    EventBus.$on("inventory-mode", (data) => {
+      console.log("inventory-mode")
+      this.inventoryMode = true;
+      this.$refs.inventory.toogleSelect(data);
+    })
   },
   methods: {
     onPopClick(event) {
@@ -153,8 +168,14 @@ export default {
     onDataClick(event) {
       this.dataMode = !this.dataMode;
     },
+    onInventoryClick(event){
+      this.inventoryMode = !this.inventoryMode;
+    },
     openDataMode() {
       this.dataMode = !this.dataMode;
+    },
+    openInventoryMode(){
+      this.inventoryMode = !this.inventoryMode
     },
     expandData(){
       const collection1 = document.getElementsByClassName("spinal-main-container-left");
@@ -195,8 +216,7 @@ export default {
 
 .appSelector{
   position: absolute;
-  top:5px;
-  /* left: 10%; */
+  /* top:5px; */
   z-index: 2;
 }
 .spinal-main-container,
