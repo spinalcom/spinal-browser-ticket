@@ -286,4 +286,8 @@ export default {
   // Dashboard and Chart
   'node-type.close-chart' : 'Back to 3D',
   'spinal-twin.open-in-dataroom' : 'Switch to Data Room',
+  'spinal-twin.insight-center.change-value' : 'Change Value',
+  'spinal-twin.insight-center.see-historic' : 'Display Historic',
+  'spinal-twin.insight-center.download' : 'Download Datas',
+  'spinal-twin.insight-center.display-sprites' : 'Display as sprites',
 };

@@ -43,14 +43,16 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './app.css';
 import './compoments/sidebar/eventSideBar';
 import './services/viewerUtils/viewerEventHandle';
-// import 'material-design-icons-iconfont';
 import "material-design-icons-iconfont/dist/material-design-icons.css";
-// import "@mdi/font/css/materialdesignicons.css";
 // import "vuetify/dist/vuetify.min.css"
 
 
 import Vuetify from 'vuetify';
 import { vuetifyInit, vuetify } from './plugins/vuetify';
+import SpinalComponents from 'spinal-components'
+// import 'spinal-components/dist/spinal-components.css'
+
+Vue.use(SpinalComponents, {})
 
 // const vuetify = new Vuetify({
 //   theme: {

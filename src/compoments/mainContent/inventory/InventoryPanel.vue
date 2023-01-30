@@ -33,10 +33,9 @@ with this file. If not, see
       </md-button>
     </div>
 
-    <div class="inventory-title">{{"Inventaire sur " + tableData.node}}
-      </div>
+    <div class="inventory-title">{{ "Inventaire sur " + tableData.node }}</div>
 
-    <div class="inventory-resume">
+    <!-- <div class="inventory-resume">
       <v-list-item
         class="inventory-resume-item"
         v-for="(item, index) in tableData.resume"
@@ -46,42 +45,49 @@ with this file. If not, see
           <v-list-item-title class="inventory-resume-content">
             <div class="inventory-resume-content-value">
               {{ item[0] + " / " + item[1] }}
-              <!-- <div>{{ item[0] }}</div>
-              <div :style="{'display':'flex', 'flex-direction': 'row'}">
-                <div>{{ item[1] }}</div>
-              </div> -->
             </div>
-            <div class="inventory-resume-content-unit">{{tableData.resumeUnit}}</div>
+            <div class="inventory-resume-content-unit">
+              {{ tableData.resumeUnit }}
+            </div>
             <div class="inventory-resume-content-name">{{ index }}</div>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-    </div>
+    </div> -->
+    <BarChart class="inventory-bar-chart" :labels="barLabels" :datasets="barChartData"></BarChart>
+
+    <!-- <sc-bar-card
+      class="inventory-bar-chart"
+      :title="''"
+      :labels="barLabels"
+      :datasets="barChartData"
+    ></sc-bar-card> -->
+
     <div class="inventory-panel-table-div">
       <el-table
         class="inventory-panel-table"
         :cell-class-name="cellClassChecker"
-        table-layout='fixed'
+        table-layout="fixed"
         height="100%"
-        max-height="60vh"
+        max-height="40vh"
         :data="tableData.array"
         border
         resizable
         :header-cell-style="{
           'background-color': '#ffffff',
           'letter-spacing': '1px',
-          'color': '#214353',
-          'opacity': '1',
-          'height': 'fit-content',
+          color: '#214353',
+          opacity: '1',
+          height: 'fit-content',
           'text-align-last': 'center',
         }"
         :row-style="{
-          'background': '#ffffff 0% 0% no-repeat padding-box',
-          'opacity': '1',
+          background: '#ffffff 0% 0% no-repeat padding-box',
+          opacity: '1',
           'text-align-last': 'center',
           'letter-spacing': '0.9px',
-          'color': '#214353',
-          'opacity': '1',
+          color: '#214353',
+          opacity: '1',
         }"
       >
         <!-- <el-table-column
@@ -101,7 +107,7 @@ with this file. If not, see
           :prop="head"
           :label="head"
           sortable
-          :fixed="(head==tableData.headers[0] || head==tableData.headers[1])"
+          :fixed="head == tableData.headers[0] || head == tableData.headers[1]"
         >
         </el-table-column>
       </el-table>
@@ -110,23 +116,88 @@ with this file. If not, see
 </template>
 
 <script>
+import { spinalBackEnd } from "../../../services/spinalBackend";
+import BarChart from "../../TabManager/generic/charts/BarChart.vue"
+import tinygradient from "tinygradient";
 export default {
   name: "InventoryPanel",
-  components: {},
+  components: {BarChart},
   props: ["isInventoryModalVisible", "openInventoryModal"],
   data() {
     return {
       tableData: [],
+      // barLabels: [
+      //   "Lundi",
+      //   "Mardi",
+      //   "Mercredi",
+      //   "Jeudi",
+      //   "Vendredi",
+      //   "Samedi",
+      //   "Dimanche",
+      // ],
+      barLabels: [],
+      barChartData: [],
     };
   },
   methods: {
     async toogleSelect(data) {
       this.tableData = data;
-      // console.log(data);
+      // this.barLabels = Object.keys(data.resume);
+      // this.barChartData = this.getBarChartData(data);
+      // console.log(this.barLabels);
+      // console.log(this.barChartData);
+      this.barLabels = [""];
+      this.barChartData = this.getBarChartData(data);
+      console.log(data);
     },
-    cellClassChecker(e){
-      if(e.row[e.column.property] == undefined) return "inventory-panel-table-cell-empty";
-    }
+    cellClassChecker(e) {
+      if (e.row[e.column.property] == undefined)
+        return "inventory-panel-table-cell-empty";
+    },
+    formatBarChart(tab) {
+      let labels = Object.keys(tab.resume);
+      let colors = tinygradient(["#14202C", "#13A9E0", "#CADEE2"]).rgb(
+        labels.length
+      );
+      console.log(colors);
+      console.log(`#${colors[0].toHex()}`);
+      console.log(`#${colors[1].toHex()}`);
+      let returnTab = [];
+      for (let label of labels) {
+        let index = labels.findIndex((l) => l == label);
+        if (tab.resume[label][1] != 0) {
+          let obj = {
+            label: label,
+            backgroundColor: `#${colors[index].toHex()}`,
+            data: [tab.resume[label][1]],
+          };
+          returnTab.push(obj);
+        }
+      }
+      return returnTab;
+    },
+    getBarChartData(tab) {
+      this.barLabels = Object.keys(tab.resume);
+      let obj = [{
+        label: "Surface en m²",
+        hidden: false,
+        backgroundColor: "#153284",
+        data: [],
+      }, 
+      {
+        label: "Nombre",
+        hidden: true,
+        backgroundColor: "#CADEE2",
+        data: [],
+      }];
+      let keys = Object.keys(tab.resume);
+      let length = Object.keys(tab.resume).length;
+      for (let key of keys) {
+        obj[0].data.push(tab.resume[key][1]);
+        obj[1].data.push(tab.resume[key][0])
+      }
+      return obj;
+    },
   },
 };
 </script>
@@ -194,7 +265,7 @@ export default {
   text-align: center;
   padding: 5px 0px 5px 5px;
 }
-.inventory-resume-content-unit{
+.inventory-resume-content-unit {
   /* margin-left: 2px; */
   letter-spacing: 1.2px;
   color: #14202c;
@@ -217,6 +288,10 @@ export default {
   font-size: 15px; */
   /* margin-left: 6px; */
 }
+.inventory-bar-chart {
+  margin-right: 5%;
+  margin-left: 5%;
+}
 .inventory-panel-table-div {
   margin-right: 5%;
   margin-left: 5%;
@@ -230,12 +305,12 @@ export default {
   /* max-height: 70vh; */
   /* margin: 10px; */
 }
-.inventory-panel{
+.inventory-panel {
   overflow: auto;
 }
-.inventory-panel-table-cell-empty{
+.inventory-panel-table-cell-empty {
   /* background-color: #EAEEF0; */
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
 }
 </style>
 

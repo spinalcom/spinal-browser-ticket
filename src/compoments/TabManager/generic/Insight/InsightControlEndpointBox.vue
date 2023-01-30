@@ -23,23 +23,9 @@ with this file. If not, see
 -->
 
 <template>
-  <!-- <el-card class="control-endpoint-box">
-    <h5>
-      {{ name }}
-    </h5>
-    <span> {{ value | filterValue }} {{ unit }} </span>
-  </el-card> -->
-
  <v-list-item class="data-table-item">
       <v-list-item-content>
         <v-list-item-title>
-          
-        <!-- <div
-          class="div__rectangle"
-          :style="{
-            'background-color': '#14202c'
-          }"
-        ></div> -->
         <div
           class="div__rectangle"
           :style="{
@@ -51,7 +37,6 @@ with this file. If not, see
         {{ value | filterValue }}
       </div>
       <div class="unit" v-tooltip="`${unit}`">{{ unit }}</div>
-        <!-- <div class="name" v-tooltip="name" v-on:mouseover="select()"> -->
           <div class="name" v-tooltip="name">
       {{ name }}
     </div>
@@ -59,35 +44,6 @@ with this file. If not, see
       </v-list-item-content>
       
       <v-list-item-action class="data-table-item-btn-container">
-        <!-- <el-tooltip
-          content="Focus"
-          effect="light"
-          :open-delay="300"
-          placement="right"
-        >
-          <el-button
-            v-on:click="focus()"
-            class="custom-icon circled-button position_right"
-            circle
-            icon="el-icon-zoom-in"
-          ></el-button>
-        </el-tooltip> -->
-        <!-- <el-tooltip
-          content="Select"
-          effect="light"
-          :open-delay="300"
-          placement="right"
-        >
-          <el-button
-            v-on:click="select()"
-            class="custom-icon circled-button position_right2"
-            circle
-            icon="el-icon-view"
-          ></el-button>
-        </el-tooltip> -->
-
-
-
           <el-button
             v-on:click="openChartModal()"
             :disabled="endpoint.saveTimeSeries === 0"
@@ -110,28 +66,6 @@ with this file. If not, see
             icon="el-icon-download"
           >
           </el-button>
-          
-
-          <!-- <el-button
-            v-if="displayBoolButton"
-            v-on:click="flip()"
-            class="config-btn-position custom-icon circled-button"
-            circle
-            icon="el-icon-refresh"
-          >
-          </el-button> -->
-
-          <!-- <el-button
-            v-if="
-              variableSelected.type == 'Consigne' &&
-              variableSelected.dataType != 'Boolean'
-            "
-            v-on:click="openConfigModal()"
-            class="config-btn-position custom-icon circled-button"
-            circle
-            icon="el-icon-setting"
-          >
-          </el-button> -->
       </v-list-item-action>
     </v-list-item>
 

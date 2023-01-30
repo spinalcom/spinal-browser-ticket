@@ -120,7 +120,7 @@ function getLang(): string {
         return language;
       }
     }
-    return 'en';
+    return 'fr';
   }
   return lang;
 }

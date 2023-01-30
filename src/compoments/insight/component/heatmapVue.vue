@@ -52,6 +52,7 @@ with this file. If not, see
         circle
         @click="genSprite()"
       > -->
+      <el-tooltip :content="$t('spinal-twin.insight-center.display-sprites')">
       <el-switch
         v-model="showSprites"
         class="boutton-barre"
@@ -61,6 +62,7 @@ with this file. If not, see
         @change="genSprite()"
       >
       </el-switch>
+      </el-tooltip>
       <div class="endpoint-selector-label">{{$t('HeatmapCenter.visualized-insight')}}</div>
       <el-select v-model="index" class="endpoint-selector">
         <el-option

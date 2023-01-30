@@ -23,7 +23,6 @@ with this file. If not, see
 -->
 
 <template>
-  
   <!-- <el-container v-if="ctxNode">
     <div style="overflow: auto">
       <h4 class="box-node-name">
@@ -38,7 +37,9 @@ with this file. If not, see
     </div>
   </el-container> -->
   <div>
-    <el-button @click="spaceInventory">INVENTAIRE DES SALLES</el-button>
+    <el-button class="inventory-tab-buttons" :loading="spaceInventoryLoader" @click="spaceInventory"
+      >INVENTAIRE DES SALLES</el-button
+    >
   </div>
 </template>
 
@@ -64,13 +65,15 @@ export default {
       },
     },
   },
+  components: {},
 
   data() {
     return {
       ctxNode: false,
       endpoints: false,
       controlEndpoints: false,
-      context:false
+      context: false,
+      spaceInventoryLoader: false,
     };
   },
 
@@ -88,55 +91,64 @@ export default {
   },
 
   async mounted() {
-    const promise = new Promise((res,rej)=>{
-      this.ctxNode=false;
-      this.endpoints=false;
-      this.controlEndpoints=false;
+    const promise = new Promise((res, rej) => {
+      this.ctxNode = false;
+      this.endpoints = false;
+      this.controlEndpoints = false;
       res();
-    })
-    promise.then(async ()=>{
+    });
+    promise.then(async () => {
       await this.update(this.Properties.view.serverId);
-    })
+    });
     // EventBus.$on("insight-breadcrumb-click", async serverId => {
     //   await this.update(serverId);
     // });
     // EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
     //   await this.update(this.ctxNode._server_id);
     // });
-    
   },
 
   methods: {
     async update(id) {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[id];
-
-
     },
-    async spaceInventory(){
-      if(this.ctxNode.getType().get() == "groupingCategory"){
-        let data = await inventoryUtils.getRoomCategoryInventory(this.ctxNode);
-        EventBus.$emit("inventory-mode", data)
-      }
-      else if(this.ctxNode.getType().get() == "geographicRoomGroupContext"){
-        let data = await inventoryUtils.getRoomContextInventory(this.ctxNode);
-        EventBus.$emit("inventory-mode", data)
-      }
-    }
+    async spaceInventory() {
+      this.spaceInventoryLoader = true;
+      const promise = new Promise(async (res, rej) => {
+        if (this.ctxNode.getType().get() == "groupingCategory") {
+          let data = await inventoryUtils.getRoomCategoryInventory(
+            this.ctxNode
+          );
+          EventBus.$emit("inventory-mode", data);
+        } else if (
+          this.ctxNode.getType().get() == "geographicRoomGroupContext"
+        ) {
+          let data = await inventoryUtils.getRoomContextInventory(this.ctxNode);
+          EventBus.$emit("inventory-mode", data);
+        }
+        res();
+      });
+      promise.then(()=>this.spaceInventoryLoader=false)
+      // if (this.ctxNode.getType().get() == "groupingCategory") {
+      //   let data = await inventoryUtils.getRoomCategoryInventory(this.ctxNode);
+      //   EventBus.$emit("inventory-mode", data);
+      // } else if (this.ctxNode.getType().get() == "geographicRoomGroupContext") {
+      //   let data = await inventoryUtils.getRoomContextInventory(this.ctxNode);
+      //   EventBus.$emit("inventory-mode", data);
+      // }
+    },
   },
 };
 </script>
 
 <style scoped>
-.control-endpoint-grid {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  max-height: 70vh;
-  overflow: auto;
-}
-
-.box-node-name{
-  text-align: center;
+.inventory-tab-buttons {
+  letter-spacing: 0.75px;
+  color: #f9f9f9;
+  opacity: 1;
+  background-color: #14202c;
+  border: 3px solid #f9f9f9;
+  border-radius: 10px;
 }
 </style>

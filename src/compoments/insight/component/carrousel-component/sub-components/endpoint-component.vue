@@ -23,225 +23,6 @@ with this file. If not, see
 -->
 
 <template>
-  <!-- <div class="div__content">
-    <div class="relative">
-      <div
-        v-if="this.endpoint"
-        class="div__rectangle"
-        :style="{
-          'background-color': getColor(
-            this.endpoint.currentValue.get(),
-            this.variableSelected.config
-          ),
-        }"
-      >
-      </div>
-
-      <el-tooltip
-        content="The endpoint is undefined, please check the link between the object and the endpoint"
-        effect="light"
-        :open-delay="300"
-      >
-        <i
-          v-if="!this.endpoint"
-          class="el-icon-warning absolute custom-icon position_left2"
-        ></i>
-      </el-tooltip>
-
-      <el-tooltip
-        content="Focus"
-        effect="light"
-        :open-delay="300"
-        placement="right"
-      >
-        <el-button
-          v-on:click="focus()"
-          class="custom-icon circled-button position_right"
-          circle
-          icon="el-icon-zoom-in"
-        ></el-button>
-      </el-tooltip>
-
-      <el-tooltip
-        content="Select"
-        effect="light"
-        :open-delay="300"
-        placement="right"
-      >
-        <el-button
-          v-on:click="select()"
-          class="custom-icon circled-button position_right2"
-          circle
-          icon="el-icon-view"
-        ></el-button>
-      </el-tooltip>
-    </div>
-
-    <div class="name" v-tooltip="name">
-      {{ name }}
-    </div>
-    <div class="value" v-tooltip="`${value} ${unit}`">
-      {{ value | filterValue }} {{ unit }}
-    </div>
-
-    <div class="relative">
-      <el-button
-        v-on:click="openChartModal()"
-        :disabled="this.variableSelected.saveTimeSeries === 0"
-        class="dashboard-btn custom-icon circled-button"
-        :class="{
-          'dashboard-btn-disabled': this.variableSelected.saveTimeSeries === 0,
-          'dashboard-btn-on': isDataMode,
-          'dashboard-btn-off': !isDataMode,
-        }"
-        circle
-        icon="el-icon-menu"
-      >
-      </el-button>
-
-      <el-button
-        v-if="displayBoolButton"
-        v-on:click="flip()"
-        class="config-btn-position custom-icon circled-button"
-        circle
-        icon="el-icon-refresh"
-      >
-      </el-button>
-
-      <el-button
-        v-if="
-          this.variableSelected.type == 'Consigne' &&
-          this.variableSelected.dataType != 'Boolean'
-        "
-        v-on:click="openConfigModal()"
-        class="config-btn-position custom-icon circled-button"
-        circle
-        icon="el-icon-setting"
-      >
-      </el-button>
-    </div>
-
-    <value-config
-      v-if="isConfigModalVisible"
-      :endpoint="this.endpoint"
-      :config="this.variableSelected.config"
-      :dataType="this.variableSelected.dataType"
-    >
-    </value-config>
-  </div> -->
-
-  <!-- **************************************************************************************** DEBUT ICI -->
-  <!-- <v-card class="stat-card ma-2 rounded-lg" outlined>
-  
-    <div class="div__content">
-      <div class="relative">
-        <div
-          v-if="this.endpoint"
-          class="div__rectangle"
-          :style="{
-            'background-color': getColor(
-              this.endpoint.currentValue.get(),
-              this.variableSelected.config
-            ),
-          }"
-        ></div>
-
-        <el-tooltip
-          content="The endpoint is undefined, please check the link between the object and the endpoint"
-          effect="light"
-          :open-delay="300"
-        >
-          <i
-            v-if="!this.endpoint"
-            class="el-icon-warning absolute custom-icon position_left2"
-          ></i>
-        </el-tooltip>
-      </div>
-      <div class="value" v-tooltip="`${value} ${unit}`">
-        {{ value | filterValue }} {{ unit }}
-      </div>
-
-      <div class="name" v-tooltip="name">
-        {{ name }}
-      </div>
-
-      <div class="button-list">
-        <el-tooltip
-          content="Focus"
-          effect="light"
-          :open-delay="300"
-          placement="right"
-        >
-          <el-button
-            v-on:click="focus()"
-            class="custom-icon circled-button position_right"
-            circle
-            icon="el-icon-zoom-in"
-          ></el-button>
-        </el-tooltip>
-        <el-tooltip
-          content="Select"
-          effect="light"
-          :open-delay="300"
-          placement="right"
-        >
-          <el-button
-            v-on:click="select()"
-            class="custom-icon circled-button position_right2"
-            circle
-            icon="el-icon-view"
-          ></el-button>
-        </el-tooltip>
-        <div class="relative">
-          <el-button
-            v-on:click="openChartModal()"
-            :disabled="this.variableSelected.saveTimeSeries === 0"
-            class="dashboard-btn custom-icon circled-button"
-            :class="{
-              'dashboard-btn-disabled':
-                this.variableSelected.saveTimeSeries === 0,
-              'dashboard-btn-on': isDataMode,
-              'dashboard-btn-off': !isDataMode,
-            }"
-            circle
-            icon="el-icon-menu"
-          >
-          </el-button>
-
-          <el-button
-            v-if="displayBoolButton"
-            v-on:click="flip()"
-            class="config-btn-position custom-icon circled-button"
-            circle
-            icon="el-icon-refresh"
-          >
-          </el-button>
-
-          <el-button
-            v-if="
-              this.variableSelected.type == 'Consigne' &&
-              this.variableSelected.dataType != 'Boolean'
-            "
-            v-on:click="openConfigModal()"
-            class="config-btn-position custom-icon circled-button"
-            circle
-            icon="el-icon-setting"
-          >
-          </el-button>
-        </div>
-      </div>
-
-      <value-config
-        v-if="isConfigModalVisible"
-        :endpoint="this.endpoint"
-        :config="this.variableSelected.config"
-        :dataType="this.variableSelected.dataType"
-      ></value-config>
-
-    </div>
-  </v-card> -->
-
-  <!-- <v-hover v-slot="{ hover }"> -->
   <div class="data-list">
     <v-list-item class="data-table-item">
       <v-list-item-content>
@@ -290,13 +71,14 @@ with this file. If not, see
             circle
           ></el-button>
         </el-tooltip>
-        
-        <el-tooltip
+
+        <!-- <el-tooltip
           content="Focus"
           effect="light"
           :open-delay="300"
           placement="right"
-        >
+        > -->
+        <el-tooltip content="Focus">
           <el-button
             v-on:click="focus()"
             class="custom-icon circled-button position_right"
@@ -317,19 +99,21 @@ with this file. If not, see
             icon="el-icon-view"
           ></el-button>
         </el-tooltip> -->
-        <el-button
-          v-on:click="openChartModal()"
-          :disabled="variableSelected.saveTimeSeries === 0"
-          class="dashboard-btn custom-icon circled-button"
-          :class="{
-            'dashboard-btn-disabled': variableSelected.saveTimeSeries === 0,
-            'dashboard-btn-on': isDataMode,
-            'dashboard-btn-off': !isDataMode,
-          }"
-          circle
-          icon="el-icon-menu"
-        >
-        </el-button>
+        <el-tooltip :content="$t('spinal-twin.insight-center.see-historic')">
+          <el-button
+            v-on:click="openChartModal()"
+            :disabled="variableSelected.saveTimeSeries === 0"
+            class="dashboard-btn custom-icon circled-button"
+            :class="{
+              'dashboard-btn-disabled': variableSelected.saveTimeSeries === 0,
+              'dashboard-btn-on': isDataMode,
+              'dashboard-btn-off': !isDataMode,
+            }"
+            circle
+            icon="el-icon-menu"
+          >
+          </el-button>
+        </el-tooltip>
 
         <!-- <el-button
             v-if="displayBoolButton"
@@ -340,26 +124,29 @@ with this file. If not, see
           >
           </el-button> -->
 
-        <el-button
-          v-if="
-            variableSelected.type == 'Consigne' &&
-            variableSelected.dataType != 'Boolean'
-          "
-          v-on:click="openConfigModal()"
-          class="config-btn-position custom-icon circled-button"
-          circle
-          icon="el-icon-setting"
-        >
-        </el-button>
-
-        <el-button
-          v-on:click="downloadTimeSeries()"
-          :disabled="variableSelected.saveTimeSeries === 0"
-          class="dashboard-btn custom-icon circled-button"
-          circle
-          icon="el-icon-download"
-        >
-        </el-button>
+        <el-tooltip :content="$t('spinal-twin.insight-center.change-value')">
+          <el-button
+            v-if="
+              variableSelected.type == 'Consigne' &&
+              variableSelected.dataType != 'Boolean'
+            "
+            v-on:click="openConfigModal()"
+            class="config-btn-position custom-icon circled-button"
+            circle
+            icon="el-icon-setting"
+          >
+          </el-button>
+        </el-tooltip>
+        <el-tooltip :content="$t('spinal-twin.insight-center.download')">
+          <el-button
+            v-on:click="downloadTimeSeries()"
+            :disabled="variableSelected.saveTimeSeries === 0"
+            class="dashboard-btn custom-icon circled-button"
+            circle
+            icon="el-icon-download"
+          >
+          </el-button>
+        </el-tooltip>
 
         <!-- </template>
         </v-fade-transition> -->
@@ -423,6 +210,7 @@ export default {
     this.updateEndpoint();
     this.updateDisplay();
     this.selectedNode = await this.getEndpoint();
+    console.log(this.selectedNode);
     // EventBus.$on('InsightCenter-display-sprites', async () => {
     // })
     EventBus.$on("sprite-clicked", (res) => {
@@ -446,8 +234,7 @@ export default {
     async openInDataRoom(id) {
       let node = SpinalGraphService.getRealNode(id);
       SpinalGraphService._addNode(node);
-      let path = await this.getPath(node, [
-      ]);
+      let path = await this.getPath(node, []);
       EventBus.$emit("switch-to-dataroom", path);
     },
     async getPath(node, path) {
@@ -531,19 +318,24 @@ export default {
 
     //useless now ? not sure
     async getEndpoint() {
+      console.log("getEndpoint()");
+      console.log(this.endpoint);
       if (this.endpoint != undefined) {
         let allControlPoints = await SpinalGraphService.getChildren(
           this.room.id,
           ["hasControlPoints"]
         );
+        console.log(allControlPoints);
         for (let controlPoint of allControlPoints) {
           let allBmsEndpoints = await SpinalGraphService.getChildren(
             controlPoint.id.get(),
             ["hasBmsEndpoint"]
           );
+          console.log(allBmsEndpoints);
           let test = allBmsEndpoints.filter((elt) => {
-            elt.name.get() == this.endpoint.name.get();
+            return elt.name.get() == this.endpoint.name.get();
           });
+          console.log(test);
           if (test.length != 0) {
             test = test[0];
             return SpinalGraphService.getInfo(test.id.get());
@@ -645,6 +437,7 @@ export default {
 
     openChartModal() {
       let data = this.selectedNode;
+      console.log(data);
       data.objectName = this.name;
       data.unit = this.unit;
       EventBus.$emit("data-mode", data);

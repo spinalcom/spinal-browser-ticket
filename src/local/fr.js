@@ -230,4 +230,8 @@ export default {
   // Dashboard and Chart
   'node-type.close-chart' : 'Retour 3D',
   'spinal-twin.open-in-dataroom' : 'Ouvrir dans la Data Room',
+  'spinal-twin.insight-center.change-value' : 'Modifier la valeur',
+  'spinal-twin.insight-center.see-historic' : "Afficher l'historique",
+  'spinal-twin.insight-center.download' : 'Télécharger les données',
+  'spinal-twin.insight-center.display-sprites' : 'Afficher sous forme de pastilles',
 };

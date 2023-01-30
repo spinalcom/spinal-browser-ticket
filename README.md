@@ -3,6 +3,11 @@
         - Add a button to expand / reduce the AppSelector component
         - Modification of the disposition of datas in the entire application
         - Add Inventory tab and component on Space center
+        - Add Tooltips in Insight center and correction of the existing ones and mapping between FR <> ENG
+        - Implementation of Inventory Panel besides the viewer component
+        - Correction of the buttons in Insight Center
+        - Clean some code
+        - Add scroll feature on ticket selected
 
 # 30.12.22 : v1.5.0
         - Add .parcel-cache on reset script in package.json

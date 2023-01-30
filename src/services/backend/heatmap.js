@@ -276,6 +276,7 @@ export default class Heatmap {
   ///////////////////////////////////////////////////////////////////////////
 
   getGradientColor(min, average, max) {
+    console.log(min, max, average);
     let colorLength = average ? 10 : 2;
     let colors = average
       ? [min.color, average.color, max.color]

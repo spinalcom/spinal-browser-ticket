@@ -26,7 +26,7 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-container v-if="selected" :style="{'max-height':'60vh'}">
+    <el-container v-if="selected" >
       <node-tickets-selected
         :selected="selected"
         :stepping="stepping"
