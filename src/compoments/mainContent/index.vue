@@ -136,7 +136,6 @@ export default {
       this.$refs.chart.toogleSelect(data);
     });
     EventBus.$on("inventory-mode", (data) => {
-      console.log("inventory-mode")
       this.inventoryMode = true;
       this.$refs.inventory.toogleSelect(data);
     })

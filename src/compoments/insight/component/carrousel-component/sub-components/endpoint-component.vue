@@ -210,7 +210,6 @@ export default {
     this.updateEndpoint();
     this.updateDisplay();
     this.selectedNode = await this.getEndpoint();
-    console.log(this.selectedNode);
     // EventBus.$on('InsightCenter-display-sprites', async () => {
     // })
     EventBus.$on("sprite-clicked", (res) => {
@@ -318,24 +317,19 @@ export default {
 
     //useless now ? not sure
     async getEndpoint() {
-      console.log("getEndpoint()");
-      console.log(this.endpoint);
       if (this.endpoint != undefined) {
         let allControlPoints = await SpinalGraphService.getChildren(
           this.room.id,
           ["hasControlPoints"]
         );
-        console.log(allControlPoints);
         for (let controlPoint of allControlPoints) {
           let allBmsEndpoints = await SpinalGraphService.getChildren(
             controlPoint.id.get(),
             ["hasBmsEndpoint"]
           );
-          console.log(allBmsEndpoints);
           let test = allBmsEndpoints.filter((elt) => {
             return elt.name.get() == this.endpoint.name.get();
           });
-          console.log(test);
           if (test.length != 0) {
             test = test[0];
             return SpinalGraphService.getInfo(test.id.get());
@@ -437,7 +431,6 @@ export default {
 
     openChartModal() {
       let data = this.selectedNode;
-      console.log(data);
       data.objectName = this.name;
       data.unit = this.unit;
       EventBus.$emit("data-mode", data);

@@ -82,12 +82,9 @@ export async function getRoomContextInventory(node: SpinalNode) {
         returnObj.headers.push(category.getName().get());
         let groups = await category.getChildren(constants.GROUP_RELATION_NAME);
         for (let group of groups) {
-            console.log(group)
             let rooms = await group.getChildren(constants.SPACE_ROOM_RELATION);
-            console.log(rooms);
             returnObj.resume[group.getName().get()] = [0, 0];
             for (let room of rooms) {
-                console.log(room.getName().get())
                 let floors = await room.getParents("hasGeographicRoom");
                 const floor = floors.find((flr) => flr.getType().get() == "geographicFloor");
                 let index = returnObj.array.findIndex(elt => elt.name == room.getName().get());
@@ -106,7 +103,6 @@ export async function getRoomContextInventory(node: SpinalNode) {
                     }
                 }
                 else {
-                    console.log(index);
                     returnObj.array[index][category.getName().get()] = group.getName().get();
                     returnObj.resume[group.getName().get()][0] += 1;
                     if(attr != -1){

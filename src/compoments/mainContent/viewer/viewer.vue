@@ -53,7 +53,6 @@ export default {
     };
   },
   mounted() {
-    console.log(ForgeViewer)
     return this.createViewer();
   },
   methods: {

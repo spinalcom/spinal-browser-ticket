@@ -133,19 +133,16 @@ export default {
 
   methods: {
     handleClick(tab, event) {
-      console.log(tab);
       this.activetab = tab._props.name;
       // let eventName = "click-on-"+tab._props.name;
 
       EventBus.$emit("click-on_" + tab._props.name);
     },
     chooseTab(tab) {
-      console.log(tab);
       this.activetab = tab.name;
       EventBus.$emit("click-on_" + tab.name);
     },
     chooseTab2(tabName) {
-      console.log(tabName);
       this.activetab = tabName;
       EventBus.$emit("click-on_" + tabName);
     },

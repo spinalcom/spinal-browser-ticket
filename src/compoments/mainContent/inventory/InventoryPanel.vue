@@ -144,11 +144,8 @@ export default {
       this.tableData = data;
       // this.barLabels = Object.keys(data.resume);
       // this.barChartData = this.getBarChartData(data);
-      // console.log(this.barLabels);
-      // console.log(this.barChartData);
       this.barLabels = [""];
       this.barChartData = this.getBarChartData(data);
-      console.log(data);
     },
     cellClassChecker(e) {
       if (e.row[e.column.property] == undefined)
@@ -159,9 +156,6 @@ export default {
       let colors = tinygradient(["#14202C", "#13A9E0", "#CADEE2"]).rgb(
         labels.length
       );
-      console.log(colors);
-      console.log(`#${colors[0].toHex()}`);
-      console.log(`#${colors[1].toHex()}`);
       let returnTab = [];
       for (let label of labels) {
         let index = labels.findIndex((l) => l == label);

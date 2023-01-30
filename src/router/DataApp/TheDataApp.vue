@@ -231,7 +231,6 @@ export default {
     this.relations = GEO_RELATIONS;
     this.relations.push("hasReferenceObject.ROOM");
     this.tabs[0].props.relation = this.relations;
-    console.log(this.tabs);
 
     EventBus.$on("dataroom-instructions-sent", async (data) => {
       const viewerManager = ViewManager.getInstance(this.viewKey);
@@ -246,7 +245,6 @@ export default {
         }
       });
     });
-    console.log(this.tabs);
   },
 
   methods: {

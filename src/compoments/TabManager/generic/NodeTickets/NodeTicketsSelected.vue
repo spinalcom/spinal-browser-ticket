@@ -398,7 +398,6 @@ export default {
         this.ticket = this.selected;
         this.doStepping = this.stepping;
       }
-      console.log(this.ticket);
 
 
       // this.steps = await spinalServiceTicket.getStepsFromProcess(this.ticket.ticket.processId, this.ticket.ticket.contextId);

@@ -100,12 +100,10 @@ export default {
 
   async mounted() {
     this.currentRoute = this.$route.name;
-    console.log(this.$route);
   },
   watch: {
     $route() {
       this.currentRoute = this.$route.name;
-      console.log(this.$route);
     },
   },
 
