@@ -290,4 +290,6 @@ export default {
   'spinal-twin.insight-center.see-historic' : 'Display Historic',
   'spinal-twin.insight-center.download' : 'Download Datas',
   'spinal-twin.insight-center.display-sprites' : 'Display as sprites',
+  'spinal-twin.Inventory' : 'Inventory',
+  'spinal-twin.Inventory-tab.space-inventory' : 'SPACE INVENTORY',
 };

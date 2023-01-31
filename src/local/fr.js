@@ -234,4 +234,6 @@ export default {
   'spinal-twin.insight-center.see-historic' : "Afficher l'historique",
   'spinal-twin.insight-center.download' : 'Télécharger les données',
   'spinal-twin.insight-center.display-sprites' : 'Afficher sous forme de pastilles',
+  'spinal-twin.Inventory' : 'Inventaire',
+  'spinal-twin.Inventory-tab.space-inventory' : 'INVENTAIRE DES SALLES',
 };

@@ -38,7 +38,7 @@ with this file. If not, see
   </el-container> -->
   <div>
     <el-button class="inventory-tab-buttons" :loading="spaceInventoryLoader" @click="spaceInventory"
-      >INVENTAIRE DES SALLES</el-button
+      >{{$t('spinal-twin.Inventory-tab.space-inventory')}}</el-button
     >
   </div>
 </template>
