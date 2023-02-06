@@ -52,7 +52,7 @@ import { vuetifyInit, vuetify } from './plugins/vuetify';
 import SpinalComponents from 'spinal-components'
 // import 'spinal-components/dist/spinal-components.css'
 
-Vue.use(SpinalComponents, {})
+// Vue.use(SpinalComponents, {})
 
 // const vuetify = new Vuetify({
 //   theme: {
