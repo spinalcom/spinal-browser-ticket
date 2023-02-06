@@ -68,12 +68,12 @@ with this file. If not, see
             v-bind:openChartModal="openDataMode"
           >
           </endpoint-chart-viewer-panel>
-          <!-- <InventoryPanel v-show="inventoryMode"
+          <InventoryPanel v-show="inventoryMode"
             ref="inventory"
             v-bind:isInventoryModalVisible="inventoryMode"
             v-bind:openInventoryModal="openInventoryMode"
           >
-          </InventoryPanel> -->
+          </InventoryPanel>
           <DocumentViewerPanel v-show="documentViewerMode"
             ref="documentViewer"
             v-bind:isDocumentViewerModalVisible="documentViewerMode"
