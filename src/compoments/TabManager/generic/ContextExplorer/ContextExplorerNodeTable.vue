@@ -40,9 +40,12 @@ with this file. If not, see
       sum-text="Total"
     > -->
     <el-table
+      ref="table"
       v-loading="loading"
       :data="data"
-      :header-cell-style="{
+      highlight-current-row
+      row-class-name ="context-node-explorer-table-row"
+      :header-row-style="{
         'background-color': '#ffffff',
         'text-align': 'left',
         'letter-spacing': '1px',
@@ -62,9 +65,8 @@ with this file. If not, see
 
         }"
       @row-click="selectInView"
-      @cell-mouse-enter="hoverSelectInView"
-      @row-dblclick="SeeEvent"
-      
+      @current-change="handleCurrentChange"
+      @row-dblclick="zoom"
       height="100%"
       max-height="70vh"
     >
@@ -154,6 +156,7 @@ const CountNames = [
   "AlarmProcessCount",
 ];
 
+
 export default {
   name: "ContextExplorerNodeTable",
   props: {
@@ -182,7 +185,7 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     const promise = new Promise((res, rej)=>{
       this.update();
       res()
@@ -193,46 +196,56 @@ export default {
       }
     });
     // this.update();
-    if(this.viewKey == "DataApp"){
-      /*EventBus.$on("dataroom-instructions-sent", async data => {
-        if(data != undefined){
-          let itemIndex = this.items.findIndex(it => it.serverId==data.serverId);
-          if(itemIndex !=-1){
-            await this.onSelectItem(this.items[itemIndex]);
-            
+    if(this.viewKey == "DataApp" || this.viewKey == "SpaceApp"){
+      
+      EventBus.$on('Autodesk.Viewing.SELECTION_CHANGED_EVENT', async (res) => {
+        let tableComponent = this.$refs.table;
+        if(res.dbIdArray[0] != undefined){
+          let bimObjectNodeModel = await window.spinal.BimObjectService.getBIMObject(res.dbIdArray[0], res.model);
+          let parents = await SpinalGraphService.getParents(bimObjectNodeModel.id.get(), "hasReferenceObject.ROOM");
+          if(parents.length !=0 ){
+            let parentNode = SpinalGraphService.getRealNode(parents[0].id.get());
+            let index = tableComponent.data.findIndex(el => el.serverId == parentNode._server_id);
+            if(index != -1){
+              tableComponent.setCurrentRow(this.data[index]);
+              let rowsElement = tableComponent.$el.getElementsByClassName("context-node-explorer-table-row");
+              rowsElement[index].scrollIntoView({block: "center" });
+            }
           }
         }
-        
-        
-        
-        // for(let d of data){
-        //   let itemIndex = this.items.findIndex(it => it.serverId==d.serverId);
-        //   if(itemIndex !=-1){
-        //     await this.onSelectItem(this.items[itemIndex]);
-        //   }
-        // }  
-
-
-      });*/
+      })
+  
+  
+    
+  
     }
     
     
   },
   beforeDestroy(){
     EventBus.$off("dataroom-instructions-sent");
+    EventBus.$off('Autodesk.Viewing.SELECTION_CHANGED_EVENT');
   },
   methods: {
     selectInView(item) {
       this.$emit("select", item);
     },
-    hoverSelectInView(item){
+    zoom(row, column, event){
+      EventBus.$emit("viewer-zoom", row, this.relation);
+      console.log(this.$refs.table)
+      console.log(row);
+      console.log(column);
+      console.log(event);
+
+    },
+    /*hoverSelectInView(item){
       let node = FileSystem._objects[item.serverId];
       if(node != undefined){
         if(node.getType().get() == "geographicRoom"){
           this.$emit("select", item);
         }
       }
-    },
+    },*/
 
     SeeEvent(item) {
       this.$emit("isolate", item);
@@ -422,19 +435,21 @@ export default {
   max-height: 80%;
 }
 
-/* .el-table__header-cell{
-    background-color: #f0f2f5;
-    text-align: left !important;
-    font: normal normal normal 10px/12px Charlevoix Pro;
-    letter-spacing: 1px !important;
-    color: #214353 !important;
-    opacity: 1 !important;
-    height: fit-content !important;
+/* .current-row.el-table__cell{
+  border: 1px solid #00A2FF;
+  background-color: #BCE1FF;
+
 } */
 
 </style>
 
 <style>
+.el-table__body tr.current-row > td.el-table__cell{
+  background-color: #BCE1FF !important;
+}
+.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell{
+  background-color: inherit;
+}
 /* .el-table__body-wrapper.is-scrolling-none{
   border: 4px solid black;
 } */

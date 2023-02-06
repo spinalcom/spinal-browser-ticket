@@ -227,6 +227,28 @@ export default {
         }
       }
     });
+
+    EventBus.$on('Autodesk.Viewing.SELECTION_CHANGED_EVENT', async (res) => {
+      if (res != undefined && this.endpoint != undefined) {
+        if(res.dbIdArray[0] != undefined){
+          for(let ref of this.room.references){
+            if(ref.ids.includes(res.dbIdArray[0]) && ref.model == res.model){
+              let element = this.$el.getElementsByClassName("data-table-item");
+              element[0].style.borderColor = "#00A2FF";
+              element[0].style.backgroundColor = "#BCE1FF";
+              element[0].scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+            else{
+              let element = this.$el.getElementsByClassName("data-table-item");
+              element[0].style.borderColor = "";
+              element[0].style.backgroundColor = "";
+            }
+          }
+
+        }
+        
+      }
+    });
   },
 
   methods: {
@@ -506,8 +528,8 @@ export default {
   },
 
   beforeDestroy() {
-    if (this.endpoint && this.bindProcess)
-      this.endpoint.currentValue.unbind(this.bindProcess);
+    if (this.endpoint && this.bindProcess) this.endpoint.currentValue.unbind(this.bindProcess);
+    // EventBus.$off('Autodesk.Viewing.SELECTION_CHANGED_EVENT');
   },
 };
 </script>

@@ -31,7 +31,7 @@ with this file. If not, see
       <!-- <div class="appSelector">coucou</div> -->
       <!-- <spinalNavbar class="main-navbar"></spinalNavbar> -->
       <div
-        v-show="!absviewer && !dataMode && !inventoryMode"
+        v-show="!absviewer && !dataMode && !inventoryMode && !documentViewerMode"
         ref="viewerContainer"
         class="spinal-viewer-container"
         :class="{ 'abs-viewer': absviewer }"
@@ -54,12 +54,13 @@ with this file. If not, see
               <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
               <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button>
               <el-button icon="el-icon-collection" @click="onInventoryClick"></el-button>
+              <el-button icon="el-icon-files" @click="onDocumentViewerClick"></el-button>
             </el-button-group>
           </div>
         </div>
       </div>
 
-      <div v-show="dataMode || inventoryMode" class="spinal-viewer-container">
+      <div v-show="dataMode || inventoryMode || documentViewerMode" class="spinal-viewer-container">
         <div class="viewer-content">
           <endpoint-chart-viewer-panel v-show="dataMode"
             ref="chart"
@@ -67,12 +68,18 @@ with this file. If not, see
             v-bind:openChartModal="openDataMode"
           >
           </endpoint-chart-viewer-panel>
-          <InventoryPanel v-show="inventoryMode"
+          <!-- <InventoryPanel v-show="inventoryMode"
             ref="inventory"
             v-bind:isInventoryModalVisible="inventoryMode"
             v-bind:openInventoryModal="openInventoryMode"
           >
-          </InventoryPanel>
+          </InventoryPanel> -->
+          <DocumentViewerPanel v-show="documentViewerMode"
+            ref="documentViewer"
+            v-bind:isDocumentViewerModalVisible="documentViewerMode"
+            v-bind:openDocumentViewerModal="openDocumentViewerMode"
+          >
+          </DocumentViewerPanel>
         </div>
       </div>
     </div>
@@ -109,6 +116,7 @@ import { EventBus } from "../../services/event";
 import endpointChartViewerPanel from "./chart/endpointChartViewerPanel.vue";
 import appSelector from "../drawer/appSelector/appSelector.vue"
 import InventoryPanel from "./inventory/InventoryPanel.vue"
+import DocumentViewerPanel from "./documentViewer/DocumentViewerPanel.vue"
 
 export default {
   name: "MainContent",
@@ -117,7 +125,8 @@ export default {
     spinalNavbar,
     endpointChartViewerPanel,
     appSelector,
-    InventoryPanel
+    InventoryPanel,
+    DocumentViewerPanel
   },
   data() {
     return {
@@ -126,7 +135,8 @@ export default {
       hideViewer: false,
       dataMode: false,
       expanded:false,
-      inventoryMode: false
+      inventoryMode: false,
+      documentViewerMode: false
     };
   },
   mounted() {
@@ -138,6 +148,10 @@ export default {
     EventBus.$on("inventory-mode", (data) => {
       this.inventoryMode = true;
       this.$refs.inventory.toogleSelect(data);
+    })
+    EventBus.$on("document-viewer-mode", (data) => {
+      this.documentViewerMode = true;
+      this.$refs.documentViewer.toogleSelect(data);
     })
   },
   methods: {
@@ -170,11 +184,17 @@ export default {
     onInventoryClick(event){
       this.inventoryMode = !this.inventoryMode;
     },
+    onDocumentViewerClick(event){
+      this.documentViewerMode = !this.documentViewerMode;
+    },
     openDataMode() {
       this.dataMode = !this.dataMode;
     },
     openInventoryMode(){
       this.inventoryMode = !this.inventoryMode
+    },
+    openDocumentViewerMode(){
+      this.documentViewerMode = !this.documentViewerMode
     },
     expandData(){
       const collection1 = document.getElementsByClassName("spinal-main-container-left");

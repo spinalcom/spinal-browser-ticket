@@ -23,6 +23,7 @@
  */
 
 import q from 'q';
+import {EventBus} from "../event";
 type RotateToFace =
   | 'top'
   | 'front'
@@ -71,6 +72,10 @@ export class ViewerUtils {
       this.cube = cube;
       this.initialized.resolve();
     });
+    viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, (e)=> {
+      EventBus.$emit('Autodesk.Viewing.SELECTION_CHANGED_EVENT', e);
+      // console.log(e);
+    })
     viewer.toolbar.container.style.display = "none";
     // for(let extName in viewer.loadedExtensions){
     //   if (extName != "Autodesk.ViewCubeUi") viewer.loadedExtensions[extName].unload();

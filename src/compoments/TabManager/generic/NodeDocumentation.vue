@@ -57,19 +57,19 @@ with this file. If not, see
           'background-color': '#ffffff',
           'text-align': 'left',
           'letter-spacing': '1px',
-          'color': '#214353',
-          'opacity': '1',
-          'height': 'fit-content',
+          color: '#214353',
+          opacity: '1',
+          height: 'fit-content',
         }"
         :row-style="{
-          'background': '#ffffff 0% 0% no-repeat padding-box',
-          'border': '1px solid #F8F8F8',
+          background: '#ffffff 0% 0% no-repeat padding-box',
+          border: '1px solid #F8F8F8',
           'border-radius': '5px',
-          'opacity': '1',
+          opacity: '1',
           'text-align': 'left',
           'letter-spacing': '0.9px',
-          'color': '#214353',
-          'opacity': '1',
+          color: '#214353',
+          opacity: '1',
         }"
         border
         style="overflow: auto; height: 100%"
@@ -81,6 +81,13 @@ with this file. If not, see
         </el-table-column>
         <el-table-column label="Actions" width="120">
           <div slot-scope="scope">
+            <el-tooltip :content="$t('spinal-twin.explore-document')">
+              <el-button
+                @click.native="exploreDocument(scope.row._server_id)"
+                icon="el-icon-search"
+                circle
+              ></el-button>
+            </el-tooltip>
             <el-tooltip :content="$t('spinal-twin.DocumentDownload')">
               <el-button
                 @click.native="downloadDocument(scope.row._server_id)"
@@ -111,17 +118,32 @@ with this file. If not, see
         </el-table-column>
       </el-table>
     </div>
+    <iframe
+            :src="srcP"
+            width="100%"
+            height="100"
+            frameborder="0" >
+           </iframe>
+    <!-- <pdf :src="srcP" :page="1" /> -->
+    <!-- <PDFViewer
+      :source="srcP"
+      style="height: 600px; width: 600px"
+    /> -->
   </div>
 </template>
 
 <script>
 import { FileSystem } from "spinal-core-connectorjs_type";
 import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { EventBus } from "../../../services/event"
+import { EventBus } from "../../../services/event";
+// import pdf from 'pdfvuer'
+import PDFViewer from 'pdf-viewer-vue/dist/vue2-pdf-viewer'
+
+const axios = require("axios");
 
 export default {
   name: "NodeDocumentation",
-  components: {},
+  components: { PDFViewer },
   props: {
     Properties: {
       required: true,
@@ -134,6 +156,7 @@ export default {
       ctxNode: false,
       documents: [],
       directory: false,
+      srcP: "",
     };
   },
 
@@ -152,7 +175,9 @@ export default {
 
   async mounted() {
     this.update(this.Properties.view.serverId);
-    EventBus.$on("click-on_spinal-twin.Documentation", () => this.update(this.Properties.view.serverId));
+    EventBus.$on("click-on_spinal-twin.Documentation", () =>
+      this.update(this.Properties.view.serverId)
+    );
   },
 
   methods: {
@@ -213,6 +238,26 @@ export default {
         },
         false
       );
+    },
+    exploreDocument(id) {
+      const file = this.docAt(id);
+      file._ptr.load((path) => {
+        // var element = document.createElement("a");
+        // element.setAttribute("href", "/sceen/_?u=" + path._server_id);
+        // element.setAttribute("download", file.name);
+        // element.click();
+        this.srcP = `/sceen/_?u=${path._server_id}`;
+        let srcP = `/sceen/_?u=${path._server_id}`;
+        
+        EventBus.$emit("document-viewer-mode", srcP);
+
+        axios
+          .get(`/sceen/_?u=${path._server_id}`, { responseEncoding: "utf8" })
+          .then((data) => {
+          });
+      });
+
+      
     },
 
     async delDocument(id) {

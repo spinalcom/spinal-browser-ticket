@@ -35,6 +35,7 @@
     "axios": "^0.24.0",
     "babel-polyfill": "^6.26.0",
     "bootstrap-vue": "^2.21.2",
+    "chart.js": "^3.9.1",
     "element-ui": "^2.15.6",
     "eslint": "^8.17.0",
     "eslint-plugin-vue": "^9.1.1",
@@ -44,12 +45,14 @@
     "jquery": "^3.6.0",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
+    "material-design-icons-iconfont": "^6.7.0",
     "parcel": "^2.3.2",
     "parcel-config-vue2": "^0.1.3",
     "parcel-transformer-vue2": "^0.1.7",
     "postcss": "^8.4.7",
     "process": "^0.11.10",
     "sass": "^1.42.1",
+    "spinal-components": "git+https://github.com/spinalcom/spinal-components.git",
     "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git",
     "spinal-env-viewer-context-menu-service": "git+https://github.com/spinalcom/spinal-env-viewer-context-menu-service.git",
     "spinal-env-viewer-panel-manager-service": "git+https://github.com/spinalcom/spinal-env-viewer-panel-manager-service.git",
@@ -66,12 +69,14 @@
     "spinal-forge-viewer": "git+https://github.com/spinalcom/spinal-forge-viewer.git",
     "spinal-service-ticket": "git+https://github.com/spinalcom/spinal-service-ticket.git",
     "tinygradient": "^1.1.5",
+    "toastify-js": "^1.9.3",
     "typescript": "^4.5.4",
     "v-tooltip": "^2.1.3",
     "velocity-animate": "^1.5.2",
     "vue": "^2.6.14",
     "vue-apexcharts": "^1.6.2",
     "vue-cal": "^3.10.1",
+    "vue-chartjs": "^4.1.1",
     "vue-color": "^2.8.1",
     "vue-ctk-date-time-picker": "^3.0.0-alpha.0",
     "vue-hot-reload-api": "^2.3.4",
@@ -80,14 +85,11 @@
     "vue-ripple-directive": "^2.0.1",
     "vue-router": "^3.5.3",
     "vue-template-compiler": "^2.6.14",
-    "vueperslides": "^2.15.2",
-    "spinal-components": "git+https://github.com/spinalcom/spinal-components.git",
-    "material-design-icons-iconfont": "^6.7.0",
-    "toastify-js": "^1.9.3",
-    "chart.js": "^3.9.1",
-    "vue-chartjs": "^4.1.1"
+    "vueperslides": "^2.15.2"
   },
   "dependencies": {
-    "@types/three": "^0.146.0"
+    "@types/three": "^0.146.0",
+    "pdf-viewer-vue": "^0.2.7",
+    "pdfvuer": "^2.0.1"
   }
 }
