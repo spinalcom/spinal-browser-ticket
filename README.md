@@ -1,5 +1,5 @@
 # 31.01.23 : v1.6.0
-        - Remove toolbar from Autodesk Forge Viewer component
+        - Remove toolbar from Autodesk Forge Viewer component // MASQUER DE LA TOOLBAR FORGE
         - Add a button to expand / reduce the AppSelector component
         - Modification of the disposition of datas in the entire application
         - Add Inventory tab and component on Space center

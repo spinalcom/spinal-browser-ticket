@@ -52,7 +52,9 @@ EventBus.$on('sidebar-homeSelect', async (item) => {
 
 async function sidebarHomeSelect(item) {
   viewerUtils.clearSelection();
-  const face = 'top,front';
+  // const face = 'top,front';
+  const face = 'top';
+
   if (!item) {
     // const face = 'front,top,right';
     viewerUtils.showAll();

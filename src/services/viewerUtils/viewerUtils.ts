@@ -76,10 +76,7 @@ export class ViewerUtils {
       EventBus.$emit('Autodesk.Viewing.SELECTION_CHANGED_EVENT', e);
       // console.log(e);
     })
-    viewer.toolbar.container.style.display = "none";
-    // for(let extName in viewer.loadedExtensions){
-    //   if (extName != "Autodesk.ViewCubeUi") viewer.loadedExtensions[extName].unload();
-    // }
+    // viewer.toolbar.container.style.display = "none"; // MASQUER DE LA TOOLBAR FORGE
   }
 
   waitLoadModels(viewer): Promise<void> {

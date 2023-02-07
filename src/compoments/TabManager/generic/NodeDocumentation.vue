@@ -118,12 +118,12 @@ with this file. If not, see
         </el-table-column>
       </el-table>
     </div>
-    <iframe
+    <!-- <iframe
             :src="srcP"
             width="100%"
             height="100"
             frameborder="0" >
-           </iframe>
+           </iframe> -->
     <!-- <pdf :src="srcP" :page="1" /> -->
     <!-- <PDFViewer
       :source="srcP"
@@ -204,6 +204,43 @@ export default {
       }
     },
 
+    // async addDocument() {
+    //   const maxSize = 25000000;
+    //   const input = document.createElement("input");
+
+    //   if (!this.directory) {
+    //     this.directory = await FileExplorer.createDirectory(this.ctxNode);
+    //   }
+    //   console.log(this.directory)
+    //   input.type = "file";
+    //   input.multiple = true;
+    //   input.click();
+    //   input.addEventListener(
+    //     "change",
+    //     (event) => {
+    //       console.log(event)
+    //       const files = event.target.files;
+    //       let filelist = [];
+    //       for (const file of files) {
+    //         filelist.push(file);
+    //       }
+    //       const sizes = filelist.map((el) => el.size);
+    //       const filesSize = sizes.reduce((a, b) => a + b);
+    //       if (filesSize > maxSize) {
+    //         alert(
+    //           this.$t("spinal-twin.ErrorFileTooLarge") +
+    //             maxSize / 1000000 +
+    //             " MB"
+    //         );
+    //         return;
+    //       }
+    //       FileExplorer.addFileUpload(this.directory, filelist);
+    //       this.$emit("reload");
+    //       this.update(this.Properties.view.serverId);
+    //     },
+    //     false
+    //   );
+    // },
     async addDocument() {
       const maxSize = 25000000;
       const input = document.createElement("input");
@@ -211,15 +248,20 @@ export default {
       if (!this.directory) {
         this.directory = await FileExplorer.createDirectory(this.ctxNode);
       }
+      console.log(this.directory)
       input.type = "file";
       input.multiple = true;
       input.click();
       input.addEventListener(
         "change",
         (event) => {
-          const files = event.target.files;
-          let filelist = [];
+          console.log(input.files)
+          console.log(event)
+          // const files = event.target.files;
+          const files = input.files
+          let filelist = new Array();
           for (const file of files) {
+            console.log(file.buffer)
             filelist.push(file);
           }
           const sizes = filelist.map((el) => el.size);
@@ -232,7 +274,16 @@ export default {
             );
             return;
           }
-          FileExplorer.addFileUpload(this.directory, filelist);
+          console.log(filelist)
+
+        //   filelist.forEach((f) => {
+        //     console.log("^^^^^^^")
+        //     console.log(f);
+        //     FileExplorer.addFileUpload(this.directory, f)
+        // })
+
+          FileExplorer.addFileUpload(this.directory, input.files);
+          // FileExplorer.uploadFiles(this.ctxNode, input.files);
           this.$emit("reload");
           this.update(this.Properties.view.serverId);
         },

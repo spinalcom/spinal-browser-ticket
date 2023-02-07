@@ -59,10 +59,10 @@ export default {
     handleMinized(toShowUI) {
       if (this.viewer) {
         if (toShowUI === false) {
-          // if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none');
+          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none'); //// MASQUER DE LA TOOLBAR FORGE
           viewerUtils.setCubeVisible(false);
         } else {
-          // if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none');
+          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none'); // MASQUER DE LA TOOLBAR FORGE
           viewerUtils.setCubeVisible(true);
         }
         setTimeout(this.viewer.resize.bind(this.viewer), 400);
