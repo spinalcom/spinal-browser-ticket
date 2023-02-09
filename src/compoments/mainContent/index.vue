@@ -23,13 +23,13 @@ with this file. If not, see
 -->
 
 <template>
-  
+  <div class="spinal-body-main-container">
+  <spinalNavbar class="main-navbar-mobile-device" v-if="matchMedia()=='mobile'" v-bind:switch3D="mobileSwitch"></spinalNavbar>
+  <appSelector class="appSelector"></appSelector>
   <div class="spinal-main-container" :class="{ 'have-abs-viewer': absviewer }">
     
     <div class="spinal-main-container-left">
-      <appSelector class="appSelector"></appSelector>
-      <!-- <div class="appSelector">coucou</div> -->
-      <!-- <spinalNavbar class="main-navbar"></spinalNavbar> -->
+      <!-- <appSelector class="appSelector"></appSelector> -->
       <div
         v-show="!absviewer && !dataMode && !inventoryMode && !documentViewerMode"
         ref="viewerContainer"
@@ -52,7 +52,7 @@ with this file. If not, see
                 @click="onPopClick"
               ></el-button>
               <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
-              <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button>
+              <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()" v-if="matchMedia()=='desktop'"></el-button>
               <el-button icon="el-icon-collection" @click="onInventoryClick"></el-button>
               <el-button icon="el-icon-files" @click="onDocumentViewerClick"></el-button>
             </el-button-group>
@@ -85,7 +85,7 @@ with this file. If not, see
     </div>
     <!-- <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button> -->
     <div class="spinal-other-container">
-      <spinalNavbar class="main-navbar"></spinalNavbar>
+      <spinalNavbar class="main-navbar-desktop-device" v-if="matchMedia()=='desktop'"></spinalNavbar>
       <router-view></router-view>
     </div>
     <transition name="el-fade-in-linear">
@@ -105,6 +105,7 @@ with this file. If not, see
         </div>
       </div>
     </transition>
+  </div>
   </div>
 </template>
 
@@ -136,10 +137,19 @@ export default {
       dataMode: false,
       expanded:false,
       inventoryMode: false,
-      documentViewerMode: false
+      documentViewerMode: false,
+      showViewerMobile: true,
+      // media: 'desktop',          // 'mobile' || 'desktop'
     };
   },
   mounted() {
+    if(this.matchMedia() == 'mobile'){
+      const collection1 = document.getElementsByClassName("spinal-main-container-left");
+      console.log(collection1)
+      // const collection2 = document.getElementsByClassName("spinal-other-container");
+      // collection1[0].style.display = "none";
+
+    }
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
     EventBus.$on("data-mode", (data) => {
       this.dataMode = true;
@@ -153,8 +163,32 @@ export default {
       this.documentViewerMode = true;
       this.$refs.documentViewer.toogleSelect(data);
     })
+    // spinal-main-container-left
+     
   },
   methods: {
+    mobileSwitch(){
+      const collection1 = document.getElementsByClassName("spinal-main-container-left");
+      const collection2 = document.getElementsByClassName("spinal-other-container");
+      if(this.showViewerMobile == true){
+        collection2[0].style.display = "none"
+        collection1[0].style.display = "flex"
+        // collection2[0].style.width = "0%"
+        // collection1[0].style.width = "100%"
+        this.showViewerMobile = false;
+      }
+      else{
+        collection1[0].style.display = "none";
+        collection2[0].style.display= "flex";
+        // collection1[0].style.width = "0%"
+        // collection2[0].style.width = "100%"
+        this.showViewerMobile = true;
+      }
+    },
+    matchMedia(){
+      if(window.matchMedia("(max-width: 992px)").matches == true) return 'mobile';
+      else return 'desktop';
+    },
     onPopClick(event) {
       event.stopPropagation();
       this.absviewer = !this.absviewer;
@@ -202,20 +236,25 @@ export default {
       if(this.expanded == false){
         for (let i1 = 0; i1 < collection1.length; i1++) {
           collection1[i1].style.width = "50%";
+          // collection1[i1].style.width = "0%";
         }
         for (let i2 = 0; i2 < collection2.length; i2++) {
           collection2[i2].style.width = "50%";
+          // collection2[i2].style.width = "100%";
         }
         this.expanded=true;
       }
       else{
         for (let i1 = 0; i1 < collection1.length; i1++) {
           collection1[i1].style.width = "67%";
+          // collection1[i1].style.width = "100%";
         }
         for (let i2 = 0; i2 < collection2.length; i2++) {
           collection2[i2].style.width = "33%";
+          // collection2[i2].style.width = "0%";
         }
-        this.expanded=false;
+        // this.expanded=false;
+        this.expanded = false;
       }
 
       
@@ -232,7 +271,13 @@ export default {
 </script>
 
 <style>
-
+.spinal-body-main-container{
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  width: 100vw;
+  overflow: hidden;
+}
 .appSelector{
   position: absolute;
   /* top:5px; */
@@ -254,7 +299,7 @@ export default {
 .spinal-main-container.have-abs-viewer .spinal-other-container {
   width: 100%;
   flex-grow: 1;
-  max-height: 100vh;
+  /* max-height: 100vh; */
   display: flex;
   flex-direction: column;
 }
@@ -306,8 +351,12 @@ export default {
     width: 100%;
   }
   .spinal-other-container {
-    height: 50%;
-    width: 100%;
+    /* height: 50%; */
+    height: calc(100vh - 60px) !important;
+    width: 100% !important;
+    position: absolute;
+    background-color: #F7F7F7;
+    z-index:1;
   }
   .spinal-main-container.have-abs-viewer .spinal-other-container {
     height: unset;
@@ -317,10 +366,14 @@ export default {
     flex-direction: column;
   }
   .spinal-main-container-left {
-    height: 50%;
-    width: 100%;
+    /* height: 50%; */
+    position: absolute;
+    z-index:0;
+    width: 100% !important;
+    
   }
 }
+
 .content-viewer-view {
   flex-grow: 1;
   height: calc(100% - 68px);

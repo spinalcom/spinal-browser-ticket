@@ -50,6 +50,21 @@ with this file. If not, see
           @select="onRoomChange"
           @onMouseOver="onMouseOver"
         ></navItem>
+        <!-- <el-button
+          class="button-icon-left-focus"
+          type="default"
+          icon="mdi:rotate-3d"
+          @click="focusItem(building)"
+        ></el-button> -->
+        <el-button v-if="switch3D !=undefined"
+          class="button-icon-left-focus"
+          type="default"
+          icon="el-icon-map-location"
+          @click="switch3D"
+        ></el-button>
+        <!-- <md-button class="md-icon-button">
+          <md-icon>3d_rotation</md-icon>
+        </md-button> -->
       </div>
     </el-collapse-transition>
   </div>
@@ -65,6 +80,7 @@ import { ViewManager } from '../../services/ViewManager/ViewManager';
 export default {
   name: 'SpinalNavbar',
   components: { navItem },
+  props: ["switch3D"],
   data() {
     return {
       levels: [],
