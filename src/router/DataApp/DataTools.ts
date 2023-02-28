@@ -27,10 +27,26 @@ import { FileSystem } from 'spinal-core-connectorjs_type';
 import { ROOM_TYPE } from '../../constants';
 import type { SpinalAttribute } from 'spinal-models-documentation';
 import type { AppItem } from '../../services/backend/AppItem';
+import AttributeService from 'spinal-env-viewer-plugin-documentation-service';
+
 
 async function getSurfaceFromNode(node: AppItem): Promise<string> {
-  const surface = await findSurface(node);
-  return surface.toFixed(2);
+  // const surface = await findSurface(node);
+  // return surface.toFixed(2);
+
+
+  let realNode = <SpinalNode<any>>FileSystem._objects[node.serverId];
+  if(realNode == undefined){
+    return "N.C";
+  }
+  else{
+    let surface = await AttributeService.findOneAttributeInCategory(realNode, "Spatial", "area");
+    if(surface != -1){
+      return parseFloat(surface.value.get().toString()).toFixed(2);
+    }
+    else return "N.C";
+  }
+  
 }
 
 async function findSurface(node: AppItem): Promise<number> {

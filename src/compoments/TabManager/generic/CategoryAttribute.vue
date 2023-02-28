@@ -286,7 +286,7 @@ export default {
     Properties: {
       handler: async function (oldProp, newProp) {
         if (newProp.view.serverId != 0) {
-          this.update(newProp.view.serverId);
+          // this.update(newProp.view.serverId);
         } else {
           this.Categories = [];
           this.ctxNode = false;
@@ -297,7 +297,7 @@ export default {
   },
 
   mounted() {
-    this.update(this.Properties.view.serverId);
+    // this.update(this.Properties.view.serverId);
     EventBus.$on("click-on_spinal-twin.hasCategoryAttributes", () => this.update(this.Properties.view.serverId))
   },
 

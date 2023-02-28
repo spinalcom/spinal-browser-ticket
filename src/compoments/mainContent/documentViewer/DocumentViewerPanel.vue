@@ -68,7 +68,6 @@ export default {
 
     }/*,
     coucou(){
-      console.log("coucou")
       this.$emit('close')
       // this.openDocumentViewerModal()
     }*/

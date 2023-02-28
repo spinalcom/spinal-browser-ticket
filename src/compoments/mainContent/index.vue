@@ -145,7 +145,6 @@ export default {
   mounted() {
     if(this.matchMedia() == 'mobile'){
       const collection1 = document.getElementsByClassName("spinal-main-container-left");
-      console.log(collection1)
       // const collection2 = document.getElementsByClassName("spinal-other-container");
       // collection1[0].style.display = "none";
 
@@ -281,7 +280,7 @@ export default {
 .appSelector{
   position: absolute;
   /* top:5px; */
-  z-index: 2;
+  z-index: 1000;
 }
 .spinal-main-container,
 .spinal-main-container .spinal-viewer-container,

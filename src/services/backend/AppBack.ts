@@ -41,7 +41,7 @@ export class AppBack {
   type: string;
   static instance: AppBack;
 
-  constructor() {}
+  constructor() { }
 
   static getInstance(): AppBack {
     if (!AppBack.instance) AppBack.instance = new AppBack();
@@ -128,6 +128,7 @@ export class AppBack {
       depth += 1;
       for (const n of currentGen) {
         if (depth <= 2 || (n.info.type && n.info.type.get() !== type)) {
+        // if (depth <= 1 /*|| (n.info.type && n.info.type.get() !== type)*/) {
           promises.push(
             this.getChildrenAndItems(
               n,

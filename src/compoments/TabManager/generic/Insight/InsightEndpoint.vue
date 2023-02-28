@@ -82,7 +82,7 @@ export default {
     Properties: {
       handler: async function (oldProp, newProp) {
         if (newProp && newProp.view && newProp.view.serverId != 0) {
-          await this.update(newProp.view.serverId);
+          // await this.update(newProp.view.serverId);
         } else {
           this.ctxNode = false;
         }
@@ -92,7 +92,7 @@ export default {
   },
 
   async mounted() {
-    this.update();
+    // this.update();
     EventBus.$on("click-on_spinal-twin.Endpoints", async ()=> await this.update());
   },
 

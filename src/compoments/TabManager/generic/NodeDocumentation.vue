@@ -164,7 +164,7 @@ export default {
     Properties: {
       handler: async function (oldProp, newProp) {
         if (newProp.view.serverId != 0) {
-          await this.update(newProp.view.serverId);
+          // await this.update(newProp.view.serverId);
         } else {
           this.ctxNode = false;
         }
@@ -174,7 +174,7 @@ export default {
   },
 
   async mounted() {
-    this.update(this.Properties.view.serverId);
+    // this.update(this.Properties.view.serverId);
     EventBus.$on("click-on_spinal-twin.Documentation", () =>
       this.update(this.Properties.view.serverId)
     );
@@ -211,14 +211,12 @@ export default {
     //   if (!this.directory) {
     //     this.directory = await FileExplorer.createDirectory(this.ctxNode);
     //   }
-    //   console.log(this.directory)
     //   input.type = "file";
     //   input.multiple = true;
     //   input.click();
     //   input.addEventListener(
     //     "change",
     //     (event) => {
-    //       console.log(event)
     //       const files = event.target.files;
     //       let filelist = [];
     //       for (const file of files) {
@@ -248,20 +246,16 @@ export default {
       if (!this.directory) {
         this.directory = await FileExplorer.createDirectory(this.ctxNode);
       }
-      console.log(this.directory)
       input.type = "file";
       input.multiple = true;
       input.click();
       input.addEventListener(
         "change",
         (event) => {
-          console.log(input.files)
-          console.log(event)
           // const files = event.target.files;
           const files = input.files
           let filelist = new Array();
           for (const file of files) {
-            console.log(file.buffer)
             filelist.push(file);
           }
           const sizes = filelist.map((el) => el.size);
@@ -274,11 +268,8 @@ export default {
             );
             return;
           }
-          console.log(filelist)
 
         //   filelist.forEach((f) => {
-        //     console.log("^^^^^^^")
-        //     console.log(f);
         //     FileExplorer.addFileUpload(this.directory, f)
         // })
 

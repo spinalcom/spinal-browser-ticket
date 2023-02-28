@@ -27,8 +27,6 @@ import { spinalBackEnd } from '../../spinalBackend';
 import { viewerUtils } from '../viewerUtils';
 
 EventBus.$on('viewer-zoom', async (root, relation) => {
-  console.log(root)
-  console.log(relation);
   await viewerUtils.waitInitialized();
   const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
     { server_id: root.serverId },

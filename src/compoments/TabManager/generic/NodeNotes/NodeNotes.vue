@@ -113,7 +113,7 @@ export default {
       {
         if (newProp.view.serverId != 0)
         {
-          await this.update(newProp.view.serverId);
+          // await this.update(newProp.view.serverId);
         }
         else
         {
@@ -125,7 +125,7 @@ export default {
   },
 
   mounted() {
-    this.update(this.Properties.view.serverId);
+    // this.update(this.Properties.view.serverId);
     EventBus.$on("click-on_spinal-twin.Notes", () => this.update(this.Properties.view.serverId));
   },
 

@@ -74,7 +74,6 @@ export class ViewerUtils {
     });
     viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, (e)=> {
       EventBus.$emit('Autodesk.Viewing.SELECTION_CHANGED_EVENT', e);
-      // console.log(e);
     })
     // viewer.toolbar.container.style.display = "none"; // MASQUER DE LA TOOLBAR FORGE
   }

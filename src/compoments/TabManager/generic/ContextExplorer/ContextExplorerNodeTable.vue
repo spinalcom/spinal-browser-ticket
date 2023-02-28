@@ -44,26 +44,25 @@ with this file. If not, see
       v-loading="loading"
       :data="data"
       highlight-current-row
-      row-class-name ="context-node-explorer-table-row"
+      row-class-name="context-node-explorer-table-row"
       :header-row-style="{
         'background-color': '#ffffff',
         'text-align': 'left',
         'letter-spacing': '1px',
-        'color': '#214353',
-        'opacity': '1',
-        'height': 'fit-content',
+        color: '#214353',
+        opacity: '1',
+        height: 'fit-content',
       }"
       :row-style="{
-        'background': '#ffffff 0% 0% no-repeat padding-box',
-        'border': '1px solid green',
+        background: '#ffffff 0% 0% no-repeat padding-box',
+        border: '1px solid green',
         'border-radius': '5px',
-        'opacity': '1',
+        opacity: '1',
         'text-align': 'left',
         'letter-spacing': '0.9px',
-        'color': '#214353',
-        'opacity': '1',
-
-        }"
+        color: '#214353',
+        opacity: '1',
+      }"
       @row-click="selectInView"
       @current-change="handleCurrentChange"
       @row-dblclick="zoom"
@@ -110,7 +109,14 @@ with this file. If not, see
 
       <el-table-column label="" width="65" align="center" key="isGroup">
         <div slot-scope="scope">
-          <el-tooltip
+          <el-tooltip :content="$t('spinal-twin.Inspect')">
+            <el-button
+              @click="onSelectItem(scope.row, $event)"
+              :icon="handleIcon(scope.row)"
+              circle
+            ></el-button>
+          </el-tooltip>
+          <!-- <el-tooltip
             v-if="scope.row.haveChild"
             :content="$t('spinal-twin.NextNode')"
           >
@@ -126,7 +132,7 @@ with this file. If not, see
               icon="el-icon-search"
               circle
             ></el-button>
-          </el-tooltip>
+          </el-tooltip> -->
         </div>
       </el-table-column>
     </el-table>
@@ -155,7 +161,6 @@ const CountNames = [
   "AlarmCount",
   "AlarmProcessCount",
 ];
-
 
 export default {
   name: "ContextExplorerNodeTable",
@@ -186,57 +191,58 @@ export default {
   },
 
   async mounted() {
-    const promise = new Promise((res, rej)=>{
+    const promise = new Promise((res, rej) => {
       this.update();
-      res()
+      res();
     });
-    promise.then(()=> {
-      if(this.viewKey == "DataApp"){
-        EventBus.$emit("dataroom-initialized", this.items)
+    promise.then(() => {
+      if (this.viewKey == "DataApp") {
+        EventBus.$emit("dataroom-initialized", this.items);
       }
     });
     // this.update();
-    if(this.viewKey == "DataApp" || this.viewKey == "SpaceApp"){
-      
-      EventBus.$on('Autodesk.Viewing.SELECTION_CHANGED_EVENT', async (res) => {
+    if (this.viewKey == "DataApp" || this.viewKey == "SpaceApp") {
+      EventBus.$on("Autodesk.Viewing.SELECTION_CHANGED_EVENT", async (res) => {
         let tableComponent = this.$refs.table;
-        if(res.dbIdArray[0] != undefined){
-          let bimObjectNodeModel = await window.spinal.BimObjectService.getBIMObject(res.dbIdArray[0], res.model);
-          let parents = await SpinalGraphService.getParents(bimObjectNodeModel.id.get(), "hasReferenceObject.ROOM");
-          if(parents.length !=0 ){
-            let parentNode = SpinalGraphService.getRealNode(parents[0].id.get());
-            let index = tableComponent.data.findIndex(el => el.serverId == parentNode._server_id);
-            if(index != -1){
+        if (res.dbIdArray[0] != undefined) {
+          let bimObjectNodeModel =
+            await window.spinal.BimObjectService.getBIMObject(
+              res.dbIdArray[0],
+              res.model
+            );
+          let parents = await SpinalGraphService.getParents(
+            bimObjectNodeModel.id.get(),
+            "hasReferenceObject.ROOM"
+          );
+          if (parents.length != 0) {
+            let parentNode = SpinalGraphService.getRealNode(
+              parents[0].id.get()
+            );
+            let index = tableComponent.data.findIndex(
+              (el) => el.serverId == parentNode._server_id
+            );
+            if (index != -1) {
               tableComponent.setCurrentRow(this.data[index]);
-              let rowsElement = tableComponent.$el.getElementsByClassName("context-node-explorer-table-row");
-              rowsElement[index].scrollIntoView({block: "center" });
+              let rowsElement = tableComponent.$el.getElementsByClassName(
+                "context-node-explorer-table-row"
+              );
+              rowsElement[index].scrollIntoView({ block: "center" });
             }
           }
         }
-      })
-  
-  
-    
-  
+      });
     }
-    
-    
   },
-  beforeDestroy(){
+  beforeDestroy() {
     EventBus.$off("dataroom-instructions-sent");
-    EventBus.$off('Autodesk.Viewing.SELECTION_CHANGED_EVENT');
+    EventBus.$off("Autodesk.Viewing.SELECTION_CHANGED_EVENT");
   },
   methods: {
     selectInView(item) {
       this.$emit("select", item);
     },
-    zoom(row, column, event){
+    zoom(row, column, event) {
       EventBus.$emit("viewer-zoom", row, this.relation);
-      console.log(this.$refs.table)
-      console.log(row);
-      console.log(column);
-      console.log(event);
-
     },
     /*hoverSelectInView(item){
       let node = FileSystem._objects[item.serverId];
@@ -266,7 +272,8 @@ export default {
       // EventBus.$emit('viewer-color', this.data, this.relation);
     },
 
-    async onSelectItem(item) {
+    async onSelectItem(item, e) {
+      e.stopPropagation();
       EventBus.$emit("contextNodeExplorer-onSelectItem", item);
       let view = ViewManager.getInstance(this.viewKey).back();
       if (view.serverId == 0) {
@@ -274,7 +281,8 @@ export default {
         return;
       }
       if (
-        ViewManager.getInstance(this.viewKey).breadcrumb.length >= this.depth /*||
+        ViewManager.getInstance(this.viewKey).breadcrumb.length >=
+        this.depth /*||
         !SpinalGraphService.hasChildInContext(
           FileSystem._objects[view.serverId].info.id.get(),
           FileSystem._objects[this.context].info.id.get()
@@ -322,7 +330,6 @@ export default {
       this.loading = false;
       this.updateColor(this.data, colorUsed);
       this.isColored = viewerState.colored();
-
     },
 
     updateIsolation() {
@@ -365,6 +372,23 @@ export default {
       if (CountNames.includes(key)) return item["children"];
       if (item[key]) return item[key];
       return 0;
+    },
+    handleIcon(item) {
+      let node = FileSystem._objects[item.serverId];
+      if (this.context == 0) {
+        let boolean = SpinalGraphService.hasChildInContext(
+          node.getId().get(),
+          node.getId().get()
+        );
+        return boolean ? "el-icon-arrow-right" : "el-icon-search";
+      } else {
+        let context = FileSystem._objects[this.context];
+        let boolean = SpinalGraphService.hasChildInContext(
+          node.getId().get(),
+          context.getId().get()
+        );
+        return boolean ? "el-icon-arrow-right" : "el-icon-search";
+      }
     },
 
     exportToExcel() {
@@ -440,14 +464,13 @@ export default {
   background-color: #BCE1FF;
 
 } */
-
 </style>
 
 <style>
-.el-table__body tr.current-row > td.el-table__cell{
-  background-color: #BCE1FF !important;
+.el-table__body tr.current-row > td.el-table__cell {
+  background-color: #bce1ff !important;
 }
-.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell{
+.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
   background-color: inherit;
 }
 /* .el-table__body-wrapper.is-scrolling-none{

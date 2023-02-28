@@ -81,7 +81,7 @@ export default {
     Properties: {
       handler: async function (oldProp, newProp) {
         if (newProp.view.serverId != 0) {
-          await this.update(newProp.view.serverId);
+          // await this.update(newProp.view.serverId);
         } else {
           this.ctxNode = false;
         }

@@ -261,7 +261,6 @@ export default {
   },
 
   async mounted() {
-    console.log("iuberrg")
     const graph = await BackendInitializer.getInstance().getGraph();
     await AppBack.getInstance().init(graph, 'BIMObjectGroupContext');
     // Get the ViewManager instance for the TicketCenter viewKey and initializes it

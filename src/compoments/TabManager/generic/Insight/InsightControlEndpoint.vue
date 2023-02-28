@@ -89,7 +89,8 @@ export default {
     Properties: {
       handler: async function (oldProp, newProp) {
         if (newProp.view.serverId != 0) {
-          await this.update(newProp.view.serverId);
+          this.ctxNode = FileSystem._objects[newProp.view.serverId]
+          // await this.update(newProp.view.serverId);
         } else {
           this.ctxNode = false;
         }
@@ -106,21 +107,28 @@ export default {
       res();
     })
     promise.then(async ()=>{
-      await this.update(this.Properties.view.serverId);
-    })
-    EventBus.$on("insight-breadcrumb-click", async serverId => {
+      this.ctxNode = FileSystem._objects[this.Properties.view.serverId]
+      EventBus.$on("insight-breadcrumb-click", async serverId => {
       await this.update(serverId);
     });
     EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
       await this.update(this.ctxNode._server_id);
     });
+      // await this.update(this.Properties.view.serverId);
+    })
+    // EventBus.$on("insight-breadcrumb-click", async serverId => {
+    //   await this.update(serverId);
+    // });
+    // EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
+    //   await this.update(this.ctxNode._server_id);
+    // });
     
   },
 
   methods: {
     async update(id) {
       // update tab infos from current node
-      this.ctxNode = FileSystem._objects[id];
+      // this.ctxNode = FileSystem._objects[id];
       this.endpoints = await this.getNodeEndpointsInfo(
         this.ctxNode.info.id.get(),
         "hasControlPoints"
