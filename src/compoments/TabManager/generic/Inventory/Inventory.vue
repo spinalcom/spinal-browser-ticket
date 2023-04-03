@@ -81,7 +81,7 @@ export default {
     Properties: {
       handler: async function (oldProp, newProp) {
         if (newProp.view.serverId != 0) {
-          // await this.update(newProp.view.serverId);
+          await this.update(newProp.view.serverId);
         } else {
           this.ctxNode = false;
         }
@@ -100,12 +100,9 @@ export default {
     promise.then(async () => {
       await this.update(this.Properties.view.serverId);
     });
-    // EventBus.$on("insight-breadcrumb-click", async serverId => {
-    //   await this.update(serverId);
-    // });
-    // EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
-    //   await this.update(this.ctxNode._server_id);
-    // });
+    EventBus.$on("click-on_spinal-twin.Inventory", () =>
+      this.update(this.Properties.view.serverId)
+    );
   },
 
   methods: {
@@ -114,6 +111,7 @@ export default {
       this.ctxNode = FileSystem._objects[id];
     },
     async spaceInventory() {
+      console.log(this.ctxNode);
       this.spaceInventoryLoader = true;
       const promise = new Promise(async (res, rej) => {
         if (this.ctxNode.getType().get() == "groupingCategory") {

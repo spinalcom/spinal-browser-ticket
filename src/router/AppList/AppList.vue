@@ -25,15 +25,13 @@ with this file. If not, see
 <template>
   <div class="applist-main-container">
     <div class="app-list-header"
-      >Toutes les Applications
+      >
+      <!-- Toutes les Applications -->
+      .
       <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
     </div>
-    <!-- <div class="app-list-header"
-      >
-      
-      <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
-    </div> -->
-    <img class="image-logo-spinaltwin" :src="logo"/>
+    
+    <!-- <img class="image-logo-spinaltwin" :src="logo"/> -->
     <div class="applist-container spinal-scrollbar">
 
       <router-link elevation="10"
@@ -86,7 +84,7 @@ export default {
       DataApp: {
         // icon: require("../../assets/imgs/background/Usine2.jpg"),
         icon: "mdi-city",
-        name: "DATA ROOM",
+        name: "Description",
         description: "Explorer le bâtiment",
         // tags: ["3D"],
         tags: [
@@ -105,7 +103,7 @@ export default {
       },
       EquipmentApp: {
         icon: "mdi-city",
-        name: "EQUIPMENTS",
+        name: "ÉQUIPEMENTS",
         description: "Inspecter les équipements",
         // tags: ["3D"],
         tags: [
@@ -123,7 +121,7 @@ export default {
       },
       AlarmApp: {
         icon: "mdi-alarm-light",
-        name: "ALARMS",
+        name: "ALARMES",
         description: "Gérer les alarmes",
         // tags: ["3D"],
         tags: [
@@ -212,19 +210,20 @@ export default {
 }
 
 .applist-container {
-  max-height: 60%;
+  max-height: 80vh;
+  /* max-height: 60%;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  /* height: calc(100% - 68px); */
+  justify-content: space-around; */
   border-radius: 4px;
   padding: 16px;
   overflow: auto;
   position: relative;
-  justify-content: space-around;
+  
 }
 .applist-container > * {
-  width: 35%;
+  width: 40%;
   align-self: center;
   /* flex-grow: 1; */
   cursor: pointer;

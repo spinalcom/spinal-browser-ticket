@@ -236,4 +236,6 @@ export default {
   'spinal-twin.insight-center.display-sprites' : 'Afficher sous forme de pastilles',
   'spinal-twin.Inventory' : 'Inventaire',
   'spinal-twin.Inventory-tab.space-inventory' : 'INVENTAIRE DES SALLES',
+  'spinal-twin.SpaceConfiguration' : '[BETA] : Gestion des espaces',
+  'spinal-twin.ParentNodes' : '[BETA] : Noeuds Parents',
 };

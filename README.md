@@ -1,3 +1,15 @@
+# 03.04.23 : v1.7.0
+        - Viewer select => table select feature for multi-models
+        - Documentation table => add parent documentation
+        - Attributes Table => add parent attribute
+        - Add Space Assignation Module to assign spaces to room groups
+        - Add Creation of Context / Category / Group on Space Application
+        - Css correction
+        - Fix bugs on ticket node declaration tab
+        - Fix bugs on ticket node selected tab on Description & Ticket Apps (priority, creation date, description, parent attributes, parent doc...)
+        - Correct Inventory Tab on Space Application
+        
+
 # 31.01.23 : v1.6.0
         - Remove toolbar from Autodesk Forge Viewer component // MASQUER DE LA TOOLBAR FORGE
         - Add a button to expand / reduce the AppSelector component

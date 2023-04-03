@@ -252,8 +252,8 @@ export default {
 }
 </style>
 <style>
-.node-tickets-list{
+/* .node-tickets-list{
   max-height: 40vh;
   overflow-y:scroll;
-}
+} */
 </style>

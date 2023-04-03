@@ -145,6 +145,9 @@ export default {
       }
       // let index = this.levels.findIndex(it => it.server_id == item.serverId);
       // if(index != -1) this.onLevelChange(this.levels[index]);
+    });
+    EventBus.$on("spinalNavbar.ask-room-list", () => {
+      EventBus.$emit("spinalNavbar.room-list-sent", this.selectedLevelRooms);
     })
   },
   beforeDestroy() {
@@ -163,6 +166,7 @@ export default {
         if (level) this.focusItem(level);
         else this.focusItem();
       }
+      EventBus.$emit("spinalNavbar.room-list-sent", level.children)
       return level.children;
       
     },

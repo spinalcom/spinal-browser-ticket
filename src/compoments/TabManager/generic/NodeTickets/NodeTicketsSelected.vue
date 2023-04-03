@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <template>
-  <div class="ticket-selected-main-container">
+  <div class="ticket-selected-main-container" v-if="ticket != undefined">
     <div class="ticket-presentation">
       <el-tooltip
         v-if="Properties.viewKey != 'TicketApp'"
@@ -64,7 +64,7 @@ with this file. If not, see
         <div class="ticket-label-information">
           {{ $t("spinal-twin.Priority") }}
         </div>
-        <div class="ticket-label-value">{{ ticket.priority || "N.C" }}</div>
+        <div class="ticket-label-value">{{getTicketPriority(ticket.ticket.priority)}}</div>
       </div>
       <div class="ticket-row-card">
         <div class="ticket-label-information">
@@ -325,6 +325,7 @@ import {
   GEO_RELATIONS,
   GEO_ROOM_TYPE,
   GEO_FLOOR_TYPE,
+  TICKET_PRIORITY_LIST
 } from "../../../../constants";
 
 export default {
@@ -354,6 +355,8 @@ export default {
       },
       deep: true,
     },
+    ticket(newTicket, oldTicket){
+    }
   },
 
   data() {
@@ -410,9 +413,15 @@ export default {
     },
 
     DateFormat(time) {
-      const date = new Date(time);
-
-      return moment(date, "DD/MM/YYYY HH:mm:ss");
+      if(typeof time == "number"){
+        const date = new Date(time);
+        return moment(date, "DD/MM/YYYY HH:mm:ss");
+      }
+      else{
+        const date = new Date(time.get());
+        return moment(date, "DD/MM/YYYY HH:mm:ss");
+      }
+      
     },
 
     elapsedTimeFormat(time) {
@@ -563,6 +572,16 @@ export default {
         return await this.getPathOfTicket(parentNode[0], temp);
       } else return temp;
     },
+    getTicketPriority(priority){
+      if(typeof priority == "object"){
+        return TICKET_PRIORITY_LIST[priority.get()];
+        // return priority.get();
+      }
+      else{
+        return TICKET_PRIORITY_LIST[priority];
+        // return priority;
+      }
+    }
   },
 };
 </script>
@@ -639,16 +658,16 @@ export default {
   padding: 10px;
 }
 .ticket-label-information {
-  letter-spacing: 1.5px;
+  letter-spacing: 0.75px;
   color: #14202c;
   opacity: 1;
-  font-size: 20px;
+  font-size: 15px;
 }
 .ticket-name {
-  letter-spacing: 1.5px;
+  letter-spacing: 0.75px;
   color: #14202c;
   opacity: 1;
-  font-size: 20px;
+  font-size: 15px;
   padding: 10px;
   max-width: 35%;
 }
@@ -659,7 +678,7 @@ export default {
 }
 .ticket-label-value {
   color: #949da6;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.75px;
   font-size: 15px;
   padding-left: 1.5px;
   margin-left: 10px;
@@ -712,10 +731,10 @@ export default {
 </style>
 <style>
 .el-collapse-item__header {
-  letter-spacing: 1.5px !important;
+  letter-spacing: 0.75px !important;
   color: #14202c !important;
   opacity: 1 !important;
-  font-size: 20px !important;
+  font-size: 15px !important;
   padding-left: 10px !important;
 }
 

@@ -113,6 +113,7 @@ import InsightEndpoint from '../../compoments/TabManager/generic/Insight/Insight
 import InsightControlEndpoint from '../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue';
 import TabChart from './TabChart.vue';
 import Inventory from  "../../compoments/TabManager/generic/Inventory/Inventory.vue"
+import SpaceConfiguration from "../../compoments/TabManager/generic/Configuration/SpaceConfiguration.vue"
 
 const VIEW_KEY = 'SpaceApp';
 
@@ -154,18 +155,32 @@ export default {
             context: false,
           },
           ignore: false,
+          ignoreContext: false,
         },
-
         {
-          name: 'spinal-twin.Chart',
-          content: TabChart,
+          name: 'spinal-twin.SpaceConfiguration',
+          content: SpaceConfiguration,
           props: {
             viewKey: VIEW_KEY,
+            items: false,
             view: false,
-            chart: [],
+            relation: SPACE_APP_RELATIONS,
+            context: false,
           },
-          ignore: true,
+          ignore: false,
+          ignoreContext: false,
         },
+        // {
+        //   name: 'spinal-twin.Chart',
+        //   content: TabChart,
+        //   props: {
+        //     viewKey: VIEW_KEY,
+        //     view: false,
+        //     chart: [],
+        //   },
+        //   ignore: true,
+        //   ignoreContext: true,
+        // },
 
         {
           name: 'spinal-twin.hasCategoryAttributes',
@@ -175,6 +190,7 @@ export default {
             view: false,
           },
           ignore: true,
+          ignoreContext: true,
         },
 
         {
@@ -185,6 +201,7 @@ export default {
             view: false,
           },
           ignore: true,
+          ignoreContext: true,
         },
 
         {
@@ -195,6 +212,7 @@ export default {
             view: false,
           },
           ignore: true,
+          ignoreContext: true,
         },
 
         {
@@ -205,6 +223,7 @@ export default {
             view: false,
           },
           ignore: true,
+          ignoreContext: true,
         },
         {
           name: 'spinal-twin.ControlEndpoints',
@@ -214,6 +233,7 @@ export default {
             view: false,
           },
           ignore: true,
+          ignoreContext: true,
         },
         {
           name: 'spinal-twin.Endpoints',
@@ -223,6 +243,7 @@ export default {
             view: false,
           },
           ignore: true,
+          ignoreContext: true,
         },
         {
           name: "spinal-twin.Inventory",
@@ -232,6 +253,7 @@ export default {
             view: false,
           },
           ignore: true,
+          ignoreContext: true,
         },
       ],
     };
@@ -311,10 +333,10 @@ export default {
         }
       } else {
         for (let i = 2; i < this.tabs.length; ++i) {
-          this.tabs[i].ignore = true;
+          this.tabs[i].ignore = this.tabs[i].ignoreContext;
         }
       }
-      this.updateChart();
+      // this.updateChart();
     },
 
     setColumns(view) {
@@ -337,30 +359,30 @@ export default {
       }
     },
 
-    updateChart() {
-      if (!this.isNode)
-      {
-        this.tabs[1].ignore = true;
-        return;
-      }
-      console.debug("Items", this.items);
-      if (this.items.nodeType == GEO_ROOM_TYPE)
-      {
-        this.tabs[1].ignore = true;
-        return;
-      }
-      this.tabs[1].props.chart = [];
-      for (item of this.items.items)
-      {
-        console.debug(item.name, item.serverId);
-        var node = FileSystem._objects[item.serverId]
-        this.tabs[1].props.chart.push({
-          name: node.info.name.get(),
-          rooms: Array.from(item.children.values())[0],
-          color: node.info.color.get()
-        });
-      }
-    },
+    // updateChart() {
+    //   if (!this.isNode)
+    //   {
+    //     this.tabs[1].ignore = true;
+    //     return;
+    //   }
+    //   console.debug("Items", this.items);
+    //   if (this.items.nodeType == GEO_ROOM_TYPE)
+    //   {
+    //     this.tabs[1].ignore = true;
+    //     return;
+    //   }
+    //   this.tabs[1].props.chart = [];
+    //   for (item of this.items.items)
+    //   {
+    //     console.debug(item.name, item.serverId);
+    //     var node = FileSystem._objects[item.serverId]
+    //     this.tabs[1].props.chart.push({
+    //       name: node.info.name.get(),
+    //       rooms: Array.from(item.children.values())[0],
+    //       color: node.info.color.get()
+    //     });
+    //   }
+    // },
 
     updateNames() {
       this.tabs[0].name = `node-type.${this.items.nodeType}`;

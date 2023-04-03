@@ -147,7 +147,7 @@ export default {
   computed: {
     user() {
       return {
-        username: 'admin',
+        username: 'Administration',
         id: FileSystem._userid,
       };
     },
@@ -208,6 +208,7 @@ export default {
         processId: this.newTicket.process,
         name: this.newTicket.incident,
         user: this.user,
+        description: this.newTicket.description
       };
       switch (this.newTicket.priority) {
         case 'Occasionally':

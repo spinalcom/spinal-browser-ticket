@@ -197,9 +197,9 @@ export default {
   color: #409eff;
 }
 
-.spinal-side-bar-menu .el-menu-item:hover {
+/* .spinal-side-bar-menu .el-menu-item:hover {
   background-color: #606266 !important;
-}
+} */
 .spinal-side-bar-menu li.el-menu-item:focus {
   outline: none;
   background-color: transparent;

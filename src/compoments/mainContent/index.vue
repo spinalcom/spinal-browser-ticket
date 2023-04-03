@@ -24,88 +24,118 @@ with this file. If not, see
 
 <template>
   <div class="spinal-body-main-container">
-  <spinalNavbar class="main-navbar-mobile-device" v-if="matchMedia()=='mobile'" v-bind:switch3D="mobileSwitch"></spinalNavbar>
-  <appSelector class="appSelector"></appSelector>
-  <div class="spinal-main-container" :class="{ 'have-abs-viewer': absviewer }">
-    
-    <div class="spinal-main-container-left">
-      <!-- <appSelector class="appSelector"></appSelector> -->
-      <div
-        v-show="!absviewer && !dataMode && !inventoryMode && !documentViewerMode"
-        ref="viewerContainer"
-        class="spinal-viewer-container"
-        :class="{ 'abs-viewer': absviewer }"
-      >
-        <div ref="viewerContent" class="viewer-content">
-          <div class="content-viewer-view">
+    <spinalNavbar
+      class="main-navbar-mobile-device"
+      v-if="matchMedia() == 'mobile'"
+      v-bind:switch3D="mobileSwitch"
+    ></spinalNavbar>
+    <appSelector class="appSelector"></appSelector>
+    <div
+      class="spinal-main-container"
+      :class="{ 'have-abs-viewer': absviewer }"
+    >
+      <div class="spinal-main-container-left">
+        <!-- <appSelector class="appSelector"></appSelector> -->
+        <div
+          v-show="
+            !absviewer && !dataMode && !inventoryMode && !documentViewerMode
+          "
+          ref="viewerContainer"
+          class="spinal-viewer-container"
+          :class="{ 'abs-viewer': absviewer }"
+        >
+          <div ref="viewerContent" class="viewer-content">
+            <div class="content-viewer-view">
+              <appViewer
+                ref="viewerItem"
+                @onModelLoadEnd="showLoadingModel = false"
+                v-loading="showLoadingModel"
+              >
+              </appViewer>
+              <el-button-group class="btn-abs-viewer-popio" v-show="!absviewer">
+                <el-button icon="el-icon-minus" @click="onMiniClick">
+                </el-button>
+                <el-button
+                  icon="el-icon-copy-document"
+                  @click="onPopClick"
+                ></el-button>
+                <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
+                <el-button
+                  class="spinal-button-expand"
+                  :icon="chooseExpandIcon()"
+                  size="small"
+                  @click="expandData()"
+                  v-if="matchMedia() == 'desktop'"
+                ></el-button>
+                <el-button
+                  icon="el-icon-collection"
+                  @click="onInventoryClick"
+                ></el-button>
+                <el-button
+                  icon="el-icon-files"
+                  @click="onDocumentViewerClick"
+                ></el-button>
+              </el-button-group>
+            </div>
+          </div>
+        </div>
 
-            <appViewer
-              ref="viewerItem"
-              @onModelLoadEnd="showLoadingModel = false"
-              v-loading="showLoadingModel"
+        <div
+          v-show="dataMode || inventoryMode || documentViewerMode"
+          class="spinal-viewer-container"
+        >
+          <div class="viewer-content">
+            <endpoint-chart-viewer-panel
+              v-show="dataMode"
+              ref="chart"
+              v-bind:isChartModalVisible="dataMode"
+              v-bind:openChartModal="openDataMode"
             >
-            </appViewer>
-            <el-button-group class="btn-abs-viewer-popio" v-show="!absviewer">
-              <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
-              <el-button
-                icon="el-icon-copy-document"
-                @click="onPopClick"
-              ></el-button>
-              <el-button icon="el-icon-menu" @click="onDataClick"></el-button>
-              <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()" v-if="matchMedia()=='desktop'"></el-button>
-              <el-button icon="el-icon-collection" @click="onInventoryClick"></el-button>
-              <el-button icon="el-icon-files" @click="onDocumentViewerClick"></el-button>
-            </el-button-group>
+            </endpoint-chart-viewer-panel>
+            <InventoryPanel
+              v-show="inventoryMode"
+              ref="inventory"
+              v-bind:isInventoryModalVisible="inventoryMode"
+              v-bind:openInventoryModal="openInventoryMode"
+            >
+            </InventoryPanel>
+            <DocumentViewerPanel
+               v-if="documentViewerMode"
+              ref="documentViewer"
+              :data="docviewerData"
+              v-bind:isDocumentViewerModalVisible="documentViewerMode"
+              v-bind:openDocumentViewerModal="openDocumentViewerMode"
+            >
+            </DocumentViewerPanel>
           </div>
         </div>
       </div>
-
-      <div v-show="dataMode || inventoryMode || documentViewerMode" class="spinal-viewer-container">
-        <div class="viewer-content">
-          <endpoint-chart-viewer-panel v-show="dataMode"
-            ref="chart"
-            v-bind:isChartModalVisible="dataMode"
-            v-bind:openChartModal="openDataMode"
-          >
-          </endpoint-chart-viewer-panel>
-          <InventoryPanel v-show="inventoryMode"
-            ref="inventory"
-            v-bind:isInventoryModalVisible="inventoryMode"
-            v-bind:openInventoryModal="openInventoryMode"
-          >
-          </InventoryPanel>
-          <DocumentViewerPanel v-show="documentViewerMode"
-            ref="documentViewer"
-            v-bind:isDocumentViewerModalVisible="documentViewerMode"
-            v-bind:openDocumentViewerModal="openDocumentViewerMode"
-          >
-          </DocumentViewerPanel>
-        </div>
+      <!-- <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button> -->
+      <div class="spinal-other-container">
+        <spinalNavbar
+          class="main-navbar-desktop-device"
+          v-if="matchMedia() == 'desktop'"
+        ></spinalNavbar>
+        <router-view></router-view>
       </div>
-    </div>
-    <!-- <el-button class="spinal-button-expand" :icon="chooseExpandIcon()" size="small" @click="expandData()"></el-button> -->
-    <div class="spinal-other-container">
-      <spinalNavbar class="main-navbar-desktop-device" v-if="matchMedia()=='desktop'"></spinalNavbar>
-      <router-view></router-view>
-    </div>
-    <transition name="el-fade-in-linear">
-      <div
-        v-show="absviewer && !dataMode"
-        ref="viewerContainerMini"
-        class="viewer-container-mini"
-        :class="{ hideViewer }"
-      >
-        <div class="spinal-viewer-header-container">
-          <div ref="headerViewer" class="spinal-viewer-header-drag-elm"></div>
-          <el-button-group class="btn-abs-viewer-popio">
-            <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
-            <el-button icon="el-icon-copy-document" @click="onPopClick">
-            </el-button>
-          </el-button-group>
+      <transition name="el-fade-in-linear">
+        <div
+          v-show="absviewer && !dataMode"
+          ref="viewerContainerMini"
+          class="viewer-container-mini"
+          :class="{ hideViewer }"
+        >
+          <div class="spinal-viewer-header-container">
+            <div ref="headerViewer" class="spinal-viewer-header-drag-elm"></div>
+            <el-button-group class="btn-abs-viewer-popio">
+              <el-button icon="el-icon-minus" @click="onMiniClick"> </el-button>
+              <el-button icon="el-icon-copy-document" @click="onPopClick">
+              </el-button>
+            </el-button-group>
+          </div>
         </div>
-      </div>
-    </transition>
-  </div>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -115,9 +145,9 @@ import appViewer from "./viewer/viewer.vue";
 import spinalNavbar from "../navbar/spinalNavbar.vue";
 import { EventBus } from "../../services/event";
 import endpointChartViewerPanel from "./chart/endpointChartViewerPanel.vue";
-import appSelector from "../drawer/appSelector/appSelector.vue"
-import InventoryPanel from "./inventory/InventoryPanel.vue"
-import DocumentViewerPanel from "./documentViewer/DocumentViewerPanel.vue"
+import appSelector from "../drawer/appSelector/appSelector.vue";
+import InventoryPanel from "./inventory/InventoryPanel.vue";
+import DocumentViewerPanel from "./documentViewer/DocumentViewerPanel.vue";
 
 export default {
   name: "MainContent",
@@ -127,7 +157,7 @@ export default {
     endpointChartViewerPanel,
     appSelector,
     InventoryPanel,
-    DocumentViewerPanel
+    DocumentViewerPanel,
   },
   data() {
     return {
@@ -135,19 +165,21 @@ export default {
       absviewer: false,
       hideViewer: false,
       dataMode: false,
-      expanded:false,
+      expanded: false,
       inventoryMode: false,
       documentViewerMode: false,
       showViewerMobile: true,
+      docviewerData: { document:null, type:''},
       // media: 'desktop',          // 'mobile' || 'desktop'
     };
   },
   mounted() {
-    if(this.matchMedia() == 'mobile'){
-      const collection1 = document.getElementsByClassName("spinal-main-container-left");
+    if (this.matchMedia() == "mobile") {
+      const collection1 = document.getElementsByClassName(
+        "spinal-main-container-left"
+      );
       // const collection2 = document.getElementsByClassName("spinal-other-container");
       // collection1[0].style.display = "none";
-
     }
     createDragElement(this.$refs.viewerContainerMini, this.$refs.headerViewer);
     EventBus.$on("data-mode", (data) => {
@@ -157,36 +189,40 @@ export default {
     EventBus.$on("inventory-mode", (data) => {
       this.inventoryMode = true;
       this.$refs.inventory.toogleSelect(data);
-    })
+    });
     EventBus.$on("document-viewer-mode", (data) => {
       this.documentViewerMode = true;
-      this.$refs.documentViewer.toogleSelect(data);
-    })
+      this.docviewerData = data;
+      // this.$refs.documentViewer.toogleSelect(data);
+    });
     // spinal-main-container-left
-     
   },
   methods: {
-    mobileSwitch(){
-      const collection1 = document.getElementsByClassName("spinal-main-container-left");
-      const collection2 = document.getElementsByClassName("spinal-other-container");
-      if(this.showViewerMobile == true){
-        collection2[0].style.display = "none"
-        collection1[0].style.display = "flex"
+    mobileSwitch() {
+      const collection1 = document.getElementsByClassName(
+        "spinal-main-container-left"
+      );
+      const collection2 = document.getElementsByClassName(
+        "spinal-other-container"
+      );
+      if (this.showViewerMobile == true) {
+        collection2[0].style.display = "none";
+        collection1[0].style.display = "flex";
         // collection2[0].style.width = "0%"
         // collection1[0].style.width = "100%"
         this.showViewerMobile = false;
-      }
-      else{
+      } else {
         collection1[0].style.display = "none";
-        collection2[0].style.display= "flex";
+        collection2[0].style.display = "flex";
         // collection1[0].style.width = "0%"
         // collection2[0].style.width = "100%"
         this.showViewerMobile = true;
       }
     },
-    matchMedia(){
-      if(window.matchMedia("(max-width: 992px)").matches == true) return 'mobile';
-      else return 'desktop';
+    matchMedia() {
+      if (window.matchMedia("(max-width: 992px)").matches == true)
+        return "mobile";
+      else return "desktop";
     },
     onPopClick(event) {
       event.stopPropagation();
@@ -214,25 +250,29 @@ export default {
     onDataClick(event) {
       this.dataMode = !this.dataMode;
     },
-    onInventoryClick(event){
+    onInventoryClick(event) {
       this.inventoryMode = !this.inventoryMode;
     },
-    onDocumentViewerClick(event){
+    onDocumentViewerClick(event) {
       this.documentViewerMode = !this.documentViewerMode;
     },
     openDataMode() {
       this.dataMode = !this.dataMode;
     },
-    openInventoryMode(){
-      this.inventoryMode = !this.inventoryMode
+    openInventoryMode() {
+      this.inventoryMode = !this.inventoryMode;
     },
-    openDocumentViewerMode(){
-      this.documentViewerMode = !this.documentViewerMode
+    openDocumentViewerMode() {
+      this.documentViewerMode = !this.documentViewerMode;
     },
-    expandData(){
-      const collection1 = document.getElementsByClassName("spinal-main-container-left");
-      const collection2 = document.getElementsByClassName("spinal-other-container");
-      if(this.expanded == false){
+    expandData() {
+      const collection1 = document.getElementsByClassName(
+        "spinal-main-container-left"
+      );
+      const collection2 = document.getElementsByClassName(
+        "spinal-other-container"
+      );
+      if (this.expanded == false) {
         for (let i1 = 0; i1 < collection1.length; i1++) {
           collection1[i1].style.width = "50%";
           // collection1[i1].style.width = "0%";
@@ -241,9 +281,8 @@ export default {
           collection2[i2].style.width = "50%";
           // collection2[i2].style.width = "100%";
         }
-        this.expanded=true;
-      }
-      else{
+        this.expanded = true;
+      } else {
         for (let i1 = 0; i1 < collection1.length; i1++) {
           collection1[i1].style.width = "67%";
           // collection1[i1].style.width = "100%";
@@ -256,28 +295,25 @@ export default {
         this.expanded = false;
       }
 
-      
-      
       // this.expanded;
-      
     },
-    chooseExpandIcon(){
-      if(this.expanded == false) return "el-icon-arrow-left"
-      else return "el-icon-arrow-right"
-    }
+    chooseExpandIcon() {
+      if (this.expanded == false) return "el-icon-arrow-left";
+      else return "el-icon-arrow-right";
+    },
   },
 };
 </script>
 
 <style>
-.spinal-body-main-container{
+.spinal-body-main-container {
   display: flex;
   flex-direction: column;
   max-width: 100vw;
   width: 100vw;
   overflow: hidden;
 }
-.appSelector{
+.appSelector {
   position: absolute;
   /* top:5px; */
   z-index: 1000;
@@ -342,8 +378,6 @@ export default {
   display: none;
 }
 
-
-
 @media screen and (max-width: 992px) {
   .spinal-viewer-container {
     height: 100%;
@@ -354,8 +388,8 @@ export default {
     height: calc(100vh - 60px) !important;
     width: 100% !important;
     position: absolute;
-    background-color: #F7F7F7;
-    z-index:1;
+    background-color: #f7f7f7;
+    z-index: 1;
   }
   .spinal-main-container.have-abs-viewer .spinal-other-container {
     height: unset;
@@ -367,9 +401,8 @@ export default {
   .spinal-main-container-left {
     /* height: 50%; */
     position: absolute;
-    z-index:0;
+    z-index: 0;
     width: 100% !important;
-    
   }
 }
 
@@ -493,8 +526,6 @@ export default {
   /* overflow: hidden; */
   flex-direction: column;
 }
-
-
 </style>
 <style scoped>
 /* .spinal-button-expand{
@@ -503,15 +534,14 @@ export default {
   color:#606266;
   border-color: #dcdfe6;
 } */
-.spinal-button-expand:hover{
+.spinal-button-expand:hover {
   background-color: #fafafa;
-  color: #606266;
+  /* color: #606266; */
   border-color: #dcdfe6;
 }
-.spinal-button-expand:focus{
+.spinal-button-expand:focus {
   background-color: #fafafa;
-  color: #606266;
+  /* color: #606266; */
   border-color: #dcdfe6;
 }
-
 </style>

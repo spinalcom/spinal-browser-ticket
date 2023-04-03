@@ -231,7 +231,7 @@ export default {
 
 .spinal-side-bar-menu .el-submenu__title:hover,
 .spinal-side-bar-menu .el-menu-item:hover {
-  background-color: #606266 !important;
+  /* background-color: #606266 !important; */
   color: black !important;
 }
 .spinal-side-bar-menu .el-submenu__title:hover i,

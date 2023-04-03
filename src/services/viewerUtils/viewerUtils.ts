@@ -23,7 +23,7 @@
  */
 
 import q from 'q';
-import {EventBus} from "../event";
+import { EventBus } from "../event";
 type RotateToFace =
   | 'top'
   | 'front'
@@ -72,10 +72,32 @@ export class ViewerUtils {
       this.cube = cube;
       this.initialized.resolve();
     });
-    viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, (e)=> {
-      EventBus.$emit('Autodesk.Viewing.SELECTION_CHANGED_EVENT', e);
+
+    // this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, (e)=> {
+    //   console.log(e);
+    //   EventBus.$emit('Autodesk.Viewing.SELECTION_CHANGED_EVENT', e);
+    // })
+    this.viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, (e)=> {
+      if(e.selections.length !=0){
+        EventBus.$emit('Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT', e);
+      }
+      
     })
     // viewer.toolbar.container.style.display = "none"; // MASQUER DE LA TOOLBAR FORGE
+
+    // for (let key in Autodesk.Viewing) {
+    //   if (key.endsWith("_EVENT")) {
+    //     console.log(key);
+    //       (function (eventName) {
+    //         viewer.addEventListener(
+    //           Autodesk.Viewing[eventName],
+    //           function (event) {
+    //             console.log(eventName, event);
+    //           }
+    //         );
+    //       })(key);
+    //   }
+    // }
   }
 
   waitLoadModels(viewer): Promise<void> {
@@ -201,10 +223,10 @@ export class ViewerUtils {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
       : { r: 0, g: 0, b: 0 };
   }
 

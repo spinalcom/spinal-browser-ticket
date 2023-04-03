@@ -202,8 +202,10 @@ export default {
     });
     // this.update();
     if (this.viewKey == "DataApp" || this.viewKey == "SpaceApp") {
-      EventBus.$on("Autodesk.Viewing.SELECTION_CHANGED_EVENT", async (res) => {
+      EventBus.$on("Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT", async (e) => {
+        let res = e.selections[0]
         let tableComponent = this.$refs.table;
+
         if (res.dbIdArray[0] != undefined) {
           let bimObjectNodeModel =
             await window.spinal.BimObjectService.getBIMObject(
@@ -235,7 +237,7 @@ export default {
   },
   beforeDestroy() {
     EventBus.$off("dataroom-instructions-sent");
-    EventBus.$off("Autodesk.Viewing.SELECTION_CHANGED_EVENT");
+    EventBus.$off("Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT");
   },
   methods: {
     selectInView(item) {

@@ -380,7 +380,7 @@ export default {
   height: 100%;
   box-shadow: 0px 0px 10px #c5c5c5a8;
   font-size: 14px;
-  color: #606266;
+  /* color: #606266; */
 }
 .bouttons {
   float: right;

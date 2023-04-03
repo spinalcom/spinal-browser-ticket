@@ -29,56 +29,68 @@ with this file. If not, see
         style="background: red"
         class="document-viewer-panel-button-close"
         @click="openDocumentViewerModal"
-        >{{ $t('node-type.close-chart') }}
+        >{{ $t("node-type.close-chart") }}
       </md-button>
     </div>
-    <div style="position: relative; height: calc(100vh - 60px); width: 100%">
-
-      <PDFViewer v-if="data.type == 'pdf'"
-        ref="pdfviewer"
-        :source="data.document"
-        :controls="['print','rotate','zoom','catalog']"
-        style="height: 100%; width: 100%"
-      />
-      <iframe v-if="data.type == 'other'"
-        ref="documentViewer"
-        :src="data.document"
-        style="height: calc(100vh - 60px); width: 100%; max-height: calc(100vh - 60px); max-width: 100%"
-        frameborder="0"
-        scrolling="yes"
-        charset="utf-8"
-    ></iframe>
+    <div>
+    <PDFViewer
+      ref="pdfviewer"
+      :source="srcP"
+      style="height: calc(100vh - 60px); width: 100%"
+      @download="handleDownload"
+    />
     </div>
   </div>
 </template>
 
 <script>
-import PDFViewer from 'pdf-viewer-vue/dist/vue2-pdf-viewer';
+import PDFViewer from "pdf-viewer-vue/dist/vue2-pdf-viewer";
 
 export default {
-  name: 'DocumentViewerPanel',
+  name: "DocumentViewerPanel",
   components: { PDFViewer },
-  props: ['isDocumentViewerModalVisible', 'openDocumentViewerModal', 'data'],
-  mounted(){
-  },
-
+  props: ["isDocumentViewerModalVisible", "openDocumentViewerModal"],
+ 
   data() {
     return {
-      srcP: '',
-      type:'',
+      srcP: "",
     };
   },
   methods: {
-    handleDownload() {
+    async toogleSelect(data) {
+      this.srcP = data;
+      // let element = this.$refs.pdfviewer.$refs.viewer.$refs.viewerScroller.children[0].children[0].children[0];
+      // element.style.width = "100%";
+      setTimeout(()=>{this.$refs.pdfviewer.$refs.viewer.handleResize()}, 2000);
     },
+    handleDownload() {
+      console.log ("DOWNLOAD HAS TO BE DONE")
+
+    }/*,
+    coucou(){
+      this.$emit('close')
+      // this.openDocumentViewerModal()
+    }*/
   },
 };
 </script>
 
 <style>
+/* .document-viewer-panel
+  .pdf-viewer
+  .pdf-viewer__body
+  .iframe
+  .html
+  .body
+  .div
+  .viewer-container
+  .scroller.viewer
+  .div {
+  width: 100% !important;
+} */
 .document-viewer-panel {
   background-color: #fafafa;
-  max-height: calc(100vh);
+  max-height: calc(100vh)
 }
 .document-viewer-panel-button-group {
   display: flex;
@@ -89,3 +101,4 @@ export default {
   width: fit-content;
 }
 </style>
+

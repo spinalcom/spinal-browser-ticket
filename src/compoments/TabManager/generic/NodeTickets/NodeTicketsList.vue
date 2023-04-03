@@ -53,7 +53,7 @@ with this file. If not, see
         'opacity': '1',
       }"
       border
-      height="100%"
+      max-height="70vh"
     >
       <el-table-column label="Ticket">
         <div slot-scope="scope">

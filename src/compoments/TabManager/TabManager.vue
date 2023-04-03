@@ -64,13 +64,6 @@ with this file. If not, see
             :closable="false"
             style="height: calc(100%); overflow: hidden"
           >
-            <!-- <el-tab-pane
-          :key="$t(tab.name)"
-          :label="$t(tab.name)"
-          :name="tab.name"
-          :closable="false"
-          style="height: calc(100%); overflow: auto"
-        > -->
             <keep-alive>
               <component
                 :is="tab.content"

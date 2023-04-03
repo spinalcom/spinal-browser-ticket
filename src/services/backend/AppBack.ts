@@ -119,6 +119,7 @@ export class AppBack {
     }
     const arr = res.get(nodeType)!;
     const item = AppItem.getItemFromMap(allItems, node, type);
+    // console.warn(item);
     arr.push(item);
     let depth = 0;
     while (nextGen.length) {

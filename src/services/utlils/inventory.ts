@@ -32,6 +32,7 @@ import AttributeService from 'spinal-env-viewer-plugin-documentation-service';
 
 
 export async function getRoomCategoryInventory(node: SpinalNode) {
+    console.log("room category inventory => inventaire des groupes")
     let returnObj = {
         node: node.getName().get(),
         objectType: "ROOM_AREA_INVENTORY",

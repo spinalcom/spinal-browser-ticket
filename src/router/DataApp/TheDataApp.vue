@@ -108,6 +108,7 @@ import NodeNotes from "../../compoments/TabManager/generic/NodeNotes/NodeNotes.v
 import InsightEndpoint from "../../compoments/TabManager/generic/Insight/InsightEndpoint.vue";
 import InsightControlEndpoint from "../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue";
 import Inventory from  "../../compoments/TabManager/generic/Inventory/Inventory.vue"
+import ParentNodes from "../../compoments/TabManager/generic/ParentNodes/ParentNodes.vue"
 
 const VIEW_KEY = "DataApp";
 
@@ -204,6 +205,15 @@ export default {
         {
           name: "spinal-twin.Inventory",
           content: Inventory,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+        {
+          name: "spinal-twin.ParentNodes",
+          content: ParentNodes,
           props: {
             viewKey: VIEW_KEY,
             view: false,

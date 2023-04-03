@@ -228,7 +228,8 @@ export default {
       }
     });
 
-    EventBus.$on('Autodesk.Viewing.SELECTION_CHANGED_EVENT', async (res) => {
+    EventBus.$on('Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT', async (e) => {
+      let res = e.selections[0];
       if (res != undefined && this.endpoint != undefined) {
         if(res.dbIdArray[0] != undefined){
           for(let ref of this.room.references){
@@ -248,7 +249,7 @@ export default {
         }
         
       }
-    });
+  });
   },
 
   methods: {
@@ -529,7 +530,7 @@ export default {
 
   beforeDestroy() {
     if (this.endpoint && this.bindProcess) this.endpoint.currentValue.unbind(this.bindProcess);
-    // EventBus.$off('Autodesk.Viewing.SELECTION_CHANGED_EVENT');
+    // EventBus.$off('Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT');
   },
 };
 </script>

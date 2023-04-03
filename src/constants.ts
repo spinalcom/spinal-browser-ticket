@@ -125,3 +125,5 @@ export const SPACE_RELATION_LIST = [
   GROUP_RELATION_NAME,
   SPACE_ROOM_RELATION,
 ];
+
+export const TICKET_PRIORITY_LIST = ["Occasionally", "Normal", "Urgent"]
