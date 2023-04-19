@@ -25,12 +25,6 @@ with this file. If not, see
 <template>
   <div class="inventory-panel">
     <div class="inventory-panel-button-group">
-      <el-button
-            class="spl-el-button"
-            icon="el-icon-download"
-            circle
-            @click="exportData"
-          ></el-button>
       <md-button
         style="background: red"
         class="inventory-panel-button-close"
@@ -38,27 +32,18 @@ with this file. If not, see
         >{{ $t("node-type.close-chart") }}
       </md-button>
     </div>
-    <div class="inventory-title">{{ title }}</div>
+    <div class="inventory-title">{{ "Inventaire sur " + tableData.node }}</div>
 
-    <BarChart
-      v-if="displayChart == true"
-      class="inventory-bar-chart"
-      :labels="barLabels"
-      :datasets="barChartData"
-    ></BarChart>
+    <BarChart class="inventory-bar-chart" :labels="barLabels" :datasets="barChartData"></BarChart>
 
-    <div
-      class="inventory-panel-table-div"
-      v-if="displayTable == true"
-      :style="getStyleOfTable()"
-    >
+    <div class="inventory-panel-table-div">
       <el-table
         class="inventory-panel-table"
         :cell-class-name="cellClassChecker"
         table-layout="fixed"
         height="100%"
-        :max-height="displayChart == true ? '40vh' : '80vh'"
-        :data="tableData"
+        max-height="40vh"
+        :data="tableData.array"
         border
         resizable
         :header-cell-style="{
@@ -80,14 +65,12 @@ with this file. If not, see
       >
         <el-table-column
           class="inventory-panel-table-columns"
-          v-for="head in tableDataHeaders"
+          v-for="head in tableData.headers"
           :key="head"
           :prop="head"
           :label="head"
-          :sortable="isSortable(head)"
-          :filters="isFilterable(head)"
-          :filter-method="isSortable(head) == true ? undefined : filterHandler"
-          :fixed="head == tableDataHeaders[0] || head == tableDataHeaders[1]"
+          sortable
+          :fixed="head == tableData.headers[0] || head == tableData.headers[1]"
         >
         </el-table-column>
       </el-table>
@@ -97,15 +80,11 @@ with this file. If not, see
 
 <script>
 import { spinalBackEnd } from "../../../services/spinalBackend";
-import BarChart from "../../TabManager/generic/charts/BarChart.vue";
-import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
-import fileSaver from 'file-saver';
-
-
+import BarChart from "../../TabManager/generic/charts/BarChart.vue"
 import tinygradient from "tinygradient";
 export default {
   name: "InventoryPanel",
-  components: { BarChart },
+  components: {BarChart},
   props: ["isInventoryModalVisible", "openInventoryModal"],
   data() {
     return {
@@ -113,129 +92,62 @@ export default {
       displayChart: false,
       title: "",
       tableData: [],
-      tableDataHeaders: [],
       barLabels: [],
       barChartData: [],
-      sortableHeaders: ["Nom", "Surface", "Salle"]
     };
   },
   methods: {
     async toogleSelect(data) {
       console.log(data);
-      this.title = data.title;
-      this.displayTable = data.arrayComponent.display;
-      this.tableData = data.arrayComponent.data;
-      this.displayChart = data.barChartComponent.display;
-      this.barLabels = data.barChartComponent.labels;
-      this.tableDataHeaders = data.arrayComponent.header;
-      this.barChartData = data.barChartComponent.barChartData;
-      console.log(this.barChartData);
+      this.tableData = data;
+      this.barLabels = [""];
+      this.barChartData = this.getBarChartData(data);
     },
     cellClassChecker(e) {
       if (e.row[e.column.property] == undefined)
         return "inventory-panel-table-cell-empty";
     },
-    // formatBarChart(tab) {
-    //   let labels = Object.keys(tab.resume);
-    //   let colors = tinygradient(["#14202C", "#13A9E0", "#CADEE2"]).rgb(
-    //     labels.length
-    //   );
-    //   let returnTab = [];
-    //   for (let label of labels) {
-    //     let index = labels.findIndex((l) => l == label);
-    //     if (tab.resume[label][1] != 0) {
-    //       let obj = {
-    //         label: label,
-    //         backgroundColor: `#${colors[index].toHex()}`,
-    //         data: [tab.resume[label][1]],
-    //       };
-    //       returnTab.push(obj);
-    //     }
-    //   }
-    //   return returnTab;
-    // },
+    formatBarChart(tab) {
+      let labels = Object.keys(tab.resume);
+      let colors = tinygradient(["#14202C", "#13A9E0", "#CADEE2"]).rgb(
+        labels.length
+      );
+      let returnTab = [];
+      for (let label of labels) {
+        let index = labels.findIndex((l) => l == label);
+        if (tab.resume[label][1] != 0) {
+          let obj = {
+            label: label,
+            backgroundColor: `#${colors[index].toHex()}`,
+            data: [tab.resume[label][1]],
+          };
+          returnTab.push(obj);
+        }
+      }
+      return returnTab;
+    },
     getBarChartData(tab) {
       this.barLabels = Object.keys(tab.resume);
-      let obj = [
-        {
-          label: "Surface en m²",
-          hidden: false,
-          backgroundColor: "#153284",
-          data: [],
-        },
-        {
-          label: "Nombre",
-          hidden: true,
-          backgroundColor: "#CADEE2",
-          data: [],
-        },
-      ];
+      let obj = [{
+        label: "Surface en m²",
+        hidden: false,
+        backgroundColor: "#153284",
+        data: [],
+      }, 
+      {
+        label: "Nombre",
+        hidden: true,
+        backgroundColor: "#CADEE2",
+        data: [],
+      }];
       let keys = Object.keys(tab.resume);
       let length = Object.keys(tab.resume).length;
       for (let key of keys) {
         obj[0].data.push(tab.resume[key][1]);
-        obj[1].data.push(tab.resume[key][0]);
+        obj[1].data.push(tab.resume[key][0])
       }
       return obj;
     },
-    getStyleOfTable() {
-      // if(this.displayChart == true) return {'max-height':'40vh'};
-      // else return {'max-height':'80vh'};
-      if (this.displayChart == true) return { height: "40vh" };
-      else return { height: "80vh" };
-    },
-    isSortable(head) {
-      
-      if (this.sortableHeaders.includes(head) == true) return true;
-      else return false;
-    },
-    isFilterable(head) {
-      if(this.sortableHeaders.includes(head) == false){
-        const props = this.tableData.map((elt) => {
-        return {
-          text: elt[head] == undefined ? "(vide)" : elt[head],
-          value: elt[head],
-        };
-      });
-      let propsFiltered = props.filter((elt, index) => {
-        return props.findIndex(e => e.value == elt.value) == index;
-      });
-      return propsFiltered;
-      }
-      else return undefined;
-      
-    },
-    filterHandler(value, row, column) {
-      // console.log(column)
-      return row[column.label] == value;
-      
-    },
-    exportData(){
-      // console.log(this.tableData)
-      let headers = this.tableDataHeaders.map(elt => {
-        return {
-          key:elt,
-          header:elt,
-        }
-      });
-      let excelData = [
-        {
-          name: 'Inventaire',
-          author: 'SpinalCom',
-          data: [
-            {
-              name: 'Inventaire',
-              header: headers,
-              rows: this.tableData,
-            },
-          ],
-        },
-      ];
-      console.log(excelData)
-      excelManager.export(excelData).then((reponse) => {
-        fileSaver.saveAs(new Blob(reponse), `Inventaire.xlsx`);
-      });
-    }
   },
 };
 </script>
@@ -243,8 +155,6 @@ export default {
 <style>
 .inventory-panel {
   background-color: #fafafa;
-  max-height: 100vh;
-  height: 100vh;
 }
 .inventory-panel-button-group {
   display: flex;
@@ -335,6 +245,7 @@ export default {
 .inventory-panel-table-div {
   margin-right: 5%;
   margin-left: 5%;
+  /* overflow:auto; */
 }
 .inventory-panel-table {
   /* text-align: center; */
@@ -351,9 +262,5 @@ export default {
   /* background-color: #EAEEF0; */
   background-color: #f4f4f4;
 }
-
-/* .el-table-filter.el-table-filter__content.el-scrollbar.el-table-filter__wrap.el-scrollbar__wrap.el-checkbox-group.el-table-filter__checkbox-group{
-  background-color: #ffff;
-} */
 </style>
 

@@ -33,8 +33,8 @@ with this file. If not, see
 
 <script>
 import { Bar } from 'vue-chartjs/legacy'
-import { Legend, BarElement, LinearScale, CategoryScale, LogarithmicScale, Chart as ChartJS } from "chart.js";
-ChartJS.register(Legend, BarElement, CategoryScale, LinearScale, LogarithmicScale)
+import { Legend, BarElement, LinearScale, CategoryScale, Tooltip, LogarithmicScale, Chart as ChartJS } from "chart.js";
+ChartJS.register(Legend, BarElement, CategoryScale, LinearScale, LogarithmicScale, Tooltip)
 
 export default {
   name: "BarChart",

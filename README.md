@@ -1,3 +1,7 @@
+#
+        - Add multiple inventories
+        - Modify style of space assignation component
+
 # 03.04.23 : v1.7.0
         - Viewer select => table select feature for multi-models
         - Documentation table => add parent documentation

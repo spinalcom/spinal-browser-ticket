@@ -292,6 +292,8 @@ export default {
   'spinal-twin.insight-center.display-sprites' : 'Display as sprites',
   'spinal-twin.Inventory' : 'Inventory',
   'spinal-twin.Inventory-tab.space-inventory' : 'SPACE INVENTORY',
-  'spinal-twin.SpaceConfiguration' : '[BETA] : Space Management',
-  'spinal-twin.ParentNodes' : '[BETA] : Parent Nodes',
+  // 'spinal-twin.SpaceConfiguration' : '[BETA] : Space Management',
+  // 'spinal-twin.ParentNodes' : '[BETA] : Parent Nodes',
+  'spinal-twin.SpaceConfiguration' : 'Configuration',
+  'spinal-twin.ParentNodes' : 'Parent Nodes',
 };

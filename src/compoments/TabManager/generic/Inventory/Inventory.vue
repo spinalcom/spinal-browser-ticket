@@ -23,22 +23,63 @@ with this file. If not, see
 -->
 
 <template>
-  <!-- <el-container v-if="ctxNode">
-    <div style="overflow: auto">
-      <h4 class="box-node-name">
-        {{ ctxNode.info.name.get() + " : " + $t('datas.current-value')}}
-      </h4>
-      <div>
-        <div v-for="eq of endpoints" :key="eq.name">
-          <div class="control-endpoint-grid">
-          </div>
-        </div>
-      </div>
-    </div>
-  </el-container> -->
-  <div>
-    <el-button class="inventory-tab-buttons" :loading="spaceInventoryLoader" @click="spaceInventory"
-      >{{$t('spinal-twin.Inventory-tab.space-inventory')}}</el-button
+  <div class="inventory-list">
+    <!-- <el-button
+      class="inventory-tab-buttons"
+      :loading="spaceInventoryLoader"
+      @click="spaceInventory"
+      >{{ $t("spinal-twin.Inventory-tab.space-inventory") }}</el-button
+    > -->
+
+    <el-divider
+      class="inventory-divider"
+    >
+      <span class="inventory-divider-text">Inventaire des espaces</span>
+    </el-divider>
+
+    <el-button
+      class="inventory-tab-buttons"
+      @click="fullRoomInventory"
+      >INVENTAIRE COMPLET DES ESPACES</el-button
+    >
+    
+    <el-button
+      class="inventory-tab-buttons"
+      :loading="spaceInventoryLoader"
+      @click="spaceInventory"
+      >INVENTAIRE DES ESPACES DE LA CATEGORY</el-button
+    >
+
+    <el-button
+      class="inventory-tab-buttons"
+      @click="roomInventory('typology')"
+      >INVENTAIRE DES TYPOLOGIES D'ESPACES</el-button
+    >
+
+    
+
+    <el-divider
+      class="inventory-divider"
+    >
+      <span class="inventory-divider-text"
+        >Inventaire des équipements</span
+      >
+    </el-divider>
+
+    <el-button
+      class="inventory-tab-buttons"
+      @click="equipmentInventory('typology')"
+      >INVENTAIRE DES TYPOLOGIES D'ÉQUIPEMENTS</el-button
+    >
+    <el-button
+      class="inventory-tab-buttons"
+      @click="equipmentInventory('furniture')"
+      >INVENTAIRE DU MOBILIER</el-button
+    >
+    <el-button
+      class="inventory-tab-buttons"
+      @click="equipmentInventory('staff')"
+      >INVENTAIRE DES AFFECTATIONS</el-button
     >
   </div>
 </template>
@@ -112,35 +153,56 @@ export default {
     },
     async spaceInventory() {
       console.log(this.ctxNode);
-      this.spaceInventoryLoader = true;
-      const promise = new Promise(async (res, rej) => {
-        if (this.ctxNode.getType().get() == "groupingCategory") {
-          let data = await inventoryUtils.getRoomCategoryInventory(
-            this.ctxNode
-          );
-          EventBus.$emit("inventory-mode", data);
-        } else if (
-          this.ctxNode.getType().get() == "geographicRoomGroupContext"
-        ) {
-          let data = await inventoryUtils.getRoomContextInventory(this.ctxNode);
-          EventBus.$emit("inventory-mode", data);
-        }
-        res();
-      });
-      promise.then(()=>this.spaceInventoryLoader=false)
-      // if (this.ctxNode.getType().get() == "groupingCategory") {
-      //   let data = await inventoryUtils.getRoomCategoryInventory(this.ctxNode);
-      //   EventBus.$emit("inventory-mode", data);
-      // } else if (this.ctxNode.getType().get() == "geographicRoomGroupContext") {
-      //   let data = await inventoryUtils.getRoomContextInventory(this.ctxNode);
-      //   EventBus.$emit("inventory-mode", data);
-      // }
+      let data = await inventoryUtils.getRoomOfCategoryInventory(this.ctxNode);
+      EventBus.$emit("inventory-mode", data);
+      // console.log(this.ctxNode);
+      // this.spaceInventoryLoader = true;
+      // const promise = new Promise(async (res, rej) => {
+      //   if (this.ctxNode.getType().get() == "groupingCategory") {
+      //     let data = await inventoryUtils.getRoomCategoryInventory(
+      //       this.ctxNode
+      //     );
+      //     console.log(data)
+      //     EventBus.$emit("inventory-mode", data);
+      //   } else if (
+      //     this.ctxNode.getType().get() == "geographicRoomGroupContext"
+      //   ) {
+      //     let data = await inventoryUtils.getRoomContextInventory(this.ctxNode);
+      //     EventBus.$emit("inventory-mode", data);
+      //   }
+      //   res();
+      // });
+      // promise.then(() => (this.spaceInventoryLoader = false));
+    },
+    async equipmentInventory(std_name) {
+      let data = await inventoryUtils.getEquipmentCategoryInventory(
+        this.ctxNode,
+        std_name
+      );
+      EventBus.$emit("inventory-mode", data);
+    },
+    async roomInventory(std_name){
+      let data = await inventoryUtils.getRoomCategoryInventory(
+        this.ctxNode,
+        std_name
+      );
+      EventBus.$emit("inventory-mode", data);
+    },
+    async fullRoomInventory(){
+      let data = await inventoryUtils.getFullRoomCategoryInventory(
+        this.ctxNode
+      );
+      EventBus.$emit("inventory-mode", data);
     },
   },
 };
 </script>
 
 <style scoped>
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+}
 .inventory-tab-buttons {
   letter-spacing: 0.75px;
   color: #f9f9f9;
@@ -148,5 +210,15 @@ export default {
   background-color: #14202c;
   border: 3px solid #f9f9f9;
   border-radius: 10px;
+  margin-left: 0px;
+}
+.inventory-divider {
+  color: #58727e;
+}
+.inventory-divider-text {
+  color: #58727e;
+  letter-spacing: 1px;
+  font-size: 16px;
+  font-weight: 200;
 }
 </style>

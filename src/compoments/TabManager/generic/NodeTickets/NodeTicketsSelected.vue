@@ -748,15 +748,14 @@ export default {
   border: 3px solid #f9f9f9;
   border-radius: 10px;
 }
-.el-scrollbar {
+/* .el-scrollbar {
   text-align: left;
   letter-spacing: 0.75px;
   color: #f9f9f9;
   opacity: 1;
   background-color: #14202c !important;
-  /* border: 3px solid #f9f9f9; */
   border-radius: 10px;
-}
+} */
 .el-select-dropdown__item.hover {
   background-color: #14202c;
   color: #448aff;

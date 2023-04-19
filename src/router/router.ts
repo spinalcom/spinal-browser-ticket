@@ -84,6 +84,8 @@ export const router = new VueRouter({
 });
 
 router.beforeResolve(function (to, from, next) {
+  console.log(router);
+  console.log(document)
   document.title = `SpinalTwin - ${to.name}`;
   next();
 });

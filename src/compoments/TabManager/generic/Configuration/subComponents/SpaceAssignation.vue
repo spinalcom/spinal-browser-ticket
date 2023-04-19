@@ -32,6 +32,7 @@ with this file. If not, see
         class="space-assignation-button-close"
         @click="cancel"
       ></el-button>
+      <div class="space-assignation-title">Affectation des espaces</div>
       <el-button
         type="success"
         icon="el-icon-check"
@@ -41,13 +42,20 @@ with this file. If not, see
       ></el-button>
     </div>
     <div class="space-assignation-legend">
+      <el-divider
+      class="space-assignation-legend-divider"
+    >
+      <span class="space-assignation-legend-divider-text">État actuel</span>
+    </el-divider>
+
       <div class="space-assignation-legend-part">
         <div
           :style="{ backgroundColor: COLOR_ROOMS_DEFAULT }"
           class="div__rectangle-legend"
         ></div>
         <div class="space-assignation-legend-part-description">
-          Salles non présentes dans un groupe de la catégorie
+          <!-- Salles non présentes dans un groupe de la catégorie -->
+          Non affectées
         </div>
       </div>
 
@@ -57,7 +65,8 @@ with this file. If not, see
           class="div__rectangle-legend"
         ></div>
         <div class="space-assignation-legend-part-description">
-          Salles présentes dans le groupe
+          <!-- Salles présentes dans le groupe -->
+          Affectées au groupe
         </div>
       </div>
       <div class="space-assignation-legend-part">
@@ -66,16 +75,23 @@ with this file. If not, see
           class="div__rectangle-legend"
         ></div>
         <div class="space-assignation-legend-part-description">
-          Salles présentes dans un autre groupe de la catégorie
+          <!-- Salles présentes dans un autre groupe de la catégorie -->
+          Affectées à un autre groupe
         </div>
       </div>
+      <el-divider
+      class="space-assignation-legend-divider"
+    >
+      <span class="space-assignation-legend-divider-text">Actions à réaliser</span>
+    </el-divider>
       <div class="space-assignation-legend-part">
         <div
           :style="{ backgroundColor: COLOR_ROOMS_TO_AFFECT }"
           class="div__rectangle-legend"
         ></div>
         <div class="space-assignation-legend-part-description">
-          Salles à affecter au groupe : non présentes dans un autre groupe
+          <!-- Salles à affecter au groupe : non présentes dans un autre groupe -->
+          À affecter au groupe
         </div>
       </div>
       <div class="space-assignation-legend-part">
@@ -84,7 +100,8 @@ with this file. If not, see
           class="div__rectangle-legend"
         ></div>
         <div class="space-assignation-legend-part-description">
-          Salles à ré-affecter au groupe : présentes dans un autre groupe
+          <!-- Salles à ré-affecter au groupe : présentes dans un autre groupe -->
+          À ré-affecter au groupe
         </div>
       </div>
       <div class="space-assignation-legend-part">
@@ -93,7 +110,8 @@ with this file. If not, see
           class="div__rectangle-legend"
         ></div>
         <div class="space-assignation-legend-part-description">
-          Salles à enlever du groupe
+          <!-- Salles à enlever du groupe -->
+          À désaffecter du groupe
         </div>
       </div>
     </div>
@@ -516,11 +534,32 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  align-items: center;
 }
 .space-assignation-button-close {
   background-color: #f56c6c;
 }
 .space-assignation-button-check {
   background-color: #67c23a;
+}
+
+.space-assignation-legend-divider {
+  color: #58727e;
+}
+.space-assignation-legend-divider-text {
+  color: #58727e;
+  letter-spacing: 1px;
+  font-size: 16px;
+  font-weight: 200;
+}
+.space-assignation-title {
+  /* color: #58727e;
+  letter-spacing: 1.4px;
+  font-size: 30px;
+  font-weight: 200; */
+  color: #58727e;
+    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: 200;
 }
 </style>
