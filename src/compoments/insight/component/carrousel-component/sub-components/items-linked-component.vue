@@ -32,7 +32,8 @@ with this file. If not, see
       class="fullWidth"
     > -->
     <div
-      v-if="variableSelected.command == 1"
+      v-if="variableSelected.command == 1 &&
+      variableSelected.dataType == 'Boolean'"
       class="fullWidth"
     >
       <el-button

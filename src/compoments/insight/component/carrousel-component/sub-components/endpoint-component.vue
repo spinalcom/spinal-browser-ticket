@@ -126,10 +126,7 @@ with this file. If not, see
 
         <el-tooltip :content="$t('spinal-twin.insight-center.change-value')">
           <el-button
-            v-if="
-              variableSelected.type == 'Consigne' &&
-              variableSelected.dataType != 'Boolean'
-            "
+            v-if="variableSelected.command == 1"
             v-on:click="openConfigModal()"
             class="config-btn-position custom-icon circled-button"
             circle
