@@ -30,7 +30,7 @@ with this file. If not, see
           @click.native="exportData"
           icon="el-icon-download"
           circle
-          size="small"
+          
         ></el-button>
       </el-tooltip>
       <md-button
@@ -90,6 +90,7 @@ with this file. If not, see
           :filters="isFilterable(head)"
           :filter-method="isSortable(head) == true ? undefined : filterHandler"
           :fixed="head == tableDataHeaders[0] || head == tableDataHeaders[1]"
+          width="150"
         >
         </el-table-column>
       </el-table>
@@ -131,6 +132,10 @@ export default {
       this.tableDataHeaders = data.arrayComponent.header;
       this.barChartData = data.barChartComponent.barChartData;
       console.log(this.barChartData);
+      // EY TO REMOVE
+      if(this.title.includes('Affectation du poste') == true ){
+        this.displayChart = false;
+      }
     },
     cellClassChecker(e) {
       if (e.row[e.column.property] == undefined)

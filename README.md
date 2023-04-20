@@ -1,6 +1,7 @@
 #
         - Add multiple inventories
         - Modify style of space assignation component
+        - Correction of command feature
 
 # 03.04.23 : v1.7.0
         - Viewer select => table select feature for multi-models

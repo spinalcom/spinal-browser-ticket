@@ -197,7 +197,7 @@ export async function getRoomOfCategoryInventory(node: SpinalNode) {
 
 export async function getRoomCategoryInventory(node: SpinalNode, std_name: String){
     let returnObj = {
-        title: "Inventaire des salles sur : " + node.getName().get(),
+        title: "",
         arrayComponent: {
             display: true,
             header: ["Nom", "Étage", "Surface"],
@@ -240,6 +240,7 @@ export async function getRoomCategoryInventory(node: SpinalNode, std_name: Strin
             for(let category of categories){
                 if(category.info.standard_name != undefined){
                     if(category.info.standard_name.get() == std_name){
+                        returnObj.title = 'Inventaire de la catégorie d\'espaces "' + category.getName().get() + '" sur : ' + node.getName().get();
                         if(returnObj.arrayComponent.header.includes(category.getName().get()) == false){
                             returnObj.arrayComponent.header.push(category.getName().get());
                         }
@@ -294,7 +295,7 @@ export async function getRoomCategoryInventory(node: SpinalNode, std_name: Strin
 
 export async function getFullRoomCategoryInventory(node: SpinalNode){
     let returnObj = {
-        title: "Inventaire Complet des salles sur : " + node.getName().get(),
+        title: "Inventaire complet des espaces sur : " + node.getName().get(),
         arrayComponent: {
             display: true,
             header: ["Nom", "Étage", "Surface"],
@@ -395,7 +396,7 @@ export async function getFullRoomCategoryInventory(node: SpinalNode){
 
 export async function getEquipmentCategoryInventory(node: SpinalNode, std_name: String) {
     let returnObj = {
-        title: "Inventaire de " + std_name + " sur : " + node.getName().get(),
+        title: "",
         arrayComponent: {
             display: true,
             header: ["Nom", "Étage", "Salle"],
@@ -429,6 +430,7 @@ export async function getEquipmentCategoryInventory(node: SpinalNode, std_name: 
                 for (let category of categories) {
                     if (category.info.standard_name != undefined) {
                         if (category.info.standard_name.get() == std_name) {
+                            returnObj.title = 'Inventaire de la catégorie d\'objets "' + category.getName().get() + '" sur : ' + node.getName().get()
                             // table
                             if(returnObj.arrayComponent.header.includes(category.getName().get()) == false){
                                 returnObj.arrayComponent.header.push(category.getName().get());

@@ -52,11 +52,15 @@ with this file. If not, see
       </el-button>
     </div>
 
-    <div
+    <!-- <div
       v-if="
         variableSelected.type == 'Consigne' &&
         variableSelected.dataType != 'Boolean'
       "
+      class="fullWidth"
+    > -->
+    <div
+      v-if="variableSelected.command == 1"
       class="fullWidth"
     >
       <el-button
@@ -177,6 +181,7 @@ export default {
   watch: {
     variableSelected() {
       this.isModalVisible = false;
+      console.log(this.variableSelected)
     },
   },
 };

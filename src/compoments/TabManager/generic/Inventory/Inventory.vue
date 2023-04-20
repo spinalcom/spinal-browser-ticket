@@ -24,52 +24,51 @@ with this file. If not, see
 
 <template>
   <div class="inventory-list">
-    <!-- <el-button
-      class="inventory-tab-buttons"
-      :loading="spaceInventoryLoader"
-      @click="spaceInventory"
-      >{{ $t("spinal-twin.Inventory-tab.space-inventory") }}</el-button
-    > -->
-
-    <el-divider
-      class="inventory-divider"
-    >
+    <el-divider class="inventory-divider">
       <span class="inventory-divider-text">Inventaire des espaces</span>
     </el-divider>
 
     <el-button
+      v-for="item of inventories.room"
+      :key="item"
+      v-show="item.display == true"
       class="inventory-tab-buttons"
-      @click="fullRoomInventory"
+      @click="item.fct"
+      >{{ item.name }}</el-button
+    >
+
+    <!-- <el-button class="inventory-tab-buttons" @click="fullRoomInventory"
       >INVENTAIRE COMPLET DES ESPACES</el-button
     >
-    
+
     <el-button
       class="inventory-tab-buttons"
       :loading="spaceInventoryLoader"
       @click="spaceInventory"
-      >INVENTAIRE DES ESPACES DE LA CATEGORY</el-button
+      >INVENTAIRE DES ESPACES DE LA CATEGORIE</el-button
     >
 
-    <el-button
-      class="inventory-tab-buttons"
-      @click="roomInventory('typology')"
+    <el-button class="inventory-tab-buttons" @click="roomInventory('typology')"
       >INVENTAIRE DES TYPOLOGIES D'ESPACES</el-button
-    >
+    > -->
 
-    
-
-    <el-divider
-      class="inventory-divider"
-    >
-      <span class="inventory-divider-text"
-        >Inventaire des équipements</span
-      >
+    <el-divider class="inventory-divider">
+      <span class="inventory-divider-text">Inventaire des objets</span>
     </el-divider>
 
     <el-button
+      v-for="item of inventories.equipments"
+      :key="item"
+      v-show="item.display == true"
+      class="inventory-tab-buttons"
+      @click="item.fct"
+      >{{ item.name }}</el-button
+    >
+
+    <!-- <el-button
       class="inventory-tab-buttons"
       @click="equipmentInventory('typology')"
-      >INVENTAIRE DES TYPOLOGIES D'ÉQUIPEMENTS</el-button
+      >INVENTAIRE DES TYPOLOGIES D'OBJETS</el-button
     >
     <el-button
       class="inventory-tab-buttons"
@@ -80,7 +79,7 @@ with this file. If not, see
       class="inventory-tab-buttons"
       @click="equipmentInventory('staff')"
       >INVENTAIRE DES AFFECTATIONS</el-button
-    >
+    > -->
   </div>
 </template>
 
@@ -89,6 +88,7 @@ with this file. If not, see
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import * as inventoryUtils from "../../../../services/utlils/inventory";
+import * as constants from "../../../../constants";
 import { EventBus } from "../../../../services/event";
 
 export default {
@@ -115,6 +115,68 @@ export default {
       controlEndpoints: false,
       context: false,
       spaceInventoryLoader: false,
+      inventories: {
+        room: [
+          {
+            name: "INVENTAIRE COMPLET DES ESPACES",
+            display: true,
+            fct: () => {
+              this.fullRoomInventory();
+            },
+          },
+          {
+            name: "INVENTAIRE DES ESPACES DE LA CATEGORIE",
+            display: true,
+            fct: () => {
+              this.spaceInventory();
+            },
+          },
+          {
+            name: "INVENTAIRE DES TYPOLOGIES D'ESPACES",
+            display: true,
+            fct: () => {
+              this.roomInventory("typology");
+            },
+          },
+          {
+            name: "INVENTAIRE DES AFFECTATIONS PAR ENTREPRISE",
+            display: true,
+            fct: () => {
+              this.roomInventory("company_assignment");
+            },
+          },
+          {
+            name: "INVENTAIRE DES AFFECTATIONS PAR SERVICE",
+            display: true,
+            fct: () => {
+              this.roomInventory("duty_assignment");
+            },
+          },
+        ],
+        equipments: [
+          {
+            name: "INVENTAIRE DES TYPOLOGIES D'OBJETS",
+            display: true,
+            fct: () => {
+              this.equipmentInventory("typology");
+            },
+          },
+          {
+            name: "INVENTAIRE DU MOBILIER",
+            display: true,
+            fct: () => {
+              this.equipmentInventory("furniture");
+            },
+          },
+          {
+            name: "INVENTAIRE DES AFFECTATIONS",
+            display: true,
+            fct: () => {
+              this.equipmentInventory("staff");
+            },
+          },
+        ],
+      },
     };
   },
 
@@ -150,11 +212,33 @@ export default {
     async update(id) {
       // update tab infos from current node
       this.ctxNode = FileSystem._objects[id];
+      let index = this.inventories.room.findIndex(
+        (elt) => elt.name == "INVENTAIRE DES ESPACES DE LA CATEGORIE"
+      );
+      if (index != -1) {
+        if (
+          [
+            constants.GEO_BUILDING_TYPE,
+            constants.GEO_FLOOR_TYPE,
+            constants.GEO_ROOM_TYPE,
+            constants.EQUIPMENT_TYPE,
+            constants.SPACE_GROUP_TYPE,
+            constants.SPATIAL_CONTEXT_TYPE,
+            constants.SPACE_CONTEXT_TYPE,
+          ].includes(this.ctxNode.getType().get())
+        ) {
+          this.inventories.room[index].display = false;
+        }
+        else{
+          this.inventories.room[index].display = true;
+        }
+      }
     },
     async spaceInventory() {
       console.log(this.ctxNode);
       let data = await inventoryUtils.getRoomOfCategoryInventory(this.ctxNode);
       EventBus.$emit("inventory-mode", data);
+      console.log(data);
       // console.log(this.ctxNode);
       // this.spaceInventoryLoader = true;
       // const promise = new Promise(async (res, rej) => {
@@ -181,14 +265,14 @@ export default {
       );
       EventBus.$emit("inventory-mode", data);
     },
-    async roomInventory(std_name){
+    async roomInventory(std_name) {
       let data = await inventoryUtils.getRoomCategoryInventory(
         this.ctxNode,
         std_name
       );
       EventBus.$emit("inventory-mode", data);
     },
-    async fullRoomInventory(){
+    async fullRoomInventory() {
       let data = await inventoryUtils.getFullRoomCategoryInventory(
         this.ctxNode
       );

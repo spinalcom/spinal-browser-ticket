@@ -94,6 +94,7 @@ export const GEO_RELATIONS = [
   'hasReference',
   'hasReferenceObject',
 ];
+
 export const SCENE_RELATION_CONTEXT_TYPE = 'SpinalService';
 export const SCENE_RELATION_NAME = 'hasScene';
 export const PART_RELATION_NAME = 'hasParts';
