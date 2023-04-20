@@ -90,7 +90,7 @@ with this file. If not, see
           :filters="isFilterable(head)"
           :filter-method="isSortable(head) == true ? undefined : filterHandler"
           :fixed="head == tableDataHeaders[0] || head == tableDataHeaders[1]"
-          width="150"
+          min-width="150"
         >
         </el-table-column>
       </el-table>
