@@ -25,12 +25,14 @@ with this file. If not, see
 <template>
   <div class="inventory-panel">
     <div class="inventory-panel-button-group">
-      <el-button
-            class="spl-el-button"
-            icon="el-icon-download"
-            circle
-            @click="exportData"
-          ></el-button>
+      <el-tooltip :content="$t('spinal-twin.DocumentDownload')">
+        <el-button
+          @click.native="exportData"
+          icon="el-icon-download"
+          circle
+          size="small"
+        ></el-button>
+      </el-tooltip>
       <md-button
         style="background: red"
         class="inventory-panel-button-close"
@@ -98,9 +100,8 @@ with this file. If not, see
 <script>
 import { spinalBackEnd } from "../../../services/spinalBackend";
 import BarChart from "../../TabManager/generic/charts/BarChart.vue";
-import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
-import fileSaver from 'file-saver';
-
+import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
+import fileSaver from "file-saver";
 
 import tinygradient from "tinygradient";
 export default {
@@ -116,7 +117,7 @@ export default {
       tableDataHeaders: [],
       barLabels: [],
       barChartData: [],
-      sortableHeaders: ["Nom", "Surface", "Salle"]
+      sortableHeaders: ["Nom", "Surface", "Salle"],
     };
   },
   methods: {
@@ -185,57 +186,53 @@ export default {
       else return { height: "80vh" };
     },
     isSortable(head) {
-      
       if (this.sortableHeaders.includes(head) == true) return true;
       else return false;
     },
     isFilterable(head) {
-      if(this.sortableHeaders.includes(head) == false){
+      if (this.sortableHeaders.includes(head) == false) {
         const props = this.tableData.map((elt) => {
-        return {
-          text: elt[head] == undefined ? "(vide)" : elt[head],
-          value: elt[head],
-        };
-      });
-      let propsFiltered = props.filter((elt, index) => {
-        return props.findIndex(e => e.value == elt.value) == index;
-      });
-      return propsFiltered;
-      }
-      else return undefined;
-      
+          return {
+            text: elt[head] == undefined ? "(vide)" : elt[head],
+            value: elt[head],
+          };
+        });
+        let propsFiltered = props.filter((elt, index) => {
+          return props.findIndex((e) => e.value == elt.value) == index;
+        });
+        return propsFiltered;
+      } else return undefined;
     },
     filterHandler(value, row, column) {
       // console.log(column)
       return row[column.label] == value;
-      
     },
-    exportData(){
+    exportData() {
       // console.log(this.tableData)
-      let headers = this.tableDataHeaders.map(elt => {
+      let headers = this.tableDataHeaders.map((elt) => {
         return {
-          key:elt,
-          header:elt,
-        }
+          key: elt,
+          header: elt,
+        };
       });
       let excelData = [
         {
-          name: 'Inventaire',
-          author: 'SpinalCom',
+          name: "Inventaire",
+          author: "SpinalCom",
           data: [
             {
-              name: 'Inventaire',
+              name: "Inventaire",
               header: headers,
               rows: this.tableData,
             },
           ],
         },
       ];
-      console.log(excelData)
+      console.log(excelData);
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Inventaire.xlsx`);
       });
-    }
+    },
   },
 };
 </script>
@@ -250,6 +247,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   height: 60px;
+  align-items: center;
 }
 .inventory-panel-button-close {
   width: fit-content;
