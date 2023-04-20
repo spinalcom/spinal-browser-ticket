@@ -98,7 +98,6 @@ export default {
   },
   methods: {
     async toogleSelect(data) {
-      console.log(data);
       this.tableData = data;
       this.barLabels = [""];
       this.barChartData = this.getBarChartData(data);

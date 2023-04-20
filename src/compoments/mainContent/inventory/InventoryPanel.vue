@@ -123,7 +123,6 @@ export default {
   },
   methods: {
     async toogleSelect(data) {
-      console.log(data);
       this.title = data.title;
       this.displayTable = data.arrayComponent.display;
       this.tableData = data.arrayComponent.data;
