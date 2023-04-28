@@ -22,24 +22,24 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import Vuetify from 'vuetify';
-import 'vuetify/dist/vuetify.css';
+// import Vuetify from 'vuetify';
+// import 'vuetify/dist/vuetify.css';
 
-export function vuetifyInit(vue: any) {
-  vue.use(Vuetify);
-}
-export const vuetify = new Vuetify({
-  theme: {
-    themes: {
-      light: {
-        primary: '#14202c', // #E53935
-        secondary: '#14202c', // #FFCDD2
-        accent: '#14202c', // #3F51B5
-      },
-    },
-  },
+// export function vuetifyInit(vue: any) {
+//   vue.use(Vuetify);
+// }
+// export const vuetify = new Vuetify({
+//   theme: {
+//     themes: {
+//       light: {
+//         primary: '#14202c', // #E53935
+//         secondary: '#14202c', // #FFCDD2
+//         accent: '#14202c', // #3F51B5
+//       },
+//     },
+//   },
 
-  icons: {
-    iconfont: "mdi"
-  }
-});
+//   icons: {
+//     iconfont: "mdi"
+//   }
+// });

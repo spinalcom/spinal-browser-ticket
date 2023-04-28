@@ -29,10 +29,11 @@ with this file. If not, see
       >
         <!-- @change="handleClick(tab)" -->
         <template v-for="(tab, index) of tabsprop">
-          <el-option v-if="!tab.ignore"
-          :key="index"
-          :label="$t(tab.name)"
-          :value="tab.name"
+          <el-option
+            v-if="!tab.ignore"
+            :key="index"
+            :label="$t(tab.name)"
+            :value="tab.name"
           />
         </template>
         <!-- <el-option
@@ -56,7 +57,7 @@ with this file. If not, see
       type="border-card"
     >
       <template v-for="tab in tabsprop">
-        <template v-if="!tab.ignore" style="height: calc(100% - 120px)">
+        <template v-if="!tab.ignore">
           <el-tab-pane
             :key="$t(tab.name)"
             :label="$t(tab.name)"
@@ -65,10 +66,7 @@ with this file. If not, see
             style="height: calc(100%); overflow: hidden"
           >
             <keep-alive>
-              <component
-                :is="tab.content"
-                :Properties="tab.props"
-              ></component>
+              <component :is="tab.content" :Properties="tab.props"></component>
             </keep-alive>
           </el-tab-pane>
         </template>
@@ -78,10 +76,10 @@ with this file. If not, see
 </template>
 
 <script>
-import Vue from "vue";
-import { EventBus } from "../../services/event";
+import Vue from 'vue';
+import { EventBus } from '../../services/event';
 export default {
-  name: "TabManager",
+  name: 'TabManager',
   components: {},
   props: {
     tabsprop: {
@@ -89,11 +87,11 @@ export default {
       required: true,
       validator: function (value) {
         if (!value.name instanceof String) {
-          console.error("Invalid tab name");
+          console.error('Invalid tab name');
           return false;
         }
         if (!value.content instanceof Vue) {
-          console.error("Invalid component for tab content");
+          console.error('Invalid component for tab content');
           return false;
         }
         return true;
@@ -129,15 +127,15 @@ export default {
       this.activetab = tab._props.name;
       // let eventName = "click-on-"+tab._props.name;
 
-      EventBus.$emit("click-on_" + tab._props.name);
+      EventBus.$emit('click-on_' + tab._props.name);
     },
     chooseTab(tab) {
       this.activetab = tab.name;
-      EventBus.$emit("click-on_" + tab.name);
+      EventBus.$emit('click-on_' + tab.name);
     },
     chooseTab2(tabName) {
       this.activetab = tabName;
-      EventBus.$emit("click-on_" + tabName);
+      EventBus.$emit('click-on_' + tabName);
     },
   },
 };
@@ -197,16 +195,15 @@ export default {
   width: 100%;
 }
 
-.el-popper[x-placement^="bottom"] .popper__arrow {
+.el-popper[x-placement^='bottom'] .popper__arrow {
   border-bottom-color: #14202c;
 }
-.el-popper[x-placement^="bottom"] .popper__arrow:after {
+.el-popper[x-placement^='bottom'] .popper__arrow:after {
   border-bottom-color: #14202c;
 }
 .tab-manager-tabs {
   display: flex;
   flex-direction: column;
-
 }
 
 .tab-manager-tabs .el-tabs__content {

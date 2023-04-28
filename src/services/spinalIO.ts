@@ -22,7 +22,6 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { File, FileSystem, spinalCore } from 'spinal-core-connectorjs_type';
 import axios from 'axios';
 import { decriAes, decriB64 } from './utlils/crypt';
 let $ = require('jquery');
@@ -30,6 +29,12 @@ import {
   SpinalGraphService,
   SpinalGraph,
 } from 'spinal-env-viewer-graph-service';
+import {
+  ICreateSessionResponse,
+  File,
+  FileSystem,
+  spinalCore,
+} from 'spinal-core-connectorjs';
 
 function getParameterByName(name: string, url: string = window.location.href) {
   name = name.replace(/[[\]]/g, '\\$&');
@@ -45,12 +50,15 @@ class SpinalIO {
   loadedPtr: Map<number, Promise<spinal.Model>>;
   connectPromise: Promise<void>;
   user: { username: string; password: string };
-  conn: spinal.FileSystem;
+  conn: FileSystem;
+  session: ICreateSessionResponse;
+  serverHost = window.location.origin;
 
   constructor() {
     this.loadPromise = new Map();
     this.loadedPtr = new Map();
-    this.conn = null;
+
+    // this.serverHost = process.env.SERVER_HOST;
   }
   decriJson(encryptedHex) {
     try {
@@ -74,46 +82,56 @@ class SpinalIO {
     this.user = this.decriJson(encryptedHex);
     return this.user;
   }
+  private async _connect_remote_connect() {
+    await this.documentReady();
+    const connectOpt = this.serverHost + '/api';
+    const token = localStorage.getItem('tokenKey')!;
+    this.session = await spinalCore.createSession(connectOpt, token);
+    this.conn = spinalCore.connectWithSessionId(
+      connectOpt,
+      this.session.sessionNumber,
+      token
+    );
+  }
+  private async _connect() {
+    await this.documentReady();
+    const user = this.getauth();
+    if (this.user.username) {
+      const response = await axios.get(`${this.serverHost}/get_user_id`, {
+        params: {
+          u: user.username,
+          p: user.password,
+        },
+      });
+      let id = parseInt(response.data);
+      if (id > 0) {
+        const host = this.serverHost.replace(/https?:\/\//, '');
+        this.conn = spinalCore.connect(
+          `http://${id}:${user.password}@${host}/`
+        );
+        return;
+      }
+    }
+    throw new Error('Authentication Connection Error');
+  }
+  private documentReady(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      $(document).ready(() => {
+        resolve();
+      });
+    });
+  }
+
   connect() {
     if (this.connectPromise != null) {
       return this.connectPromise;
     }
-
-    this.connectPromise = new Promise((resolve, reject) => {
-      $(document).ready(() => {
-        FileSystem.CONNECTOR_TYPE = 'Browser';
-        const user = this.getauth();
-        if (this.user.username) {
-          const serverHost = window.location.origin;
-          // this.getServerConfig().then( => {
-          return axios
-            .get(`${serverHost}/get_user_id`, {
-              params: {
-                u: user.username,
-                p: user.password,
-              },
-            })
-            .then(
-              (response) => {
-                let id = parseInt(response.data);
-                const host = serverHost.replace(/https?:\/\//, '');
-                this.conn = spinalCore.connect(
-                  `http://${id}:${user.password}@${host}/`
-                );
-                resolve();
-              },
-              () => {
-                // window.location = "/html/drive/";
-                reject('Authentication Connection Error');
-              }
-            );
-          // });
-        } else {
-          // window.location = '/html/drive/';
-          reject('Authentication Connection Error');
-        }
-      });
-    });
+    FileSystem.CONNECTOR_TYPE = 'Browser';
+    if (process.env.USE_REMOTE_CONNECT === 'true') {
+      this.connectPromise = this._connect_remote_connect();
+    } else {
+      this.connectPromise = this._connect();
+    }
     return this.connectPromise;
   }
   getModelPath(): string {
@@ -131,18 +149,35 @@ class SpinalIO {
   }
 
   async getModel(): Promise<SpinalGraph> {
-    try {
-      const path = this.getModelPath();
-      const m = await (<Promise<SpinalGraph>>this.load(path));
+    if (process.env.USE_REMOTE_CONNECT === 'true') {
+      const m = await (<Promise<SpinalGraph>>this.loadRemote());
       await SpinalGraphService.setGraph(m);
       return m;
-    } catch (e) {
-      const m = await (<Promise<SpinalGraph>>(
-        this.load('/__users__/admin/Digital twin')
-      ));
-      await SpinalGraphService.setGraph(m);
+    } else {
+      try {
+        const path = this.getModelPath();
+        const m = await (<Promise<SpinalGraph>>this.load(path));
+        await SpinalGraphService.setGraph(m);
+        return m;
+      } catch (e) {
+        const m = await (<Promise<SpinalGraph>>(
+          this.load('/__users__/admin/Digital twin')
+        ));
+        await SpinalGraphService.setGraph(m);
+        return m;
+      }
+    }
+  }
+  private async loadRemote(): Promise<SpinalGraph> {
+    await this.connect();
+    const server_id = this.session.graphServerId;
+    const m = <Promise<SpinalGraph>>this.loadedPtr.get(server_id);
+    if (m) {
       return m;
     }
+    const graph = <Promise<SpinalGraph>>this.conn.load_ptr(server_id);
+    this.loadedPtr.set(server_id, graph);
+    return graph;
   }
 
   async load(path: string): Promise<spinal.Model> {

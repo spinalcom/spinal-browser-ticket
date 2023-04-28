@@ -7,3 +7,6 @@ package-lock.json
 www
 old
 .parcel-cache
+.env
+TODO
+*_old*

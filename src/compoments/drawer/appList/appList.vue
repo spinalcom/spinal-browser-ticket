@@ -45,23 +45,25 @@ with this file. If not, see
 </template>
 
 <script>
-import { routes } from '../../../router/router';
-import { EventBus } from "../../../services/event"
+import { routesFromApi } from '../../../router/router';
+import { EventBus } from '../../../services/event';
 export default {
   data() {
     return {
       routerTrue: true,
+      routes: [],
     };
   },
   name: 'appList',
-  computed: {
-    routes() {
-      return routes.filter((e) => !e.redirect);
-    },
+
+  async mounted() {
+    const { routesDrawer } = await routesFromApi;
+    this.routes = routesDrawer.filter((e) => !e.redirect);
   },
+
   methods: {
     menuSelect(index) {
-      EventBus.$emit("application-change", index);
+      EventBus.$emit('application-change', index);
       if (this.$route.name !== index) {
         this.$router.push({
           name: index,

@@ -24,17 +24,16 @@ with this file. If not, see
 
 <template>
   <div class="applist-main-container">
-    <div class="app-list-header"
-      >
+    <div class="app-list-header">
       <!-- Toutes les Applications -->
       .
       <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
     </div>
-    
+
     <!-- <img class="image-logo-spinaltwin" :src="logo"/> -->
     <div class="applist-container spinal-scrollbar">
-
-      <router-link elevation="10"
+      <router-link
+        elevation="10"
         v-for="route in routes"
         :key="route.path"
         v-ripple
@@ -42,7 +41,7 @@ with this file. If not, see
         :to="route.path"
         class="router-link-btn"
       >
-    <!-- <div
+        <!-- <div
       
         v-for="route in routes"
         :key="route.path"
@@ -50,11 +49,11 @@ with this file. If not, see
         :index="route.name"
         :to="route.path"
         class="router-link-btn"> -->
-      
-      <applicationCard :data="applySettings(route.name)"></applicationCard>
-    <!-- </div> -->
-      
-    <!-- </div> -->
+
+        <applicationCard :data="applySettings(route.name)"></applicationCard>
+        <!-- </div> -->
+
+        <!-- </div> -->
         <!-- <el-card :body-style="{ padding: '0px' }" shadow="always">
           <div class="app-item-text">
             <span>{{ $t('Routes.' + route.name) }}</span>
@@ -66,76 +65,80 @@ with this file. If not, see
 </template>
 
 <script>
-import { routes } from "../router";
-import { EventBus } from "../../services/event";
-import applicationCard from "./applicationCard.vue";
-import "material-design-icons-iconfont";
+import { routesFromApi } from '../router';
+import { EventBus } from '../../services/event';
+import applicationCard from './applicationCard.vue';
+import 'material-design-icons-iconfont';
 // const logo = require("../../assets/imgs/spinaltwin_logo_RVB.png")
 
 export default {
-  name: "AppList",
+  name: 'AppList',
   components: {
     applicationCard,
   },
   data() {
     return {
+      routes: [],
       // logo: require("../../assets/imgs/spinaltwin_logo_RVB.png"),
-      logo: require("../../assets/imgs/spinaltwin_logo_suite.png"),
+      logo: require('../../assets/imgs/spinaltwin_logo_suite.png'),
       DataApp: {
         // icon: require("../../assets/imgs/background/Usine2.jpg"),
-        icon: "mdi-city",
-        name: "Description",
-        description: "Explorer le bâtiment",
+        icon: 'mdi-city',
+        name: 'Description',
+        description: 'Explorer le bâtiment',
         // tags: ["3D"],
         tags: [
-          {label:"3D", color:"#6699cc"}, 
-          {label:"Description", color:"#FFA400"}],
+          { label: '3D', color: '#6699cc' },
+          { label: 'Description', color: '#FFA400' },
+        ],
       },
       InsightCenter: {
         // icon: 'show_chart',
-        icon: "mdi-chart-bar",
-        name: "INSIGHTS",
+        icon: 'mdi-chart-bar',
+        name: 'INSIGHTS',
         description: "Visualiser l'activité",
         // tags: ["3D", "Heatmap"],
         tags: [
-          {label:"3D", color:"#6699cc"}, 
-          {label:"Heatmap", color:"#6AA0AD"}],
+          { label: '3D', color: '#6699cc' },
+          { label: 'Heatmap', color: '#6AA0AD' },
+        ],
       },
       EquipmentApp: {
-        icon: "mdi-city",
-        name: "ÉQUIPEMENTS",
-        description: "Inspecter les équipements",
+        icon: 'mdi-city',
+        name: 'ÉQUIPEMENTS',
+        description: 'Inspecter les équipements',
         // tags: ["3D"],
-        tags: [
-          {label:"3D", color:"#6699cc"}, 
-          ],
+        tags: [{ label: '3D', color: '#6699cc' }],
       },
       TicketApp: {
-        icon: "mdi-wrench",
-        name: "TICKETS",
-        description: "Gérer les tickets",
+        icon: 'mdi-wrench',
+        name: 'TICKETS',
+        description: 'Gérer les tickets',
         // tags: ["3D"],
         tags: [
-          {label:"3D", color:"#6699cc"}, 
-          {label:"Ticket", color:"#6AA0AD"}],
+          { label: '3D', color: '#6699cc' },
+          { label: 'Ticket', color: '#6AA0AD' },
+        ],
       },
       AlarmApp: {
-        icon: "mdi-alarm-light",
-        name: "ALARMES",
-        description: "Gérer les alarmes",
+        icon: 'mdi-alarm-light',
+        name: 'ALARMES',
+        description: 'Gérer les alarmes',
         // tags: ["3D"],
         tags: [
-          {label:"3D", color:"#6699cc"}, 
-          {label:"Alarmes", color:"#6AA0AD"}],
+          { label: '3D', color: '#6699cc' },
+          { label: 'Alarmes', color: '#6AA0AD' },
+        ],
       },
       SpaceApp: {
-        icon: "mdi-view-dashboard",
-        name: "SPACES",
-        description: "Inspecter les espaces",
+        icon: 'mdi-view-dashboard',
+        name: 'SPACES',
+        description: 'Inspecter les espaces',
         // tags: ["3D"],
         tags: [
-          {label:"3D", color:"#6699cc"}, 
-          {label:"Espaces", color:"#6AA0AD"}],
+          { label: '3D', color: '#6699cc' },
+          { label: 'Espaces', color: '#6AA0AD' },
+        ],
       },
 
       // dataroom: {
@@ -152,10 +155,16 @@ export default {
       // }
     };
   },
-  computed: {
-    routes() {
-      return routes.filter((e) => !e.redirect && this.$route.name !== e.name);
-    },
+  // computed: {
+  //   routes() {
+  //     return routesAuthorized.filter(
+  //       (e) => !e.redirect && this.$route.name !== e.name
+  //     );
+  //   },
+  // },
+  async mounted() {
+    const { routesAuthorized } = await routesFromApi;
+    this.routes = routesAuthorized.filter((e) => !e.redirect);
   },
   methods: {
     menuSelect(index) {
@@ -166,7 +175,7 @@ export default {
       }
     },
     openDrawer() {
-      EventBus.$emit("open-drawer");
+      EventBus.$emit('open-drawer');
     },
     applySettings(name) {
       // this[name].name = name;
@@ -184,7 +193,6 @@ export default {
   position: relative;
   overflow: hidden;
   text-align: -webkit-center;
-
 }
 .applist-main-container > * {
   margin: 5px;
@@ -220,7 +228,6 @@ export default {
   padding: 16px;
   overflow: auto;
   position: relative;
-  
 }
 .applist-container > * {
   width: 40%;
@@ -278,7 +285,7 @@ export default {
   background-color: #3646b1;
   background-image: radial-gradient(circle at bottom, #3646b1, #1d3461);
 }
-.image-logo-spinaltwin{
+.image-logo-spinaltwin {
   max-height: 30vh;
 }
 </style>

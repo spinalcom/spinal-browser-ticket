@@ -50,7 +50,7 @@ with this file. If not, see
           :label="route.name"
           :value="route.name"
         >
-          <span>{{ $t("Routes." + route.name) }}</span>
+          <span>{{ $t('Routes.' + route.name) }}</span>
         </el-option>
       </el-select>
       <!-- <v-select
@@ -74,31 +74,24 @@ with this file. If not, see
 </template>
 
 <script>
-import { routes } from "../../../router/router";
-import { EventBus } from "../../../services/event";
+import { routesFromApi } from '../../../router/router';
+import { EventBus } from '../../../services/event';
 
 export default {
-  name: "appSelector",
-
-  computed: {
-    routes() {
-      return routes.filter((e) => !e.redirect);
-    },
-  },
-
+  name: 'appSelector',
   props: {},
-
   data() {
     return {
-      logo: require("../../../assets/imgs/spinalcom_logo_RVB.png"),
+      logo: require('../../../assets/imgs/spinalcom_logo_RVB.png'),
       currentRoute: this.$route.name,
       expanded: true,
+      routes: [],
     };
   },
 
-  // watch: {},
-
   async mounted() {
+    const { routesDrawer } = await routesFromApi;
+    this.routes = routesDrawer.filter((e) => !e.redirect);
     this.currentRoute = this.$route.name;
   },
   watch: {
@@ -110,7 +103,7 @@ export default {
   methods: {
     // async update() {},
     menuSelect(index) {
-      EventBus.$emit("application-change", index);
+      EventBus.$emit('application-change', index);
       if (this.$route.name !== index) {
         this.$router.push({
           name: index,
@@ -118,16 +111,16 @@ export default {
       }
     },
     chooseExpandIcon() {
-      if (this.expanded == true) return "el-icon-arrow-left";
-      else return "el-icon-arrow-right";
+      if (this.expanded == true) return 'el-icon-arrow-left';
+      else return 'el-icon-arrow-right';
     },
     expandData() {
-      const collection = document.getElementsByClassName("spinaltwin-nav-bar");
+      const collection = document.getElementsByClassName('spinaltwin-nav-bar');
       for (let i1 = 0; i1 < collection.length; i1++) {
         if (this.expanded == false) {
-          collection[i1].style["padding-right"] = "10px";
+          collection[i1].style['padding-right'] = '10px';
         } else {
-          collection[i1].style["padding-right"] = "0px";
+          collection[i1].style['padding-right'] = '0px';
         }
       }
       this.expanded = !this.expanded;
