@@ -21,6 +21,8 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+import { getParameterByName } from './services/utlils/getParameterByName';
+export const USE_REMOTE_CONNECT = getParameterByName('path') ? false: true;
 
 // export const DISABLE_VIEWER = true // for dev
 export const DISABLE_VIEWER = false;
@@ -129,3 +131,4 @@ export const SPACE_RELATION_LIST = [
 ];
 
 export const TICKET_PRIORITY_LIST = ['Occasionally', 'Normal', 'Urgent'];
+

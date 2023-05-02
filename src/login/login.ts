@@ -23,23 +23,25 @@
  */
 import axios from 'axios';
 import { spinalCore, FileSystem } from 'spinal-core-connectorjs';
+import { USE_REMOTE_CONNECT } from '../constants';
 
 function saveLogin(login: string, password: string) {
   const encryptedHex = JSON.stringify({ username: login, password });
   window.localStorage.setItem('spinalhome_cfg', btoa(encryptedHex));
 }
-function saveToken(token: string, expieredToken: string): void {
+function saveToken(token: string, expieredToken: string, userName:string): void {
   window.localStorage.setItem('tokenKey', token);
   window.localStorage.setItem('expires_in', expieredToken);
+  window.localStorage.setItem('userName', userName);
 }
 
 export async function login(login: string, password: string): Promise<void> {
   FileSystem.CONNECTOR_TYPE = 'Browser';
   const serverHost = window.location.origin;
-  if (process.env.USE_REMOTE_CONNECT === 'true') {
+  if (USE_REMOTE_CONNECT === true) {
     try {
       const res = await spinalCore.auth(serverHost, login, password);
-      saveToken(res.accessToken, res.expieredToken.toString());
+      saveToken(res.token, res.expieredToken.toString(), res.userInfo.userName);
       // @ts-ignore
       window.location = '/html/spinaltwin' + location.hash + location.search;
     } catch (error) {

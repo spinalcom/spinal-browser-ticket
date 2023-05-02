@@ -35,15 +35,8 @@ import {
   FileSystem,
   spinalCore,
 } from 'spinal-core-connectorjs';
-
-function getParameterByName(name: string, url: string = window.location.href) {
-  name = name.replace(/[[\]]/g, '\\$&');
-  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-    results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
+import { getParameterByName } from './utlils/getParameterByName';
+import { USE_REMOTE_CONNECT } from '../constants';
 
 class SpinalIO {
   loadPromise: Map<string, Promise<spinal.Model>>;
@@ -57,8 +50,6 @@ class SpinalIO {
   constructor() {
     this.loadPromise = new Map();
     this.loadedPtr = new Map();
-
-    // this.serverHost = process.env.SERVER_HOST;
   }
   decriJson(encryptedHex) {
     try {
@@ -84,11 +75,10 @@ class SpinalIO {
   }
   private async _connect_remote_connect() {
     await this.documentReady();
-    const connectOpt = this.serverHost + '/api';
     const token = localStorage.getItem('tokenKey')!;
-    this.session = await spinalCore.createSession(connectOpt, token);
+    this.session = await spinalCore.createSession(this.serverHost, `Bearer ${token}`);
     this.conn = spinalCore.connectWithSessionId(
-      connectOpt,
+      this.serverHost,
       this.session.sessionNumber,
       token
     );
@@ -127,7 +117,7 @@ class SpinalIO {
       return this.connectPromise;
     }
     FileSystem.CONNECTOR_TYPE = 'Browser';
-    if (process.env.USE_REMOTE_CONNECT === 'true') {
+    if (USE_REMOTE_CONNECT === true) {
       this.connectPromise = this._connect_remote_connect();
     } else {
       this.connectPromise = this._connect();
@@ -149,7 +139,7 @@ class SpinalIO {
   }
 
   async getModel(): Promise<SpinalGraph> {
-    if (process.env.USE_REMOTE_CONNECT === 'true') {
+    if (USE_REMOTE_CONNECT === true) {
       const m = await (<Promise<SpinalGraph>>this.loadRemote());
       await SpinalGraphService.setGraph(m);
       return m;

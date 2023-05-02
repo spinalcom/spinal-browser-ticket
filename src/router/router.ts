@@ -25,6 +25,7 @@
 import VueRouter, { RouteConfig } from 'vue-router';
 import Vue from 'vue';
 import axios from 'axios';
+import { USE_REMOTE_CONNECT } from '../constants';
 
 Vue.use(VueRouter);
 
@@ -98,7 +99,7 @@ export interface IApp {
   [key: string]: any;
 }
 async function getAuthrizedRoute() {
-  if (process.env.USE_REMOTE_CONNECT === 'true') {
+  if (USE_REMOTE_CONNECT === true) {
     const routesAuthorized: RouteConfig[] = [];
     const routesDrawer: RouteConfig[] = [ApplistRoute];
     const token = localStorage.getItem('tokenKey');
