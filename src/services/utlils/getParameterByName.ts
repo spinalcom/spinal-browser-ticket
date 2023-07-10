@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 SpinalCom - www.spinalcom.com
+ * Copyright 2023 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -22,24 +22,13 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-// import Vuetify from 'vuetify';
-// import 'vuetify/dist/vuetify.css';
+export function getParameterByName(name: string, url: string = window.location.href) {
+  name = name.replace(/[[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'), results = regex.exec(url);
+  if (!results)
+    return null;
+  if (!results[2])
+    return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
 
-// export function vuetifyInit(vue: any) {
-//   vue.use(Vuetify);
-// }
-// export const vuetify = new Vuetify({
-//   theme: {
-//     themes: {
-//       light: {
-//         primary: '#14202c', // #E53935
-//         secondary: '#14202c', // #FFCDD2
-//         accent: '#14202c', // #3F51B5
-//       },
-//     },
-//   },
-
-//   icons: {
-//     iconfont: "mdi"
-//   }
-// });

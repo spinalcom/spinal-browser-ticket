@@ -28,7 +28,7 @@ with this file. If not, see
       <div class="left">
         <v-card class="iconDiv">
           <!-- <v-icon color="#000000">{{ data.icon }}</v-icon> -->
-          
+
           <!-- <v-btn color="#00FF00" outlined>coucou</v-btn> -->
           <!-- <md-icon color="#000000">{{ data.icon }}</md-icon> -->
           <!-- <md-icon>mdi-plus</md-icon> -->
@@ -65,10 +65,13 @@ with this file. If not, see
             :key="index"
             small
           >
-          <i :class="'v-icon btnIcon mdi mdi-circle small '" color="#ffffff"></i>
+            <i
+              :class="'v-icon btnIcon mdi mdi-circle small '"
+              color="#ffffff"
+            ></i>
             <!-- <v-icon left color="#ffffff"> mdi-circle-small </v-icon> -->
             <!-- {{ tag.label.toUpperCase() }} -->
-            {{ tag.label}}
+            {{ tag.label }}
           </v-chip>
         </div>
 
@@ -96,8 +99,6 @@ with this file. If not, see
             </v-btn> -->
           </div>
         </div>
-
-        
       </div>
     </div>
     <!-- <v-expand-transition>
@@ -113,20 +114,18 @@ with this file. If not, see
         </v-card-text>
       </div>
     </v-expand-transition> -->
-
-   
   </v-card>
 </template>
 
 <script>
 import 'material-design-icons-iconfont';
-import {VIcon} from "vuetify"
+import { VIcon } from 'vuetify';
 // import "../../../node_modules/material-design-icons-iconfont"
 
 export default {
-  name: "applicationCard",
-  components:{
-    "v-icon": VIcon
+  name: 'applicationCard',
+  components: {
+    'v-icon': VIcon,
   },
   props: {
     data: {},
@@ -150,7 +149,7 @@ export default {
   },
   computed: {
     getTagsTitle() {
-      return this.data.tags.join(", ");
+      return this.data.tags.join(', ');
     },
   },
 };
@@ -159,7 +158,8 @@ export default {
 <style lang="scss">
 .appCardContainer {
   // box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 5px 8px 0px rgb(0 0 0 / 14%), 0px 1px 14px 0px rgb(0 0 0 / 12%) !important;
-  box-shadow: 0px 1px 14px 0px rgb(0 0 0 / 12%), 0px 1px 14px 0px rgb(0 0 0 / 12%), 0px 1px 14px 0px rgb(0 0 0 / 12%) !important;
+  box-shadow: 0px 1px 14px 0px rgb(0 0 0 / 12%),
+    0px 1px 14px 0px rgb(0 0 0 / 12%), 0px 1px 14px 0px rgb(0 0 0 / 12%) !important;
   width: 100%;
   min-height: 113px;
   background: #ffffff;
@@ -194,17 +194,17 @@ export default {
       padding: 5px;
       .name,
       .description,
-      .tags{
+      .tags {
         text-align: left;
-      
-      .actions {
-        width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-        /* margin-bottom: 5px; */
-      }
+
+        .actions {
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+          /* margin-bottom: 5px; */
+        }
       }
       .name {
         height: 30px;
@@ -231,12 +231,14 @@ export default {
           font-size: 0.7em;
           margin-right: 4px;
           border-radius: 10px;
-          .v-chip__content{
-            margin:5px
+          .v-chip__content {
+            margin: 5px;
           }
           i {
             min-width: none !important;
             width: 5px;
+            position: absolute;
+            left: 0px;
           }
         }
       }

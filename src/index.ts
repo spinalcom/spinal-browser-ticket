@@ -43,13 +43,12 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './app.css';
 import './compoments/sidebar/eventSideBar';
 import './services/viewerUtils/viewerEventHandle';
-import "material-design-icons-iconfont/dist/material-design-icons.css";
-// import "vuetify/dist/vuetify.min.css"
-
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import 'vuetify/dist/vuetify.min.css';
 
 import Vuetify from 'vuetify';
-import { vuetifyInit, vuetify } from './plugins/vuetify';
-import SpinalComponents from 'spinal-components'
+// import { vuetifyInit, vuetify } from './plugins/vuetify';
+// import SpinalComponents from 'spinal-components';
 // import 'spinal-components/dist/spinal-components.css'
 
 // Vue.use(SpinalComponents, {})
@@ -72,11 +71,8 @@ import SpinalComponents from 'spinal-components'
 // @ts-ignore
 window.Autodesk.Viewing.Private.analytics.optOut();
 
-import VueApexCharts from 'vue-apexcharts';
-Vue.use(VueApexCharts);
-
 // eslint-disable-next-line vue/multi-word-component-names
-Vue.component('apexchart', VueApexCharts);
+// Vue.component('apexchart', VueApexCharts);
 
 Ripple.zIndex = 99999999;
 Vue.directive('ripple', Ripple);
@@ -85,8 +81,7 @@ Vue.use(ElementUI);
 Vue.use(VTooltip);
 Vue.use(BootstrapVue);
 Vue.use(VueMaterial);
-Vue.use(Vuetify)
-
+Vue.use(Vuetify);
 
 spinalBackend.init();
 BackendInitializer.getInstance().init();
@@ -98,4 +93,4 @@ new Vue({
   render: (h) => h(App),
 }).$mount('#app');
 
-Vue.config.devtools = true
+Vue.config.devtools = true;

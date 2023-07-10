@@ -25,14 +25,14 @@ with this file. If not, see
 <template>
   <div class="_heatmapContainer spaceL-top">
     <!-- <div class="buttons"> -->
-      <!-- <el-button
+    <!-- <el-button
         class="boutton-barre"
         icon="el-icon-arrow-left"
         circle
         style="position: fixed; z-index: 1"
         @click="goBack()"
       > -->
-      <div class="endpoint-selector-block">
+    <div class="endpoint-selector-block">
       <el-button
         class="boutton-barre"
         icon="el-icon-arrow-left"
@@ -40,8 +40,8 @@ with this file. If not, see
         @click="goBack()"
       >
       </el-button>
-    <!-- </div> -->
-    <!-- <div class="btn no-shadow btn-size space-right center-div">
+      <!-- </div> -->
+      <!-- <div class="btn no-shadow btn-size space-right center-div">
         <i @click="decreaseIndex()" class="arrow left"></i>
         {{ variableSelected ? variableSelected.name : '' }}
         <i @click="increaseIndex()" class="arrow right"></i>
@@ -53,17 +53,19 @@ with this file. If not, see
         @click="genSprite()"
       > -->
       <el-tooltip :content="$t('spinal-twin.insight-center.display-sprites')">
-      <el-switch
-        v-model="showSprites"
-        class="boutton-barre"
-        style="--el-switch-on-color: #14202c; --el-switch-off-color: #ff4949"
-        icon="el-icon-add"
-        circle
-        @change="genSprite()"
-      >
-      </el-switch>
+        <el-switch
+          v-model="showSprites"
+          class="boutton-barre"
+          style="--el-switch-on-color: #14202c; --el-switch-off-color: #ff4949"
+          icon="el-icon-add"
+          circle
+          @change="genSprite()"
+        >
+        </el-switch>
       </el-tooltip>
-      <div class="endpoint-selector-label">{{$t('HeatmapCenter.visualized-insight')}}</div>
+      <div class="endpoint-selector-label">{{
+        $t('HeatmapCenter.visualized-insight')
+      }}</div>
       <el-select v-model="index" class="endpoint-selector">
         <el-option
           v-for="(item, index) in variables"
@@ -98,25 +100,22 @@ with this file. If not, see
 </template>
 
 <script>
-import { VueperSlides, VueperSlide } from "vueperslides";
+import { VueperSlides, VueperSlide } from 'vueperslides';
 // import { EventBus } from "../../../services/event";
-import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EventBus } from "../../../services/event";
+import { spinalBackEnd } from '../../../services/spinalBackend';
+import { EventBus } from '../../../services/event';
 
+import 'vueperslides/dist/vueperslides.css';
 
-import * as threeJsManager from "../../../services/viewerUtils/threejsManager";
-
-import "vueperslides/dist/vueperslides.css";
-
-import profilInfoComponent from "./carrousel-component/profil_info_component.vue";
-import chartComponent from "./carrousel-component/chart_component.vue";
+import profilInfoComponent from './carrousel-component/profil_info_component.vue';
+import chartComponent from './carrousel-component/chart_component.vue';
 import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 import AttributeService from 'spinal-env-viewer-plugin-documentation-service';
 
 const backendService = spinalBackEnd.heatmapBack;
 
 export default {
-  props: ["profil", "filter"],
+  props: ['profil', 'filter'],
   data() {
     return {
       showSprites: false,
@@ -127,7 +126,7 @@ export default {
       index: undefined,
       slides: [
         {
-          title: "Profil info",
+          title: 'Profil info',
           content: profilInfoComponent,
         },
       ],
@@ -140,17 +139,14 @@ export default {
     chartComponent,
   },
   methods: {
-    async genSprite(){
-      EventBus.$emit("remove-sprites");
-      if(this.showSprites == true){
+    async genSprite() {
+      EventBus.$emit('remove-sprites');
+      if (this.showSprites == true) {
         EventBus.$emit('InsightCenter-display-sprites');
-        
-        }
-        else{
-          // EventBus.$off("sprite-clicked", data.endpoint);
-          EventBus.$emit("remove-sprites");
-        }
-      
+      } else {
+        // EventBus.$off("sprite-clicked", data.endpoint);
+        EventBus.$emit('remove-sprites');
+      }
     },
     renderComponent(i) {
       return this.slides[i].content;
@@ -178,12 +174,12 @@ export default {
         gradients,
         endpoints: this.endpoints,
       };
-      EventBus.$emit("seeHeatMap", obj);
+      EventBus.$emit('seeHeatMap', obj);
     },
 
     sendDataUpdated() {
       const gradients = this.getColorGradient(this.variableSelected.config);
-      EventBus.$emit("seeHeatMap", {
+      EventBus.$emit('seeHeatMap', {
         profil: this.variableSelected,
         gradients,
         endpoints: this.endpoints,
@@ -209,7 +205,7 @@ export default {
 
     getValue(index, max, min) {
       if (isNaN(parseInt(min)) && isNaN(parseInt(max)))
-        return index ? "True" : "False";
+        return index ? 'True' : 'False';
       return Number(min) + ((Number(max) - Number(min)) * Number(index)) / 10;
     },
 
@@ -219,7 +215,7 @@ export default {
         return {
           endpoint,
           ids: el.references,
-          target: el
+          target: el,
         };
       });
 
@@ -227,7 +223,7 @@ export default {
     },
 
     goBack() {
-      this.$emit("goBackProfil");
+      this.$emit('goBackProfil');
     },
   },
 
@@ -239,7 +235,7 @@ export default {
       this.variables = this.profil.endpointsProfils;
       this.index = 0;
     }
-    
+
     /*// Update references
       for(const element of this.profil.rooms){
             element.references = await backendService._getRoomReferences(element.id);
@@ -247,10 +243,9 @@ export default {
   },
 
   watch: {
-    filter: function(){
+    filter: function () {
       // this.genSprite();
       // EventBus.$emit("remove-sprites");
-
       // EventBus.$emit('InsightCenter-display-sprites');
     },
     variableSelected() {
@@ -261,14 +256,14 @@ export default {
     },
 
     index() {
-      if (typeof this.index !== "undefined") {
+      if (typeof this.index !== 'undefined') {
         this.variableSelected = this.variables[this.index];
       }
     },
   },
 
   beforeDestroy() {
-    EventBus.$emit("hide-heatmap");
+    EventBus.$emit('hide-heatmap');
   },
 };
 </script>
@@ -362,14 +357,14 @@ export default {
   color: black;
 }
 
-.endpoint-selector-block{
+.endpoint-selector-block {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
 }
-.endpoint-selector-label{
-  color:#949DA6;
+.endpoint-selector-label {
+  color: #949da6;
   letter-spacing: 1.3px;
   font-size: 20px;
 }
