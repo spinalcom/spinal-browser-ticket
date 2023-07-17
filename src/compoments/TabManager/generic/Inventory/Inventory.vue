@@ -235,18 +235,14 @@ export default {
       }
     },
     async spaceInventory() {
-      console.log(this.ctxNode);
       let data = await inventoryUtils.getRoomOfCategoryInventory(this.ctxNode);
       EventBus.$emit("inventory-mode", data);
-      console.log(data);
-      // console.log(this.ctxNode);
       // this.spaceInventoryLoader = true;
       // const promise = new Promise(async (res, rej) => {
       //   if (this.ctxNode.getType().get() == "groupingCategory") {
       //     let data = await inventoryUtils.getRoomCategoryInventory(
       //       this.ctxNode
       //     );
-      //     console.log(data)
       //     EventBus.$emit("inventory-mode", data);
       //   } else if (
       //     this.ctxNode.getType().get() == "geographicRoomGroupContext"

@@ -306,7 +306,7 @@ export default {
 
       await Promise.all(
         this.items.items.map(async function (item) {
-          item["Area"] = await getSurfaceFromNode(item);
+          item["Area"] = await getSurfaceFromNode(item, VIEW_KEY);
         })
       );
       this.currentView = view;

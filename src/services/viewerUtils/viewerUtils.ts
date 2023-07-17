@@ -74,7 +74,6 @@ export class ViewerUtils {
     });
 
     // this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, (e)=> {
-    //   console.log(e);
     //   EventBus.$emit('Autodesk.Viewing.SELECTION_CHANGED_EVENT', e);
     // })
     this.viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, (e)=> {
@@ -87,12 +86,10 @@ export class ViewerUtils {
 
     // for (let key in Autodesk.Viewing) {
     //   if (key.endsWith("_EVENT")) {
-    //     console.log(key);
     //       (function (eventName) {
     //         viewer.addEventListener(
     //           Autodesk.Viewing[eventName],
     //           function (event) {
-    //             console.log(eventName, event);
     //           }
     //         );
     //       })(key);

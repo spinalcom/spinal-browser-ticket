@@ -130,7 +130,6 @@ export default {
       this.barLabels = data.barChartComponent.labels;
       this.tableDataHeaders = data.arrayComponent.header;
       this.barChartData = data.barChartComponent.barChartData;
-      console.log(this.barChartData);
       // EY TO REMOVE
       if(this.title.includes('Affectation du poste') == true ){
         this.displayChart = false;
@@ -208,11 +207,9 @@ export default {
       } else return undefined;
     },
     filterHandler(value, row, column) {
-      // console.log(column)
       return row[column.label] == value;
     },
     exportData() {
-      // console.log(this.tableData)
       let headers = this.tableDataHeaders.map((elt) => {
         return {
           key: elt,
@@ -232,7 +229,6 @@ export default {
           ],
         },
       ];
-      console.log(excelData);
       excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Inventaire.xlsx`);
       });

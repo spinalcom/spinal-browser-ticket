@@ -1,4 +1,5 @@
-#
+# 17.07.23 : v1.8.0
+        - Improve loading on Data room (spinaltwin description)
         - Add multiple inventories
         - Modify style of space assignation component
         - Correction of command feature

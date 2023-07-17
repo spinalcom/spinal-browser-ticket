@@ -142,7 +142,9 @@ export class AppItem {
   async countItems(): Promise<number> {
     const node = FileSystem._objects[this.serverId];
     if (node && node.getType().get() === this.type) return 1;
-    if (typeof this.children === 'undefined') return 0;
+    if (typeof this.children === 'undefined') {
+      return 0;
+    }
     const prom: Promise<number>[] = [];
     for (const [, arrayItem] of this.children) {
       for (const item of arrayItem) {

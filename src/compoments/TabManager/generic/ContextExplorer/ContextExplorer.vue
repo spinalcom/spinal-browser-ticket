@@ -97,8 +97,10 @@ export default {
         this.Properties &&
         this.Properties.items &&
         this.Properties.items.items
-      )
+      ){
         return this.Properties.items.items;
+      }
+        
       return [];
     },
     cols() {
@@ -106,8 +108,9 @@ export default {
         this.Properties &&
         this.Properties.items &&
         this.Properties.items.cols
-      )
+      ){
         return this.Properties.items.cols;
+      }
       return [];
     },
   },

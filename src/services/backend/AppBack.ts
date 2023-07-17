@@ -96,6 +96,7 @@ export class AppBack {
     // const itm = AppItem.getItemFromMap(allItems, n, type);
 
     return n.getChildrenInContext(context).then((children) => {
+      
       return { children, item: itm };
     });
   }
@@ -126,10 +127,10 @@ export class AppBack {
       currentGen = nextGen;
       promises = [];
       nextGen = [];
-      depth += 1;
+      // depth += 1;
       for (const n of currentGen) {
-        if (depth <= 2 || (n.info.type && n.info.type.get() !== type)) {
-        // if (depth <= 1 /*|| (n.info.type && n.info.type.get() !== type)*/) {
+        // if (depth <= 2 || (n.info.type && n.info.type.get() !== type)) {
+        if (depth <= 1 /*|| (n.info.type && n.info.type.get() !== type)*/) {
           promises.push(
             this.getChildrenAndItems(
               n,
@@ -152,6 +153,7 @@ export class AppBack {
           }
         }
       }
+      depth+=1;
     }
     if (giveSelf) return res;
     if (typeof item.children !== 'undefined') {
