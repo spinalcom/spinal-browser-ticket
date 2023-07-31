@@ -1,3 +1,6 @@
+# 31.07.23 : v1.8.1
+        - correct Description/Endpoints component to display all the endpoints linked to a node
+
 # 17.07.23 : v1.8.0
         - Improve loading on Data room (spinaltwin description)
         - Add multiple inventories

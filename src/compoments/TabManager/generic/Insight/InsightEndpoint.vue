@@ -130,14 +130,14 @@ export default {
 
     // return infos from an endpointNodeId
     async getEndpointInfo(endpointNodeId) {
-      const realnode = SpinalGraphService.getRealNode(endpointNodeId);
-      const attributesLstModels = await serviceDocumentation.getAllAttributes(
+      let realnode = SpinalGraphService.getRealNode(endpointNodeId);
+      let attributesLstModels = await serviceDocumentation.getAllAttributes(
         realnode
       );
 
-      const attributes = attributesLstModels.map((el) => el.get());
-      const endpointInfo = {};
-      for (const attr of attributes) {
+      let attributes = attributesLstModels.map((el) => el.get());
+      let endpointInfo = {};
+      for (let attr of attributes) {
         endpointInfo[attr.label] = attr.value;
       }
       endpointInfo.endpointNodeId = endpointNodeId;
@@ -153,12 +153,12 @@ export default {
     },
 
     async getNodeEndpointsInfo(nodeId, endpointRelation) {
-      const endpointProfilsModel = await SpinalGraphService.getChildren(
+      let endpointProfilsModel = await SpinalGraphService.getChildren(
         nodeId,
         endpointRelation
       );
       if (endpointProfilsModel.length == 0) return; // si la node n'a pas d'endpoints on quitte la fonction
-      const res = [];
+      let res = [];
       // premier automate associé ( à changer si besoin )
       /*if (endpointProfilsModel[0].type.get() == 'BmsDevice') {
         const endpointsModels = await SpinalGraphService.getChildren(
@@ -197,7 +197,7 @@ export default {
     async findEndpointInfo(nodeId, res, relations){
       let node = SpinalGraphService.getRealNode(nodeId);
       if(node.getType().get() == "BmsEndpoint"){
-        const info = await this.getEndpointInfo(nodeId);
+        let info = await this.getEndpointInfo(nodeId);
         res.push(info);
         return res;
       }
@@ -205,7 +205,7 @@ export default {
         let children = await SpinalGraphService.getChildren(nodeId, relations);
         for(let child of children){
           if(child.type.get() == "BmsEndpoint"){
-            const info = await this.getEndpointInfo(child.id.get());
+            let info = await this.getEndpointInfo(child.id.get());
             res.push(info);
           }
           else{
