@@ -101,6 +101,7 @@ with this file. If not, see
       v-if="groupSelected != null && profilSelected == null"
       :profils="groupSelected.profils"
       :color="groupSelected.color"
+      :filters="filterObjects"
       @selectprofil="SelectProfil"
       @goBackGroup="BackToGroup"
       style="margin-top: 11px"
@@ -248,6 +249,7 @@ export default {
 
     //choix d'un profil (niveau 4)
     SelectProfil(profil) {
+      console.log(profil);
       this.profilSelected = profil;
       this.breadcrumbs = [
         ...this.breadcrumbs,

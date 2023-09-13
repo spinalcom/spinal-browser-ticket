@@ -167,6 +167,7 @@ export default {
     },
 
     async formatAndSendData(variableSelected) {
+      // console.trace(variableSelected)
       const gradients = this.getColorGradient(variableSelected.config);
       this.endpoints = await this.getEndpointToBind(variableSelected.id);
       const obj = {
@@ -210,6 +211,7 @@ export default {
     },
 
     getEndpointToBind(endpointId) {
+      // console.trace(this.profil)
       const promises = this.profil.rooms.map(async (el) => {
         const endpoint = el.endpoints.find((e) => e.id.get() == endpointId);
         return {

@@ -75,12 +75,13 @@ export default class Heatmap {
   }
 
   async getDataFilterItem(item) {
+    console.log(item);
     const res = [];
     const data = await this.initDefer.promise;
     if (!item) {
       return res;
     }
-    
+
     const itemNode = FileSystem._objects[item.server_id];
     if (itemNode.getType().get() === ROOM_TYPE) {
       res.push(itemNode.info.id.get());
@@ -91,13 +92,13 @@ export default class Heatmap {
       return res;
     }
 
-    if(itemNode.getType().get() === FLOOR_TYPE){
+    if (itemNode.getType().get() === FLOOR_TYPE) {
       res.push(itemNode.info.id.get());
       const rooms = await itemNode.getChildren(ROOM_RELATION);
-      for(const room of rooms){
+      for (const room of rooms) {
         res.push(room.info.id.get());
         const equipments = await room.getChildren(EQUIPMENT_RELATION);
-        for (const equipment of equipments){
+        for (const equipment of equipments) {
           // res.push(equipment.info.id.get());
           res.push(equipment.getId().get());
         }
@@ -197,25 +198,77 @@ export default class Heatmap {
     }
     return color;
   }
+  async getDataFormatedPersonnalized(id, filters) {
+    const elementLinked = await spinalControlPointService.getElementLinked(id);
+    const rooms = await groupManagerService.getElementsLinkedToGroup(id);
 
-  getElementLinkedToProfil(profil) {
+    const promises = elementLinked.map(async element => {
+      const el = element.get();
+      const contextId = spinalControlPointService.getContextId(el.id);
+      const controlPointProfil = await spinalControlPointService.getControlPointProfil(
+        contextId,
+        el.id
+      );
+      el['endpointProfils'] = controlPointProfil.endpoints.get();
+      el['rooms'] = await this.formatRoomsPersonnalized(el.id, rooms, filters);
+      return el;
+    })
+    return Promise.all(promises);
+  }
+  formatRoomsPersonnalized(profilId, rooms, filters) {
+    // console.log(rooms);
+    // console.log(filters);
+    if (filters.length == 0) {
+      const promises = rooms.map(async (room) => {
+        let obj = room.get();
+        obj['bimObjects'] = [];
+        obj['endpoints'] = await spinalControlPointService.getEndpointsLinked(obj.id, profilId);
+        // console.log(obj);
+        return obj;
+      });
+      return Promise.all(promises);
+    }
+    else {
+      // console.log(rooms)
+      // console.log(filters);
+      const promises = rooms.map(async (room) => {
+        if(filters.includes(room.id.get())){
+          let obj = room.get();
+          obj['bimObjects'] = [];
+          obj['endpoints'] = await spinalControlPointService.getEndpointsLinked(obj.id, profilId);
+          // console.log(obj);
+          return obj;
+        }
+        
+      });
+      return Promise.all(promises);
+    }
+
+  }
+
+  getElementLinkedToProfil(profil, filters) {
     const id = profil.id;
+    console.log(id);
     return spinalControlPointService.loadElementLinked(id).then((result) => {
       const promises = [];
 
       for (let i = 0; i < result.length; i++) {
         SpinalGraphService._addNode(result[i]);
         const groupId = result[i].getId().get();
-        promises.push(spinalControlPointService.getDataFormated(groupId));
+        // promises.push(spinalControlPointService.getDataFormated(groupId));
+        promises.push(this.getDataFormatedPersonnalized(groupId, filters));
       }
       return Promise.all(promises).then((result) => {
-        const profilFound = result.flat().filter((el) => el.id === id);
+        // console.log(result);
+        // console.log(result.flat());
+        const profilFound = result.flat().filter((el) => el != undefined && el.id === id);
+        console.log(profilFound)
         if (profilFound.length == 0) return [];
         let prom = [];
         let ids = [];
         for (let i = 0; i < profilFound.length; i++) {
           let tmp = profilFound[i].rooms.map(async (room) => {
-            if (!ids.includes(room.id)) {
+            if (room != undefined && !ids.includes(room.id)) {
               ids.push(room.id);
               room.references = await this._getRoomReferences(room.id);
               return room;
@@ -317,10 +370,10 @@ export default class Heatmap {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
       : null;
   }
 
@@ -336,11 +389,11 @@ export default class Heatmap {
 
     return rgbColor
       ? new THREE.Vector4(
-          rgbColor.r / 255,
-          rgbColor.g / 255,
-          rgbColor.b / 255,
-          0.7
-        )
+        rgbColor.r / 255,
+        rgbColor.g / 255,
+        rgbColor.b / 255,
+        0.7
+      )
       : new THREE.Vector4(1, 0, 0, 0);
   }
 

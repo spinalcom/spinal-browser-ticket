@@ -120,7 +120,7 @@ export default {
     return {};
   },
   components: {},
-  props: ['profils', 'color'],
+  props: ['profils', 'color', 'filters'],
   methods: {
     SeeEvent(data) {
       this.$emit('seeEvent', { ...data, color: this.color });
@@ -133,7 +133,7 @@ export default {
     },
     async SelectProfil(profil) {
       let itemLinked = await spinalBackEnd.heatmapBack.getElementLinkedToProfil(
-        profil
+        profil, this.filters
       );
       itemLinked = itemLinked.filter((el) => el); //remove duplicates tagged with undefined
       profil.rooms = itemLinked;
