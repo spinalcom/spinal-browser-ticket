@@ -75,7 +75,6 @@ export default class Heatmap {
   }
 
   async getDataFilterItem(item) {
-    console.log(item);
     const res = [];
     const data = await this.initDefer.promise;
     if (!item) {
@@ -216,27 +215,21 @@ export default class Heatmap {
     return Promise.all(promises);
   }
   formatRoomsPersonnalized(profilId, rooms, filters) {
-    // console.log(rooms);
-    // console.log(filters);
     if (filters.length == 0) {
       const promises = rooms.map(async (room) => {
         let obj = room.get();
         obj['bimObjects'] = [];
         obj['endpoints'] = await spinalControlPointService.getEndpointsLinked(obj.id, profilId);
-        // console.log(obj);
         return obj;
       });
       return Promise.all(promises);
     }
     else {
-      // console.log(rooms)
-      // console.log(filters);
       const promises = rooms.map(async (room) => {
         if(filters.includes(room.id.get())){
           let obj = room.get();
           obj['bimObjects'] = [];
           obj['endpoints'] = await spinalControlPointService.getEndpointsLinked(obj.id, profilId);
-          // console.log(obj);
           return obj;
         }
         
@@ -248,7 +241,6 @@ export default class Heatmap {
 
   getElementLinkedToProfil(profil, filters) {
     const id = profil.id;
-    console.log(id);
     return spinalControlPointService.loadElementLinked(id).then((result) => {
       const promises = [];
 
@@ -259,10 +251,7 @@ export default class Heatmap {
         promises.push(this.getDataFormatedPersonnalized(groupId, filters));
       }
       return Promise.all(promises).then((result) => {
-        // console.log(result);
-        // console.log(result.flat());
         const profilFound = result.flat().filter((el) => el != undefined && el.id === id);
-        console.log(profilFound)
         if (profilFound.length == 0) return [];
         let prom = [];
         let ids = [];

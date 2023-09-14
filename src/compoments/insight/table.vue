@@ -164,7 +164,6 @@ export default {
         .getDataFilterItem(item)
         .then((result) => {
           this.filterObjects = result;
-          console.log(result);
         })
         .catch((err) => {
           console.error(err);
@@ -250,7 +249,6 @@ export default {
 
     //choix d'un profil (niveau 4)
     SelectProfil(profil) {
-      console.log(profil);
       this.profilSelected = profil;
       this.breadcrumbs = [
         ...this.breadcrumbs,

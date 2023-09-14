@@ -45,13 +45,11 @@ import { EventBus } from "../../services/event";
 
 
 export async function createSprite_old(position: { x: null, y: null, z: null }, data) {
-  console.log(position)
   let viewer = window.spinal.SpinalForgeViewer.viewerManager.viewer;
   // let border = "2px solid #14202C";
   await viewer.loadExtension('Autodesk.Edit3D');
   const label = new Autodesk.Edit3D.Label3D(viewer, position, data.text);
   let img = document.createElement("img");
-  console.log(label);
   img.src = thermo;
 
   ////////////////////////// STYLES /////////////////////
@@ -149,10 +147,8 @@ export async function createSprite_old(position: { x: null, y: null, z: null }, 
 }
 
 export async function createSprite(position: { x: null, y: null, z: null }, data) {
-  console.log(position, data )
   let viewer = window.spinal.SpinalForgeViewer.viewerManager.viewer;
   await viewer.loadExtension('Autodesk.Edit3D');
-  console.log(typeof data.text.value == "string");
   // let txt = (typeof data.text.value == "string") ? data.text.value : data.text.value.toString();
   let txt;
   try{
@@ -164,7 +160,6 @@ export async function createSprite(position: { x: null, y: null, z: null }, data
 
   const label = new Autodesk.Edit3D.Label3D(viewer, position, txt);
   let img = document.createElement("img");
-  console.log(label);
   // img.src = thermo;
 
   ////////////////////////// STYLES /////////////////////
@@ -207,11 +202,9 @@ export async function createSprite(position: { x: null, y: null, z: null }, data
 
 
   // if (data.text.type == "boolean" || data.text.type == "string") {
-  //   console.log(1)
   //   label.container.childNodes[0].style.display = "none";
   // }
   // else {
-  //   console.log(2);
   //   label.container.childNodes[0].style.display = "";
 
   // }
@@ -245,12 +238,9 @@ export async function createSprite(position: { x: null, y: null, z: null }, data
     return true;
   });
   EventBus.$on("update-sprite", res => {
-    // console.log(res);
-    console.log(res);
     if (res.node == data.node) {
       label.container.childNodes[0].style.backgroundColor = res.color;
       if (res.text.type == "boolean" || res.text.type == "string") {
-        console.log("bool");
         label.container.childNodes[1].style.display = "none";
       }
       else {

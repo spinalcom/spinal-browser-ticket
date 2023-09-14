@@ -249,7 +249,6 @@ export default {
       // this.genSprite();
       // EventBus.$emit("remove-sprites");
       // EventBus.$emit('InsightCenter-display-sprites');
-      console.log("bonjour");
       await this.formatAndSendData(this.variableSelected);
 
     },
