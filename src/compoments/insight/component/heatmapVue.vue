@@ -245,10 +245,13 @@ export default {
   },
 
   watch: {
-    filter: function () {
+    filter: async function () {
       // this.genSprite();
       // EventBus.$emit("remove-sprites");
       // EventBus.$emit('InsightCenter-display-sprites');
+      console.log("bonjour");
+      await this.formatAndSendData(this.variableSelected);
+
     },
     variableSelected() {
       if (this.variableSelected) {

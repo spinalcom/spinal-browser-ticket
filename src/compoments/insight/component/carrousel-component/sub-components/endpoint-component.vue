@@ -281,11 +281,23 @@ export default {
           this.value = this.endpoint.currentValue.get();
           this.unit = this.endpoint.unit.get();
           if (isNaN(this.value)) this.unit = "";
+          // let text = {
+          //         type: typeof endpoint[0].currentValue.get(),
+          //         value: typeof endpoint[0].currentValue.get() == "number"
+          //         ? parseFloat(
+          //             endpoint[0].currentValue.get().toFixed(1)
+          //           ).toString() +
+          //           " " +
+          //           endpoint[0].unit.get()
+          //         : endpoint[0].currentValue.get()
+          //       };
           EventBus.$emit("update-sprite", {
-            text:
-              typeof this.value == "number"
+            text:{
+              type: typeof this.value,
+              value: typeof this.value == "number"
                 ? parseFloat(this.value).toFixed(1).toString() + " " + this.unit
-                : this.value,
+                : this.value
+            },
             color: this.getColor(this.value, this.variableSelected.config),
             node: this.room,
           });

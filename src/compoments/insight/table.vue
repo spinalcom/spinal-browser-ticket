@@ -164,6 +164,7 @@ export default {
         .getDataFilterItem(item)
         .then((result) => {
           this.filterObjects = result;
+          console.log(result);
         })
         .catch((err) => {
           console.error(err);
@@ -287,6 +288,11 @@ export default {
       EventBus.$emit("open-drawer");
     },
   },
+  watch: {
+    filterObjects(){
+      EventBus.$emit('insight-filteredObjects-has-changed');
+    }
+  }
 };
 </script>
 

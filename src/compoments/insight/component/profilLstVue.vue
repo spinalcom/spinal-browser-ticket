@@ -115,6 +115,7 @@ with this file. If not, see
 
 <script>
 import { spinalBackEnd } from '../../../services/spinalBackend';
+import {EventBus} from "../../../services/event";
 export default {
   data() {
     return {};
@@ -135,8 +136,17 @@ export default {
       let itemLinked = await spinalBackEnd.heatmapBack.getElementLinkedToProfil(
         profil, this.filters
       );
+      
       itemLinked = itemLinked.filter((el) => el); //remove duplicates tagged with undefined
       profil.rooms = itemLinked;
+      // EventBus.$on('insight-reload-profile', async res =>{
+      //   let p = profil;
+      //   let tmp = await spinalBackEnd.heatmapBack.getElementLinkedToProfil(
+      //   p, this.filters);
+      //   itemLinked = itemLinked.filter((el) => el);
+      //   p.rooms = itemLinked;
+      //   this.$emit('selectprofil', p);
+      // })
       this.$emit('selectprofil', profil);
     },
   },

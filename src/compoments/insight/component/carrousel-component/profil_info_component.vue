@@ -103,14 +103,25 @@ export default {
               (el) => el.name.get() == this.variableSelected.name
             );
             if (endpoint.length != 0) {
-              let text =
-                typeof endpoint[0].currentValue.get() == "number"
+              // let text =
+                // typeof endpoint[0].currentValue.get() == "number"
+                //   ? parseFloat(
+                //       endpoint[0].currentValue.get().toFixed(1)
+                //     ).toString() +
+                //     " " +
+                //     endpoint[0].unit.get()
+                //   : endpoint[0].currentValue.get();
+
+                let text = {
+                  type: typeof endpoint[0].currentValue.get(),
+                  value: typeof endpoint[0].currentValue.get() == "number"
                   ? parseFloat(
                       endpoint[0].currentValue.get().toFixed(1)
                     ).toString() +
                     " " +
                     endpoint[0].unit.get()
-                  : endpoint[0].currentValue.get();
+                  : endpoint[0].currentValue.get()
+                };
               let position = await AttributeService.findOneAttributeInCategory(
                 node,
                 "Spatial",
@@ -140,14 +151,24 @@ export default {
             (el) => el.name.get() == this.variableSelected.name
           );
           if (endpoint.length != 0) {
-            let text =
-              typeof endpoint[0].currentValue.get() == "number"
-                ? parseFloat(
-                    endpoint[0].currentValue.get().toFixed(1)
-                  ).toString() +
-                  " " +
-                  endpoint[0].unit.get()
-                : endpoint[0].currentValue.get();
+            // let text =
+            //   typeof endpoint[0].currentValue.get() == "number"
+            //     ? parseFloat(
+            //         endpoint[0].currentValue.get().toFixed(1)
+            //       ).toString() +
+            //       " " +
+            //       endpoint[0].unit.get()
+            //     : endpoint[0].currentValue.get();
+            let text = {
+                  type: typeof endpoint[0].currentValue.get(),
+                  value: typeof endpoint[0].currentValue.get() == "number"
+                  ? parseFloat(
+                      endpoint[0].currentValue.get().toFixed(1)
+                    ).toString() +
+                    " " +
+                    endpoint[0].unit.get()
+                  : endpoint[0].currentValue.get()
+                };
             let position = await AttributeService.findOneAttributeInCategory(
               node,
               "Spatial",
