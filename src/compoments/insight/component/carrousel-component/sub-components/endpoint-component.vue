@@ -184,6 +184,8 @@ import {
   GEO_ROOM_TYPE,
   GEO_FLOOR_TYPE,
 } from "../../../../../constants";
+import { viewerUtils } from "../../../../../services/viewerUtils/viewerUtils";
+// viewerUtils.fitToView(items);
 
 export default {
   components: { valueConfig },
@@ -433,9 +435,16 @@ export default {
       return allBimObjects.map((el) => el.get());
     },
     async focus() {
-      let a = await SpinalGraphService.getRealNode(this.room.id);
-      const item = { id: this.room.id, server_id: a._server_id };
-      EventBus.$emit("sidebar-selected-item", item);
+      // let a = await SpinalGraphService.getRealNode(this.room.id);
+      // const item = { id: this.room.id, server_id: a._server_id };
+      // EventBus.$emit("sidebar-selected-item", item);
+      let items = this.room.references.map(el => {
+        return {
+          model:el.model,
+          selection:el.ids
+        };
+      });
+      viewerUtils.fitToView(items);
     },
 
     async isolate() {
