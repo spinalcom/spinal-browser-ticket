@@ -169,6 +169,7 @@ export async function createSprite(position: { x: null, y: null, z: null }, data
   label.container.childNodes[0].style.borderColor = "#f9f9f9";
   label.container.childNodes[0].style.borderRadius = "100px";
   label.container.childNodes[0].style.color = "#14202C";
+  // label.container.childNodes[0].style.color = data.color;
 
   label.container.childNodes[0].style["z-index"] = 1;
   label.container.style.display = "flex";
@@ -180,8 +181,8 @@ export async function createSprite(position: { x: null, y: null, z: null }, data
   label.container.style.color = 'transparent';
   label.container.style["box-shadow"] = 'none';
 
-  img.style.height = "30px";
-  img.style.width = "30px";
+  img.style.height = "20px";
+  img.style.width = "20px";
   img.style.borderStyle = "solid";
   img.style.borderWidth = "3px";
   img.style.backgroundColor = data.color;
@@ -197,6 +198,8 @@ export async function createSprite(position: { x: null, y: null, z: null }, data
   label.container.childNodes[0].style.paddingLeft = "15px";
   label.container.childNodes[0].style.paddingRight = "5px";
   label.container.childNodes[0].style.marginRight = "0px";
+  label.container.childNodes[0].style.height = "15px";
+  label.container.childNodes[0].style.fontSize = "15px";
   img.style["margin-left"] = "5px;"
   label.container.childNodes[0].style.display = (data.text.type == "boolean" || data.text.type == "string") ? "none":"";
 
