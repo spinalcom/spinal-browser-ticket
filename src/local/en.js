@@ -296,4 +296,7 @@ export default {
   // 'spinal-twin.ParentNodes' : '[BETA] : Parent Nodes',
   'spinal-twin.SpaceConfiguration' : 'Configuration',
   'spinal-twin.ParentNodes' : 'Parent Nodes',
+  'spinal-twin.explore-URL' : 'Open in Iframe',
+  'spinal-twin.open-URL-in-new-tab' : 'Open in new Tab',
+  'spinal-twin.URL' : 'URL',
 };

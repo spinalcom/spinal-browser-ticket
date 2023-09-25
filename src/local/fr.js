@@ -240,4 +240,7 @@ export default {
   // 'spinal-twin.ParentNodes' : '[BETA] : Noeuds Parents',
   'spinal-twin.SpaceConfiguration' : 'Configuration',
   'spinal-twin.ParentNodes' : 'Parent Nodes',
+  'spinal-twin.explore-URL' : 'Ouvrir dans un Iframe',
+  'spinal-twin.open-URL-in-new-tab' : 'Ouvrir dans un nouvel onglet',
+  'spinal-twin.URL' : 'URL',
 };

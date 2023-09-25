@@ -1,3 +1,6 @@
+# 25.09.23
+        - Add URL tab (BÊTA)
+
 # 31.07.23 : v1.8.1
         - correct Description/Endpoints component to display all the endpoints linked to a node
 

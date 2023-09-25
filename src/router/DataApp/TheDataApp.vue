@@ -109,6 +109,7 @@ import InsightEndpoint from "../../compoments/TabManager/generic/Insight/Insight
 import InsightControlEndpoint from "../../compoments/TabManager/generic/Insight/InsightControlEndpoint.vue";
 import Inventory from  "../../compoments/TabManager/generic/Inventory/Inventory.vue"
 import ParentNodes from "../../compoments/TabManager/generic/ParentNodes/ParentNodes.vue"
+import NodeURL from "../../compoments/TabManager/generic/NodeURL/NodeURL.vue"
 
 const VIEW_KEY = "DataApp";
 
@@ -214,6 +215,15 @@ export default {
         {
           name: "spinal-twin.ParentNodes",
           content: ParentNodes,
+          props: {
+            viewKey: VIEW_KEY,
+            view: false,
+          },
+          ignore: true,
+        },
+        {
+          name: "spinal-twin.URL",
+          content: NodeURL,
           props: {
             viewKey: VIEW_KEY,
             view: false,
