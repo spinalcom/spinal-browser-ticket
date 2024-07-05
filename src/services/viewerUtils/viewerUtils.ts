@@ -23,7 +23,7 @@
  */
 
 import q from 'q';
-import { EventBus } from "../event";
+import { EventBus } from '../event';
 type RotateToFace =
   | 'top'
   | 'front'
@@ -76,12 +76,17 @@ export class ViewerUtils {
     // this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, (e)=> {
     //   EventBus.$emit('Autodesk.Viewing.SELECTION_CHANGED_EVENT', e);
     // })
-    this.viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, (e)=> {
-      if(e.selections.length !=0){
-        EventBus.$emit('Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT', e);
+    this.viewer.addEventListener(
+      Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT,
+      (e) => {
+        if (e.selections.length != 0) {
+          EventBus.$emit(
+            'Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT',
+            e
+          );
+        }
       }
-      
-    })
+    );
     // viewer.toolbar.container.style.display = "none"; // MASQUER DE LA TOOLBAR FORGE
 
     // for (let key in Autodesk.Viewing) {
@@ -171,9 +176,10 @@ export class ViewerUtils {
   async selectObjects(lstByModel) {
     if (!this.viewer) return;
     this.clearSelection();
-    for (const { model, selection } of lstByModel) {
-      model.selector.setSelection(selection, model, 'selectOnly');
-    }
+    const lst = lstByModel.map(({ model, selection }) => {
+      return { model, ids: selection };
+    });
+    this.viewer.setAggregateSelection(lst);
   }
   /**
    * @param {Object[]} lstByModel
@@ -183,29 +189,7 @@ export class ViewerUtils {
    */
   isolateObjects(lstByModel) {
     if (!this.viewer) return;
-    // @ts-ignore
-    for (const key in spinal.SpinalForgeViewer.viewerManager.models) {
-      let found = false;
-      for (const { model, selection } of lstByModel) {
-        if (model.id == key) {
-          found = true;
-          if (selection.length > 0) {
-            this.viewer.isolate(selection, model);
-          } else {
-            model.getObjectTree((tree) => {
-              let dbidRoot = tree.nodeAccess.dbIdToIndex[model.getRootId()];
-              this.viewer.isolate([dbidRoot], model);
-            });
-          }
-          continue;
-        }
-      }
-      if (found === false) {
-        // @ts-ignore
-        const model = spinal.SpinalForgeViewer.viewerManager.models[key];
-        this.viewer.hide([1], model);
-      }
-    }
+    this.viewer.impl.visibilityManager.aggregateIsolate(lstByModel);
   }
 
   /**
@@ -220,10 +204,10 @@ export class ViewerUtils {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
       : { r: 0, g: 0, b: 0 };
   }
 
