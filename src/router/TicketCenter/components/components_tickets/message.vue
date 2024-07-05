@@ -163,24 +163,25 @@ export default {
 
     isolate(viewer, items) {
       const bimObjectService = window.spinal.BimObjectService;
-      items.map((el) => {
+      const aggr = items.map((el) => {
         const bimFileId =
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
-
-        viewer.impl.visibilityManager.isolate(el.ids, model);
+        return { model, ids: el.ids };
       });
+      viewer.impl.visibilityManager.aggregateIsolate(aggr);
     },
 
     selection(viewer, items) {
       const bimObjectService = window.spinal.BimObjectService;
-      items.map((el) => {
+      const aggr = items.map((el) => {
         const bimFileId =
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
-
-        model.selector.setSelection(el.selection, model, 'selectOnly');
+        return { model, ids: el.ids };
       });
+      viewer.clearSelection();
+      viewer.setAggregateSelection(aggr);
     },
   },
 };
