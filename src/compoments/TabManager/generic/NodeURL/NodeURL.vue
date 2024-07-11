@@ -102,19 +102,26 @@ with this file. If not, see
       </el-table>
 
       <iframe
-      width="800"
-      height="600"
-      :src="test"
-      frameborder="0"
-      allowfullscreen
-    ></iframe>
+        width="800"
+        height="600"
+        :src="test"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
 
-      <el-divider v-if="parentDocuments.length !=0" class="parent-document-divider">
+      <el-divider
+        v-if="parentDocuments.length != 0"
+        class="parent-document-divider"
+      >
         <span class="parent-document-divider-text">Parents Documents</span>
       </el-divider>
 
       <el-collapse>
-        <el-collapse-item v-for="parent in parentDocuments" :key="parent" :title="parent.name">
+        <el-collapse-item
+          v-for="parent in parentDocuments"
+          :key="parent"
+          :title="parent.name"
+        >
           <el-table
             :data="parent.documents"
             :header-cell-style="{
@@ -171,15 +178,15 @@ with this file. If not, see
 </template>
 
 <script>
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { EventBus } from "../../../../services/event";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { FileExplorer } from 'spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer';
+import { EventBus } from '../../../../services/event';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 
-const axios = require("axios");
+const axios = require('axios');
 
 export default {
-  name: "NodeURL",
+  name: 'NodeURL',
   components: {},
   props: {
     Properties: {
@@ -191,14 +198,14 @@ export default {
   data() {
     return {
       ctxNode: false,
-      ctxNodeName: "",
+      ctxNodeName: '',
       documents: [],
       directory: false,
       parentDocuments: [],
-      srcP: "",
+      srcP: '',
 
-      URLs:[],
-      test:"",
+      URLs: [],
+      test: '',
     };
   },
 
@@ -217,7 +224,7 @@ export default {
 
   async mounted() {
     // this.update(this.Properties.view.serverId);
-    EventBus.$on("click-on_spinal-twin.Documentation", () =>
+    EventBus.$on('click-on_spinal-twin.Documentation', () =>
       this.update(this.Properties.view.serverId)
     );
   },
@@ -226,33 +233,29 @@ export default {
     async update(id) {
       this.ctxNode = FileSystem._objects[id];
       this.ctxNodeName = FileSystem._objects[id].getName().get();
-      this.URLs = await serviceDocumentation.getURL(
-          this.ctxNode
-        );
+      this.URLs = await serviceDocumentation.getURL(this.ctxNode);
       console.log(this.URLs);
 
-      
       // this.directory = await FileExplorer.getDirectory(this.ctxNode);
       // let parentNodes = await FileSystem._objects[id].getParents();
       // this.getDocuments().then();
       // this.getParentDocuments(parentNodes).then(
       // );
     },
-    async openURLInNewTab(url){
+    async openURLInNewTab(url) {
       console.log(url);
-      if(url.includes("https://") || url.includes("http://")){
-        window.open(url, "_blank", undefined, false);
-      }
-      else{
+      if (url.includes('https://') || url.includes('http://')) {
+        window.open(url, '_blank', undefined, false);
+      } else {
         window.open(`https://${url}`);
       }
     },
-    exploreURL(url){
+    exploreURL(url) {
       // this.test = url;
-      EventBus.$emit("document-viewer-mode", {
-          document: url,
-          type: "other",
-        });
+      EventBus.$emit('document-viewer-mode', {
+        document: url,
+        type: 'other',
+      });
     },
 
     docAt(serverId) {
@@ -335,16 +338,16 @@ export default {
     // },
     async addDocument() {
       const maxSize = 25000000;
-      const input = document.createElement("input");
+      const input = document.createElement('input');
 
       if (!this.directory) {
         this.directory = await FileExplorer.createDirectory(this.ctxNode);
       }
-      input.type = "file";
+      input.type = 'file';
       input.multiple = true;
       input.click();
       input.addEventListener(
-        "change",
+        'change',
         (event) => {
           // const files = event.target.files;
           const files = input.files;
@@ -356,9 +359,9 @@ export default {
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              this.$t("spinal-twin.ErrorFileTooLarge") +
+              this.$t('spinal-twin.ErrorFileTooLarge') +
                 maxSize / 1000000 +
-                " MB"
+                ' MB'
             );
             return;
           }
@@ -369,7 +372,7 @@ export default {
 
           FileExplorer.addFileUpload(this.directory, input.files);
           // FileExplorer.uploadFiles(this.ctxNode, input.files);
-          this.$emit("reload");
+          this.$emit('reload');
           this.update(this.Properties.view.serverId);
         },
         false
@@ -381,9 +384,9 @@ export default {
         // this.srcP = `/sceen/_?u=${path._server_id}`;
         let srcP = `/sceen/_?u=${path._server_id}`;
 
-        EventBus.$emit("document-viewer-mode", {
+        EventBus.$emit('document-viewer-mode', {
           document: srcP,
-          type: file.name._data.endsWith(".pdf") ? "pdf" : "other",
+          type: file.name._data.endsWith('.pdf') ? 'pdf' : 'other',
         });
 
         // axios
@@ -406,15 +409,15 @@ export default {
     downloadDocument(id) {
       const file = this.docAt(id);
       file._ptr.load((path) => {
-        var element = document.createElement("a");
-        element.setAttribute("href", "/sceen/_?u=" + path._server_id);
-        element.setAttribute("download", file.name);
+        var element = document.createElement('a');
+        element.setAttribute('href', '/sceen/_?u=' + path._server_id);
+        element.setAttribute('download', file.name);
         element.click();
       });
     },
 
     async debug(what) {
-      console.debug("Debugging", what);
+      console.debug('Debugging', what);
     },
   },
 };
@@ -437,10 +440,9 @@ export default {
   font-weight: 200;
 }
 
-.actions-documentation{
+.actions-documentation {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
 </style>
-
